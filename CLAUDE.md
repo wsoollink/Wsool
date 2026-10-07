@@ -221,3 +221,22 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
   Use the `[locale]` route param (`"ar" | "en"`) for logic; `toIntlLocale()` for `Intl`.
 - The proxy skips paths ending in asset extensions (`.png`, `.json`, `.pdf`, …). Usernames may
   contain dots, so username validation must reject names ending in those extensions.
+
+### Database workflow (Phase 1, step 4)
+- Prisma 7 (`prisma.config.ts`, client generated to `src/generated/prisma`, git-ignored;
+  `postinstall` runs `prisma generate`). Server code imports `db` from `src/lib/db.ts`
+  (`server-only`, `@prisma/adapter-pg` over `DATABASE_URL`).
+- **Claude cloud sessions cannot open a Postgres connection to Supabase** (the sandbox proxy
+  only passes HTTPS). HTTPS to Supabase (Auth, Storage, REST) works when the environment's
+  network allowlist has `*.supabase.co` / `*.supabase.com`.
+- So develop against the local Postgres 16 in the sandbox:
+  `service postgresql start`, then apply `prisma/local-supabase-stub.sql` to `template1`
+  (fake `auth.uid()` + `anon`/`authenticated` roles, local only), create db `wsool`, and run
+  Prisma with `DIRECT_URL`/`DATABASE_URL` set to the local db on the command line (real env
+  vars point at Supabase).
+- Migrations reach Supabase on deploy: Vercel runs `vercel-build` =
+  `prisma migrate deploy && next build`.
+- RLS migration (`prisma/migrations/*_rls`): RLS on every table, owner-only policies for
+  `authenticated`, no access for `anon`. Every new table needs RLS + policies in its migration.
+- Reserved usernames: `src/config/usernames.ts` (code, all site routes) + `reserved_usernames`
+  table (extra names staff add).

@@ -20,7 +20,8 @@ export function proxy(request: NextRequest) {
 
 export const config = {
   // Skip Next internals, API routes and static files. Usernames may contain
-  // dots, so only real asset extensions are excluded.
+  // dots, so only real asset extensions are excluded (keep in sync with
+  // ASSET_EXTENSIONS in src/config/usernames.ts).
   matcher: [
     "/((?!api/|_next/|.*\\.(?:ico|png|jpe?g|gif|svg|webp|avif|txt|xml|webmanifest|json|css|js|map|woff2?|ttf|otf|pdf)$).*)",
   ],

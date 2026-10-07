@@ -1,0 +1,144 @@
+// Wsool database schema. See CLAUDE.md section 10.
+// Every table has Row Level Security enabled (see the rls migration).
+// The app reaches the database only from the server through Prisma, and every
+// query on creator data is scoped to the signed-in user (CLAUDE.md section 12).
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Lang {
+  ar
+  en
+}
+
+enum Template {
+  white
+  black
+  sand
+  pink
+  black_gold
+  vivid
+  green
+  custom
+}
+
+enum NumberFont {
+  wide
+  text
+}
+
+enum Plan {
+  free
+  pro
+}
+
+enum BillingCycle {
+  monthly
+  yearly
+}
+
+enum Currency {
+  SAR
+  USD
+}
+
+enum SubscriptionStatus {
+  trialing
+  active
+  past_due
+  canceled
+  expired
+}
+
+/// One row per Supabase Auth user. `id` equals auth.users.id.
+model User {
+  id        String   @id @db.Uuid
+  email     String   @unique
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  page         Page?
+  subscription Subscription?
+
+  @@map("users")
+}
+
+/// The creator's public page at wsool.link/<username>.
+model Page {
+  id                String     @id @default(uuid()) @db.Uuid
+  userId            String     @unique @map("user_id") @db.Uuid
+  /// Always lowercase (checked in the database); unique, so case-insensitive.
+  username          String     @unique @db.VarChar(20)
+  usernameChangedAt DateTime?  @map("username_changed_at") @db.Timestamptz
+  primaryLang       Lang       @default(ar) @map("primary_lang")
+  enEnabled         Boolean    @default(false) @map("en_enabled")
+  template          Template   @default(white)
+  /// Custom template: { colors: string[1..2], mode: "light" | "dark" }
+  customColors      Json?      @map("custom_colors")
+  accent            String?    @db.VarChar(7)
+  numberFont        NumberFont @default(wide) @map("number_font")
+  hideBranding      Boolean    @default(false) @map("hide_branding")
+  isPublished       Boolean    @default(false) @map("is_published")
+  /// Set when the creator deletes the account (30-day undo window).
+  deletedAt         DateTime?  @map("deleted_at") @db.Timestamptz
+  createdAt         DateTime   @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt         DateTime   @updatedAt @map("updated_at") @db.Timestamptz
+
+  user         User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  translations PageTranslation[]
+
+  @@map("pages")
+}
+
+/// Creator-written text per language. No auto-translation.
+model PageTranslation {
+  id        String @id @default(uuid()) @db.Uuid
+  pageId    String @map("page_id") @db.Uuid
+  lang      Lang
+  fullName  String @default("") @map("full_name") @db.VarChar(80)
+  specialty String @default("") @db.VarChar(80)
+  bio       String @default("") @db.VarChar(500)
+  city      String @default("") @db.VarChar(60)
+  country   String @default("") @db.VarChar(60)
+
+  page Page @relation(fields: [pageId], references: [id], onDelete: Cascade)
+
+  @@unique([pageId, lang])
+  @@map("page_translations")
+}
+
+/// Extra names blocked from being claimed (site routes live in code too).
+model ReservedUsername {
+  name      String   @id @db.VarChar(20)
+  reason    String?
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("reserved_usernames")
+}
+
+/// One subscription row per user. New accounts start a 14-day Pro trial.
+model Subscription {
+  id                     String             @id @default(uuid()) @db.Uuid
+  userId                 String             @unique @map("user_id") @db.Uuid
+  plan                   Plan               @default(pro)
+  status                 SubscriptionStatus @default(trialing)
+  cycle                  BillingCycle?
+  currency               Currency?
+  trialEndsAt            DateTime?          @map("trial_ends_at") @db.Timestamptz
+  currentPeriodEnd       DateTime?          @map("current_period_end") @db.Timestamptz
+  provider               String?
+  providerCustomerId     String?            @map("provider_customer_id")
+  providerSubscriptionId String?            @map("provider_subscription_id")
+  createdAt              DateTime           @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt              DateTime           @updatedAt @map("updated_at") @db.Timestamptz
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("subscriptions")
+}

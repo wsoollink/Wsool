@@ -209,3 +209,15 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
 4. **OTP emails**: for now they are sent by Supabase's built-in mailer (testing only).
    **TODO before launch:** switch Supabase Auth SMTP / auth emails to Resend from
    `mail.wsool.link`.
+
+### How i18n routing is implemented (Phase 1, step 2)
+- `src/proxy.ts` reads the `NEXT_LOCALE` cookie, then `Accept-Language`, else `ar`, and
+  **rewrites** (never redirects) `/x` → `/<locale>/x`. Public URLs never show a prefix;
+  typing `/ar/...` or `/en/...` gives 404, so `ar` and `en` are reserved usernames.
+- Site pages live in `src/app/[locale]/(site)/` with their own root layout (`lang`/`dir`).
+  Creator pages will get a separate root layout in Phase 2 so their language follows the
+  creator's settings, not the site cookie.
+- next-intl's locale is `ar-u-nu-latn` for Arabic so every formatted number/date uses 0–9.
+  Use the `[locale]` route param (`"ar" | "en"`) for logic; `toIntlLocale()` for `Intl`.
+- The proxy skips paths ending in asset extensions (`.png`, `.json`, `.pdf`, …). Usernames may
+  contain dots, so username validation must reject names ending in those extensions.

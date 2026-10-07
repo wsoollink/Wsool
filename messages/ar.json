@@ -1,0 +1,18 @@
+{
+  "Metadata": {
+    "title": "وصول",
+    "description": "صفحة إعلامية لصنّاع المحتوى."
+  },
+  "Home": {
+    "title": "وصول",
+    "subtitle": "رابط واحد يعرّف البراندات فيك."
+  },
+  "LanguageSwitcher": {
+    "label": "اللغة",
+    "switchTo": "English"
+  },
+  "NotFound": {
+    "title": "الصفحة غير موجودة",
+    "back": "الرجوع للرئيسية"
+  }
+}

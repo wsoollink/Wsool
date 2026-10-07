@@ -1,0 +1,18 @@
+{
+  "Metadata": {
+    "title": "Wsool",
+    "description": "Media kit pages for content creators."
+  },
+  "Home": {
+    "title": "Wsool",
+    "subtitle": "One link that introduces you to brands."
+  },
+  "LanguageSwitcher": {
+    "label": "Language",
+    "switchTo": "العربية"
+  },
+  "NotFound": {
+    "title": "Page not found",
+    "back": "Back to home"
+  }
+}

@@ -240,3 +240,16 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
   `authenticated`, no access for `anon`. Every new table needs RLS + policies in its migration.
 - Reserved usernames: `src/config/usernames.ts` (code, all site routes) + `reserved_usernames`
   table (extra names staff add).
+
+### Auth (Phase 1, step 5)
+- Email OTP via Supabase (`src/app/[locale]/(site)/login`). Server actions call
+  `signInWithOtp` / `verifyOtp`; first sign-in creates the `users` row + 14-day trial
+  (`src/lib/account.ts`, `TRIAL_DAYS` in `src/config/plans.ts`).
+- `src/lib/auth.ts`: `getCurrentUser()` / `requireUser()` read the verified JWT claims
+  (`getClaims`). They are the only source of a user id for queries.
+- `src/proxy.ts` refreshes the Supabase session cookie only when an `sb-` cookie exists.
+- Supabase email templates ("Magic Link" and "Confirm signup") must contain `{{ .Token }}`
+  so the email carries a code. Supabase's built-in mailer only sends to the project's team
+  members and is heavily rate-limited: fine for testing, replace with Resend before launch.
+- Sandbox only: run the app with `NODE_USE_ENV_PROXY=1` (Node's fetch ignores HTTPS_PROXY
+  otherwise) and the overrides in `.env.local`.

@@ -19,5 +19,29 @@
   "NotFound": {
     "title": "Page not found",
     "back": "Back to home"
+  },
+  "Login": {
+    "title": "Sign in",
+    "subtitle": "We'll email you a sign-in code.",
+    "emailLabel": "Email",
+    "sendCode": "Send code",
+    "sending": "Sending…",
+    "codeSent": "We sent a sign-in code to",
+    "codeLabel": "Sign-in code",
+    "verify": "Sign in",
+    "verifying": "Checking…",
+    "changeEmail": "Change email",
+    "errors": {
+      "invalid_email": "Enter a valid email.",
+      "invalid_code": "The code is wrong or has expired.",
+      "rate_limited": "Too many attempts. Please wait a bit and try again.",
+      "failed": "Something went wrong. Please try again."
+    }
+  },
+  "Dashboard": {
+    "welcome": "Welcome to Wsool",
+    "signedInAs": "Signed in as",
+    "trial": "{days, plural, one {# day} other {# days}} left in your free Pro trial.",
+    "signOut": "Sign out"
   }
 }

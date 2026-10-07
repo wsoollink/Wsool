@@ -1,13 +1,15 @@
-import { NextResponse, type NextRequest } from "next/server";
+import type { NextRequest } from "next/server";
 import { LOCALE_COOKIE, resolveLocale } from "@/i18n/config";
+import { rewriteWithSession } from "@/lib/supabase/proxy";
 
 /**
  * Public URLs never carry a language prefix (wsool.link/pricing,
  * wsool.link/<username>). The language is chosen from the cookie or the
  * device language, and the request is rewritten internally to
  * /<locale>/... so pages can be rendered per language.
+ * Signed-in visitors also get their Supabase session refreshed here.
  */
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const locale = resolveLocale(
     request.cookies.get(LOCALE_COOKIE)?.value,
     request.headers.get("accept-language"),
@@ -15,7 +17,7 @@ export function proxy(request: NextRequest) {
 
   const url = request.nextUrl.clone();
   url.pathname = `/${locale}${url.pathname === "/" ? "" : url.pathname}`;
-  return NextResponse.rewrite(url);
+  return rewriteWithSession(request, url);
 }
 
 export const config = {

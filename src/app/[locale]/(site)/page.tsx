@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 import { getFormatter, getTranslations, setRequestLocale } from "next-intl/server";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { Button } from "@/components/ui/Button";
+import Link from "next/link";
+import { buttonClasses } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { isLocale, toIntlLocale } from "@/i18n/config";
 
@@ -31,7 +32,7 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
       </Card>
 
       <div className="flex flex-wrap items-center justify-center gap-3">
-        <Button>{t("start")}</Button>
+        <Link href="/login" className={buttonClasses()}>{t("start")}</Link>
         <LanguageSwitcher locale={locale} />
       </div>
     </main>

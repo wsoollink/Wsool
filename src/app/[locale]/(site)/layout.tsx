@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getDirection, isLocale, locales, toIntlLocale } from "@/i18n/config";
+import { fontVariables } from "@/styles/fonts";
 import "../../globals.css";
 
 export function generateStaticParams() {
@@ -25,7 +26,7 @@ export default async function SiteLayout({ children, params }: LayoutProps<"/[lo
   setRequestLocale(toIntlLocale(locale));
 
   return (
-    <html lang={locale} dir={getDirection(locale)} className="h-full antialiased">
+    <html lang={locale} dir={getDirection(locale)} className={`${fontVariables} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
         <NextIntlClientProvider>{children}</NextIntlClientProvider>
       </body>

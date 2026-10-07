@@ -2,6 +2,7 @@
 
 import { setLocale } from "@/i18n/actions";
 import type { Locale } from "@/i18n/config";
+import { buttonClasses } from "./ui/Button";
 
 type Props = { target: Locale; text: string; ariaLabel: string };
 
@@ -16,12 +17,7 @@ export function LanguageSwitcherButton({ target, text, ariaLabel }: Props) {
   return (
     <form action={switchLocale}>
       <input type="hidden" name="locale" value={target} />
-      <button
-        type="submit"
-        lang={target}
-        aria-label={ariaLabel}
-        className="min-h-11 rounded-full border border-foreground/10 px-4 text-sm font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0060E6]"
-      >
+      <button type="submit" lang={target} aria-label={ariaLabel} className={buttonClasses("secondary")}>
         {text}
       </button>
     </form>

@@ -5,7 +5,12 @@
   },
   "Home": {
     "title": "Wsool",
-    "subtitle": "One link that introduces you to brands."
+    "subtitle": "One link that introduces you to brands.",
+    "followers": "Total followers",
+    "start": "Get started",
+    "good": "Verified",
+    "warn": "Expiring soon",
+    "bad": "Rejected"
   },
   "LanguageSwitcher": {
     "label": "Language",

@@ -186,3 +186,26 @@ Username rules: lowercase a–z, 0–9, dot, underscore, 3–20 chars, not reser
 6. **Launch pieces**: analytics, PDF media kit, all emails & notifications, marketing site, finance.
 
 Before starting each phase: write a short plan in Arabic and wait for the owner's "تمام".
+
+---
+
+## 12. Decisions added by the owner (Phase 1)
+
+1. **Creator URL has no language prefix.** It is always `wsool.link/<username>` (never `/ar/...`
+   or `/en/...`). The creator page language comes from the creator's settings + the visitor's
+   device language (section 3). Other surfaces (marketing, dashboard, admin, auth) must use a
+   locale scheme that never collides with `/<username>`: language is stored in a cookie /
+   detected from `Accept-Language`, not in the path, and every top-level route segment is a
+   reserved username.
+2. **Ownership checks on the server.** Prisma connects as a privileged role and bypasses RLS,
+   so RLS is a second line of defense only. Every server action / route handler that touches
+   creator data must: get the signed-in user from the Supabase session on the server (never
+   trust a user id from the client), then scope every query by that user's id
+   (`where: { userId }` / ownership check before update/delete) through shared helpers.
+   Client code never talks to tables directly with the service key.
+3. **Usernames are case-insensitive.** Stored and compared lowercased (unique index on the
+   lowercased value). Reserved list includes every top-level site route (dashboard, admin, api,
+   pricing, login, signup, auth, settings, …) and must be updated whenever a route is added.
+4. **OTP emails**: for now they are sent by Supabase's built-in mailer (testing only).
+   **TODO before launch:** switch Supabase Auth SMTP / auth emails to Resend from
+   `mail.wsool.link`.

@@ -91,6 +91,24 @@
     "claimCta": "Claim your name",
     "hiddenTitle": "This page isn't available right now",
     "hiddenBody": "Its owner has hidden it for now.",
-    "madeWith": "Made with ❤️ on Wsool"
+    "madeWith": "Made with ❤️ on Wsool",
+    "verified": "Verified account",
+    "licenses": "Licenses",
+    "viewFile": "View file",
+    "followersTotal": "Total followers",
+    "monthlyViews": "Monthly views",
+    "platforms": "Platforms",
+    "brands": "Brands I've worked with",
+    "work": "Past work",
+    "rates": "Ad rates",
+    "ratesOnRequest": "Rates on request",
+    "bundle": "Bundle",
+    "insteadOf": "instead of {price}",
+    "save": "save {percent}",
+    "vatIncluded": "Prices include VAT.",
+    "vatExcluded": "Prices exclude VAT.",
+    "contact": "Contact",
+    "whatsapp": "WhatsApp",
+    "email": "Email"
   }
 }

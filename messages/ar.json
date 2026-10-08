@@ -91,6 +91,24 @@
     "claimCta": "احجز اسمك",
     "hiddenTitle": "الصفحة غير متاحة حالياً",
     "hiddenBody": "صاحب الصفحة أخفاها مؤقتاً.",
-    "madeWith": "صنعت بـ❤️ وصول"
+    "madeWith": "صنعت بـ❤️ وصول",
+    "verified": "حساب موثّق",
+    "licenses": "الرخص",
+    "viewFile": "عرض الملف",
+    "followersTotal": "إجمالي المتابعين",
+    "monthlyViews": "المشاهدات الشهرية",
+    "platforms": "المنصات",
+    "brands": "براندات تعاونت معها",
+    "work": "أعمال سابقة",
+    "rates": "أسعار الإعلانات",
+    "ratesOnRequest": "الأسعار عند التواصل",
+    "bundle": "باقة",
+    "insteadOf": "بدل {price}",
+    "save": "وفّر {percent}",
+    "vatIncluded": "الأسعار شاملة الضريبة.",
+    "vatExcluded": "الأسعار غير شاملة الضريبة.",
+    "contact": "للتواصل",
+    "whatsapp": "واتساب",
+    "email": "الإيميل"
   }
 }

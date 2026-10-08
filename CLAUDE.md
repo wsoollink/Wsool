@@ -339,3 +339,14 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
   shaped with fontkit and drawn as SVG outlines (`src/lib/og-text.ts`, right-to-left with line
   wrapping). Fonts live in `assets/fonts/` (OFL) and are listed in `outputFileTracingIncludes`.
   Satori also crashes on `backgroundImage: undefined`; only pass it when set.
+
+### Dashboard editing (Phase 3)
+- Server actions live next to each section (e.g. `dashboard/edit/actions.ts`): `requireCreator()`,
+  zod validation (`src/lib/validation/`), writes scoped to `page.id` from the session, then
+  `updateTag(pageCacheTag(page.username))` so the public page shows the change immediately.
+- **Forms**: React 19 resets uncontrolled fields after a form `action`, wiping what the creator
+  typed when validation fails. Submit through `onSubmit` + `startTransition(() => action(data))`
+  (see `ProfileForm`), or keep the inputs controlled.
+- In bilingual forms the labels follow the dashboard language; only inputs get the content
+  language's `dir`/`lang`.
+- Publishing requires a name in the primary language (`setPublished`).

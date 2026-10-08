@@ -119,5 +119,36 @@
     "countries": "الدول",
     "cities": "المدن",
     "playVideo": "تشغيل الفيديو: {title}"
+  },
+  "EditPage": {
+    "pageStatus": "حالة الصفحة",
+    "published": "منشورة، والكل يقدر يشوفها",
+    "hidden": "مخفية، محد يشوفها غيرك",
+    "publish": "انشر الصفحة",
+    "hide": "أخفِ الصفحة",
+    "viewPage": "شوف صفحتي",
+    "primaryLang": "لغة الصفحة الأساسية",
+    "enEnabled": "أضف نسخة إنجليزية",
+    "enEnabledHint": "تظهر للزوار اللي لغة جهازهم إنجليزي. تكتبها بنفسك، بدون ترجمة آلية.",
+    "arabicContent": "المحتوى بالعربي",
+    "englishContent": "المحتوى بالإنجليزي",
+    "fullName": "الاسم",
+    "specialty": "التخصص",
+    "specialtyHint": "مثل: صانعة محتوى أزياء وجمال",
+    "bio": "نبذة عنك",
+    "bioHint": "حتى 500 حرف.",
+    "city": "المدينة",
+    "country": "الدولة",
+    "save": "احفظ",
+    "saving": "جاري الحفظ…",
+    "saved": "✓ انحفظت التعديلات.",
+    "fixErrors": "صحّح الحقول المحددة بالأحمر.",
+    "errors": {
+      "required": "هذا الحقل مطلوب.",
+      "invalid": "القيمة غير صحيحة.",
+      "failed": "صار خطأ. جرّب مرة ثانية.",
+      "needs_name": "اكتب اسمك واحفظ قبل ما تنشر الصفحة."
+    },
+    "specialtyHintEn": "مثل: Fashion & beauty creator"
   }
 }

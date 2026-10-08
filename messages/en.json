@@ -119,5 +119,36 @@
     "countries": "Countries",
     "cities": "Cities",
     "playVideo": "Play video: {title}"
+  },
+  "EditPage": {
+    "pageStatus": "Page status",
+    "published": "Published, anyone can see it",
+    "hidden": "Hidden, only you can see it",
+    "publish": "Publish page",
+    "hide": "Hide page",
+    "viewPage": "View my page",
+    "primaryLang": "Primary page language",
+    "enEnabled": "Add an English version",
+    "enEnabledHint": "Shown to visitors whose device is in English. You write it yourself, no auto-translation.",
+    "arabicContent": "Arabic content",
+    "englishContent": "English content",
+    "fullName": "Name",
+    "specialty": "Specialty",
+    "specialtyHint": "e.g. Fashion & beauty creator",
+    "bio": "About you",
+    "bioHint": "Up to 500 characters.",
+    "city": "City",
+    "country": "Country",
+    "save": "Save",
+    "saving": "Saving…",
+    "saved": "✓ Changes saved.",
+    "fixErrors": "Fix the fields marked in red.",
+    "errors": {
+      "required": "This field is required.",
+      "invalid": "This value isn't valid.",
+      "failed": "Something went wrong. Please try again.",
+      "needs_name": "Add your name and save before publishing."
+    },
+    "specialtyHintEn": "e.g. Fashion & beauty creator"
   }
 }

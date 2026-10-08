@@ -350,3 +350,13 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
 - In bilingual forms the labels follow the dashboard language; only inputs get the content
   language's `dir`/`lang`.
 - Publishing requires a name in the primary language (`setPublished`).
+- **Uploads** (Supabase Storage, public bucket `media`, created by the `*_storage_media`
+  migration): the browser asks `requestUpload(kind, type, size)` for a one-time signed URL; the
+  server checks type/size (`src/config/uploads.ts`) and picks the path
+  `media/<userId>/<kind>/<uuid>.<ext>`; the browser uploads straight to Supabase
+  (`src/lib/upload-client.ts`, photos shrunk to JPEG first); then the section's save action
+  checks `isOwnUploadedFile()` before storing `publicFileUrl(path)`. Replaced/removed files are
+  deleted with `removeFiles()`. No storage write policies exist for anon/authenticated.
+  SVG is never accepted (it can carry scripts).
+- Sandbox test browsers can't reach Supabase directly; relay `*.supabase.co` requests through
+  Node in the test (`page.route` + `fetch` with `NODE_USE_ENV_PROXY=1`).

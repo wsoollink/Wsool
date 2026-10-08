@@ -84,7 +84,8 @@
     "more": "More",
     "signOut": "Sign out",
     "signingOut": "Signing out…",
-    "accountsShort": "Accounts"
+    "accountsShort": "Accounts",
+    "unread": "You have new notifications"
   },
   "CreatorPage": {
     "brand": "Wsool",
@@ -742,5 +743,110 @@
     "lockedTitle": "Analytics is a Pro feature",
     "lockedBody": "See how many people visited your page, from which countries, and how many tapped WhatsApp or email. We collect the numbers already; you'll see them once you subscribe.",
     "upgrade": "Go Pro"
+  },
+  "Notify": {
+    "footer": "You got this email because you have a Wsool account. Manage reminder emails under Notifications in your dashboard.",
+    "welcome": {
+      "subject": "Welcome to Wsool 👋",
+      "title": "Your page is ready to build",
+      "body": "Welcome! Your account is ready, with a free 14-day Pro trial, no card needed.\nAdd your photo, accounts and rates, then publish your page and share the link with brands.",
+      "cta": "Open dashboard"
+    },
+    "trial_reminder": {
+      "subject": "{days, plural, one {# day} other {# days}} left on your Pro trial",
+      "title": "Your free trial ends soon",
+      "body": "Your Pro trial ends in {days, plural, one {# day} other {# days}} ({endDate}).\nSubscribe to keep templates, the verified badge and analytics. If you don't, your page moves to Free and none of your data is deleted.",
+      "cta": "Go Pro"
+    },
+    "trial_ended": {
+      "subject": "Your Pro trial has ended",
+      "title": "Your page is now on Free",
+      "body": "Your Pro trial has ended and your page is on the Free plan. All your data is kept.\nSubscribe anytime to get every Pro feature back right away.",
+      "cta": "Go Pro"
+    },
+    "payment_receipt": {
+      "subject": "Payment received: invoice {invoice}",
+      "title": "Thanks, you're on Pro",
+      "body": "We received {amount} (VAT included) for Wsool Pro.\nYour plan is active until {periodEndDate} and renews automatically.",
+      "cta": "View invoice"
+    },
+    "renewal_receipt": {
+      "subject": "Your plan renewed: invoice {invoice}",
+      "title": "Pro renewed",
+      "body": "We renewed your plan for {amount} (VAT included).\nYour plan is active until {periodEndDate}.",
+      "cta": "View invoice"
+    },
+    "renewal_upcoming": {
+      "subject": "Your yearly plan renews soon",
+      "title": "Renewal reminder",
+      "body": "Your Pro plan renews automatically on {renewDate} for {amount}.\nIf you don't want to renew, turn off auto-renew on the Subscription page before then.",
+      "cta": "Manage subscription"
+    },
+    "payment_failed": {
+      "subject": "We couldn't renew your plan",
+      "title": "Renewal payment failed",
+      "body": "We tried to renew Pro for {amount} and the payment didn't go through.\nWe'll try again on {retryDate}. You can pay now with another card so your plan doesn't stop.",
+      "cta": "Pay now"
+    },
+    "subscription_ended": {
+      "subject": "Your Pro plan has ended",
+      "title": "Your page is back on Free",
+      "body": "Your Pro plan has ended and your page is on the Free plan. All your data is kept.\nYou can subscribe again anytime.",
+      "cta": "Subscribe again"
+    },
+    "refund_issued": {
+      "subject": "Refund for invoice {invoice}",
+      "title": "Refund issued",
+      "body": "We refunded {amount} for invoice {invoice}. Your bank may take a few days to show it.\nYour Pro plan has ended and your page is on Free.",
+      "cta": "Subscription page"
+    },
+    "verification_approved": {
+      "subject": "✓ Your {platform} account is verified",
+      "title": "Your account is verified",
+      "body": "We verified {handle} on {platform}, and the badge now shows on your page.\nVerification is valid until {untilDate}; we'll remind you a week before.",
+      "cta": "View verification"
+    },
+    "verification_rejected": {
+      "subject": "We couldn't verify your {platform} account",
+      "title": "Verification request rejected",
+      "body": "We reviewed your screenshot of {handle} on {platform} and couldn't verify it: {reason}\nUpload a new screenshot and we'll review it again.",
+      "cta": "Upload a new screenshot"
+    },
+    "verification_expiring": {
+      "subject": "Your {platform} verification ends in a week",
+      "title": "Renew your verification",
+      "body": "Verification of {handle} on {platform} ends on {untilDate}.\nUpload a recent screenshot to keep the badge on your page.",
+      "cta": "Renew verification"
+    },
+    "verification_expired": {
+      "subject": "Your {platform} verification has expired",
+      "title": "Verification expired",
+      "body": "Verification of {handle} on {platform} has expired and the badge was removed from your page.\nUpload a recent screenshot to verify it again.",
+      "cta": "Verify again"
+    },
+    "deletion_scheduled": {
+      "subject": "Your account will be deleted on {purgeDate}",
+      "title": "You asked to delete your account",
+      "body": "Your page is hidden, and your account and all data will be deleted for good on {purgeDate}.\nChanged your mind? Sign in and tap \"Undo deletion\" before then.",
+      "cta": "Undo deletion"
+    },
+    "team_invite": {
+      "subject": "You're invited to the Wsool team",
+      "title": "You joined the Wsool team",
+      "body": "You were added to the Wsool team as \"{role}\".\nSign in with your email ({email}), then open wsool.link/admin.",
+      "cta": "Sign in",
+      "footer": "You got this email because the Wsool owner added you to the team. If this means nothing to you, ignore it."
+    }
+  },
+  "Notifications": {
+    "empty": "No notifications yet.",
+    "new": "New",
+    "emailSettings": "Email settings",
+    "reminders": "Reminder emails",
+    "remindersHint": "Before your trial ends and before a verification expires.",
+    "productNews": "Wsool news and tips",
+    "productNewsHint": "New features and tips for working with brands, at most once a month.",
+    "alwaysSent": "Account, billing and verification emails are always sent.",
+    "saved": "✓ Saved."
   }
 }

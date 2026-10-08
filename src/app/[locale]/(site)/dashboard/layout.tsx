@@ -1,9 +1,11 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { LogOut } from "lucide-react";
 import { SidebarNav, TabBar } from "@/components/dashboard/DashboardNav";
 import { SectionIcon } from "@/components/dashboard/SectionIcon";
+import { UnreadDot } from "@/components/dashboard/UnreadDot";
 import { SubmitButton } from "@/components/SubmitButton";
 import { isLocale, toIntlLocale } from "@/i18n/config";
 import { signOut } from "../login/actions";
@@ -38,13 +40,13 @@ export default async function DashboardLayout({ children, params }: LayoutProps<
           <Link href="/dashboard" className="brand-gradient bg-clip-text text-xl font-bold text-transparent md:invisible">
             {t("brand")}
           </Link>
-          {/* TODO(notifications): show an unread dot once notifications exist. */}
           <Link
             href="/dashboard/notifications"
             aria-label={t("notifications")}
             className="relative inline-flex size-11 items-center justify-center rounded-full text-navy hover:bg-navy/5"
           >
             <SectionIcon section="notifications" />
+            <Suspense fallback={null}><UnreadDot label={t("unread")} /></Suspense>
           </Link>
         </header>
 

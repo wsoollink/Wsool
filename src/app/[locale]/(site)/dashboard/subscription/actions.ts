@@ -8,6 +8,8 @@ import { setAutoRenew, setNextCycle, startCheckout, type CheckoutError } from "@
 import { requireCreator } from "@/lib/creator";
 import { db } from "@/lib/db";
 import { paymentProvider } from "@/lib/payments";
+import { DELETE_AFTER_DAYS } from "@/lib/account-deletion";
+import { notify } from "@/lib/notify";
 import { pageCacheTag } from "@/lib/public-page";
 
 const cycle = z.enum(["monthly", "yearly"]);
@@ -49,6 +51,7 @@ export async function requestDeletion(confirmUsername: string) {
     db.subscription.updateMany({ where: { userId: user.id, status: { in: ["active", "past_due"] } }, data: { cancelAtPeriodEnd: true } }),
   ]);
   updateTag(pageCacheTag(page.username));
+  await notify(user.id, "deletion_scheduled", { purgeDate: new Date(Date.now() + DELETE_AFTER_DAYS * 86_400_000).toISOString() });
   return { ok: true };
 }
 

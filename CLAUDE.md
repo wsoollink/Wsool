@@ -453,3 +453,14 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
   more than 20 events per visitor/page/day are ignored. Country from `cf-ipcountry` / `x-nf-geo`.
   Report: `src/lib/analytics-report.ts`; dashboard `dashboard/analytics/` (Pro only, 7/30/90 days,
   bar chart with hover + table view). Data is collected for Free pages too.
+- **Notifications & emails**: `notify(userId, type, data, { dedupeKey })` (`src/lib/notify.ts`) adds a
+  row to `notifications` (the bell) and emails it in the creator's page language through Resend
+  (`src/lib/email/send.ts`, `RESEND_API_KEY`, from `noreply@mail.wsool.link`; without the key it
+  only logs `[email:dry-run]`). Types and texts: `NOTIFICATIONS` + `messages/*.json` → `Notify`.
+  Reminder types respect `notification_settings.email_reminders`. Layout: `src/lib/email/layout.ts`
+  (table-based, RTL). Preview all emails: `npx tsx --require ./scripts/no-server-only.cjs
+  scripts/preview-emails.ts <dir>`. `notify` uses `use-intl/core` (works outside requests).
+- Reminders run in the hourly job (`src/lib/reminders.ts`): trial day 10/13, yearly renewal 7 days
+  before, verification expiring (7 days) and expired (status → none, page cache expired).
+- Bell dot: `UnreadDot` (server, in Suspense in the dashboard header); opening
+  `/dashboard/notifications` marks all read. All dashboard sections are built (no placeholder route).

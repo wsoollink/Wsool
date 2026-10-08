@@ -2,6 +2,7 @@ import "server-only";
 import { TRIAL_DAYS } from "@/config/plans";
 import { db } from "@/lib/db";
 import type { CurrentUser } from "@/lib/auth";
+import { notify } from "@/lib/notify";
 
 /**
  * Creates the user's row on first sign-in, with the automatic Pro trial
@@ -9,8 +10,9 @@ import type { CurrentUser } from "@/lib/auth";
  */
 export async function ensureAccount(user: CurrentUser) {
   const trialEndsAt = new Date(Date.now() + TRIAL_DAYS * 24 * 60 * 60 * 1000);
+  const existed = await db.user.findUnique({ where: { id: user.id }, select: { id: true } });
 
-  return db.user.upsert({
+  const row = await db.user.upsert({
     where: { id: user.id },
     create: {
       id: user.id,
@@ -19,4 +21,6 @@ export async function ensureAccount(user: CurrentUser) {
     },
     update: { email: user.email },
   });
+  if (!existed) await notify(user.id, "welcome", {}, { dedupeKey: "welcome" });
+  return row;
 }

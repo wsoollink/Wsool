@@ -3,6 +3,7 @@ import { addCycle, PRICES, RENEWAL_RETRY_DAYS, vatPart } from "@/config/plans";
 import type { BillingCycle, Currency } from "@/generated/prisma/enums";
 import { db } from "@/lib/db";
 import { paymentProvider, type Payment } from "@/lib/payments";
+import { notify } from "@/lib/notify";
 import { expirePage } from "@/lib/public-page";
 import { siteOrigin } from "@/lib/site-url";
 
@@ -92,8 +93,11 @@ export async function settleCheckout(invoiceId: string, payment: Payment): Promi
     });
     return true;
   });
-  if (done) await refreshPage(invoice.userId);
-  // TODO(phase 6): receipt email with the invoice link.
+  if (done) {
+    await refreshPage(invoice.userId);
+    const paid = await db.invoice.findUnique({ where: { id: invoice.id }, select: { number: true } });
+    await notify(invoice.userId, "payment_receipt", { invoice: invoiceLabel(paid?.number ?? null), amount: Number(invoice.amount), currency: invoice.currency, periodEndDate: end.toISOString() });
+  }
   return "paid";
 }
 
@@ -130,6 +134,7 @@ export async function runBillingJob(now = new Date()): Promise<JobReport> {
   for (const t of trials) {
     await db.subscription.update({ where: { id: t.id }, data: { status: "expired", plan: "free" } });
     await refreshPage(t.userId);
+    await notify(t.userId, "trial_ended", {}, { dedupeKey: "trial_ended" });
     report.trialsEnded++;
   }
 
@@ -138,6 +143,7 @@ export async function runBillingJob(now = new Date()): Promise<JobReport> {
   for (const s of cancelled) {
     await db.subscription.update({ where: { id: s.id }, data: { status: "canceled", plan: "free" } });
     await refreshPage(s.userId);
+    await notify(s.userId, "subscription_ended");
     report.ended++;
   }
 
@@ -153,6 +159,7 @@ export async function runBillingJob(now = new Date()): Promise<JobReport> {
     if (!provider || !sub.paymentToken || !sub.cycle || !sub.currency || !sub.currentPeriodEnd) {
       await db.subscription.update({ where: { id: sub.id }, data: { status: "expired", plan: "free" } });
       await refreshPage(sub.userId);
+      await notify(sub.userId, "subscription_ended");
       report.ended++;
       continue;
     }
@@ -170,13 +177,14 @@ export async function runBillingJob(now = new Date()): Promise<JobReport> {
     }
 
     if (payment.status === "paid") {
-      await db.$transaction(async (tx) => {
+      const number = await db.$transaction(async (tx) => {
         const [{ nextval }] = await tx.$queryRaw<{ nextval: bigint }[]>`SELECT nextval('invoice_number_seq')`;
         await tx.invoice.update({ where: { id: invoice.id }, data: { status: "paid", number: Number(nextval), providerPaymentId: payment.id, paidAt: now } });
         await tx.subscription.update({ where: { id: sub.id }, data: { status: "active", currentPeriodEnd: end, failedAttempts: 0, nextRetryAt: null } });
+        return Number(nextval);
       });
       report.renewed++;
-      // TODO(phase 6): renewal receipt email.
+      await notify(sub.userId, "renewal_receipt", { invoice: invoiceLabel(number), amount, currency: sub.currency, periodEndDate: end.toISOString() });
     } else {
       const attempts = sub.failedAttempts + 1;
       const retryDay = RENEWAL_RETRY_DAYS[attempts - 1];
@@ -189,10 +197,12 @@ export async function runBillingJob(now = new Date()): Promise<JobReport> {
       });
       if (retryDay === undefined) {
         await refreshPage(sub.userId);
+        await notify(sub.userId, "subscription_ended");
         report.ended++;
+      } else {
+        await notify(sub.userId, "payment_failed", { amount, currency: sub.currency, retryDate: new Date(start.getTime() + retryDay * 86_400_000).toISOString() });
       }
       report.failed++;
-      // TODO(phase 6): payment failed email (update card).
     }
   }
   return report;
@@ -211,5 +221,6 @@ export async function refundInvoice(invoiceId: string): Promise<{ ok: boolean; e
     db.subscription.update({ where: { id: invoice.subscriptionId }, data: { status: "canceled", plan: "free", cancelAtPeriodEnd: true, currentPeriodEnd: new Date() } }),
   ]);
   await refreshPage(invoice.userId);
+  await notify(invoice.userId, "refund_issued", { invoice: invoiceLabel(invoice.number), amount: Number(invoice.amount), currency: invoice.currency });
   return { ok: true, userId: invoice.userId };
 }

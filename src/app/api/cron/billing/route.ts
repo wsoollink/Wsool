@@ -1,9 +1,10 @@
 import { timingSafeEqual } from "node:crypto";
 import { purgeDeletedAccounts } from "@/lib/account-deletion";
 import { runBillingJob } from "@/lib/billing";
+import { runReminders } from "@/lib/reminders";
 
 /**
- * Hourly job (billing + permanent deletion after the 30-day undo window), called by the Netlify scheduled function
+ * Hourly job (billing, reminders, permanent deletion after the 30-day undo window), called by the Netlify scheduled function
  * (netlify/functions/billing-cron.mts) with "Authorization: Bearer CRON_SECRET".
  */
 export async function POST(req: Request) {
@@ -14,5 +15,6 @@ export async function POST(req: Request) {
   }
   const report = await runBillingJob();
   const purged = await purgeDeletedAccounts();
-  return Response.json({ ...report, purged });
+  const reminders = await runReminders();
+  return Response.json({ ...report, purged, reminders });
 }

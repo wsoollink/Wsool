@@ -1,9 +1,11 @@
 "use server";
 
 import { updateTag } from "next/cache";
+import { PLATFORM_NAMES } from "@/config/platforms";
 import { REJECT_REASONS, REVIEW_CHECKS, VERIFICATION_DAYS } from "@/config/verification";
 import { audit, requireAdmin } from "@/lib/admin";
 import { db } from "@/lib/db";
+import { notify } from "@/lib/notify";
 import { pageCacheTag } from "@/lib/public-page";
 
 export type DecisionResult = { ok?: boolean; error?: "failed" | "checks" | "already_decided" };
@@ -11,7 +13,7 @@ export type DecisionResult = { ok?: boolean; error?: "failed" | "checks" | "alre
 async function loadPending(requestId: string) {
   return db.verificationRequest.findFirst({
     where: { id: String(requestId), status: "pending" },
-    include: { account: { select: { id: true, verificationStatus: true, verifiedUntil: true, page: { select: { username: true } } } } },
+    include: { account: { select: { id: true, verificationStatus: true, verifiedUntil: true, page: { select: { username: true, userId: true } } } } },
   });
 }
 
@@ -36,8 +38,8 @@ export async function approveVerification(requestId: string, checks: string[]): 
     return true;
   });
   if (!decided) return { error: "already_decided" };
-  // TODO(phase 6): email + notification to the creator.
   updateTag(pageCacheTag(request.account.page.username));
+  await notify(request.account.page.userId, "verification_approved", { platform: PLATFORM_NAMES[request.platform], handle: request.handle, untilDate: until.toISOString() });
   return { ok: true };
 }
 
@@ -61,7 +63,7 @@ export async function rejectVerification(requestId: string, reason: string): Pro
     return true;
   });
   if (!decided) return { error: "already_decided" };
-  // TODO(phase 6): email + notification to the creator with the reason.
   updateTag(pageCacheTag(request.account.page.username));
+  await notify(request.account.page.userId, "verification_rejected", { platform: PLATFORM_NAMES[request.platform], handle: request.handle, reason });
   return { ok: true };
 }

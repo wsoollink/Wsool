@@ -4,6 +4,7 @@ import { z } from "zod";
 import { PERMISSIONS, ROLE_PRESETS } from "@/config/admin";
 import { audit, requireAdmin } from "@/lib/admin";
 import { db } from "@/lib/db";
+import { sendTeamInvite } from "@/lib/notify";
 
 export type TeamResult = { ok?: boolean; error?: "failed" | "invalid_email" | "exists" | "owner_email" };
 
@@ -34,7 +35,7 @@ export async function inviteMember(email: string, role: string, permissions: str
     });
     await audit(admin, "team.invite", { type: "admin_member", id: member.id }, { email: address.data, role: parsed.data.role, permissions: parsed.data.permissions }, tx);
   });
-  // TODO(phase 6): invitation email.
+  await sendTeamInvite(address.data, parsed.data.role);
   return { ok: true };
 }
 

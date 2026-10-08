@@ -29,7 +29,3 @@ export const TAB_BAR: { key: SectionKey; href: string; label?: "myPage" | "accou
 /** Sections not in the tab bar, listed on /dashboard/more. */
 export const MORE_SECTIONS = DASHBOARD_SECTIONS.filter((s) => !TAB_BAR.some((tab) => tab.key === s.key));
 
-/** Placeholder sections that are built in later phases. */
-export const PLACEHOLDER_SECTIONS: readonly SectionKey[] = [
-  "notifications",
-];

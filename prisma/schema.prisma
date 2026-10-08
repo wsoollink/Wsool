@@ -66,8 +66,10 @@ model User {
   /// Set by staff to suspend the account (page hidden, dashboard read-only).
   suspendedAt DateTime? @map("suspended_at") @db.Timestamptz
 
-  page         Page?
-  subscription Subscription?
+  page                 Page?
+  subscription         Subscription?
+  notifications        Notification[]
+  notificationSettings NotificationSettings?
 
   @@map("users")
 }
@@ -543,4 +545,35 @@ model ContactClick {
 
   @@index([pageId, day])
   @@map("contact_clicks")
+}
+
+/// In-app notification (the bell). Most are also sent by email.
+model Notification {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  /// Notification type key (src/lib/notify.ts).
+  type      String    @db.VarChar(40)
+  data      Json      @default("{}")
+  /// Prevents sending the same reminder twice (e.g. "trial_day10").
+  dedupeKey String?   @map("dedupe_key") @db.VarChar(100)
+  readAt    DateTime? @map("read_at") @db.Timestamptz
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, dedupeKey])
+  @@index([userId, createdAt])
+  @@map("notifications")
+}
+
+/// Which optional emails a creator gets. Account, billing and verification
+/// emails are always sent.
+model NotificationSettings {
+  userId           String  @id @map("user_id") @db.Uuid
+  emailReminders   Boolean @default(true) @map("email_reminders")
+  emailProductNews Boolean @default(true) @map("email_product_news")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notification_settings")
 }

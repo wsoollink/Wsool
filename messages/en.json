@@ -713,5 +713,34 @@
       "payRenewFails": "Pay with test card (renewal fails)",
       "decline": "Decline payment"
     }
+  },
+  "Analytics": {
+    "range": "Period",
+    "lastDays": "Last {n} days",
+    "views": "Views",
+    "visitors": "Visitors",
+    "whatsapp": "WhatsApp taps",
+    "email": "Email taps",
+    "contactRate": "Contact rate",
+    "socialWork": "Account & work taps",
+    "dailyViews": "Daily views",
+    "showTable": "Show as table",
+    "day": "Day",
+    "countries": "Top countries",
+    "referrers": "Where they came from",
+    "direct": "All visits were direct (copied link or an app).",
+    "devices": "Devices",
+    "device": {
+      "mobile": "Mobile",
+      "tablet": "Tablet",
+      "desktop": "Desktop"
+    },
+    "noData": "Not enough data yet.",
+    "emptyTitle": "No visits in this period",
+    "emptyBody": "Share your link {link} in your bio and replies to brands, and the numbers will show up here.",
+    "privacy": "We don't store any personal data about visitors. Your own visits while signed in aren't counted.",
+    "lockedTitle": "Analytics is a Pro feature",
+    "lockedBody": "See how many people visited your page, from which countries, and how many tapped WhatsApp or email. We collect the numbers already; you'll see them once you subscribe.",
+    "upgrade": "Go Pro"
   }
 }

@@ -108,6 +108,8 @@ model Page {
   portfolioItems PortfolioItem[]
   rateSettings   RateSettings?
   rateBundles    RateBundle[]
+  pageViews      PageView[]
+  contactClicks  ContactClick[]
 
   @@map("pages")
 }
@@ -495,4 +497,50 @@ model Invoice {
   @@index([userId, createdAt])
   @@index([status, paidAt])
   @@map("invoices")
+}
+
+/// One visit to a public creator page. No IP or user agent is stored: the
+/// visitor hash (daily salt) only counts unique visitors per day.
+model PageView {
+  id          BigInt   @id @default(autoincrement())
+  pageId      String   @map("page_id") @db.Uuid
+  day         DateTime @db.Date
+  visitorHash String   @map("visitor_hash") @db.VarChar(32)
+  /// ISO country code from the CDN, when known.
+  country     String?  @db.VarChar(2)
+  /// Host of the referring site (instagram.com, t.co, ...), when known.
+  referrer    String?  @db.VarChar(100)
+  device      String   @db.VarChar(10)
+  lang        Lang
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  page Page @relation(fields: [pageId], references: [id], onDelete: Cascade)
+
+  @@index([pageId, day])
+  @@index([pageId, visitorHash, day])
+  @@map("page_views")
+}
+
+enum ClickKind {
+  whatsapp
+  email
+  social
+  work
+}
+
+/// A tap on a contact button, social icon or past work on a public page.
+model ContactClick {
+  id          BigInt    @id @default(autoincrement())
+  pageId      String    @map("page_id") @db.Uuid
+  day         DateTime  @db.Date
+  kind        ClickKind
+  /// Platform for social icons and works.
+  platform    Platform?
+  visitorHash String    @map("visitor_hash") @db.VarChar(32)
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  page Page @relation(fields: [pageId], references: [id], onDelete: Cascade)
+
+  @@index([pageId, day])
+  @@map("contact_clicks")
 }

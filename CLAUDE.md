@@ -444,3 +444,12 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
   token), type username → `pages.deleted_at` (page hidden, auto-renew off), undo within 30 days.
 - `subscriptions.payment_token` is not readable through the Data API (column grants).
 - Billing emails (receipt, renewal, failed payment, trial reminders) are TODO(phase 6).
+
+### Launch pieces (Phase 6)
+- **Analytics**: tables `page_views` / `contact_clicks` (migration `*_analytics`, RLS read-own).
+  The public page's `Tracker` (client) sends a view beacon and taps on elements with
+  `data-track="whatsapp|email|social:<platform>|work:<platform>"` to `/api/track`. No IP/UA is
+  stored: a daily salted `visitorHash` counts unique visitors; bots, the owner's own visits and
+  more than 20 events per visitor/page/day are ignored. Country from `cf-ipcountry` / `x-nf-geo`.
+  Report: `src/lib/analytics-report.ts`; dashboard `dashboard/analytics/` (Pro only, 7/30/90 days,
+  bar chart with hover + table view). Data is collected for Free pages too.

@@ -40,7 +40,7 @@ export function WorkItem({ brand, type, videoUrl, thumbUrl, platform }: Props) {
   return (
     <li className="flex w-36 shrink-0 flex-col gap-2">
       {videoUrl ? (
-        <button type="button" onClick={() => setOpen(true)} aria-haspopup="dialog" aria-label={t("playVideo", { title })} className="block rounded-[20px]">
+        <button type="button" onClick={() => setOpen(true)} data-track={platform ? `work:${platform}` : "work"} aria-haspopup="dialog" aria-label={t("playVideo", { title })} className="block rounded-[20px]">
           {tile}
         </button>
       ) : (

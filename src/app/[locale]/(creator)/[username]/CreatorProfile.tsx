@@ -8,6 +8,7 @@ import { LicenseFile } from "@/components/creator/LicenseFile";
 import { Marquee } from "@/components/creator/Marquee";
 import { PlatformCard, type Audience } from "@/components/creator/PlatformCard";
 import { PlatformIcon } from "@/components/creator/PlatformIcon";
+import { Tracker } from "@/components/creator/Tracker";
 import { WorkItem } from "@/components/creator/WorkItem";
 import { pageTheme, themeStyle } from "@/components/creator/theme";
 import { PLATFORM_NAMES } from "@/config/platforms";
@@ -48,6 +49,7 @@ export async function CreatorProfile({ page, lang }: Props) {
 
   return (
     <div style={themeStyle(theme)} className={`flex-1 text-[var(--page-text)] ${theme.glass ? "glass" : ""}`}>
+      <Tracker username={page.username} lang={lang} />
       <div className="mx-auto w-full max-w-5xl md:grid md:grid-cols-[320px_1fr] md:items-start md:gap-10 md:px-6 md:py-10">
         {/* Identity: hero, name, bio, location, licenses (+ contact on desktop) */}
         <aside className="flex flex-col gap-4 md:sticky md:top-10">
@@ -102,7 +104,7 @@ export async function CreatorProfile({ page, lang }: Props) {
               {page.accounts.map((a) => (
                 <li key={a.id}>
                   <a
-                    href={a.url} target="_blank" rel="noopener noreferrer"
+                    href={a.url} target="_blank" rel="noopener noreferrer" data-track={`social:${a.platform}`}
                     aria-label={`${PLATFORM_NAMES[a.platform]} @${a.handle}`}
                     className={`${card} inline-flex size-11 items-center justify-center`}
                   >
@@ -283,7 +285,7 @@ function Contact({ page, t }: { page: PublishedPage; t: T }) {
       <div className="flex flex-col gap-2">
         {page.whatsapp && (
           <a
-            href={`https://wa.me/${page.whatsapp}?text=${encodeURIComponent(t("whatsappMessage", { link: `${siteOrigin().replace(/^https?:\/\//, "")}/${page.username}` }))}`} target="_blank" rel="noopener noreferrer"
+            href={`https://wa.me/${page.whatsapp}?text=${encodeURIComponent(t("whatsappMessage", { link: `${siteOrigin().replace(/^https?:\/\//, "")}/${page.username}` }))}`} target="_blank" rel="noopener noreferrer" data-track="whatsapp"
             className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[var(--page-accent)] px-5 font-semibold text-[var(--page-on-accent)]"
           >
             <PlatformIcon platform="whatsapp" size={18} /> {t("whatsapp")}
@@ -291,7 +293,7 @@ function Contact({ page, t }: { page: PublishedPage; t: T }) {
         )}
         {page.contactEmail && (
           <a
-            href={`mailto:${page.contactEmail}`}
+            href={`mailto:${page.contactEmail}`} data-track="email"
             className={`${card} inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-5 font-semibold`}
           >
             <Mail aria-hidden="true" size={18} /> {t("email")}

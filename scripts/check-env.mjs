@@ -32,6 +32,17 @@ function checkDatabaseUrl(name, expectedPort) {
   }
 }
 
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
+if (supabaseUrl && !/^https:\/\/[a-z0-9]+\.supabase\.co\/?$/.test(supabaseUrl)) {
+  problems.push("NEXT_PUBLIC_SUPABASE_URL: should look like https://<project-id>.supabase.co (no db. prefix)");
+}
+const publishable = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY?.trim();
+if (publishable && !publishable.startsWith("sb_publishable_")) {
+  problems.push("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: should start with sb_publishable_");
+}
+const secret = process.env.SUPABASE_SECRET_KEY?.trim();
+if (secret && !secret.startsWith("sb_secret_")) problems.push("SUPABASE_SECRET_KEY: should start with sb_secret_");
+
 checkDatabaseUrl("DATABASE_URL", "6543");
 checkDatabaseUrl("DIRECT_URL", "5432");
 

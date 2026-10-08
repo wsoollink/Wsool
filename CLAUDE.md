@@ -186,6 +186,14 @@ Username rules: lowercase a–z, 0–9, dot, underscore, 3–20 chars, not reser
 4. **Verification + admin**: uploads, review queue, users, team & permissions, audit log.
 5. **Payments**: provider interface, trial logic, subscriptions, invoices, billing emails.
 6. **Launch pieces**: analytics, PDF media kit, all emails & notifications, marketing site, finance.
+   - **Newsletter signup** on the marketing site (Arabic + English), a section just above the
+     footer: email field + subscribe button + one line saying what subscribers will receive.
+     - Double opt-in: send a confirmation email; add the address only after it is confirmed.
+     - Unsubscribe link in every email.
+     - Table `newsletter_subscribers` (email, lang, status, source, confirmed_at,
+       unsubscribed_at), no duplicate emails.
+     - Sent through Resend from `mail.wsool.link`.
+     - Admin panel: subscriber count + CSV export.
 
 Before starting each phase: write a short plan in Arabic and wait for the owner's "تمام".
 

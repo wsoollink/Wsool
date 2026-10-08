@@ -41,6 +41,7 @@ export const RESERVED_USERNAMES: ReadonlySet<string> = new Set([
 export const ASSET_EXTENSIONS = [
   "ico", "png", "jpg", "jpeg", "gif", "svg", "webp", "avif", "txt", "xml",
   "webmanifest", "json", "css", "js", "map", "woff", "woff2", "ttf", "otf", "pdf",
+  "mp4", "webm", "mov", "m4v",
 ] as const;
 
 /** A creator can change their username once every this many days. */

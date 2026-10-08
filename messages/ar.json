@@ -109,6 +109,15 @@
     "vatExcluded": "الأسعار غير شاملة الضريبة.",
     "contact": "للتواصل",
     "whatsapp": "واتساب",
-    "email": "الإيميل"
+    "email": "الإيميل",
+    "audience": "الجمهور",
+    "close": "إغلاق",
+    "gender": "الجنس",
+    "female": "إناث",
+    "male": "ذكور",
+    "ages": "الأعمار",
+    "countries": "الدول",
+    "cities": "المدن",
+    "playVideo": "تشغيل الفيديو: {title}"
   }
 }

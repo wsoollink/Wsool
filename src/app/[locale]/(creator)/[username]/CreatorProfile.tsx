@@ -2,12 +2,17 @@ import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { getTranslations } from "next-intl/server";
-import { BadgeCheck, Eye, FileText, Mail, MapPin } from "lucide-react";
+import { BadgeCheck, Eye, Mail, MapPin } from "lucide-react";
+import { CountUp } from "@/components/creator/CountUp";
+import { LicenseFile } from "@/components/creator/LicenseFile";
+import { Marquee } from "@/components/creator/Marquee";
+import { PlatformCard, type Audience } from "@/components/creator/PlatformCard";
 import { PlatformIcon } from "@/components/creator/PlatformIcon";
+import { WorkItem } from "@/components/creator/WorkItem";
 import { pageTheme, themeStyle } from "@/components/creator/theme";
 import { PLATFORM_NAMES } from "@/config/platforms";
-import type { Locale } from "@/i18n/config";
-import { formatCompact, formatNumber, formatPercent, formatPrice } from "@/lib/format";
+import { toIntlLocale, type Locale } from "@/i18n/config";
+import { formatCompact, formatPercent, formatPrice } from "@/lib/format";
 import type { PublishedPage } from "@/lib/public-page";
 import { bundleComparison, rateName } from "@/lib/rates";
 
@@ -77,9 +82,7 @@ export async function CreatorProfile({ page, lang }: Props) {
                     <bdi dir="ltr" className="text-[var(--page-muted)]">{license.number}</bdi>
                   </span>
                   {license.fileUrl && (
-                    <a href={license.fileUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-1 font-medium text-[var(--page-accent)]">
-                      <FileText aria-hidden="true" size={16} /> {t("viewFile")}
-                    </a>
+                    <LicenseFile url={license.fileUrl} name={lang === "en" && license.nameEn ? license.nameEn : license.name} />
                   )}
                 </li>
               ))}
@@ -93,7 +96,7 @@ export async function CreatorProfile({ page, lang }: Props) {
           {/* Total followers + social row */}
           <div className="flex flex-col items-center gap-3 text-center md:items-start md:text-start">
             <p className="text-sm text-[var(--page-muted)]">{t("followersTotal")}</p>
-            <p className={`${numbersFont} text-5xl font-bold tabular-nums`}>{formatNumber(totalFollowers, lang)}</p>
+            <CountUp value={totalFollowers} locale={toIntlLocale(lang)} className={`${numbersFont} text-5xl font-bold tabular-nums`} />
             <ul className="flex flex-wrap justify-center gap-2 md:justify-start">
               {page.accounts.map((a) => (
                 <li key={a.id}>
@@ -135,15 +138,16 @@ export async function CreatorProfile({ page, lang }: Props) {
             <Section title={t("platforms")}>
               <ul className="grid grid-cols-2 gap-3">
                 {page.accounts.map((a) => (
-                  <li key={a.id} className={`${card} flex flex-col gap-2 p-4`}>
-                    <div className="flex items-center justify-between">
-                      <PlatformIcon platform={a.platform} size={22} />
-                      {a.verified && <BadgeCheck aria-label={t("verified")} size={18} className="fill-[var(--page-accent)] text-[var(--page-on-accent)]" />}
-                    </div>
-                    <p className={`${numbersFont} text-2xl font-bold`}>{formatCompact(a.followers, lang)}</p>
-                    <p className="truncate text-sm text-[var(--page-muted)]" dir="ltr">
-                      {PLATFORM_NAMES[a.platform]} · @{a.handle}
-                    </p>
+                  <li key={a.id}>
+                    <PlatformCard
+                      title={PLATFORM_NAMES[a.platform]}
+                      followers={formatCompact(a.followers, lang)}
+                      subtitle={`${PLATFORM_NAMES[a.platform]} · @${a.handle}`}
+                      verified={a.verified}
+                      icon={<PlatformIcon platform={a.platform} size={22} />}
+                      audience={a.audience as Audience | null}
+                      numbersClass={numbersFont}
+                    />
                   </li>
                 ))}
               </ul>
@@ -152,32 +156,32 @@ export async function CreatorProfile({ page, lang }: Props) {
 
           {page.brandLogos.length > 0 && (
             <Section title={t("brands")}>
-              <ul className="flex gap-3 overflow-x-auto pb-1">
+              <Marquee ariaLabel={t("brands")} seconds={Math.max(16, page.brandLogos.length * 5)}>
                 {page.brandLogos.map((logo) => (
                   <li key={logo.id} className={`${card} relative h-16 w-32 shrink-0 overflow-hidden`}>
                     <Image src={logo.logoUrl} alt={logo.name} fill unoptimized sizes="128px" className="object-contain p-2" />
                   </li>
                 ))}
-              </ul>
+              </Marquee>
             </Section>
           )}
 
           {page.portfolio.length > 0 && (
             <Section title={t("work")}>
-              <ul className="flex gap-3 overflow-x-auto pb-1">
+              <Marquee ariaLabel={t("work")} seconds={Math.max(20, page.portfolio.length * 7)}>
                 {page.portfolio.map((item) => {
                   const itemTr = item.translations.find((x) => x.lang === lang) ?? item.translations[0];
                   return (
-                    <li key={item.id} className="flex w-36 shrink-0 flex-col gap-2">
-                      <div className={`${card} relative aspect-[9/16] overflow-hidden`}>
-                        {item.thumbUrl && <Image src={item.thumbUrl} alt="" fill unoptimized sizes="144px" className="object-cover" />}
-                      </div>
-                      <p className="truncate text-sm font-medium">{itemTr?.brand}</p>
-                      <p className="truncate text-xs text-[var(--page-muted)]">{itemTr?.type}</p>
-                    </li>
+                    <WorkItem
+                      key={item.id}
+                      brand={itemTr?.brand ?? ""}
+                      type={itemTr?.type ?? ""}
+                      videoUrl={item.videoUrl}
+                      thumbUrl={item.thumbUrl}
+                    />
                   );
                 })}
-              </ul>
+              </Marquee>
             </Section>
           )}
 

@@ -51,7 +51,7 @@ async function main() {
               ...["Fashion", "Beauty", "Skincare", "Travel", "Food", "Lifestyle"].map((label, sort) => ({ lang: "en" as const, label, sort })),
             ],
           },
-          licenses: { create: [{ name: "رخصة موثوق", nameEn: "Mawthooq license", number: "MW-123456", sort: 0 }] },
+          licenses: { create: [{ name: "رخصة موثوق", nameEn: "Mawthooq license", number: "MW-123456", fileUrl: "/demo/license-sample.svg", sort: 0 }] },
           monthlyViews: { create: [{ month: new Date("2026-09-01"), views: BigInt(4_800_000) }] },
           brandLogos: {
             create: ["Almarai", "STC", "Jarir", "Noon", "Careem"].map((name, sort) => ({ name, logoUrl: `/demo/logo-${name.toLowerCase()}.svg`, sort })),
@@ -59,7 +59,7 @@ async function main() {
           portfolioItems: {
             create: [1, 2, 3, 4].map((i, sort) => ({
               platform: (["tiktok", "instagram", "snapchat", "tiktok"] as const)[sort],
-              videoUrl: "",
+              videoUrl: "/demo/sample-work.mp4",
               thumbUrl: `/demo/work-${i}.svg`,
               sort,
               translations: {

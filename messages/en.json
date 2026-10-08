@@ -109,6 +109,15 @@
     "vatExcluded": "Prices exclude VAT.",
     "contact": "Contact",
     "whatsapp": "WhatsApp",
-    "email": "Email"
+    "email": "Email",
+    "audience": "Audience",
+    "close": "Close",
+    "gender": "Gender",
+    "female": "Female",
+    "male": "Male",
+    "ages": "Ages",
+    "countries": "Countries",
+    "cities": "Cities",
+    "playVideo": "Play video: {title}"
   }
 }

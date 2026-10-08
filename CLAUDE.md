@@ -323,3 +323,11 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
   6 past works, no verified badge, and always show the Wsool footer.
 - Template previews (local only): `npx tsx scripts/seed-demo.ts t.sand sand`, or
   `... t.custom custom "#e63946,#1d3557:light"`, or add `free` as the last argument.
+- Interactions (client components in `src/components/creator/`): `CountUp` (server renders the
+  final number; animates once in view), `Marquee` (CSS, duplicated track, pauses on hover/focus,
+  RTL-aware), `Modal` (native `<dialog>`), `PlatformCard` (audience pop-up), `WorkItem` (portrait
+  video pop-up), `LicenseFile` (PDF/image pop-up). All respect `prefers-reduced-motion`.
+- Videos: store MP4 (H.264) for Safari/iOS. The sandbox's test Chromium can't decode H.264, so
+  video playback can only be checked there with a WebM copy.
+- Video files (`.mp4/.webm/.mov/.m4v`) are assets: excluded in the proxy matcher and blocked as
+  username endings.

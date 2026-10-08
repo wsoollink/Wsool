@@ -23,3 +23,10 @@ export function trialDaysLeft(trialEndsAt: Date | null | undefined, now = new Da
   if (!trialEndsAt) return 0;
   return Math.max(0, Math.ceil((trialEndsAt.getTime() - now.getTime()) / 86_400_000));
 }
+
+type SubscriptionLike = { status: string; trialEndsAt: Date | null } | null | undefined;
+
+/** Pro = paid and active, or a trial that hasn't ended yet. */
+export function hasPro(sub: SubscriptionLike, now = Date.now()): boolean {
+  return !!sub && (sub.status === "active" || (sub.status === "trialing" && !!sub.trialEndsAt && sub.trialEndsAt.getTime() > now));
+}

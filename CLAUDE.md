@@ -373,3 +373,9 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
   account resets it to `none`. Monthly views = one row per month (first day, UTC); empty hides
   the box. Audience = gender, fixed age groups, top 5 countries (ISO codes) and cities, each group
   <= 100%. Number inputs go through `digitsOnly()` (turns ٠-٩ into 0-9).
+- **Brands & work** (`dashboard/work/`): `saveBrands` / `saveWorks` replace whole lists. Files use
+  `{ path, url }` refs: a fresh upload in the creator's own folder, or a URL their rows already had;
+  unused files are deleted. Logos are shrunk to WebP (keeps transparency); a new video gets a cover
+  grabbed from its first second in the browser (`videoCover()`), replaceable by the creator. The
+  dashboard keeps all works; Free pages show the first `FREE_LIMITS.portfolioItems` (warned in the UI).
+  `hasPro()` in `src/config/plans.ts` is the one place that decides Pro vs Free.

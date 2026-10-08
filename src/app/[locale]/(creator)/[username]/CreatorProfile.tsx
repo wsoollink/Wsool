@@ -178,6 +178,7 @@ export async function CreatorProfile({ page, lang }: Props) {
                       type={itemTr?.type ?? ""}
                       videoUrl={item.videoUrl}
                       thumbUrl={item.thumbUrl}
+                      platform={item.platform}
                     />
                   );
                 })}

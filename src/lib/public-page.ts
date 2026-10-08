@@ -1,6 +1,6 @@
 import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
-import { FREE_LIMITS } from "@/config/plans";
+import { FREE_LIMITS, hasPro } from "@/config/plans";
 import { db } from "@/lib/db";
 import type { Locale } from "@/i18n/config";
 
@@ -47,8 +47,7 @@ export async function getPublicPage(username: string) {
 
   const now = Date.now();
   const sub = page.user.subscription;
-  const isPro =
-    !!sub && (sub.status === "active" || (sub.status === "trialing" && !!sub.trialEndsAt && sub.trialEndsAt.getTime() > now));
+  const isPro = hasPro(sub, now);
 
   return {
     status: "published" as const,

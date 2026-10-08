@@ -4,14 +4,17 @@ import Image from "next/image";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Play } from "lucide-react";
+import type { Platform } from "@/generated/prisma/enums";
+import { PLATFORM_NAMES } from "@/config/platforms";
 import { Modal } from "./Modal";
+import { PlatformIcon } from "./PlatformIcon";
 
-type Props = { brand: string; type: string; videoUrl: string; thumbUrl: string | null };
+type Props = { brand: string; type: string; videoUrl: string; thumbUrl: string | null; platform?: Platform | null };
 
 const card = "rounded-[20px] border border-[var(--page-line)] bg-[var(--page-surface)]";
 
 /** Past work tile; opens the portrait video pop-up when there is a video. */
-export function WorkItem({ brand, type, videoUrl, thumbUrl }: Props) {
+export function WorkItem({ brand, type, videoUrl, thumbUrl, platform }: Props) {
   const t = useTranslations("CreatorPage");
   const [open, setOpen] = useState(false);
   const title = [brand, type].filter(Boolean).join(" · ");
@@ -19,6 +22,11 @@ export function WorkItem({ brand, type, videoUrl, thumbUrl }: Props) {
   const tile = (
     <span className={`${card} relative block aspect-[9/16] overflow-hidden`}>
       {thumbUrl && <Image src={thumbUrl} alt="" fill unoptimized sizes="144px" className="object-cover" />}
+      {platform && (
+        <span className="absolute start-2 top-2 inline-flex size-7 items-center justify-center rounded-full bg-black/45 text-white" title={PLATFORM_NAMES[platform]}>
+          <PlatformIcon platform={platform} size={14} />
+        </span>
+      )}
       {videoUrl && (
         <span className="absolute inset-0 flex items-center justify-center">
           <span className="inline-flex size-11 items-center justify-center rounded-full bg-black/45 text-white">

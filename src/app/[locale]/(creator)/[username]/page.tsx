@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { setRequestLocale } from "next-intl/server";
+import { HiddenPage } from "@/components/marketing/Pages";
 import { toIntlLocale } from "@/i18n/config";
 import { loadCreatorPage } from "@/lib/creator-page";
 import { siteOrigin } from "@/lib/site-url";
@@ -32,15 +33,8 @@ export default async function CreatorPage({ params }: PageProps<"/[locale]/[user
   if (raw !== name) permanentRedirect(`/${name}`);
   setRequestLocale(toIntlLocale(lang));
 
-  if (data.status === "hidden") {
-    const t = await getTranslations("CreatorPage");
-    return (
-      <main className="mx-auto flex w-full max-w-md flex-1 flex-col items-center justify-center gap-3 px-4 py-16 text-center">
-        <h1 className="text-2xl font-bold">{t("hiddenTitle")}</h1>
-        <p className="text-muted">{t("hiddenBody")}</p>
-      </main>
-    );
-  }
+  // Unpublished, deleted or suspended: the design's "page hidden" state.
+  if (data.status === "hidden") return <HiddenPage lang={lang} />;
 
   return <CreatorProfile page={data} lang={lang} />;
 }

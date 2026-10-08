@@ -1,18 +1,16 @@
 "use client";
 
-import Link from "next/link";
-import { useTranslations } from "next-intl";
-import { buttonClasses } from "@/components/ui/Button";
+import { usePathname } from "next/navigation";
+import { useLocale } from "next-intl";
+import { NotFoundPage } from "@/components/marketing/Pages";
+import { normalizeUsername, usernameFormatError } from "@/config/usernames";
+import type { Locale } from "@/i18n/config";
 
-// No creator with this username: invite the visitor to claim it.
+// No creator with this username: the design's 404 with the name pre-filled
+// in the claim box (when it's a valid, claimable name).
 export default function CreatorNotFound() {
-  const t = useTranslations("CreatorPage");
-  return (
-    <main className="mx-auto flex w-full max-w-md flex-1 flex-col items-center justify-center gap-4 px-4 py-16 text-center">
-      <p className="brand-gradient bg-clip-text text-3xl font-bold text-transparent">{t("brand")}</p>
-      <h1 className="text-2xl font-bold">{t("notFoundTitle")}</h1>
-      <p className="text-muted">{t("notFoundBody")}</p>
-      <Link href="/login" className={buttonClasses()}>{t("claimCta")}</Link>
-    </main>
-  );
+  const lang = useLocale().slice(0, 2) as Locale;
+  const segment = decodeURIComponent(usePathname().replace(/^\/(?:ar|en)(?=\/|$)/, "").split("/")[1] ?? "");
+  const name = normalizeUsername(segment);
+  return <NotFoundPage lang={lang} username={usernameFormatError(name) ? "" : name} />;
 }

@@ -414,7 +414,10 @@
       "pending": "{n} verification requests waiting",
       "overdue": "{n} older than {hours} hours",
       "onTime": "All requests are on time.",
-      "openQueue": "Open queue"
+      "openQueue": "Open queue",
+      "newsletter": "{n} newsletter subscribers",
+      "newsletterHint": "Confirmed by email only.",
+      "exportCsv": "Download CSV"
     },
     "verifications": {
       "tabPending": "Waiting",
@@ -529,6 +532,9 @@
         "investor_link": {
           "create": "Created an investor link",
           "revoke": "Revoked an investor link"
+        },
+        "newsletter": {
+          "export": "Downloaded the newsletter list"
         }
       }
     },
@@ -954,5 +960,33 @@
   "Site": {
     "followUs": "Follow us",
     "followOn": "Follow Wsool on {platform} (opens in a new tab)"
+  },
+  "Newsletter": {
+    "email": {
+      "subject": "Confirm your Wsool newsletter subscription",
+      "preheader": "One tap to finish subscribing.",
+      "title": "One more step",
+      "body": "Thanks for your interest! Tap the button to confirm this is your email and join the newsletter: new templates, features and tips for working with brands, about once a month.",
+      "ignore": "If you didn't ask to subscribe, ignore this email and we won't send you anything.",
+      "cta": "Confirm my subscription",
+      "footer": "You can unsubscribe anytime: {url}"
+    },
+    "confirmed": {
+      "title": "You're subscribed",
+      "body": "Welcome! Wsool emails will reach your inbox, and you can unsubscribe from any of them."
+    },
+    "invalid": {
+      "title": "This link isn't valid",
+      "body": "We couldn't verify the link. Try subscribing again from the home page."
+    },
+    "unsubscribed": {
+      "title": "You're unsubscribed",
+      "body": "You won't get newsletter emails anymore. You can subscribe again anytime."
+    },
+    "home": "Back to home",
+    "adminTitle": "Newsletter",
+    "adminCount": "{n} confirmed subscribers",
+    "adminPending": "{n} waiting to confirm",
+    "adminExport": "Download CSV"
   }
 }

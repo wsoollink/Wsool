@@ -1,0 +1,40 @@
+/* Marketing site styles from the approved design (design/marketing). */
+
+@keyframes wsFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes wsFloat2{0%,100%{transform:translateY(0) rotate(-1.5deg)}50%{transform:translateY(-9px) rotate(1.5deg)}}
+@keyframes wsRise{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+@keyframes wsMarq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes wsGlow{0%,100%{opacity:.75;transform:scale(1)}50%{opacity:1;transform:scale(1.06)}}
+.ws-float{animation:wsFloat 7s ease-in-out infinite}
+.ws-float2{animation:wsFloat2 6s ease-in-out infinite}
+.ws-rise{animation:wsRise .9s cubic-bezier(.2,.7,.2,1) both}
+.ws-glow{animation:wsGlow 9s ease-in-out infinite}
+.ws-marq{animation:wsMarq 32s linear infinite}
+.ws-lift{transition:transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s}
+.ws-lift:hover{transform:translateY(-6px);box-shadow:0 24px 50px rgba(2,25,65,0.10)}
+.ws-deck-item{transition:transform .8s cubic-bezier(.2,.8,.2,1), opacity .8s, filter .8s}
+@media (prefers-reduced-motion: reduce){.ws-float,.ws-float2,.ws-rise,.ws-glow,.ws-marq,.ws-reveal{animation:none}
+.ws-lift,.ws-deck-item{transition:none}}
+.wsoc{width:42px;height:42px;border-radius:12px;background:#FFFFFF;border:1px solid rgba(2,25,65,0.09);display:inline-flex;align-items:center;justify-content:center;transition:transform .2s ease,background .2s ease,border-color .2s ease}
+.wsoc span{width:19px;height:19px;background:#021941;-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;transition:background .2s ease}
+.wsoc:hover{transform:translateY(-2px);background:#0060E6;border-color:#0060E6}
+.wsoc:hover span{background:#FFFFFF}
+.wsoc:focus-visible{outline:2px solid #0060E6;outline-offset:3px}
+.nlin:focus{outline:none}
+.nlbox:focus-within{border-color:#0060E6!important;box-shadow:0 0 0 4px rgba(0,96,230,0.12)!important}
+@media (prefers-reduced-motion: reduce){.wsoc{transition:none}}
+.wsoc-instagram span{-webkit-mask-image:url(/marketing/c29d2b71c7556f8ca7caaad85838d28a.png);mask-image:url(/marketing/c29d2b71c7556f8ca7caaad85838d28a.png)}
+.wsoc-tiktok span{-webkit-mask-image:url(/marketing/f2eac10a4a90fc41314bdb5ae069b51f.png);mask-image:url(/marketing/f2eac10a4a90fc41314bdb5ae069b51f.png)}
+.wsoc-x span{-webkit-mask-image:url(/marketing/ab9cf5c4967761caccc776e7a9176ebb.png);mask-image:url(/marketing/ab9cf5c4967761caccc776e7a9176ebb.png)}
+.wsoc-snapchat span{-webkit-mask-image:url(/marketing/fe8c8939633ef82c0f714624c864fbf8.png);mask-image:url(/marketing/fe8c8939633ef82c0f714624c864fbf8.png)}
+.wsoc-youtube span{-webkit-mask-image:url(/marketing/0f76ac5bd0aa5adc445ff0c12fdc75dd.png);mask-image:url(/marketing/0f76ac5bd0aa5adc445ff0c12fdc75dd.png)}
+.wsoc-facebook span{-webkit-mask-image:url(/marketing/5f6ecffb186e08578123cf9f80538037.png);mask-image:url(/marketing/5f6ecffb186e08578123cf9f80538037.png)}/* Threads and Telegram (added by the owner after the design): same mask style. */
+.wsoc-threads span{-webkit-mask-image:url(/marketing/18a6d2d10238b2687911d702e2367069.png);mask-image:url(/marketing/18a6d2d10238b2687911d702e2367069.png)}
+.wsoc-telegram span{-webkit-mask-image:url(/marketing/94f072271263d65724e19992fa15f043.svg);mask-image:url(/marketing/94f072271263d65724e19992fa15f043.svg)}
+
+/* The design's mobile frame is 390px wide; on narrower phones the 4-column
+   follower row of the browser mockup (Home) gets tighter numbers. */
+@media (max-width: 389px) {
+  [style*="repeat(4, minmax(0, 1fr))"] > div { padding: 8px 3px !important; }
+  [style*="repeat(4, minmax(0, 1fr))"] > div > span[dir="ltr"] { font-size: 12.5px !important; }
+}

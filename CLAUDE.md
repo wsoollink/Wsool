@@ -483,3 +483,15 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
   sections (`INVESTOR_SECTIONS`), period, expiry, optional scrypt password. Public page
   `/invest/<token>` (noindex, no personal data, Print/PDF); password unlock = httpOnly cookie
   with an HMAC of the link id. Every expense/link change is in the audit log.
+- **Marketing site** (home, pricing, 404, hidden page, 500) is generated from the owner's design:
+  `design/marketing/*.dc.html` (desktop + mobile, ar + en) → `python3 scripts/design-to-tsx.py` →
+  `src/components/marketing/generated/` (views, texts, CSS; never edit by hand). Design links
+  (`LINKS`), buttons (`BUTTONS`) and holes (`v.*`) are wired in the script and in
+  `useMarketing.ts`; computed texts (claim messages, FAQ, prices from `PRICES`) in `content.ts`.
+  Page wrappers: `src/components/marketing/Pages.tsx`. Hand fixes go in `marketing.css`.
+- Home "claim your link": live check (`checkLink`), then cookie `wsool_claim` → `/login`;
+  onboarding pre-fills that name.
+- **Newsletter** (`src/lib/newsletter.ts`, table `newsletter_subscribers`): double opt-in, HMAC
+  links (no stored token) for `/newsletter/confirm` and `/newsletter/unsubscribe`, one-click
+  `List-Unsubscribe` POST at `/api/newsletter/unsubscribe`, one confirmation per address per 10 min.
+  Admin overview shows the confirmed count; CSV at `/api/admin/newsletter` (`users.view`, audited).

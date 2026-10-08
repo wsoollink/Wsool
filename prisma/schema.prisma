@@ -630,3 +630,28 @@ model InvestorLink {
 
   @@map("investor_links")
 }
+
+enum NewsletterStatus {
+  /// Signed up, confirmation email sent, not confirmed yet.
+  pending
+  confirmed
+  unsubscribed
+}
+
+/// Marketing newsletter (double opt-in). Confirm/unsubscribe links carry an
+/// HMAC of the row id, so no token is stored.
+model NewsletterSubscriber {
+  id             String           @id @default(uuid()) @db.Uuid
+  email          String           @unique
+  lang           Lang
+  status         NewsletterStatus @default(pending)
+  /// Where they signed up (e.g. "home", "pricing").
+  source         String           @default("home") @db.VarChar(40)
+  confirmSentAt  DateTime?        @map("confirm_sent_at") @db.Timestamptz
+  confirmedAt    DateTime?        @map("confirmed_at") @db.Timestamptz
+  unsubscribedAt DateTime?        @map("unsubscribed_at") @db.Timestamptz
+  createdAt      DateTime         @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([status])
+  @@map("newsletter_subscribers")
+}

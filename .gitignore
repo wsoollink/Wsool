@@ -44,3 +44,4 @@ next-env.d.ts
 
 # netlify
 .netlify
+__pycache__/

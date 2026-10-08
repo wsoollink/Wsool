@@ -13,13 +13,14 @@ async function Stats({ lang }: { lang: Locale }) {
   const admin = await requireAdmin();
   const t = await getTranslations("Admin.overview");
   const now = new Date();
-  const [users, published, trialing, pro, pending, overdue] = await Promise.all([
+  const [users, published, trialing, pro, pending, overdue, subscribers] = await Promise.all([
     db.user.count(),
     db.page.count({ where: { isPublished: true, deletedAt: null } }),
     db.subscription.count({ where: { status: "trialing", trialEndsAt: { gt: now } } }),
     db.subscription.count({ where: { status: "active" } }),
     db.verificationRequest.count({ where: { status: "pending" } }),
     db.verificationRequest.count({ where: { status: "pending", createdAt: { lt: new Date(now.getTime() - REVIEW_HOURS * 3_600_000) } } }),
+    db.newsletterSubscriber.count({ where: { status: "confirmed" } }),
   ]);
   const tiles = [
     { label: t("users"), value: users },
@@ -45,6 +46,17 @@ async function Stats({ lang }: { lang: Locale }) {
             <p className={`text-sm ${overdue ? "text-bad" : "text-muted"}`}>{overdue ? t("overdue", { n: formatNumber(overdue, lang), hours: REVIEW_HOURS }) : t("onTime")}</p>
           </div>
           <Link href="/admin/verifications" className="min-h-11 content-center rounded-full bg-navy px-5 text-sm font-semibold text-white">{t("openQueue")}</Link>
+        </Card>
+      )}
+      {can(admin, "users.view") && (
+        <Card className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p className="font-bold">{t("newsletter", { n: formatNumber(subscribers, lang) })}</p>
+            <p className="text-sm text-muted">{t("newsletterHint")}</p>
+          </div>
+          {/* A route handler download, not a page: plain <a>. */}
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+          <a href="/api/admin/newsletter" download className="min-h-11 content-center rounded-full border border-line px-5 text-sm font-semibold">{t("exportCsv")}</a>
         </Card>
       )}
     </div>

@@ -8,10 +8,10 @@ import { checkUsername, claimUsername, type AvailabilityResult, type ClaimState 
 
 type Status = "idle" | "checking" | "available" | { error: string };
 
-export function UsernameForm() {
+export function UsernameForm({ initial }: { initial?: string }) {
   const t = useTranslations("Onboarding");
   const [state, action] = useActionState<ClaimState, FormData>(claimUsername, {});
-  const [value, setValue] = useState(state.name ?? "");
+  const [value, setValue] = useState(state.name ?? initial ?? "");
   const [checked, setChecked] = useState<AvailabilityResult | null>(null);
   const [, startCheck] = useTransition();
 

@@ -1,7 +1,10 @@
 import { Suspense } from "react";
+import { cookies } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { CLAIM_COOKIE } from "@/components/marketing/content";
 import { Card } from "@/components/ui/Card";
+import { normalizeUsername, usernameFormatError } from "@/config/usernames";
 import { isLocale, toIntlLocale } from "@/i18n/config";
 import { requireUser } from "@/lib/auth";
 import { db } from "@/lib/db";
@@ -12,7 +15,9 @@ async function RedirectIfClaimed() {
   const user = await requireUser();
   const page = await db.page.findUnique({ where: { userId: user.id }, select: { id: true } });
   if (page) redirect("/dashboard");
-  return <UsernameForm />;
+  // The name a visitor picked on the home page before signing in.
+  const claimed = normalizeUsername((await cookies()).get(CLAIM_COOKIE)?.value ?? "");
+  return <UsernameForm initial={claimed && !usernameFormatError(claimed) ? claimed : undefined} />;
 }
 
 export default async function OnboardingPage({ params }: PageProps<"/[locale]/onboarding">) {

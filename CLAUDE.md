@@ -274,3 +274,14 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
 - Changing the name later: `nextUsernameChange()` enforces 30 days between changes. The first
   claim does not start the cooldown, so a creator can fix a typo once right away. The change
   form itself comes with the dashboard settings.
+
+### Dashboard shell (Phase 1, step 7)
+- Sections and tab bar are defined once in `src/config/dashboard.ts`. Layout:
+  `src/app/[locale]/(site)/dashboard/layout.tsx` (header with bell, desktop sidebar, mobile
+  bottom tab bar). The sidebar sits on the **start** side: right in Arabic, left in English.
+- Every dashboard page gets the creator through `requireCreator()` (`src/lib/creator.ts`):
+  signed out → `/login`, no page yet → `/onboarding`. Call it inside `<Suspense>`.
+- Unbuilt sections render from `dashboard/[section]/page.tsx` (placeholder). Building a
+  section = add its own folder (e.g. `dashboard/accounts/`), which takes priority.
+- `usePathname()` may return the internal `/<locale>/...` path; nav strips it before matching.
+- Bell unread dot is a TODO until the notifications table exists.

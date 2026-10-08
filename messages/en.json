@@ -42,9 +42,8 @@
     "welcome": "Welcome to Wsool",
     "signedInAs": "Signed in as",
     "trial": "{days, plural, one {# day} other {# days}} left in your free Pro trial.",
-    "signOut": "Sign out",
-    "signingOut": "Signing out…",
-    "yourLink": "Your link:"
+    "yourLink": "Your link:",
+    "comingSoon": "This section is being built and will be ready soon."
   },
   "Onboarding": {
     "title": "Choose your page name",
@@ -64,5 +63,25 @@
       "taken": "That name is taken. Try another.",
       "failed": "Something went wrong. Please try again."
     }
+  },
+  "DashboardNav": {
+    "brand": "Wsool",
+    "menu": "Dashboard menu",
+    "home": "Home",
+    "edit": "Edit page",
+    "myPage": "My page",
+    "accounts": "Accounts & numbers",
+    "work": "Brands & work",
+    "rates": "Ad rates",
+    "contact": "Contact",
+    "verification": "Verification",
+    "appearance": "Appearance",
+    "analytics": "Analytics",
+    "subscription": "Subscription",
+    "notifications": "Notifications",
+    "more": "More",
+    "signOut": "Sign out",
+    "signingOut": "Signing out…",
+    "accountsShort": "Accounts"
   }
 }

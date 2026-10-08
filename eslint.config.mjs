@@ -14,6 +14,8 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
     // Generated Prisma client
     "src/generated/**",
+    // Netlify build output
+    ".netlify/**",
   ]),
 ]);
 

@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { buttonClasses } from "@/components/ui/Button";
+import { SubmitButton } from "@/components/SubmitButton";
 import { Card } from "@/components/ui/Card";
 import { trialDaysLeft } from "@/config/plans";
 import { isLocale, toIntlLocale } from "@/i18n/config";
@@ -27,7 +27,9 @@ async function Account() {
         <p className="rounded-xl bg-blue/10 px-4 py-3 text-sm text-blue">{t("trial", { days: daysLeft })}</p>
       )}
       <form action={signOut}>
-        <button type="submit" className={buttonClasses("secondary", "w-full")}>{t("signOut")}</button>
+        <SubmitButton variant="secondary" className="w-full" pendingText={t("signingOut")}>
+          {t("signOut")}
+        </SubmitButton>
       </form>
     </Card>
   );

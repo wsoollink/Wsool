@@ -42,6 +42,7 @@
     "welcome": "Welcome to Wsool",
     "signedInAs": "Signed in as",
     "trial": "{days, plural, one {# day} other {# days}} left in your free Pro trial.",
-    "signOut": "Sign out"
+    "signOut": "Sign out",
+    "signingOut": "Signing out…"
   }
 }

@@ -14,7 +14,8 @@ import { bundleComparison, rateName } from "@/lib/rates";
 type Props = { page: PublishedPage; lang: Locale };
 type T = Awaited<ReturnType<typeof getTranslations<"CreatorPage">>>;
 
-const card = "rounded-[20px] border border-[var(--page-line)] bg-[var(--page-surface)]";
+// Cards use the theme surface; the Black template frosts them (glass).
+const card = "rounded-[20px] border border-[var(--page-line)] bg-[var(--page-surface)] [.glass_&]:backdrop-blur-md";
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
@@ -37,9 +38,10 @@ export async function CreatorProfile({ page, lang }: Props) {
   const tags = page.tags.filter((tag) => tag.lang === lang);
 
   const contact = <Contact page={page} t={t} />;
+  const theme = pageTheme(page.template, page.accent, page.customColors);
 
   return (
-    <div style={themeStyle(pageTheme(page.template, page.accent))} className="flex-1 bg-[var(--page-bg)] text-[var(--page-text)]">
+    <div style={themeStyle(theme)} className={`flex-1 text-[var(--page-text)] ${theme.glass ? "glass" : ""}`}>
       <div className="mx-auto w-full max-w-5xl md:grid md:grid-cols-[320px_1fr] md:items-start md:gap-10 md:px-6 md:py-10">
         {/* Identity: hero, name, bio, location, licenses (+ contact on desktop) */}
         <aside className="flex flex-col gap-4 md:sticky md:top-10">
@@ -55,7 +57,7 @@ export async function CreatorProfile({ page, lang }: Props) {
           <div className="-mt-10 flex flex-col gap-2 px-4 md:mt-0 md:px-0 relative">
             <h1 className="flex items-center gap-2 text-3xl font-bold">
               {name}
-              {verified && <BadgeCheck aria-label={t("verified")} className="size-7 shrink-0 fill-[var(--page-accent)] text-[var(--page-bg)]" />}
+              {verified && <BadgeCheck aria-label={t("verified")} className="size-7 shrink-0 fill-[var(--page-accent)] text-[var(--page-on-accent)]" />}
             </h1>
             {tr?.specialty && <p className="font-medium text-[var(--page-accent)]">{tr.specialty}</p>}
             {tr?.bio && <p className="leading-relaxed text-[var(--page-muted)]">{tr.bio}</p>}
@@ -136,7 +138,7 @@ export async function CreatorProfile({ page, lang }: Props) {
                   <li key={a.id} className={`${card} flex flex-col gap-2 p-4`}>
                     <div className="flex items-center justify-between">
                       <PlatformIcon platform={a.platform} size={22} />
-                      {a.verified && <BadgeCheck aria-label={t("verified")} size={18} className="fill-[var(--page-accent)] text-[var(--page-surface)]" />}
+                      {a.verified && <BadgeCheck aria-label={t("verified")} size={18} className="fill-[var(--page-accent)] text-[var(--page-on-accent)]" />}
                     </div>
                     <p className={`${numbersFont} text-2xl font-bold`}>{formatCompact(a.followers, lang)}</p>
                     <p className="truncate text-sm text-[var(--page-muted)]" dir="ltr">
@@ -233,7 +235,7 @@ function Rates({ page, lang, t }: Props & { t: T }) {
           return (
             <div key={b.id} className={`${card} border-[var(--page-accent)] p-4`}>
               <p className="mb-2 flex flex-wrap items-center gap-2 font-medium">
-                <span className="rounded-full bg-[var(--page-accent)] px-2 py-0.5 text-xs text-white">{t("bundle")}</span>
+                <span className="rounded-full bg-[var(--page-accent)] px-2 py-0.5 text-xs text-[var(--page-on-accent)]">{t("bundle")}</span>
                 {rateName({ name: b.name ?? "", nameEn: b.nameEn }, lang) || platforms.map((a) => PLATFORM_NAMES[a.platform]).join(" + ")}
               </p>
               <p className="mb-2 flex gap-2 text-[var(--page-muted)]" aria-label={platforms.map((a) => PLATFORM_NAMES[a.platform]).join(", ")}>
@@ -250,7 +252,7 @@ function Rates({ page, lang, t }: Props & { t: T }) {
                         {compare && (
                           <span className="text-xs text-[var(--page-muted)]">
                             <s>{t("insteadOf", { price: price(compare.separate) })}</s>{" "}
-                            <span className="font-medium text-[#12805C]">{t("save", { percent: formatPercent(compare.savingsPercent, lang) })}</span>
+                            <span className="font-medium text-[var(--page-accent)]">{t("save", { percent: formatPercent(compare.savingsPercent, lang) })}</span>
                           </span>
                         )}
                       </span>
@@ -276,7 +278,7 @@ function Contact({ page, t }: { page: PublishedPage; t: T }) {
         {page.whatsapp && (
           <a
             href={`https://wa.me/${page.whatsapp}`} target="_blank" rel="noopener noreferrer"
-            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[var(--page-accent)] px-5 font-semibold text-white"
+            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[var(--page-accent)] px-5 font-semibold text-[var(--page-on-accent)]"
           >
             <PlatformIcon platform="whatsapp" size={18} /> {t("whatsapp")}
           </a>

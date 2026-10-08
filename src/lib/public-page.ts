@@ -1,5 +1,6 @@
 import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
+import { FREE_LIMITS } from "@/config/plans";
 import { db } from "@/lib/db";
 import type { Locale } from "@/i18n/config";
 
@@ -54,12 +55,14 @@ export async function getPublicPage(username: string) {
     username: page.username,
     primaryLang: page.primaryLang as Locale,
     enEnabled: page.enEnabled,
-    template: page.template,
+    // Free pages can only use the Free templates (CLAUDE.md section 6).
+    template: isPro || FREE_LIMITS.templates.includes(page.template) ? page.template : FREE_LIMITS.templates[0],
     customColors: page.customColors,
     accent: page.accent,
     numberFont: page.numberFont,
     isPro,
-    showBranding: !(isPro && page.hideBranding),
+    // Hiding the footer is a Pro feature unless the Free limits allow it.
+    showBranding: !(page.hideBranding && (isPro || FREE_LIMITS.hideBranding)),
     photoUrl: page.photoUrl,
     whatsapp: page.whatsapp,
     contactEmail: page.contactEmail,
@@ -83,7 +86,7 @@ export async function getPublicPage(username: string) {
     }),
     monthlyViews: page.monthlyViews[0] ? Number(page.monthlyViews[0].views) : null,
     brandLogos: page.brandLogos,
-    portfolio: page.portfolioItems,
+    portfolio: isPro ? page.portfolioItems : page.portfolioItems.slice(0, FREE_LIMITS.portfolioItems),
     rateSettings: page.rateSettings,
     bundles: page.rateBundles.map((b) => ({
       id: b.id,

@@ -314,3 +314,12 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
 - Reserved names only block claiming; staff-made pages with reserved names still render.
 - Demo page: `scripts/seed-demo.ts` creates `/demo` (reserved username) with sample data and
   assets in `public/demo/`. Local: `DATABASE_URL=<local> npx tsx scripts/seed-demo.ts`.
+- Templates: `src/components/creator/theme.ts` turns template + accent + custom colors into CSS
+  variables (`--page-bg`, `--page-surface`, `--page-text`, `--page-muted`, `--page-line`,
+  `--page-accent`, `--page-on-accent`). Custom = 1-2 hex colors + light/dark, palette derived
+  automatically. Contrast guards (`src/lib/color.ts`) keep text >= 7:1 and accent >= 4.5:1.
+- Free/Pro limits live in `FREE_LIMITS` (`src/config/plans.ts`) and are applied in
+  `getPublicPage`: Free pages fall back to White if their template isn't free, show at most
+  6 past works, no verified badge, and always show the Wsool footer.
+- Template previews (local only): `npx tsx scripts/seed-demo.ts t.sand sand`, or
+  `... t.custom custom "#e63946,#1d3557:light"`, or add `free` as the last argument.

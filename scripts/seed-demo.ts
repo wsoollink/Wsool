@@ -2,26 +2,39 @@
  * Creates (or recreates) the demo creator page at /demo with sample data.
  * Local development:  DATABASE_URL=<local db> npx tsx scripts/seed-demo.ts
  * "demo" is a reserved username, so no creator can claim it.
+ *
+ * Optional args for local template previews (never use in production):
+ *   npx tsx scripts/seed-demo.ts <username> <template> [custom colors, e.g. "#e63946,#1d3557:dark"] [free]
  */
+import { createHash } from "node:crypto";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../src/generated/prisma/client";
 
 const db = new PrismaClient({ adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }) });
-const USER_ID = "00000000-0000-4000-8000-00000000d3e0";
+const [argUsername = "demo", argTemplate = "white", argCustom, argPlan] = process.argv.slice(2);
+// Stable id per username so re-running replaces the same demo user.
+const hash = createHash("sha256").update(argUsername).digest("hex");
+const USER_ID = `${hash.slice(0, 8)}-${hash.slice(8, 12)}-4${hash.slice(13, 16)}-8${hash.slice(17, 20)}-${hash.slice(20, 32)}`;
+const TEMPLATE = argTemplate as "white" | "black" | "sand" | "pink" | "black_gold" | "vivid" | "green" | "custom";
+const CUSTOM = argCustom
+  ? { colors: argCustom.split(":")[0].split(","), mode: argCustom.split(":")[1] === "dark" ? "dark" : "light" }
+  : undefined;
+const PLAN = argPlan === "free" ? ({ plan: "free", status: "expired" } as const) : ({ plan: "pro", status: "active" } as const);
 
 async function main() {
   await db.user.deleteMany({ where: { id: USER_ID } });
   await db.user.create({
     data: {
       id: USER_ID,
-      email: "demo@wsool.link",
-      subscription: { create: { plan: "pro", status: "active" } },
+      email: `${argUsername}@demo.wsool.link`,
+      subscription: { create: PLAN },
       page: {
         create: {
-          username: "demo",
+          username: argUsername,
           primaryLang: "ar",
           enEnabled: true,
-          template: "white",
+          template: TEMPLATE,
+          customColors: CUSTOM,
           isPublished: true,
           photoUrl: "/demo/avatar.svg",
           whatsapp: "966500000000",
@@ -63,7 +76,7 @@ async function main() {
     },
   });
 
-  const page = await db.page.findUniqueOrThrow({ where: { username: "demo" } });
+  const page = await db.page.findUniqueOrThrow({ where: { username: argUsername } });
   const in60 = new Date(Date.now() + 60 * 86_400_000);
   const accounts = [
     { platform: "tiktok", handle: "sara.style", followers: 1_240_000, verified: true, rates: [["ستوري", "Story", 3500], ["فيديو", "Video", 9000]] },
@@ -99,7 +112,7 @@ async function main() {
       rates: { create: [{ name: "ستوري", nameEn: "Story", price: 5500, sort: 0 }] },
     },
   });
-  console.log("Demo page ready at /demo");
+  console.log(`Demo page ready at /${argUsername} (${TEMPLATE}, ${PLAN.plan})`);
 }
 
 main().finally(() => db.$disconnect());

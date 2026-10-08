@@ -199,6 +199,11 @@ Username rules: lowercase a–z, 0–9, dot, underscore, 3–20 chars, not reser
      - Links live in one config file (site-config).
      - A platform with an empty link shows no icon.
      - Links open in a new tab; every icon has a descriptive accessible name for screen readers.
+   - **Approved design** for both: the owner's marketing homepage design. Newsletter = a card
+     just above the footer (mail icon, title, description, email field + button, error
+     message, green success state). Social icons = a "Follow us" (تابعنا) row under the Wsool
+     description in the footer. Match that design exactly when building them; ask the owner
+     for the design file if it is not in the repo yet.
 
 Before starting each phase: write a short plan in Arabic and wait for the owner's "تمام".
 

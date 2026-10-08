@@ -46,6 +46,27 @@ if (secret && !secret.startsWith("sb_secret_")) problems.push("SUPABASE_SECRET_K
 checkDatabaseUrl("DATABASE_URL", "6543");
 checkDatabaseUrl("DIRECT_URL", "5432");
 
+// Supabase's pooler needs the user "postgres.<project-id>" of the same project as
+// NEXT_PUBLIC_SUPABASE_URL, and both database URLs must carry the same password.
+const projectId = supabaseUrl?.match(/^https:\/\/([a-z0-9]+)\.supabase\.co/)?.[1];
+const parsed = {};
+for (const name of ["DATABASE_URL", "DIRECT_URL"]) {
+  try {
+    parsed[name] = new URL(process.env[name]?.trim() ?? "");
+  } catch {}
+}
+for (const [name, url] of Object.entries(parsed)) {
+  const user = decodeURIComponent(url.username);
+  if (!user.startsWith("postgres.")) problems.push(`${name}: user should be postgres.<project-id>, not "${user}"`);
+  else if (projectId && user !== `postgres.${projectId}`) {
+    problems.push(`${name}: belongs to a different Supabase project than NEXT_PUBLIC_SUPABASE_URL`);
+  }
+  if (!url.password) problems.push(`${name}: has no password`);
+}
+if (parsed.DATABASE_URL && parsed.DIRECT_URL && parsed.DATABASE_URL.password !== parsed.DIRECT_URL.password) {
+  problems.push("DATABASE_URL and DIRECT_URL have different passwords");
+}
+
 if (problems.length > 0) {
   console.error("Environment variable problems:");
   for (const p of problems) console.error(`  - ${p}`);

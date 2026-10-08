@@ -363,8 +363,8 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
 - Tags (`saveTags`, per language, max 12, 18 chars) and licenses (`saveLicenses`, max 10) are
   saved as whole lists (delete + recreate). A license file must be a fresh upload in the
   creator's own folder or a file one of their licenses already had; unused files are deleted.
-- **Netlify credits**: Free plan = 300 credits/month, each production deploy = 15 credits, branch
-  deploys are free. Production branch is `main` (updated only when the owner approves);
+- **Netlify credits**: the owner upgraded to the **Personal plan** (Oct 2026; was Free = 300
+  credits/month). Each production deploy costs credits (15 on Free), branch deploys are free. Production branch is `main` (updated only when the owner approves);
   `claude/new-session-r5ze7y` gets free branch deploys. Avoid needless production deploys.
 - **Accounts & numbers** (`dashboard/accounts/`): `saveAccounts` updates accounts in place by id
   (rates/audience stay attached), creates new ones, deletes missing ones. Profile URLs are built

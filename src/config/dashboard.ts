@@ -31,6 +31,6 @@ export const MORE_SECTIONS = DASHBOARD_SECTIONS.filter((s) => !TAB_BAR.some((tab
 
 /** Placeholder sections that are built in later phases. */
 export const PLACEHOLDER_SECTIONS: readonly SectionKey[] = [
-  "rates", "contact", "verification",
+  "contact", "verification",
   "appearance", "analytics", "subscription", "notifications",
 ];

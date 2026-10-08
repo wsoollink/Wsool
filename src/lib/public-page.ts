@@ -86,7 +86,8 @@ export async function getPublicPage(username: string) {
     monthlyViews: page.monthlyViews[0] ? Number(page.monthlyViews[0].views) : null,
     brandLogos: page.brandLogos,
     portfolio: isPro ? page.portfolioItems : page.portfolioItems.slice(0, FREE_LIMITS.portfolioItems),
-    rateSettings: page.rateSettings,
+    // No saved settings yet = the defaults (shown, VAT included, SAR or USD by primary language).
+    rateSettings: page.rateSettings ?? { showOnPage: true, showInPdf: true, currency: page.primaryLang === "en" ? ("USD" as const) : ("SAR" as const), vatIncluded: true },
     bundles: page.rateBundles.map((b) => ({
       id: b.id,
       name: b.name,

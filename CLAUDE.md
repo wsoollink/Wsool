@@ -379,3 +379,9 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
   grabbed from its first second in the browser (`videoCover()`), replaceable by the creator. The
   dashboard keeps all works; Free pages show the first `FREE_LIMITS.portfolioItems` (warned in the UI).
   `hasPro()` in `src/config/plans.ts` is the one place that decides Pro vs Free.
+- **Ad rates** (`dashboard/rates/`): `saveRateSettings` (upsert), `saveRates(accountId, rates)` per
+  account (ownership checked), `saveBundles` (whole list; every account id must be the creator's,
+  2+ platforms, 1+ rate). Without saved settings the public page uses defaults (shown, VAT included,
+  SAR, or USD when the primary language is English). Prices accept Arabic digits and "٫"
+  (`decimalInput()`), 2 decimals. The bundle editor previews "instead of X, save Y%" with
+  `bundleComparison()`, the same function the public page uses.

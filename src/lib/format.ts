@@ -36,3 +36,14 @@ export function digitsOnly(value: string, maxLength: number) {
     .replace(/^0+(?=\d)/, "")
     .slice(0, maxLength);
 }
+
+/** Price as typed: Arabic digits and "٫" become 0-9 and ".", at most 2 decimals. */
+export function decimalInput(value: string, maxLength = 12) {
+  const western = value
+    .replace(/[٠-٩۰-۹]/g, (d) => String(d.charCodeAt(0) & 0xf))
+    .replace(/[٫,]/g, ".")
+    .replace(/[^\d.]/g, "");
+  const [whole, ...rest] = western.split(".");
+  const cleanWhole = whole.replace(/^0+(?=\d)/, "");
+  return (rest.length ? `${cleanWhole || "0"}.${rest.join("").slice(0, 2)}` : cleanWhole).slice(0, maxLength);
+}

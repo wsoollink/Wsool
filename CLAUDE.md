@@ -206,9 +206,8 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
 3. **Usernames are case-insensitive.** Stored and compared lowercased (unique index on the
    lowercased value). Reserved list includes every top-level site route (dashboard, admin, api,
    pricing, login, signup, auth, settings, …) and must be updated whenever a route is added.
-4. **OTP emails**: for now they are sent by Supabase's built-in mailer (testing only).
-   **TODO before launch:** switch Supabase Auth SMTP / auth emails to Resend from
-   `mail.wsool.link`.
+4. **OTP emails** go through Resend (custom SMTP in Supabase Auth, sender on
+   `mail.wsool.link`, domain verified in Resend, region eu-west-1). Done in Phase 1, step 5.
 
 ### How i18n routing is implemented (Phase 1, step 2)
 - `src/proxy.ts` reads the `NEXT_LOCALE` cookie, then `Accept-Language`, else `ar`, and
@@ -248,8 +247,10 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
 - `src/lib/auth.ts`: `getCurrentUser()` / `requireUser()` read the verified JWT claims
   (`getClaims`). They are the only source of a user id for queries.
 - `src/proxy.ts` refreshes the Supabase session cookie only when an `sb-` cookie exists.
-- Supabase email templates ("Magic Link" and "Confirm signup") must contain `{{ .Token }}`
-  so the email carries a code. Supabase's built-in mailer only sends to the project's team
-  members and is heavily rate-limited: fine for testing, replace with Resend before launch.
+- Supabase email templates "Magic Link" (returning users) and "Confirm signup" (new users)
+  hold one bilingual body (Arabic, code, English) with `{{ .Token }}`. Free projects can only
+  edit templates with custom SMTP, which is why Resend is connected. The OTP is 8 digits
+  (the form accepts 6-10).
+- Supabase project: `wsool-eu` in Frankfurt (eu-central-1).
 - Sandbox only: run the app with `NODE_USE_ENV_PROXY=1` (Node's fetch ignores HTTPS_PROXY
   otherwise) and the overrides in `.env.local`.

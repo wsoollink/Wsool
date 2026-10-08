@@ -521,6 +521,14 @@
         },
         "invoice": {
           "refund": "استرجع مبلغ فاتورة"
+        },
+        "expense": {
+          "add": "أضاف مصروف",
+          "delete": "حذف مصروف"
+        },
+        "investor_link": {
+          "create": "أنشأ رابط مستثمرين",
+          "revoke": "ألغى رابط مستثمرين"
         }
       }
     },
@@ -852,5 +860,95 @@
     "productNewsHint": "مميزات جديدة ونصائح تساعدك مع البراندات، مرة بالشهر بالكثير.",
     "alwaysSent": "إيميلات الحساب والفواتير والتوثيق توصلك دايماً.",
     "saved": "✓ انحفظ."
+  },
+  "Finance": {
+    "brand": "وصول",
+    "investorReport": "تقرير المستثمرين",
+    "summary": "الملخص",
+    "revenue": "الإيرادات",
+    "expenses": "المصاريف",
+    "profit": "صافي الربح",
+    "unitEconomics": "اقتصاديات الوحدة",
+    "mrr": "الإيراد الشهري المتكرر (MRR)",
+    "vsLastMonth": "{value} عن الشهر الماضي",
+    "customers": "العملاء الدافعين",
+    "arpu": "متوسط الإيراد لكل عميل (ARPU)",
+    "perMonth": "شهرياً",
+    "churn": "معدل الإلغاء (Churn)",
+    "monthlyAvg": "متوسط آخر 3 أشهر",
+    "ltv": "القيمة الدائمة للعميل (LTV)",
+    "cac": "تكلفة اكتساب العميل (CAC)",
+    "growth": "نمو المنصة",
+    "users": "المستخدمين",
+    "published": "صفحات منشورة",
+    "verified": "حسابات موثّقة",
+    "pnl": "الأرباح والخسائر الشهرية",
+    "month": "الشهر",
+    "note": "المبالغ بالريال وبدون الضريبة. الدولار محسوب بسعر 3.75. الـ MRR يوزّع الاشتراك السنوي على 12 شهر.",
+    "period": "المدة",
+    "lastMonths": "آخر {n} أشهر",
+    "expensesTitle": "المصاريف",
+    "date": "التاريخ",
+    "amount": "المبلغ",
+    "currency": "العملة",
+    "category": "الفئة",
+    "recurrence": "التكرار",
+    "endDate": "ينتهي في (اختياري)",
+    "description": "الوصف",
+    "addExpense": "أضف مصروف",
+    "added": "✓ انضاف.",
+    "invalid": "تأكد من البيانات.",
+    "noExpenses": "ما فيه مصاريف للحين.",
+    "deleteExpense": "احذف المصروف {what}",
+    "confirmDelete": "تحذف هذا المصروف؟",
+    "categories": {
+      "hosting": "استضافة",
+      "software": "برامج واشتراكات",
+      "marketing": "تسويق",
+      "salaries": "رواتب",
+      "payment_fees": "رسوم الدفع",
+      "legal": "قانوني ورسوم حكومية",
+      "other": "أخرى"
+    },
+    "recurrences": {
+      "none": "مرة وحدة",
+      "monthly": "شهري",
+      "yearly": "سنوي"
+    },
+    "investorTitle": "روابط المستثمرين",
+    "investorHint": "رابط للقراءة فقط تختار وش يظهر فيه ومدته، بدون أي بيانات شخصية للمستخدمين.",
+    "linkLabel": "اسم الرابط",
+    "linkLabelPlaceholder": "مثل: صندوق X - جولة البذرة",
+    "password": "كلمة مرور (اختياري)",
+    "expiresIn": "صالح لمدة",
+    "days": "{n} يوم",
+    "sections": "الأقسام",
+    "sectionNames": {
+      "revenue": "الملخص",
+      "pnl": "الأرباح والخسائر",
+      "unit": "اقتصاديات الوحدة",
+      "growth": "نمو المنصة"
+    },
+    "createLink": "أنشئ الرابط",
+    "linkCreated": "انشأ الرابط. انسخه الحين، ما راح يظهر مرة ثانية.",
+    "copy": "انسخ",
+    "copied": "✓ انسخ",
+    "linkStatus": {
+      "active": "فعّال",
+      "expired": "منتهي",
+      "revoked": "ملغي"
+    },
+    "expires": "ينتهي {date}",
+    "views": "{n} مشاهدة",
+    "withPassword": "بكلمة مرور",
+    "revoke": "ألغِ الرابط",
+    "confirmRevoke": "تلغي هذا الرابط؟ ما عاد أحد يقدر يفتحه.",
+    "enterPassword": "هذا التقرير محمي بكلمة مرور",
+    "wrongPassword": "كلمة المرور غير صحيحة.",
+    "open": "افتح",
+    "linkUnavailable": "هذا الرابط غير متاح (منتهي أو ملغي).",
+    "reportMeta": "آخر {months} أشهر · محدّث {date}",
+    "printPdf": "اطبع / PDF",
+    "confidential": "تقرير سري للمستلم فقط. الرابط ينتهي {date}."
   }
 }

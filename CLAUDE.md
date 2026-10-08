@@ -471,3 +471,13 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
   from the Arabic subset font (".", ":") fall back to the Latin font per run, and ❤ is drawn as a
   path. WebP logos are converted with sharp when available, else the brand name is shown.
   Dashboard home has the download buttons.
+- **Finance** (`admin/finance/`, permission `revenue.view`): `financeReport(months)`
+  (`src/lib/finance.ts`) — revenue from paid invoices without VAT, in SAR (USD × 3.75), expenses
+  (table `expenses`, one-off/monthly/yearly with optional end date), P&L per month, MRR (yearly
+  invoices spread over 12 months while their period covers the month), customers, churn (3-month
+  average), ARPU, LTV = ARPU / churn, CAC = marketing spend / new paying customers (3 months).
+  `FinanceView` renders it for the admin page and investor links.
+- **Investor links** (owner only): table `investor_links` stores only the token hash, chosen
+  sections (`INVESTOR_SECTIONS`), period, expiry, optional scrypt password. Public page
+  `/invest/<token>` (noindex, no personal data, Print/PDF); password unlock = httpOnly cookie
+  with an HMAC of the link id. Every expense/link change is in the audit log.

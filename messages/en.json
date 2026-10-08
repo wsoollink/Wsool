@@ -521,6 +521,14 @@
         },
         "invoice": {
           "refund": "Refunded an invoice"
+        },
+        "expense": {
+          "add": "Added an expense",
+          "delete": "Deleted an expense"
+        },
+        "investor_link": {
+          "create": "Created an investor link",
+          "revoke": "Revoked an investor link"
         }
       }
     },
@@ -852,5 +860,95 @@
     "productNewsHint": "New features and tips for working with brands, at most once a month.",
     "alwaysSent": "Account, billing and verification emails are always sent.",
     "saved": "✓ Saved."
+  },
+  "Finance": {
+    "brand": "Wsool",
+    "investorReport": "Investor report",
+    "summary": "Summary",
+    "revenue": "Revenue",
+    "expenses": "Expenses",
+    "profit": "Net profit",
+    "unitEconomics": "Unit economics",
+    "mrr": "Monthly recurring revenue (MRR)",
+    "vsLastMonth": "{value} vs last month",
+    "customers": "Paying customers",
+    "arpu": "Average revenue per user (ARPU)",
+    "perMonth": "per month",
+    "churn": "Churn rate",
+    "monthlyAvg": "3-month average",
+    "ltv": "Lifetime value (LTV)",
+    "cac": "Customer acquisition cost (CAC)",
+    "growth": "Platform growth",
+    "users": "Users",
+    "published": "Published pages",
+    "verified": "Verified accounts",
+    "pnl": "Monthly profit and loss",
+    "month": "Month",
+    "note": "Amounts in SAR without VAT; USD at 3.75. MRR spreads yearly plans over 12 months.",
+    "period": "Period",
+    "lastMonths": "Last {n} months",
+    "expensesTitle": "Expenses",
+    "date": "Date",
+    "amount": "Amount",
+    "currency": "Currency",
+    "category": "Category",
+    "recurrence": "Repeats",
+    "endDate": "Ends on (optional)",
+    "description": "Description",
+    "addExpense": "Add expense",
+    "added": "✓ Added.",
+    "invalid": "Check the details.",
+    "noExpenses": "No expenses yet.",
+    "deleteExpense": "Delete expense {what}",
+    "confirmDelete": "Delete this expense?",
+    "categories": {
+      "hosting": "Hosting",
+      "software": "Software & subscriptions",
+      "marketing": "Marketing",
+      "salaries": "Salaries",
+      "payment_fees": "Payment fees",
+      "legal": "Legal & government fees",
+      "other": "Other"
+    },
+    "recurrences": {
+      "none": "One-off",
+      "monthly": "Monthly",
+      "yearly": "Yearly"
+    },
+    "investorTitle": "Investor links",
+    "investorHint": "A read-only link: you choose what it shows and for how long. No personal user data.",
+    "linkLabel": "Link name",
+    "linkLabelPlaceholder": "e.g. Fund X - seed round",
+    "password": "Password (optional)",
+    "expiresIn": "Valid for",
+    "days": "{n} days",
+    "sections": "Sections",
+    "sectionNames": {
+      "revenue": "Summary",
+      "pnl": "Profit and loss",
+      "unit": "Unit economics",
+      "growth": "Platform growth"
+    },
+    "createLink": "Create link",
+    "linkCreated": "Link created. Copy it now; it won't be shown again.",
+    "copy": "Copy",
+    "copied": "✓ Copied",
+    "linkStatus": {
+      "active": "Active",
+      "expired": "Expired",
+      "revoked": "Revoked"
+    },
+    "expires": "Expires {date}",
+    "views": "{n} views",
+    "withPassword": "Password",
+    "revoke": "Revoke",
+    "confirmRevoke": "Revoke this link? Nobody will be able to open it.",
+    "enterPassword": "This report is password protected",
+    "wrongPassword": "Wrong password.",
+    "open": "Open",
+    "linkUnavailable": "This link isn't available (expired or revoked).",
+    "reportMeta": "Last {months} months · updated {date}",
+    "printPdf": "Print / PDF",
+    "confidential": "Confidential report for the recipient only. The link expires {date}."
   }
 }

@@ -950,5 +950,9 @@
     "reportMeta": "Last {months} months · updated {date}",
     "printPdf": "Print / PDF",
     "confidential": "Confidential report for the recipient only. The link expires {date}."
+  },
+  "Site": {
+    "followUs": "Follow us",
+    "followOn": "Follow Wsool on {platform} (opens in a new tab)"
   }
 }

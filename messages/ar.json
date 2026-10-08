@@ -950,5 +950,9 @@
     "reportMeta": "آخر {months} أشهر · محدّث {date}",
     "printPdf": "اطبع / PDF",
     "confidential": "تقرير سري للمستلم فقط. الرابط ينتهي {date}."
+  },
+  "Site": {
+    "followUs": "تابعنا",
+    "followOn": "تابع وصول على {platform} (يفتح في نافذة جديدة)"
   }
 }

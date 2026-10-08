@@ -389,3 +389,11 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
   (`normalizeWhatsapp()`: strips `+`/`00`/spaces, Arabic digits, Saudi `05…` → `9665…`; DB check
   `^[0-9]{8,15}$`) and the email lowercased; empty = hidden on the page. The public WhatsApp button
   opens the chat with a prefilled "found you on Wsool: wsool.link/<username>" message.
+- **Appearance** (`dashboard/appearance/`): `saveAppearance` saves template, custom colors (kept
+  when switching away from Custom), accent (null = template's), number font, hide branding. Free
+  users can't save Pro templates or hide the footer (`FREE_LIMITS`, checked on the server; the UI
+  locks them). Live preview = `Preview.tsx` using the same `pageTheme()` as the public page.
+- **Trial end and the page cache**: `getPublicPage` shortens its cache life when a trial ends
+  within the hour, so the page drops to Free within 5 minutes of the trial ending (5 min is the
+  floor: shorter "use cache" lifetimes make Next.js treat the page as dynamic and fail).
+  Admin/payment plan changes must still call `updateTag(pageCacheTag(username))`.

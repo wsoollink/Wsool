@@ -15,7 +15,6 @@ export const pageCacheTag = (username: string) => `page:${username}`;
 export async function getPublicPage(username: string) {
   "use cache";
   cacheTag(pageCacheTag(username));
-  cacheLife("hours");
 
   const page = await db.page.findUnique({
     where: { username },
@@ -42,12 +41,23 @@ export async function getPublicPage(username: string) {
     },
   });
 
-  if (!page) return null;
-  if (!page.isPublished || page.deletedAt) return { status: "hidden" as const, username: page.username };
+  if (!page || !page.isPublished || page.deletedAt) {
+    cacheLife("hours");
+    return page ? { status: "hidden" as const, username: page.username } : null;
+  }
 
   const now = Date.now();
   const sub = page.user.subscription;
   const isPro = hasPro(sub, now);
+  // A trial ending within the hour must not keep Pro features in the cache:
+  // expire the entry when the trial ends. Next.js treats entries shorter than
+  // 5 minutes as dynamic (breaks prerendering), so 5 minutes is the floor.
+  const trialLeft = sub?.status === "trialing" && sub.trialEndsAt ? Math.ceil((sub.trialEndsAt.getTime() - now) / 1000) : Infinity;
+  if (isPro && trialLeft < 3600) {
+    const seconds = Math.max(300, trialLeft);
+    cacheLife({ stale: 300, revalidate: seconds, expire: seconds });
+  }
+  else cacheLife("hours");
 
   return {
     status: "published" as const,

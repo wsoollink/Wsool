@@ -301,5 +301,48 @@
     "emailInvalid": "Enter a valid email.",
     "useAccountEmail": "Use my account email:",
     "noneWarning": "No contact method. Brands won't be able to reach you from your page."
+  },
+  "AppearancePage": {
+    "template": "Template",
+    "templates": {
+      "white": "White",
+      "black": "Black",
+      "sand": "Sand",
+      "pink": "Pink",
+      "black_gold": "Black & Gold",
+      "vivid": "Vivid",
+      "green": "Green",
+      "custom": "Custom"
+    },
+    "proLabel": "Pro only",
+    "templateLocked": "This template is for Pro subscribers. On the Free plan you can use White or Black.",
+    "upgrade": "Go Pro",
+    "proOnly": "This option is for Pro subscribers.",
+    "customColors": "Your colors",
+    "mainColor": "Main color",
+    "secondColor": "Second color",
+    "addSecond": "Add a second color",
+    "removeSecond": "Remove",
+    "light": "Light",
+    "dark": "Dark",
+    "customHint": "We derive the rest of the palette from your colors and adjust them slightly when needed so text stays readable.",
+    "accent": "Accent color",
+    "accentHint": "Used for your specialty, the WhatsApp button and highlights. Very light colors are darkened a bit so they stay readable.",
+    "templateAccent": "Template color",
+    "anyColor": "Or pick any color",
+    "numberFont": "Number font",
+    "font": {
+      "wide": "Wide and bold",
+      "text": "Same as text"
+    },
+    "hideBranding": "Hide \"Made with ❤️ on Wsool\" on my page",
+    "hideBrandingHint": "For Pro subscribers.",
+    "sampleName": "Your name",
+    "sampleSpecialty": "Your specialty",
+    "followers": "followers",
+    "whatsapp": "WhatsApp",
+    "email": "Email",
+    "footer": "Made with ❤️ on Wsool",
+    "previewCaption": "Approximate preview. Save to update your page."
   }
 }

@@ -23,7 +23,7 @@ export const RESERVED_USERNAMES: ReadonlySet<string> = new Set([
   "invest", "verify", "verification", "notifications", "analytics", "pdf",
   "mediakit", "kit", "callback", "oauth", "reset", "brand", "assets",
   "static", "public", "images", "fonts", "og", "embed", "explore", "search",
-  "newsletter", "subscribe", "unsubscribe", "confirm",
+  "newsletter", "subscribe", "unsubscribe", "confirm", "suspended",
   "demo", "home", "new", "edit", "user", "users", "creator", "creators", "page",
   "pages", "templates", "status", "health", "robots", "sitemap", "manifest",
   "favicon", "_next", "_vercel",

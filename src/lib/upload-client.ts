@@ -1,6 +1,6 @@
 "use client";
 
-import { MEDIA_BUCKET, UPLOAD_KINDS, type UploadKind } from "@/config/uploads";
+import { UPLOAD_KINDS, type UploadKind } from "@/config/uploads";
 import { createSupabaseBrowser } from "@/lib/supabase/browser";
 import { requestUpload } from "@/app/[locale]/(site)/dashboard/upload-actions";
 
@@ -39,7 +39,7 @@ export async function uploadFile(kind: UploadKind, file: File): Promise<{ path: 
   const ticket = await requestUpload(kind, file.type, file.size);
   if ("error" in ticket) return { error: ticket.error };
   const { error } = await createSupabaseBrowser()
-    .storage.from(MEDIA_BUCKET)
+    .storage.from(rule.bucket)
     .uploadToSignedUrl(ticket.path, ticket.token, file, { contentType: file.type, cacheControl: "31536000" });
   return error ? { error: "failed" } : { path: ticket.path };
 }

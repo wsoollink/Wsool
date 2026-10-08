@@ -22,7 +22,7 @@ export async function getPublicPage(username: string) {
       id: true, username: true, primaryLang: true, enEnabled: true, template: true,
       customColors: true, accent: true, numberFont: true, hideBranding: true,
       isPublished: true, deletedAt: true, photoUrl: true, whatsapp: true, contactEmail: true,
-      user: { select: { subscription: { select: { plan: true, status: true, trialEndsAt: true } } } },
+      user: { select: { suspendedAt: true, subscription: { select: { plan: true, status: true, trialEndsAt: true } } } },
       translations: true,
       tags: { orderBy: { sort: "asc" } },
       licenses: { orderBy: { sort: "asc" } },
@@ -41,7 +41,7 @@ export async function getPublicPage(username: string) {
     },
   });
 
-  if (!page || !page.isPublished || page.deletedAt) {
+  if (!page || !page.isPublished || page.deletedAt || page.user.suspendedAt) {
     cacheLife("hours");
     return page ? { status: "hidden" as const, username: page.username } : null;
   }

@@ -73,4 +73,5 @@ if (problems.length > 0) {
   console.error("Fix them in Netlify: Project configuration > Environment variables.");
   process.exit(1);
 }
+if (!process.env.OWNER_EMAIL?.trim()) console.warn("Note: OWNER_EMAIL is not set, so nobody can open /admin.");
 console.log("All required environment variables are set.");

@@ -344,5 +344,236 @@
     "email": "Email",
     "footer": "Made with ❤️ on Wsool",
     "previewCaption": "Approximate preview. Save to update your page."
+  },
+  "Suspended": {
+    "title": "Your account is suspended",
+    "body": "The Wsool team has suspended your account and your page is hidden from visitors. Your data is kept and nothing was deleted. To ask why or appeal, contact us.",
+    "signOut": "Sign out",
+    "signingOut": "Signing out…"
+  },
+  "VerificationPage": {
+    "howTitle": "How to verify an account",
+    "how1": "Open your profile in the app and take a screenshot showing the username and follower count.",
+    "how2": "Upload it here without editing. The numbers must match what you entered in Accounts.",
+    "how3": "Our team reviews it within 48 hours. Verification lasts 90 days, and we remind you a week before it ends.",
+    "noAccounts": "Add your accounts first to verify them.",
+    "goToAccounts": "Go to accounts",
+    "freeNote": "The verified badge shows on your page with Pro. You can verify now; the badge appears when you subscribe.",
+    "followers": "Followers: {n}",
+    "status": {
+      "none": "Not verified",
+      "in_review": "In review",
+      "verified": "Verified",
+      "expiring": "Expiring soon",
+      "expired": "Expired",
+      "rejected": "Rejected"
+    },
+    "validUntil": "Verified until {date}.",
+    "expiresIn": "Verification ends in {days} days ({date}). Renew it to keep the badge.",
+    "expiredNote": "Verification has expired. Upload a new screenshot to verify again.",
+    "pendingNote": "We got your screenshot and will review it within {hours} hours.",
+    "renewalPending": "Renewal in review (within {hours} hours). The badge stays until then.",
+    "rejectedBecause": "Request rejected:",
+    "reasons": {
+      "username_missing": "The username isn't visible in the screenshot.",
+      "followers_mismatch": "The follower count in the screenshot doesn't match the number you entered.",
+      "unclear": "The screenshot is unclear or cropped.",
+      "edited": "The screenshot looks edited.",
+      "not_owner": "We couldn't confirm the account is yours.",
+      "other_account": "The screenshot shows a different account."
+    },
+    "sendScreenshot": "Upload screenshot",
+    "replaceScreenshot": "Replace screenshot",
+    "renew": "Renew verification",
+    "cancelRequest": "Cancel request"
+  },
+  "Admin": {
+    "panel": "Admin",
+    "menu": "Admin menu",
+    "nav": {
+      "overview": "Overview",
+      "verifications": "Verification queue",
+      "users": "Users",
+      "subscriptions": "Subscriptions & payments",
+      "finance": "Finance",
+      "team": "Team & permissions",
+      "audit": "Activity log"
+    },
+    "overview": {
+      "users": "Users",
+      "published": "Published pages",
+      "trialing": "On trial",
+      "pro": "Pro subscribers",
+      "pending": "{n} verification requests waiting",
+      "overdue": "{n} older than {hours} hours",
+      "onTime": "All requests are on time.",
+      "openQueue": "Open queue"
+    },
+    "verifications": {
+      "tabPending": "Waiting",
+      "tabDecided": "Decided",
+      "empty": "No requests waiting. Nice!",
+      "noneDecided": "No decisions yet.",
+      "count": "Showing {shown} of {total}",
+      "zoom": "Enlarge screenshot",
+      "close": "Close",
+      "screenshotOf": "Screenshot of @{handle}",
+      "noScreenshot": "Couldn't load the screenshot.",
+      "renewal": "Renewal",
+      "claimedFollowers": "Followers (creator's number)",
+      "page": "Page",
+      "waiting": "Received",
+      "checksTitle": "Confirm all three before approving",
+      "checks": {
+        "username": "The username in the screenshot matches the account",
+        "followers": "The follower count matches the number entered",
+        "authentic": "The screenshot is genuine, recent and unedited"
+      },
+      "approve": "Approve for 90 days",
+      "rejectReason": "Rejection reason",
+      "chooseReason": "Choose a reason",
+      "reject": "Reject",
+      "viewOnly": "View only: you can't decide on requests.",
+      "reasons": {
+        "username_missing": "Username not visible",
+        "followers_mismatch": "Follower count doesn't match",
+        "unclear": "Unclear or cropped",
+        "edited": "Looks edited",
+        "not_owner": "Can't confirm ownership",
+        "other_account": "Different account"
+      },
+      "errors": {
+        "failed": "Something went wrong. Try again.",
+        "checks": "Tick all three first.",
+        "already_decided": "Another member decided this request, or the creator cancelled it."
+      },
+      "table": {
+        "account": "Account",
+        "result": "Decision",
+        "reviewer": "Reviewer",
+        "when": "When",
+        "approved": "Approved",
+        "rejected": "Rejected"
+      }
+    },
+    "users": {
+      "search": "Search by username or email",
+      "noResults": "No one found.",
+      "noPage": "No page",
+      "suspended": "Suspended",
+      "plan": {
+        "pro": "Pro",
+        "trial": "Trial",
+        "free": "Free"
+      },
+      "back": "All users",
+      "email": "Email",
+      "joined": "Joined",
+      "planLabel": "Plan",
+      "trialEnds": "Trial ends",
+      "pageLabel": "Page",
+      "pageStatus": "Page status",
+      "published": "Published",
+      "hidden": "Hidden",
+      "accounts": "Accounts",
+      "actions": "Actions",
+      "extendTrial": "Extend the trial",
+      "plusDays": "+{days} days",
+      "pageVisibility": "Page visibility",
+      "hidePage": "Hide page",
+      "publishPage": "Publish page",
+      "suspendNote": "Reason for suspending (saved in the log)",
+      "unsuspendNote": "Note (optional)",
+      "suspend": "Suspend account",
+      "unsuspend": "Restore account",
+      "done": "✓ Done.",
+      "history": "Actions on this user",
+      "noHistory": "No actions yet.",
+      "errors": {
+        "failed": "Something went wrong. Try again.",
+        "has_paid_plan": "They have a paid plan; no extension needed."
+      },
+      "log": {
+        "verification": {
+          "approve": "Approved a verification",
+          "reject": "Rejected a verification"
+        },
+        "user": {
+          "trial_extend": "Extended the trial",
+          "suspend": "Suspended the account",
+          "unsuspend": "Restored the account"
+        },
+        "page": {
+          "publish": "Published the page",
+          "hide": "Hid the page"
+        },
+        "team": {
+          "invite": "Added a team member",
+          "update": "Changed a member's permissions",
+          "remove": "Removed a team member"
+        }
+      }
+    },
+    "team": {
+      "owner": "Owner",
+      "ownerNote": "All permissions; can't be edited.",
+      "inviteTitle": "Add a member",
+      "inviteHint": "They sign in to Wsool with this email, then open wsool.link/admin.",
+      "email": "Email",
+      "role": "Role",
+      "roles": {
+        "verifier": "Verifier",
+        "support": "Support",
+        "finance": "Finance",
+        "custom": "Custom"
+      },
+      "permissions": "Permissions",
+      "perm": {
+        "verifications": {
+          "view": "View verifications",
+          "decide": "Approve/reject verifications"
+        },
+        "users": {
+          "view": "View users",
+          "edit": "Hide/publish pages",
+          "suspend": "Suspend accounts"
+        },
+        "trial": {
+          "extend": "Extend trials"
+        },
+        "revenue": {
+          "view": "View revenue"
+        },
+        "refunds": "Issue refunds"
+      },
+      "invite": "Add",
+      "invited": "✓ Added. They can sign in with their email now.",
+      "members": "Members ({n})",
+      "noMembers": "No members yet.",
+      "notSignedInYet": "Hasn't signed in yet",
+      "inactive": "Inactive",
+      "active": "Active",
+      "save": "Save",
+      "saved": "✓ Saved.",
+      "remove": "Remove",
+      "confirmRemove": "Remove {email} from the team? They lose access immediately.",
+      "errors": {
+        "failed": "Something went wrong. Try again.",
+        "invalid_email": "Enter a valid email.",
+        "exists": "This email is already on the team.",
+        "owner_email": "That's the owner's email."
+      }
+    },
+    "audit": {
+      "empty": "No actions yet.",
+      "when": "When",
+      "who": "Who",
+      "what": "What",
+      "details": "Details"
+    },
+    "later": {
+      "subscriptions": "This section comes with payments in phase 5.",
+      "finance": "This section comes in phase 6."
+    }
   }
 }

@@ -47,6 +47,8 @@ export async function saveAccounts(items: AccountInput[]): Promise<AccountsResul
       const changed = followersChanged || old.platform !== platform || old.handle !== item.handle;
       const reset = changed && old.verificationStatus !== "none" && old.verificationStatus !== "rejected";
       if (reset) resets.add(old.id);
+      // The screenshot under review no longer matches the account.
+      if (changed) await tx.verificationRequest.updateMany({ where: { accountId: old.id, status: "pending" }, data: { status: "cancelled" } });
       saved.push(
         await tx.socialAccount.update({
           where: { id: old.id },

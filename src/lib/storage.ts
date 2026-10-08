@@ -1,11 +1,12 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
-import { EXTENSIONS, MEDIA_BUCKET, UPLOAD_KINDS, type UploadKind } from "@/config/uploads";
+import { EXTENSIONS, MEDIA_BUCKET, UPLOAD_KINDS, VERIFICATION_BUCKET, type UploadKind } from "@/config/uploads";
 import { createSupabaseAdmin } from "@/lib/supabase/admin";
 import { supabaseEnv } from "@/lib/supabase/env";
 
 /**
- * Every file a creator uploads lives under media/<userId>/<kind>/. The server
+ * Every file a creator uploads lives under <bucket>/<userId>/<kind>/ (bucket
+ * "media" for public page files, "verification" for private screenshots). The server
  * picks the path, so a creator can never write into someone else's folder.
  */
 
@@ -23,7 +24,7 @@ export async function createUploadTicket(
   if (!Number.isFinite(size) || size <= 0 || size > rule.maxBytes) return { error: "size" };
 
   const path = `${userId}/${kind}/${randomUUID()}.${EXTENSIONS[contentType]}`;
-  const { data, error } = await createSupabaseAdmin().storage.from(MEDIA_BUCKET).createSignedUploadUrl(path);
+  const { data, error } = await createSupabaseAdmin().storage.from(rule.bucket).createSignedUploadUrl(path);
   if (error || !data) return { error: "failed" };
   return { path: data.path, token: data.token };
 }
@@ -34,7 +35,7 @@ export async function isOwnUploadedFile(userId: string, kind: UploadKind, path: 
   if (!path.startsWith(prefix) || path.includes("..")) return false;
   const name = path.slice(prefix.length);
   if (!/^[0-9a-f-]{36}\.[a-z0-9]{2,4}$/.test(name)) return false;
-  const { data } = await createSupabaseAdmin().storage.from(MEDIA_BUCKET).list(`${userId}/${kind}`, { search: name, limit: 1 });
+  const { data } = await createSupabaseAdmin().storage.from(UPLOAD_KINDS[kind].bucket).list(`${userId}/${kind}`, { search: name, limit: 1 });
   return !!data?.some((f) => f.name === name);
 }
 
@@ -52,4 +53,14 @@ export function pathFromPublicUrl(url: string | null | undefined): string | null
 export async function removeFiles(paths: (string | null)[]) {
   const list = paths.filter((p): p is string => !!p);
   if (list.length) await createSupabaseAdmin().storage.from(MEDIA_BUCKET).remove(list);
+}
+
+/** Short-lived link to a private verification screenshot (staff review only). */
+export async function signedVerificationUrl(path: string, seconds = 600): Promise<string | null> {
+  const { data } = await createSupabaseAdmin().storage.from(VERIFICATION_BUCKET).createSignedUrl(path, seconds);
+  return data?.signedUrl ?? null;
+}
+
+export async function removeVerificationFiles(paths: string[]) {
+  if (paths.length) await createSupabaseAdmin().storage.from(VERIFICATION_BUCKET).remove(paths);
 }

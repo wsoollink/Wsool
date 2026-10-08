@@ -63,6 +63,9 @@ model User {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
 
+  /// Set by staff to suspend the account (page hidden, dashboard read-only).
+  suspendedAt DateTime? @map("suspended_at") @db.Timestamptz
+
   page         Page?
   subscription Subscription?
 
@@ -218,10 +221,11 @@ model SocialAccount {
   verifiedUntil      DateTime?          @map("verified_until") @db.Timestamptz
   sort               Int                @default(0)
 
-  page     Page             @relation(fields: [pageId], references: [id], onDelete: Cascade)
-  audience AudienceData?
-  rates    Rate[]
-  bundles  BundlePlatform[]
+  page                 Page                  @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  audience             AudienceData?
+  rates                Rate[]
+  bundles              BundlePlatform[]
+  verificationRequests VerificationRequest[]
 
   @@index([pageId, sort])
   @@map("social_accounts")
@@ -364,4 +368,77 @@ model BundleRate {
 
   @@index([bundleId, sort])
   @@map("bundle_rates")
+}
+
+enum RequestStatus {
+  pending
+  approved
+  rejected
+  /// The creator changed the account (or sent a new screenshot) before review.
+  cancelled
+}
+
+/// A creator's request to verify one account (CLAUDE.md section 7).
+model VerificationRequest {
+  id             String        @id @default(uuid()) @db.Uuid
+  accountId      String        @map("account_id") @db.Uuid
+  /// Private storage path (bucket "verification").
+  screenshotPath String        @map("screenshot_path")
+  /// Snapshot of what was submitted, so staff review exactly that.
+  platform       Platform
+  handle         String        @db.VarChar(60)
+  followers      Int
+  status         RequestStatus @default(pending)
+  /// Preset rejection reason key (src/config/verification.ts).
+  reason         String?       @db.VarChar(40)
+  reviewedBy     String?       @map("reviewed_by") @db.Uuid
+  reviewedAt     DateTime?     @map("reviewed_at") @db.Timestamptz
+  createdAt      DateTime      @default(now()) @map("created_at") @db.Timestamptz
+
+  account SocialAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@index([status, createdAt])
+  @@index([accountId, createdAt])
+  @@map("verification_requests")
+}
+
+enum AdminRole {
+  owner
+  verifier
+  support
+  finance
+  custom
+}
+
+/// Wsool staff. The owner comes from OWNER_EMAIL; members are invited by email
+/// and linked to their user id on their first visit to /admin.
+model AdminMember {
+  id          String    @id @default(uuid()) @db.Uuid
+  email       String    @unique
+  userId      String?   @unique @map("user_id") @db.Uuid
+  role        AdminRole
+  /// Permission keys (src/config/admin.ts) for non-owner members.
+  permissions Json      @default("[]")
+  active      Boolean   @default(true)
+  invitedBy   String?   @map("invited_by") @db.Uuid
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@map("admin_members")
+}
+
+/// Every admin action: who, what, when (CLAUDE.md section 9).
+model AuditLog {
+  id         String   @id @default(uuid()) @db.Uuid
+  actorId    String   @map("actor_id") @db.Uuid
+  actorEmail String   @map("actor_email")
+  action     String   @db.VarChar(60)
+  targetType String?  @map("target_type") @db.VarChar(30)
+  targetId   String?  @map("target_id")
+  details    Json?
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([createdAt])
+  @@index([targetType, targetId])
+  @@map("audit_log")
 }

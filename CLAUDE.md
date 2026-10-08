@@ -397,3 +397,25 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
   within the hour, so the page drops to Free within 5 minutes of the trial ending (5 min is the
   floor: shorter "use cache" lifetimes make Next.js treat the page as dynamic and fail).
   Admin/payment plan changes must still call `updateTag(pageCacheTag(username))`.
+
+### Verification + admin (Phase 4)
+- Migration `*_admin_verification`: `verification_requests` (snapshot of platform/handle/followers,
+  one pending per account), `admin_members`, `audit_log`, `users.suspended_at`, private storage
+  bucket `verification`. Creators can only SELECT their own requests; staff tables have RLS with
+  no policies (server only).
+- Upload kinds carry their bucket (`src/config/uploads.ts`); screenshots go to the private bucket
+  and staff see them through 10-minute signed URLs (`signedVerificationUrl`).
+- Creator side (`dashboard/verification/`): `submitVerification` / `cancelVerification`. A renewal
+  keeps a still-valid verification until it's decided. Changing an account (Accounts section)
+  cancels its pending request. Rules and statuses: `src/config/verification.ts`
+  (`verificationDisplay()`: none, in_review, verified, expiring = last 7 days, expired, rejected).
+- **Admin access** (`src/lib/admin.ts`): the owner = whoever signs in with `OWNER_EMAIL` (env var,
+  comma-separated). Members are invited by email (Team page) and linked on first visit.
+  `requireAdmin(permission?)` returns 404 to non-staff. Permissions/presets/sections:
+  `src/config/admin.ts`. Only the owner sees Team and Activity log.
+- **Every admin action calls `audit()`** inside the same transaction as the change.
+- Decisions use `updateMany where status = pending` so two staff can't decide the same request.
+- Suspended accounts: `requireCreator()` sends them to `/suspended`; `getPublicPage` hides the page.
+- next-intl reads dots in keys as nesting: message keys for dotted ids (`user.suspend`,
+  `verifications.view`) are nested objects.
+- Emails/notifications for decisions and invitations are TODO(phase 6).

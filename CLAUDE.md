@@ -295,3 +295,17 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
   section = add its own folder (e.g. `dashboard/accounts/`), which takes priority.
 - `usePathname()` may return the internal `/<locale>/...` path; nav strips it before matching.
 - Bell unread dot is a TODO until the notifications table exists.
+
+### Public creator page (Phase 2)
+- Route: `src/app/[locale]/(creator)/[username]/` with its **own root layout**. `[locale]` is the
+  visitor's language (site cookie, then device); `resolvePageLang()` picks it if the creator
+  offers it, else the creator's primary language. `html lang/dir` follow that.
+- Data: `getPublicPage(username)` in `src/lib/public-page.ts` (`"use cache"`, public fields only,
+  tag `pageCacheTag(username)`, `cacheLife("hours")`). **Every edit to a creator's page data
+  must call `revalidateTag(pageCacheTag(username))`** (Phase 3), also publish/unpublish,
+  username change (old and new), plan changes and verification decisions.
+- States: unknown/invalid name → creator not-found (invite to claim); unpublished or deleted →
+  "not available" page with noindex; `/Ali` → 308 to `/ali`.
+- Reserved names only block claiming; staff-made pages with reserved names still render.
+- Demo page: `scripts/seed-demo.ts` creates `/demo` (reserved username) with sample data and
+  assets in `public/demo/`. Local: `DATABASE_URL=<local> npx tsx scripts/seed-demo.ts`.

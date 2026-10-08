@@ -83,5 +83,14 @@
     "signOut": "تسجيل الخروج",
     "signingOut": "جاري تسجيل الخروج…",
     "accountsShort": "الحسابات"
+  },
+  "CreatorPage": {
+    "brand": "وصول",
+    "notFoundTitle": "هذا الرابط ما عليه صفحة",
+    "notFoundBody": "الاسم متاح، تقدر تحجزه لصفحتك على وصول.",
+    "claimCta": "احجز اسمك",
+    "hiddenTitle": "الصفحة غير متاحة حالياً",
+    "hiddenBody": "صاحب الصفحة أخفاها مؤقتاً.",
+    "madeWith": "صنعت بـ❤️ وصول"
   }
 }

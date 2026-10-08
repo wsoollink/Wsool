@@ -83,5 +83,14 @@
     "signOut": "Sign out",
     "signingOut": "Signing out…",
     "accountsShort": "Accounts"
+  },
+  "CreatorPage": {
+    "brand": "Wsool",
+    "notFoundTitle": "No page at this link",
+    "notFoundBody": "This name is free. You can claim it for your Wsool page.",
+    "claimCta": "Claim your name",
+    "hiddenTitle": "This page isn't available right now",
+    "hiddenBody": "Its owner has hidden it for now.",
+    "madeWith": "Made with ❤️ on Wsool"
   }
 }

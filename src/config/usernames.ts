@@ -24,7 +24,7 @@ export const RESERVED_USERNAMES: ReadonlySet<string> = new Set([
   "mediakit", "kit", "callback", "oauth", "reset", "brand", "assets",
   "static", "public", "images", "fonts", "og", "embed", "explore", "search",
   "newsletter", "subscribe", "unsubscribe", "confirm",
-  "home", "new", "edit", "user", "users", "creator", "creators", "page",
+  "demo", "home", "new", "edit", "user", "users", "creator", "creators", "page",
   "pages", "templates", "status", "health", "robots", "sitemap", "manifest",
   "favicon", "_next", "_vercel",
   // Brand and infrastructure

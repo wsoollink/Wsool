@@ -331,3 +331,11 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
   video playback can only be checked there with a WebM copy.
 - Video files (`.mp4/.webm/.mov/.m4v`) are assets: excluded in the proxy matcher and blocked as
   username endings.
+- Link preview (OG) image: route handler `src/app/[locale]/(creator)/[username]/og/route.tsx`,
+  public URL `/<username>/og` (not the `opengraph-image` file convention, whose URL would carry
+  the internal `/<locale>` prefix). Metadata sets `og:image`/`twitter:image` and `metadataBase`
+  from `siteOrigin()` (`NEXT_PUBLIC_SITE_URL`, else Netlify's `URL`). CDN-cached for a day.
+- **Arabic in OG images**: next/og (Satori) mis-measures Arabic, breaking word spacing. Text is
+  shaped with fontkit and drawn as SVG outlines (`src/lib/og-text.ts`, right-to-left with line
+  wrapping). Fonts live in `assets/fonts/` (OFL) and are listed in `outputFileTracingIncludes`.
+  Satori also crashes on `backgroundImage: undefined`; only pass it when set.

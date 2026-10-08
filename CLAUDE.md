@@ -360,3 +360,9 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
   SVG is never accepted (it can carry scripts).
 - Sandbox test browsers can't reach Supabase directly; relay `*.supabase.co` requests through
   Node in the test (`page.route` + `fetch` with `NODE_USE_ENV_PROXY=1`).
+- Tags (`saveTags`, per language, max 12, 18 chars) and licenses (`saveLicenses`, max 10) are
+  saved as whole lists (delete + recreate). A license file must be a fresh upload in the
+  creator's own folder or a file one of their licenses already had; unused files are deleted.
+- **Netlify credits**: Free plan = 300 credits/month, each production deploy = 15 credits, branch
+  deploys are free. Production branch is `main` (updated only when the owner approves);
+  `claude/new-session-r5ze7y` gets free branch deploys. Avoid needless production deploys.

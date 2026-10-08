@@ -160,6 +160,27 @@
       "type": "نوع الملف غير مدعوم.",
       "size": "الملف أكبر من الحد المسموح.",
       "failed": "ما قدرنا نرفع الملف. جرّب مرة ثانية."
-    }
+    },
+    "tags": "الوسوم",
+    "tagsHint": "كلمات قصيرة تحت نبذتك، حتى 18 حرف للوسم، وبحد أقصى {max}.",
+    "newTag": "وسم جديد",
+    "addTag": "أضف الوسم",
+    "moveUp": "حرّك {item} لفوق",
+    "moveDown": "حرّك {item} لتحت",
+    "remove": "احذف {item}",
+    "licenses": "الرخص",
+    "licensesHint": "مثل رخصة موثوق. تظهر في صفحتك بس إذا أضفت رخصة.",
+    "addLicense": "أضف رخصة",
+    "licenseN": "رخصة {n}",
+    "licenseName": "اسم الرخصة",
+    "licenseNameHint": "مثل: رخصة موثوق",
+    "licenseNameEn": "اسم الرخصة بالإنجليزي (اختياري)",
+    "licenseNumber": "رقم الرخصة",
+    "attachFile": "أرفق ملف (اختياري)",
+    "replaceFile": "غيّر الملف",
+    "fileAttached": "✓ الملف مرفق",
+    "removeFile": "شيل الملف",
+    "removeLicense": "احذف الرخصة {n}",
+    "licenseIncomplete": "كل رخصة تحتاج اسم ورقم."
   }
 }

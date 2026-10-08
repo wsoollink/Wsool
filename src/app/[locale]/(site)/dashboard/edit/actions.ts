@@ -6,7 +6,7 @@ import { isOwnUploadedFile, pathFromPublicUrl, publicFileUrl, removeFiles } from
 import { db } from "@/lib/db";
 import { pageCacheTag } from "@/lib/public-page";
 import { pageLanguages } from "@/lib/page-language";
-import { profileSchema, TRANSLATION_FIELDS } from "@/lib/validation/profile";
+import { licensesSchema, profileSchema, tagsSchema, TRANSLATION_FIELDS } from "@/lib/validation/profile";
 
 export type SaveState = { ok?: boolean; errors?: Record<string, string>; error?: "failed" | "needs_name" };
 
@@ -75,4 +75,53 @@ export async function savePhoto(path: string | null): Promise<SaveState & { url?
   await removeFiles([pathFromPublicUrl(page.photoUrl)]).catch(() => {});
   updateTag(pageCacheTag(page.username));
   return { ok: true, url };
+}
+
+/** Replaces the creator's tags for one language (order = list order). */
+export async function saveTags(lang: "ar" | "en", labels: string[]): Promise<SaveState> {
+  const { page } = await requireCreator();
+  const parsed = tagsSchema.safeParse({ lang, labels });
+  if (!parsed.success) return { error: "failed" };
+  const unique = [...new Set(parsed.data.labels)];
+  await db.$transaction([
+    db.tag.deleteMany({ where: { pageId: page.id, lang } }),
+    db.tag.createMany({ data: unique.map((label, sort) => ({ pageId: page.id, lang, label, sort })) }),
+  ]);
+  updateTag(pageCacheTag(page.username));
+  return { ok: true };
+}
+
+export type LicenseInput = { name: string; nameEn: string; number: string; filePath: string | null; fileUrl: string | null };
+
+/**
+ * Replaces the creator's licenses. A file is either a fresh upload in the
+ * creator's own folder or a file one of their current licenses already has;
+ * any other URL is refused. Files no longer used are deleted.
+ */
+export async function saveLicenses(items: LicenseInput[]): Promise<SaveState> {
+  const { user, page } = await requireCreator();
+  const parsed = licensesSchema.safeParse(items);
+  if (!parsed.success) return { error: "failed" };
+
+  const current = await db.license.findMany({ where: { pageId: page.id }, select: { fileUrl: true } });
+  const currentUrls = new Set(current.map((l) => l.fileUrl).filter(Boolean));
+
+  const rows = [];
+  for (const [sort, item] of parsed.data.entries()) {
+    let fileUrl: string | null = null;
+    if (item.filePath) {
+      if (!(await isOwnUploadedFile(user.id, "license", item.filePath))) return { error: "failed" };
+      fileUrl = publicFileUrl(item.filePath);
+    } else if (item.fileUrl) {
+      if (!currentUrls.has(item.fileUrl)) return { error: "failed" };
+      fileUrl = item.fileUrl;
+    }
+    rows.push({ pageId: page.id, name: item.name, nameEn: item.nameEn || null, number: item.number, fileUrl, sort });
+  }
+
+  await db.$transaction([db.license.deleteMany({ where: { pageId: page.id } }), db.license.createMany({ data: rows })]);
+  const kept = new Set(rows.map((r) => r.fileUrl));
+  await removeFiles([...currentUrls].filter((u) => !kept.has(u)).map((u) => pathFromPublicUrl(u))).catch(() => {});
+  updateTag(pageCacheTag(page.username));
+  return { ok: true };
 }

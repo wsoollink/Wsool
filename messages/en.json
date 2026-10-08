@@ -160,6 +160,27 @@
       "type": "This file type isn't supported.",
       "size": "The file is larger than allowed.",
       "failed": "We couldn't upload the file. Please try again."
-    }
+    },
+    "tags": "Tags",
+    "tagsHint": "Short words under your bio, up to 18 characters each, max {max}.",
+    "newTag": "New tag",
+    "addTag": "Add tag",
+    "moveUp": "Move {item} up",
+    "moveDown": "Move {item} down",
+    "remove": "Remove {item}",
+    "licenses": "Licenses",
+    "licensesHint": "e.g. your Mawthooq license. Shown on your page only if you add one.",
+    "addLicense": "Add license",
+    "licenseN": "License {n}",
+    "licenseName": "License name",
+    "licenseNameHint": "e.g. رخصة موثوق",
+    "licenseNameEn": "License name in English (optional)",
+    "licenseNumber": "License number",
+    "attachFile": "Attach file (optional)",
+    "replaceFile": "Replace file",
+    "fileAttached": "✓ File attached",
+    "removeFile": "Remove file",
+    "removeLicense": "Remove license {n}",
+    "licenseIncomplete": "Each license needs a name and a number."
   }
 }

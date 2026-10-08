@@ -36,7 +36,8 @@
       "invalid_code": "The code is wrong or has expired.",
       "rate_limited": "Too many attempts. Please wait a bit and try again.",
       "failed": "Something went wrong. Please try again."
-    }
+    },
+    "agree": "By continuing, you agree to the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>."
   },
   "Dashboard": {
     "welcome": "Welcome to Wsool",

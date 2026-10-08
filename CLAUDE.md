@@ -495,3 +495,8 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
   links (no stored token) for `/newsletter/confirm` and `/newsletter/unsubscribe`, one-click
   `List-Unsubscribe` POST at `/api/newsletter/unsubscribe`, one confirmation per address per 10 min.
   Admin overview shows the confirmed count; CSV at `/api/admin/newsletter` (`users.view`, audited).
+- **Terms / Privacy** (`/terms`, `/privacy`): text in `src/content/legal.ts` (from the owner's doc,
+  adjusted to the real stack), rendered by `src/components/legal/LegalPage.tsx`. Blanks (entity,
+  registration, payment gateway, effective date) come from `LEGAL` in `src/config/site.ts`; empty
+  ones show as [placeholders]. Login shows "by continuing you agree…" with both links.
+  Update the text whenever a provider or data practice changes.

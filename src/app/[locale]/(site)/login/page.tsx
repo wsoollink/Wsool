@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Suspense } from "react";
 import { notFound, redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -28,6 +29,12 @@ export default async function LoginPage({ params }: PageProps<"/[locale]/login">
           <p className="mt-1 text-sm text-muted">{t("subtitle")}</p>
         </div>
         <LoginForm />
+        <p className="text-xs leading-6 text-muted">
+          {t.rich("agree", {
+            terms: (c) => <Link href="/terms" className="font-semibold text-blue underline underline-offset-2">{c}</Link>,
+            privacy: (c) => <Link href="/privacy" className="font-semibold text-blue underline underline-offset-2">{c}</Link>,
+          })}
+        </p>
       </Card>
     </main>
   );

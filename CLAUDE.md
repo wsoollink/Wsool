@@ -194,6 +194,11 @@ Username rules: lowercase a–z, 0–9, dot, underscore, 3–20 chars, not reser
        unsubscribed_at), no duplicate emails.
      - Sent through Resend from `mail.wsool.link`.
      - Admin panel: subscriber count + CSV export.
+   - **Footer social icons** on the marketing site (Arabic + English) for Wsool's own accounts:
+     Instagram, TikTok, X, Snapchat, YouTube, Facebook.
+     - Links live in one config file (site-config).
+     - A platform with an empty link shows no icon.
+     - Links open in a new tab; every icon has a descriptive accessible name for screen readers.
 
 Before starting each phase: write a short plan in Arabic and wait for the owner's "تمام".
 

@@ -84,14 +84,27 @@ model Page {
   accent            String?    @db.VarChar(7)
   numberFont        NumberFont @default(wide) @map("number_font")
   hideBranding      Boolean    @default(false) @map("hide_branding")
+  /// Square hero photo (Supabase Storage URL).
+  photoUrl          String?    @map("photo_url")
+  /// WhatsApp number in international format, digits only (e.g. 9665XXXXXXXX).
+  whatsapp          String?    @db.VarChar(20)
+  contactEmail      String?    @map("contact_email") @db.VarChar(254)
   isPublished       Boolean    @default(false) @map("is_published")
   /// Set when the creator deletes the account (30-day undo window).
   deletedAt         DateTime?  @map("deleted_at") @db.Timestamptz
   createdAt         DateTime   @default(now()) @map("created_at") @db.Timestamptz
   updatedAt         DateTime   @updatedAt @map("updated_at") @db.Timestamptz
 
-  user         User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  translations PageTranslation[]
+  user           User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  translations   PageTranslation[]
+  tags           Tag[]
+  licenses       License[]
+  socialAccounts SocialAccount[]
+  monthlyViews   MonthlyView[]
+  brandLogos     BrandLogo[]
+  portfolioItems PortfolioItem[]
+  rateSettings   RateSettings?
+  rateBundles    RateBundle[]
 
   @@map("pages")
 }
@@ -141,4 +154,214 @@ model Subscription {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("subscriptions")
+}
+
+enum Platform {
+  tiktok
+  instagram
+  x
+  youtube
+  snapchat
+  threads
+  telegram
+  facebook
+  linkedin
+}
+
+/// "expiring soon" is derived from verifiedUntil, not stored.
+enum VerificationStatus {
+  none
+  in_review
+  verified
+  rejected
+}
+
+/// Short labels under the bio (max 18 chars, written per language).
+model Tag {
+  id     String @id @default(uuid()) @db.Uuid
+  pageId String @map("page_id") @db.Uuid
+  lang   Lang
+  label  String @db.VarChar(18)
+  sort   Int    @default(0)
+
+  page Page @relation(fields: [pageId], references: [id], onDelete: Cascade)
+
+  @@index([pageId, lang, sort])
+  @@map("tags")
+}
+
+/// Free-form licenses, e.g. "رخصة موثوق" + number + optional file.
+model License {
+  id      String  @id @default(uuid()) @db.Uuid
+  pageId  String  @map("page_id") @db.Uuid
+  name    String  @db.VarChar(60)
+  nameEn  String? @map("name_en") @db.VarChar(60)
+  number  String  @db.VarChar(60)
+  fileUrl String? @map("file_url")
+  sort    Int     @default(0)
+
+  page Page @relation(fields: [pageId], references: [id], onDelete: Cascade)
+
+  @@index([pageId, sort])
+  @@map("licenses")
+}
+
+model SocialAccount {
+  id                 String             @id @default(uuid()) @db.Uuid
+  pageId             String             @map("page_id") @db.Uuid
+  platform           Platform
+  handle             String             @db.VarChar(60)
+  url                String
+  followers          Int                @default(0)
+  followersUpdatedAt DateTime?          @map("followers_updated_at") @db.Timestamptz
+  verificationStatus VerificationStatus @default(none) @map("verification_status")
+  verifiedUntil      DateTime?          @map("verified_until") @db.Timestamptz
+  sort               Int                @default(0)
+
+  page     Page             @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  audience AudienceData?
+  rates    Rate[]
+  bundles  BundlePlatform[]
+
+  @@index([pageId, sort])
+  @@map("social_accounts")
+}
+
+/// Audience breakdown shown in the platform pop-up. Each field is a list of
+/// { label, percent } entries.
+model AudienceData {
+  id        String   @id @default(uuid()) @db.Uuid
+  accountId String   @unique @map("account_id") @db.Uuid
+  gender    Json?
+  ages      Json?
+  countries Json?
+  cities    Json?
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  account SocialAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@map("audience_data")
+}
+
+model MonthlyView {
+  id     String   @id @default(uuid()) @db.Uuid
+  pageId String   @map("page_id") @db.Uuid
+  /// First day of the month.
+  month  DateTime @db.Date
+  views  BigInt
+
+  page Page @relation(fields: [pageId], references: [id], onDelete: Cascade)
+
+  @@unique([pageId, month])
+  @@map("monthly_views")
+}
+
+model BrandLogo {
+  id      String @id @default(uuid()) @db.Uuid
+  pageId  String @map("page_id") @db.Uuid
+  name    String @db.VarChar(60)
+  logoUrl String @map("logo_url")
+  sort    Int    @default(0)
+
+  page Page @relation(fields: [pageId], references: [id], onDelete: Cascade)
+
+  @@index([pageId, sort])
+  @@map("brand_logos")
+}
+
+/// Past work: a portrait video with brand/type text per language.
+model PortfolioItem {
+  id       String    @id @default(uuid()) @db.Uuid
+  pageId   String    @map("page_id") @db.Uuid
+  platform Platform?
+  videoUrl String    @map("video_url")
+  thumbUrl String?   @map("thumb_url")
+  sort     Int       @default(0)
+
+  page         Page                       @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  translations PortfolioItemTranslation[]
+
+  @@index([pageId, sort])
+  @@map("portfolio_items")
+}
+
+model PortfolioItemTranslation {
+  id     String @id @default(uuid()) @db.Uuid
+  itemId String @map("item_id") @db.Uuid
+  lang   Lang
+  brand  String @default("") @db.VarChar(60)
+  type   String @default("") @db.VarChar(60)
+
+  item PortfolioItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@unique([itemId, lang])
+  @@map("portfolio_item_translations")
+}
+
+model RateSettings {
+  pageId      String   @id @map("page_id") @db.Uuid
+  showOnPage  Boolean  @default(true) @map("show_on_page")
+  showInPdf   Boolean  @default(true) @map("show_in_pdf")
+  currency    Currency @default(SAR)
+  vatIncluded Boolean  @default(true) @map("vat_included")
+
+  page Page @relation(fields: [pageId], references: [id], onDelete: Cascade)
+
+  @@map("rate_settings")
+}
+
+/// A rate type the creator defines for one platform account (e.g. "Story").
+model Rate {
+  id        String  @id @default(uuid()) @db.Uuid
+  accountId String  @map("account_id") @db.Uuid
+  name      String  @db.VarChar(40)
+  nameEn    String? @map("name_en") @db.VarChar(40)
+  price     Decimal @db.Decimal(12, 2)
+  sort      Int     @default(0)
+
+  account SocialAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@index([accountId, sort])
+  @@map("rates")
+}
+
+/// Optional bundle across platforms with its own rate types.
+model RateBundle {
+  id     String  @id @default(uuid()) @db.Uuid
+  pageId String  @map("page_id") @db.Uuid
+  name   String? @db.VarChar(40)
+  nameEn String? @map("name_en") @db.VarChar(40)
+  sort   Int     @default(0)
+
+  page      Page             @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  platforms BundlePlatform[]
+  rates     BundleRate[]
+
+  @@index([pageId, sort])
+  @@map("rate_bundles")
+}
+
+model BundlePlatform {
+  bundleId  String @map("bundle_id") @db.Uuid
+  accountId String @map("account_id") @db.Uuid
+
+  bundle  RateBundle    @relation(fields: [bundleId], references: [id], onDelete: Cascade)
+  account SocialAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@id([bundleId, accountId])
+  @@map("bundle_platforms")
+}
+
+model BundleRate {
+  id       String  @id @default(uuid()) @db.Uuid
+  bundleId String  @map("bundle_id") @db.Uuid
+  name     String  @db.VarChar(40)
+  nameEn   String? @map("name_en") @db.VarChar(40)
+  price    Decimal @db.Decimal(12, 2)
+  sort     Int     @default(0)
+
+  bundle RateBundle @relation(fields: [bundleId], references: [id], onDelete: Cascade)
+
+  @@index([bundleId, sort])
+  @@map("bundle_rates")
 }

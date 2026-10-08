@@ -251,7 +251,12 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
 - Migrations reach Supabase on deploy: Netlify runs `npm run build:deploy` =
   `prisma migrate deploy && next build` (see `netlify.toml`).
 - RLS migration (`prisma/migrations/*_rls`): RLS on every table, owner-only policies for
-  `authenticated`, no access for `anon`. Every new table needs RLS + policies in its migration.
+  `authenticated`, no access for `anon`. Every new table needs RLS + policies in its migration
+  (helpers `owns_page()`, `owns_account()`, `owns_bundle()` exist).
+- **The Data API is read-only** for `anon`/`authenticated` (INSERT/UPDATE/DELETE revoked in the
+  `*_page_content` migration, also for future tables). All writes go through the server, which
+  enforces ownership, verification rules and plan limits (otherwise a creator could self-verify
+  or enable Pro settings via the public API).
 - Reserved usernames: `src/config/usernames.ts` (code, all site routes) + `reserved_usernames`
   table (extra names staff add).
 

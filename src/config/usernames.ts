@@ -41,3 +41,27 @@ export const ASSET_EXTENSIONS = [
   "ico", "png", "jpg", "jpeg", "gif", "svg", "webp", "avif", "txt", "xml",
   "webmanifest", "json", "css", "js", "map", "woff", "woff2", "ttf", "otf", "pdf",
 ] as const;
+
+/** A creator can change their username once every this many days. */
+export const USERNAME_CHANGE_COOLDOWN_DAYS = 30;
+
+export type UsernameFormatError = "length" | "characters" | "dots" | "reserved" | "extension";
+
+/**
+ * Pure format check (no database). Expects an already-normalized name
+ * (see normalizeUsername). Shared by the browser hint and the server check.
+ */
+export function usernameFormatError(name: string): UsernameFormatError | null {
+  if (name.length < USERNAME_MIN || name.length > USERNAME_MAX) return "length";
+  if (!USERNAME_PATTERN.test(name)) return "characters";
+  if (name.startsWith(".") || name.endsWith(".") || name.includes("..")) return "dots";
+  if (RESERVED_USERNAMES.has(name)) return "reserved";
+  const extension = name.includes(".") ? name.slice(name.lastIndexOf(".") + 1) : "";
+  if ((ASSET_EXTENSIONS as readonly string[]).includes(extension)) return "extension";
+  return null;
+}
+
+/** Usernames are case-insensitive: always trim and lowercase before use. */
+export function normalizeUsername(input: string): string {
+  return input.trim().replace(/^@/, "").toLowerCase();
+}

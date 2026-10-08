@@ -256,3 +256,13 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
 - Supabase project: `wsool-eu` in Frankfurt (eu-central-1).
 - Sandbox only: run the app with `NODE_USE_ENV_PROXY=1` (Node's fetch ignores HTTPS_PROXY
   otherwise) and the overrides in `.env.local`.
+
+### Username claim (Phase 1, step 6)
+- Rules live in `src/config/usernames.ts` (`usernameFormatError`, `normalizeUsername`, shared by
+  browser and server); `src/lib/username.ts` adds the database checks (staff-reserved table,
+  taken by another page). Usernames are lowercased as the creator types.
+- `/onboarding` lets a signed-in user without a page claim a name (live availability check,
+  then `claimUsername` creates the page). `/dashboard` sends users without a page there.
+- Changing the name later: `nextUsernameChange()` enforces 30 days between changes. The first
+  claim does not start the cooldown, so a creator can fix a typo once right away. The change
+  form itself comes with the dashboard settings.

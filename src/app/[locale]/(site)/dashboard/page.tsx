@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { SubmitButton } from "@/components/SubmitButton";
 import { Card } from "@/components/ui/Card";
@@ -14,7 +14,11 @@ async function Account() {
   const user = await requireUser();
   const t = await getTranslations("Dashboard");
   // Scoped to the signed-in user's id from the verified session.
-  const subscription = await db.subscription.findUnique({ where: { userId: user.id } });
+  const [page, subscription] = await Promise.all([
+    db.page.findUnique({ where: { userId: user.id }, select: { username: true } }),
+    db.subscription.findUnique({ where: { userId: user.id } }),
+  ]);
+  if (!page) redirect("/onboarding");
   const daysLeft = trialDaysLeft(subscription?.trialEndsAt);
 
   return (
@@ -22,6 +26,10 @@ async function Account() {
       <h1 className="text-2xl font-bold">{t("welcome")}</h1>
       <p className="text-sm text-muted">
         {t("signedInAs")} <span dir="ltr" className="font-medium text-navy">{user.email}</span>
+      </p>
+      <p className="text-sm">
+        {t("yourLink")}{" "}
+        <span dir="ltr" className="font-medium text-blue">wsool.link/{page.username}</span>
       </p>
       {subscription?.status === "trialing" && (
         <p className="rounded-xl bg-blue/10 px-4 py-3 text-sm text-blue">{t("trial", { days: daysLeft })}</p>

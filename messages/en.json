@@ -43,6 +43,26 @@
     "signedInAs": "Signed in as",
     "trial": "{days, plural, one {# day} other {# days}} left in your free Pro trial.",
     "signOut": "Sign out",
-    "signingOut": "Signing out…"
+    "signingOut": "Signing out…",
+    "yourLink": "Your link:"
+  },
+  "Onboarding": {
+    "title": "Choose your page name",
+    "subtitle": "This is the link you'll share with brands.",
+    "label": "Username",
+    "rules": "3–20 characters: lowercase letters, numbers, dot or _",
+    "checking": "Checking…",
+    "available": "✓ Available",
+    "submit": "Claim name",
+    "saving": "Claiming…",
+    "errors": {
+      "length": "Must be 3 to 20 characters.",
+      "characters": "Use lowercase English letters, numbers, dots and _ only.",
+      "dots": "Can't start or end with a dot, or have two dots in a row.",
+      "reserved": "This name is reserved.",
+      "extension": "Can't end with a file extension like .png",
+      "taken": "That name is taken. Try another.",
+      "failed": "Something went wrong. Please try again."
+    }
   }
 }

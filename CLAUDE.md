@@ -366,3 +366,10 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
 - **Netlify credits**: Free plan = 300 credits/month, each production deploy = 15 credits, branch
   deploys are free. Production branch is `main` (updated only when the owner approves);
   `claude/new-session-r5ze7y` gets free branch deploys. Avoid needless production deploys.
+- **Accounts & numbers** (`dashboard/accounts/`): `saveAccounts` updates accounts in place by id
+  (rates/audience stay attached), creates new ones, deletes missing ones. Profile URLs are built
+  on the server from platform + handle (`profileUrl()`, no free-form links); pasted links/`@` are
+  cleaned by `normalizeHandle()`. Changing platform, handle or followers of a verified/in-review
+  account resets it to `none`. Monthly views = one row per month (first day, UTC); empty hides
+  the box. Audience = gender, fixed age groups, top 5 countries (ISO codes) and cities, each group
+  <= 100%. Number inputs go through `digitsOnly()` (turns ٠-٩ into 0-9).

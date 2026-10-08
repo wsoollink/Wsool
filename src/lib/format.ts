@@ -24,3 +24,15 @@ export function formatPrice(value: number, currency: Currency, lang: Locale) {
 export function formatPercent(value: number, lang: Locale) {
   return new Intl.NumberFormat(toIntlLocale(lang), { style: "percent", maximumFractionDigits: 0 }).format(value / 100);
 }
+
+/**
+ * Keeps only digits from what was typed, turning Arabic-Indic (٠-٩) and
+ * Persian (۰-۹) digits into 0-9, without leading zeros.
+ */
+export function digitsOnly(value: string, maxLength: number) {
+  return value
+    .replace(/[٠-٩۰-۹]/g, (d) => String(d.charCodeAt(0) & 0xf))
+    .replace(/\D/g, "")
+    .replace(/^0+(?=\d)/, "")
+    .slice(0, maxLength);
+}

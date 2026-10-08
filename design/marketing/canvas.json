@@ -1,0 +1,209 @@
+{
+  "v": 3,
+  "attachments": {},
+  "boards": {
+    "Home-en.dc.html": {
+      "expand": "fill",
+      "h": 6239,
+      "is_interactive": true,
+      "title": "Home · Desktop (EN)",
+      "w": 1280,
+      "x": 0,
+      "y": 8050
+    },
+    "Home-mobile-en.dc.html": {
+      "h": 8000,
+      "is_interactive": true,
+      "title": "Home · Mobile (EN)",
+      "w": 390,
+      "x": 1360,
+      "y": 8050
+    },
+    "Home-mobile.dc.html": {
+      "h": 7930,
+      "is_interactive": true,
+      "title": "الرئيسية · جوال",
+      "w": 390,
+      "x": 1360,
+      "y": 0
+    },
+    "Main.dc.html": {
+      "expand": "fill",
+      "h": 6045,
+      "is_interactive": true,
+      "title": "الرئيسية · سطح المكتب",
+      "w": 1280,
+      "x": 0,
+      "y": 0
+    },
+    "Pricing-en.dc.html": {
+      "expand": "fill",
+      "h": 3196,
+      "is_interactive": true,
+      "title": "Pricing · Desktop (EN)",
+      "w": 1280,
+      "x": 1830,
+      "y": 8050
+    },
+    "Pricing-mobile-en.dc.html": {
+      "h": 3738,
+      "is_interactive": true,
+      "title": "Pricing · Mobile (EN)",
+      "w": 390,
+      "x": 3190,
+      "y": 8050
+    },
+    "Pricing-mobile.dc.html": {
+      "h": 3670,
+      "is_interactive": true,
+      "title": "الأسعار · جوال",
+      "w": 390,
+      "x": 3190,
+      "y": 0
+    },
+    "Pricing.dc.html": {
+      "expand": "fill",
+      "h": 3180,
+      "is_interactive": true,
+      "title": "الأسعار · سطح المكتب",
+      "w": 1280,
+      "x": 1830,
+      "y": 0
+    },
+    "State-404-en.dc.html": {
+      "expand": "fill",
+      "h": 840,
+      "is_interactive": true,
+      "title": "Page not found · Desktop",
+      "w": 1280,
+      "x": 0,
+      "y": 17504
+    },
+    "State-404-mobile-en.dc.html": {
+      "h": 760,
+      "is_interactive": true,
+      "title": "Page not found · Mobile",
+      "w": 390,
+      "x": 1360,
+      "y": 17504
+    },
+    "State-404-mobile.dc.html": {
+      "h": 760,
+      "is_interactive": true,
+      "title": "صفحة غير موجودة · جوال",
+      "w": 390,
+      "x": 1360,
+      "y": 16404
+    },
+    "State-404.dc.html": {
+      "expand": "fill",
+      "h": 840,
+      "is_interactive": true,
+      "title": "صفحة غير موجودة · سطح المكتب",
+      "w": 1280,
+      "x": 0,
+      "y": 16404
+    },
+    "State-500-en.dc.html": {
+      "expand": "fill",
+      "h": 820,
+      "is_interactive": true,
+      "title": "Server error · Desktop",
+      "w": 1280,
+      "x": 3660,
+      "y": 17504
+    },
+    "State-500-mobile-en.dc.html": {
+      "h": 760,
+      "is_interactive": true,
+      "title": "Server error · Mobile",
+      "w": 390,
+      "x": 5020,
+      "y": 17504
+    },
+    "State-500-mobile.dc.html": {
+      "h": 760,
+      "is_interactive": true,
+      "title": "خطأ في الخادم · جوال",
+      "w": 390,
+      "x": 5020,
+      "y": 16404
+    },
+    "State-500.dc.html": {
+      "expand": "fill",
+      "h": 820,
+      "is_interactive": true,
+      "title": "خطأ في الخادم · سطح المكتب",
+      "w": 1280,
+      "x": 3660,
+      "y": 16404
+    },
+    "State-private-en.dc.html": {
+      "expand": "fill",
+      "h": 820,
+      "is_interactive": true,
+      "title": "Page hidden · Desktop",
+      "w": 1280,
+      "x": 1830,
+      "y": 17504
+    },
+    "State-private-mobile-en.dc.html": {
+      "h": 760,
+      "is_interactive": true,
+      "title": "Page hidden · Mobile",
+      "w": 390,
+      "x": 3190,
+      "y": 17504
+    },
+    "State-private-mobile.dc.html": {
+      "h": 760,
+      "is_interactive": true,
+      "title": "صفحة مخفية · جوال",
+      "w": 390,
+      "x": 3190,
+      "y": 16404
+    },
+    "State-private.dc.html": {
+      "expand": "fill",
+      "h": 820,
+      "is_interactive": true,
+      "title": "صفحة مخفية · سطح المكتب",
+      "w": 1280,
+      "x": 1830,
+      "y": 16404
+    }
+  },
+  "createdOnFiles": {
+    "at": "2026-10-06T12:00:00Z",
+    "v": 1
+  },
+  "designSystems": [],
+  "launch": {
+    "view": "canvas"
+  },
+  "notes": {},
+  "order": [
+    "Main.dc.html",
+    "Home-mobile.dc.html",
+    "Pricing.dc.html",
+    "Pricing-mobile.dc.html",
+    "Home-en.dc.html",
+    "Home-mobile-en.dc.html",
+    "Pricing-en.dc.html",
+    "Pricing-mobile-en.dc.html",
+    "State-404.dc.html",
+    "State-404-mobile.dc.html",
+    "State-private.dc.html",
+    "State-private-mobile.dc.html",
+    "State-500.dc.html",
+    "State-500-mobile.dc.html",
+    "State-404-en.dc.html",
+    "State-404-mobile-en.dc.html",
+    "State-private-en.dc.html",
+    "State-private-mobile-en.dc.html",
+    "State-500-en.dc.html",
+    "State-500-mobile-en.dc.html"
+  ],
+  "pages": [],
+  "title": "وصول — الموقع الرئيسي"
+}

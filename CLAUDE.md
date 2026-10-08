@@ -33,11 +33,13 @@ Surfaces:
 - **Payments**: Saudi gateway, provider not final (Moyasar or Tap). Build behind a
   `PaymentProvider` interface so the provider can be swapped. Must support mada, Apple Pay,
   international cards, and recurring billing.
-- **Hosting**: Vercel. Domain `wsool.link` is on Cloudflare.
+- **Hosting**: Netlify (switched from Vercel: its phone verification never reached Saudi
+  numbers, and its free plan is non-commercial). Config in `netlify.toml`. Domain `wsool.link`
+  is on Cloudflare.
 - **i18n**: `next-intl` (or equivalent) with `ar` (default, RTL) and `en` (LTR).
 
 ### Non-negotiable engineering rules
-- **Never commit secrets.** All keys live in `.env.local` (git-ignored) and in Vercel env vars.
+- **Never commit secrets.** All keys live in `.env.local` (git-ignored) and in Netlify env vars.
   Provide `.env.example` with empty values.
 - Public creator pages must be **server-rendered** (SEO + link previews with Open Graph image).
 - Enable **Row Level Security** on every Supabase table. A creator can only read/write their own rows.
@@ -233,8 +235,8 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
   (fake `auth.uid()` + `anon`/`authenticated` roles, local only), create db `wsool`, and run
   Prisma with `DIRECT_URL`/`DATABASE_URL` set to the local db on the command line (real env
   vars point at Supabase).
-- Migrations reach Supabase on deploy: Vercel runs `vercel-build` =
-  `prisma migrate deploy && next build`.
+- Migrations reach Supabase on deploy: Netlify runs `npm run build:deploy` =
+  `prisma migrate deploy && next build` (see `netlify.toml`).
 - RLS migration (`prisma/migrations/*_rls`): RLS on every table, owner-only policies for
   `authenticated`, no access for `anon`. Every new table needs RLS + policies in its migration.
 - Reserved usernames: `src/config/usernames.ts` (code, all site routes) + `reserved_usernames`

@@ -118,7 +118,8 @@
     "ages": "Ages",
     "countries": "Countries",
     "cities": "Cities",
-    "playVideo": "Play video: {title}"
+    "playVideo": "Play video: {title}",
+    "whatsappMessage": "Hi, I found you through your Wsool page: {link}"
   },
   "EditPage": {
     "pageStatus": "Page status",
@@ -288,5 +289,17 @@
     "removeBundle": "Delete bundle {n}",
     "addBundle": "Add bundle",
     "bundleIncomplete": "Each bundle needs at least two platforms, and an ad type and price on every line."
+  },
+  "ContactPage": {
+    "intro": "Brands contact you from your page with one tap. Leave a field empty to hide it.",
+    "whatsapp": "WhatsApp number",
+    "whatsappHint": "With the country code, e.g. <num>+966 50 123 4567</num>. A Saudi number starting with 05 gets <num>+966</num> added automatically.",
+    "whatsappInvalid": "That number isn't valid. Include the country code.",
+    "opensNewTab": "(opens in a new tab)",
+    "email": "Contact email",
+    "emailHint": "Can be different from your Wsool account email.",
+    "emailInvalid": "Enter a valid email.",
+    "useAccountEmail": "Use my account email:",
+    "noneWarning": "No contact method. Brands won't be able to reach you from your page."
   }
 }

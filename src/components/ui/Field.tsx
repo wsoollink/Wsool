@@ -1,9 +1,9 @@
-import type { InputHTMLAttributes, TextareaHTMLAttributes } from "react";
+import type { InputHTMLAttributes, ReactNode, TextareaHTMLAttributes } from "react";
 
 const control =
   "w-full rounded-xl border border-line bg-card px-4 text-base text-navy placeholder:text-muted/70 aria-[invalid=true]:border-bad";
 
-type Base = { id: string; label: string; error?: string; hint?: string };
+type Base = { id: string; label: string; error?: string; hint?: ReactNode };
 
 /** Labeled text input with an error line (CLAUDE.md accessibility rules). */
 export function TextField({ id, label, error, hint, ...props }: Base & InputHTMLAttributes<HTMLInputElement>) {

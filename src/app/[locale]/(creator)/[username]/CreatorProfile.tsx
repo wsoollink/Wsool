@@ -12,6 +12,7 @@ import { WorkItem } from "@/components/creator/WorkItem";
 import { pageTheme, themeStyle } from "@/components/creator/theme";
 import { PLATFORM_NAMES } from "@/config/platforms";
 import { toIntlLocale, type Locale } from "@/i18n/config";
+import { siteOrigin } from "@/lib/site-url";
 import { formatCompact, formatPercent, formatPrice } from "@/lib/format";
 import type { PublishedPage } from "@/lib/public-page";
 import { bundleComparison, rateName } from "@/lib/rates";
@@ -282,7 +283,7 @@ function Contact({ page, t }: { page: PublishedPage; t: T }) {
       <div className="flex flex-col gap-2">
         {page.whatsapp && (
           <a
-            href={`https://wa.me/${page.whatsapp}`} target="_blank" rel="noopener noreferrer"
+            href={`https://wa.me/${page.whatsapp}?text=${encodeURIComponent(t("whatsappMessage", { link: `${siteOrigin().replace(/^https?:\/\//, "")}/${page.username}` }))}`} target="_blank" rel="noopener noreferrer"
             className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[var(--page-accent)] px-5 font-semibold text-[var(--page-on-accent)]"
           >
             <PlatformIcon platform="whatsapp" size={18} /> {t("whatsapp")}

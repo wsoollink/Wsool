@@ -385,3 +385,7 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
   SAR, or USD when the primary language is English). Prices accept Arabic digits and "٫"
   (`decimalInput()`), 2 decimals. The bundle editor previews "instead of X, save Y%" with
   `bundleComparison()`, the same function the public page uses.
+- **Contact** (`dashboard/contact/`): `saveContact` stores WhatsApp as international digits
+  (`normalizeWhatsapp()`: strips `+`/`00`/spaces, Arabic digits, Saudi `05…` → `9665…`; DB check
+  `^[0-9]{8,15}$`) and the email lowercased; empty = hidden on the page. The public WhatsApp button
+  opens the chat with a prefilled "found you on Wsool: wsool.link/<username>" message.

@@ -151,10 +151,20 @@ model Subscription {
   provider               String?
   providerCustomerId     String?            @map("provider_customer_id")
   providerSubscriptionId String?            @map("provider_subscription_id")
+  /// Saved card/token at the provider, charged for renewals (never card numbers).
+  paymentToken           String?            @map("payment_token")
+  /// Short card description for the UI, e.g. "mada •••• 4242".
+  paymentMethodLabel     String?            @map("payment_method_label") @db.VarChar(60)
+  /// The creator turned off auto-renew: stays Pro until current_period_end.
+  cancelAtPeriodEnd      Boolean            @default(false) @map("cancel_at_period_end")
+  /// Failed renewal attempts in a row (past_due); reset on success.
+  failedAttempts         Int                @default(0) @map("failed_attempts")
+  nextRetryAt            DateTime?          @map("next_retry_at") @db.Timestamptz
   createdAt              DateTime           @default(now()) @map("created_at") @db.Timestamptz
   updatedAt              DateTime           @updatedAt @map("updated_at") @db.Timestamptz
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  invoices Invoice[]
 
   @@map("subscriptions")
 }
@@ -441,4 +451,48 @@ model AuditLog {
   @@index([createdAt])
   @@index([targetType, targetId])
   @@map("audit_log")
+}
+
+enum InvoiceStatus {
+  /// Checkout started, not paid yet.
+  pending
+  paid
+  failed
+  refunded
+}
+
+enum InvoiceKind {
+  /// First payment (from trial/free) or a plan change.
+  checkout
+  renewal
+}
+
+/// One payment attempt and, once paid, the invoice for it. Prices include VAT.
+model Invoice {
+  id                String        @id @default(uuid()) @db.Uuid
+  /// Sequential number, assigned when paid (e.g. 1042 -> "WS-001042").
+  number            Int?          @unique
+  userId            String        @map("user_id") @db.Uuid
+  subscriptionId    String        @map("subscription_id") @db.Uuid
+  kind              InvoiceKind
+  status            InvoiceStatus @default(pending)
+  cycle             BillingCycle
+  currency          Currency
+  /// Total paid, VAT included.
+  amount            Decimal       @db.Decimal(10, 2)
+  vatAmount         Decimal       @map("vat_amount") @db.Decimal(10, 2)
+  periodStart       DateTime?     @map("period_start") @db.Timestamptz
+  periodEnd         DateTime?     @map("period_end") @db.Timestamptz
+  provider          String        @db.VarChar(20)
+  providerPaymentId String?       @unique @map("provider_payment_id")
+  failureReason     String?       @map("failure_reason") @db.VarChar(200)
+  paidAt            DateTime?     @map("paid_at") @db.Timestamptz
+  refundedAt        DateTime?     @map("refunded_at") @db.Timestamptz
+  createdAt         DateTime      @default(now()) @map("created_at") @db.Timestamptz
+
+  subscription Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([status, paidAt])
+  @@map("invoices")
 }

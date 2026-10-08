@@ -1,11 +1,20 @@
 import "server-only";
-import { cacheLife, cacheTag } from "next/cache";
+import { cacheLife, cacheTag, revalidateTag } from "next/cache";
 import { FREE_LIMITS, hasPro } from "@/config/plans";
 import { db } from "@/lib/db";
 import type { Locale } from "@/i18n/config";
 
 /** Cache tag to revalidate whenever a creator's public page data changes. */
 export const pageCacheTag = (username: string) => `page:${username}`;
+
+/**
+ * Expires a creator's cached public page right away. For route handlers and
+ * jobs (billing, cron), where updateTag isn't allowed; server actions use
+ * updateTag(pageCacheTag(username)).
+ */
+export function expirePage(username: string) {
+  revalidateTag(pageCacheTag(username), { expire: 0 });
+}
 
 /**
  * Everything the public creator page shows, read on the server. Only public

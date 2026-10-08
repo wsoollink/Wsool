@@ -43,7 +43,9 @@
     "signedInAs": "Signed in as",
     "trial": "{days, plural, one {# day} other {# days}} left in your free Pro trial.",
     "yourLink": "Your link:",
-    "comingSoon": "This section is being built and will be ready soon."
+    "comingSoon": "This section is being built and will be ready soon.",
+    "deletionScheduled": "Your account is scheduled for deletion and your page is hidden. Tap here to undo.",
+    "subscribe": "Subscribe now"
   },
   "Onboarding": {
     "title": "Choose your page name",
@@ -511,6 +513,9 @@
           "invite": "Added a team member",
           "update": "Changed a member's permissions",
           "remove": "Removed a team member"
+        },
+        "invoice": {
+          "refund": "Refunded an invoice"
         }
       }
     },
@@ -574,6 +579,139 @@
     "later": {
       "subscriptions": "This section comes with payments in phase 5.",
       "finance": "This section comes in phase 6."
+    },
+    "subscriptions": {
+      "providerTest": "Test payment mode: no real money, only the team can pay.",
+      "providerLive": "Payments are live via {name}.",
+      "providerOff": "Payments are off (no provider).",
+      "trialing": "On trial",
+      "active": "Subscribers",
+      "pastDue": "Past due",
+      "ended": "Ended",
+      "mrrSar": "Monthly recurring revenue (SAR)",
+      "mrrUsd": "Monthly recurring revenue (USD)",
+      "payments": "Latest payments",
+      "noPayments": "No payments yet.",
+      "table": {
+        "invoice": "Invoice",
+        "creator": "Creator",
+        "amount": "Amount",
+        "status": "Status",
+        "date": "Date"
+      },
+      "kind": {
+        "checkout": "Subscription",
+        "renewal": "Renewal"
+      },
+      "status": {
+        "paid": "Paid",
+        "refunded": "Refunded",
+        "failed": "Failed",
+        "pending": "Pending"
+      },
+      "refund": "Refund",
+      "confirmRefund": "Refund the full amount of {label}? The creator's Pro ends right away.",
+      "refundFailed": "Couldn't refund."
+    }
+  },
+  "Billing": {
+    "upgradeTitle": "Go Pro",
+    "renewTitle": "Renew your plan",
+    "features": {
+      "f1": "All 8 templates and your own colors",
+      "f2": "Verified badge and unlimited work",
+      "f3": "Analytics and PDF media kit",
+      "f4": "Hide \"Made with ❤️ on Wsool\""
+    },
+    "cycle": "Billing period",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "monthsFree": "2 months free",
+    "perMonth": "per month",
+    "perYear": "per year",
+    "currency": "Currency:",
+    "vatNote": "Prices include VAT. Renews automatically; turn it off anytime.",
+    "pay": "Pay {price}",
+    "redirecting": "Redirecting to payment…",
+    "comingSoon": "Payments open soon. Enjoy your trial for now.",
+    "currentPlan": "Your plan",
+    "free": "Free",
+    "status": {
+      "trial": "Trial: {days} days left (ends {date}).",
+      "renewsOn": "Renews automatically on {date}.",
+      "endsOn": "Auto-renew is off. Pro until {date}.",
+      "pastDue": "We couldn't renew your payment. We'll retry on {date}, or pay again.",
+      "free": "Free plan. Subscribe to get Pro back; all your data is kept."
+    },
+    "manage": "Manage subscription",
+    "autoRenewOn": "Auto-renew is on.",
+    "autoRenewOff": "Auto-renew is off.",
+    "cancelRenew": "Turn off auto-renew",
+    "resumeRenew": "Turn on auto-renew",
+    "confirmCancel": "Turn off renewal? You keep Pro until the paid period ends, then return to Free.",
+    "nextCycle": "Next renewal: {cycle}.",
+    "switchToYearly": "Switch to yearly from the next renewal",
+    "switchToMonthly": "Switch to monthly from the next renewal",
+    "saved": "✓ Saved.",
+    "invoices": "Invoices",
+    "noInvoices": "No invoices yet.",
+    "view": "View",
+    "invoiceStatus": {
+      "paid": "Paid",
+      "refunded": "Refunded",
+      "failed": "Payment failed",
+      "pending": "Pending"
+    },
+    "result": {
+      "paid": "✓ Payment done. You're on Pro!",
+      "pending": "Payment is processing. We'll update your plan once it's confirmed.",
+      "failed": "Payment didn't go through. You weren't charged; try again."
+    },
+    "errors": {
+      "disabled": "Payments aren't available yet.",
+      "already_active": "Your plan is already active.",
+      "failed": "Something went wrong. Try again."
+    },
+    "delete": {
+      "title": "Delete account",
+      "downloadHint": "Download a copy of all your data before deleting.",
+      "download": "Download my data",
+      "deleteHint": "Your page disappears right away and renewal stops. You have 30 days to undo; after that everything is deleted for good and your username becomes available.",
+      "typeUsername": "Type your username ({username}) to confirm",
+      "deleteButton": "Delete my account",
+      "mismatch": "Username doesn't match.",
+      "scheduledTitle": "Your account will be deleted",
+      "scheduledBody": "Your page is hidden and everything will be deleted for good on {date}. You can undo before then.",
+      "undo": "Undo deletion"
+    },
+    "invoice": {
+      "title": "Simplified tax invoice",
+      "print": "Print / PDF",
+      "seller": "Seller",
+      "vatNumber": "VAT number",
+      "crNumber": "CR number",
+      "customer": "Customer",
+      "date": "Invoice date",
+      "period": "Subscription period",
+      "item": "Item",
+      "amount": "Amount",
+      "line": "Wsool Pro subscription ({cycle})",
+      "monthly": "monthly",
+      "yearly": "yearly",
+      "subtotal": "Subtotal before VAT",
+      "vat": "VAT 15%",
+      "total": "Total incl. VAT",
+      "refunded": "This invoice was refunded."
+    },
+    "mock": {
+      "badge": "Test payment",
+      "title": "Test payment page",
+      "amount": "Amount",
+      "staffOnly": "Test payments are for the Wsool team only.",
+      "done": "This checkout is finished. Go back to your subscription.",
+      "payOk": "Pay with test card (succeeds)",
+      "payRenewFails": "Pay with test card (renewal fails)",
+      "decline": "Decline payment"
     }
   }
 }

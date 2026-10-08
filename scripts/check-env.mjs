@@ -67,6 +67,8 @@ if (parsed.DATABASE_URL && parsed.DIRECT_URL && parsed.DATABASE_URL.password !==
   problems.push("DATABASE_URL and DIRECT_URL have different passwords");
 }
 
+if (process.env.PAYMENT_PROVIDER && !process.env.CRON_SECRET?.trim()) problems.push("CRON_SECRET: missing (needed for renewals when PAYMENT_PROVIDER is set)");
+
 if (problems.length > 0) {
   console.error("Environment variable problems:");
   for (const p of problems) console.error(`  - ${p}`);

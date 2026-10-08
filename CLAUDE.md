@@ -419,3 +419,28 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
 - next-intl reads dots in keys as nesting: message keys for dotted ids (`user.suspend`,
   `verifications.view`) are nested objects.
 - Emails/notifications for decisions and invitations are TODO(phase 6).
+
+### Payments (Phase 5)
+- Provider interface: `src/lib/payments/types.ts`; active provider from `PAYMENT_PROVIDER`
+  (`src/lib/payments/index.ts`). Only `mock` exists (owner hasn't picked Moyasar/Tap): signed
+  fake payment ids, tokens `mock_tok_ok` / `mock_tok_fail`. **Test providers are staff-only**
+  (checkout refuses non-staff), so leaving `mock` on never gives Pro for free. Unset = payments off.
+- Adding the real provider: implement `PaymentProvider` next to `mock.ts`, register it in
+  `paymentProvider()`, set `PAYMENT_PROVIDER` + its keys. Nothing else changes.
+- Flow (`src/lib/billing.ts`): `startCheckout` creates a pending invoice with the price from
+  `PRICES` (`src/config/plans.ts`, VAT included, `vatPart()`), the browser pays, then
+  `/billing/return` (route handler, full-page redirect target) and `/api/payments/webhook` both
+  read the payment **from the provider** and call `settleCheckout` (checks invoice id, amount,
+  currency; idempotent). The paid period starts after any trial/paid time left.
+- Invoice numbers come from the `invoice_number_seq` sequence when paid (`WS-001001`...).
+  Seller details for invoices: `src/config/site.ts` (owner must fill VAT/CR numbers).
+- Hourly job: Netlify scheduled function `netlify/functions/billing-cron.mts` → POST
+  `/api/cron/billing` with `CRON_SECRET`: renewals with the saved token, retries after 1 and 3
+  days (past_due keeps Pro), then Free; ends cancelled plans and trials; purges accounts deleted
+  more than 30 days ago (`src/lib/account-deletion.ts`).
+- Route handlers and jobs can't call `updateTag`: use `expirePage(username)` (revalidateTag with
+  expire 0). Server actions keep `updateTag(pageCacheTag(...))`.
+- Account deletion lives on the Subscription page: JSON export (`/api/account/export`, no payment
+  token), type username → `pages.deleted_at` (page hidden, auto-renew off), undo within 30 days.
+- `subscriptions.payment_token` is not readable through the Data API (column grants).
+- Billing emails (receipt, renewal, failed payment, trial reminders) are TODO(phase 6).

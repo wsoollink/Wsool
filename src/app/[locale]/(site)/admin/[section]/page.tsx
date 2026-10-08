@@ -5,8 +5,8 @@ import { Card } from "@/components/ui/Card";
 import { isLocale, locales, toIntlLocale } from "@/i18n/config";
 import { requireAdmin } from "@/lib/admin";
 
-// Sections built in later phases (payments in phase 5, finance in phase 6).
-const LATER = ["subscriptions", "finance"] as const;
+// Sections built in later phases (finance in phase 6).
+const LATER = ["finance"] as const;
 
 export function generateStaticParams() {
   return locales.flatMap((locale) => LATER.map((section) => ({ locale, section })));

@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Card } from "@/components/ui/Card";
@@ -26,8 +27,11 @@ async function Home() {
         <p className="text-sm text-muted">
           {t("signedInAs")} <span dir="ltr" className="inline-block break-all text-navy">{user.email}</span>
         </p>
-        {subscription?.status === "trialing" && (
-          <p className="rounded-xl bg-blue/10 px-4 py-3 text-sm text-blue">{t("trial", { days: daysLeft })}</p>
+        {page.deletedAt && (
+          <Link href="/dashboard/subscription" className="rounded-xl bg-bad/10 px-4 py-3 text-sm text-bad underline">{t("deletionScheduled")}</Link>
+        )}
+        {subscription?.status === "trialing" && daysLeft > 0 && (
+          <Link href="/dashboard/subscription" className="rounded-xl bg-blue/10 px-4 py-3 text-sm text-blue">{t("trial", { days: daysLeft })} <span className="underline">{t("subscribe")}</span></Link>
         )}
       </Card>
     </div>

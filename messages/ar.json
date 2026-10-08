@@ -149,6 +149,17 @@
       "failed": "صار خطأ. جرّب مرة ثانية.",
       "needs_name": "اكتب اسمك واحفظ قبل ما تنشر الصفحة."
     },
-    "specialtyHintEn": "مثل: Fashion & beauty creator"
+    "specialtyHintEn": "مثل: Fashion & beauty creator",
+    "photo": "الصورة الرئيسية",
+    "photoHint": "صورة مربعة وواضحة لوجهك. JPG أو PNG حتى 8 ميجا.",
+    "addPhoto": "أضف صورة",
+    "changePhoto": "غيّر الصورة",
+    "removePhoto": "احذف الصورة",
+    "uploading": "جاري الرفع…",
+    "uploadErrors": {
+      "type": "نوع الملف غير مدعوم.",
+      "size": "الملف أكبر من الحد المسموح.",
+      "failed": "ما قدرنا نرفع الملف. جرّب مرة ثانية."
+    }
   }
 }

@@ -2,6 +2,7 @@
 
 import { updateTag } from "next/cache";
 import { requireCreator } from "@/lib/creator";
+import { isOwnUploadedFile, pathFromPublicUrl, publicFileUrl, removeFiles } from "@/lib/storage";
 import { db } from "@/lib/db";
 import { pageCacheTag } from "@/lib/public-page";
 import { pageLanguages } from "@/lib/page-language";
@@ -61,4 +62,17 @@ export async function setPublished(publish: boolean): Promise<SaveState> {
   await db.page.update({ where: { id: page.id }, data: { isPublished: publish } });
   updateTag(pageCacheTag(page.username));
   return { ok: true };
+}
+
+/** Sets (path) or removes (null) the hero photo; deletes the previous file. */
+export async function savePhoto(path: string | null): Promise<SaveState & { url?: string | null }> {
+  const { user, page } = await requireCreator();
+  if (path !== null && (typeof path !== "string" || !(await isOwnUploadedFile(user.id, "photo", path)))) {
+    return { error: "failed" };
+  }
+  const url = path ? publicFileUrl(path) : null;
+  await db.page.update({ where: { id: page.id }, data: { photoUrl: url } });
+  await removeFiles([pathFromPublicUrl(page.photoUrl)]).catch(() => {});
+  updateTag(pageCacheTag(page.username));
+  return { ok: true, url };
 }

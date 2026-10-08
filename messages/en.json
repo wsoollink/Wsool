@@ -149,6 +149,17 @@
       "failed": "Something went wrong. Please try again.",
       "needs_name": "Add your name and save before publishing."
     },
-    "specialtyHintEn": "e.g. Fashion & beauty creator"
+    "specialtyHintEn": "e.g. Fashion & beauty creator",
+    "photo": "Main photo",
+    "photoHint": "A clear, square photo of your face. JPG or PNG up to 8 MB.",
+    "addPhoto": "Add photo",
+    "changePhoto": "Change photo",
+    "removePhoto": "Remove photo",
+    "uploading": "Uploading…",
+    "uploadErrors": {
+      "type": "This file type isn't supported.",
+      "size": "The file is larger than allowed.",
+      "failed": "We couldn't upload the file. Please try again."
+    }
   }
 }

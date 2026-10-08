@@ -5,6 +5,7 @@ import { isLocale, toIntlLocale, type Locale } from "@/i18n/config";
 import { requireCreator } from "@/lib/creator";
 import { db } from "@/lib/db";
 import { ProfileForm } from "./ProfileForm";
+import { PhotoCard } from "./PhotoCard";
 import { PublishCard } from "./PublishCard";
 
 const empty = { fullName: "", specialty: "", bio: "", city: "", country: "" };
@@ -23,6 +24,7 @@ async function Editor() {
   return (
     <div className="flex flex-col gap-4">
       <PublishCard username={page.username} published={page.isPublished} />
+      <PhotoCard photoUrl={page.photoUrl} />
       <ProfileForm primaryLang={page.primaryLang as Locale} enEnabled={page.enEnabled} texts={texts} />
     </div>
   );

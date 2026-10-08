@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
   // Fonts read at runtime by the link-preview image route.
   outputFileTracingIncludes: {
     "/[locale]/[username]/og": ["./assets/fonts/**/*"],
+    "/[locale]/[username]/pdf": ["./assets/fonts/**/*"],
   },
   partialPrefetching: true,
   turbopack: {

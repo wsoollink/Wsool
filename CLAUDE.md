@@ -464,3 +464,10 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
   before, verification expiring (7 days) and expired (status → none, page cache expired).
 - Bell dot: `UnreadDot` (server, in Suspense in the dashboard header); opening
   `/dashboard/notifications` marks all read. All dashboard sections are built (no placeholder route).
+- **PDF media kit**: `/<username>/pdf` (route handler, Pro pages only, `?lang=` one of the page's
+  languages, `&download` for attachment) → `buildMediaKit()` (`src/lib/pdf/media-kit.ts`, pdf-lib,
+  A4, template colors, identity, totals, platforms, logos, rates if `showInPdf`, contact + QR
+  code). Text is drawn as outlines with `textPaths()` (`src/lib/og-text.ts`); characters missing
+  from the Arabic subset font (".", ":") fall back to the Latin font per run, and ❤ is drawn as a
+  path. WebP logos are converted with sharp when available, else the brand name is shown.
+  Dashboard home has the download buttons.

@@ -3,7 +3,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Card } from "@/components/ui/Card";
-import { trialDaysLeft } from "@/config/plans";
+import { FREE_LIMITS, hasPro, trialDaysLeft } from "@/config/plans";
+import { pageLanguages } from "@/lib/page-language";
+import type { Locale } from "@/i18n/config";
+import { FileDown } from "lucide-react";
 import { isLocale, toIntlLocale } from "@/i18n/config";
 import { requireCreator } from "@/lib/creator";
 import { db } from "@/lib/db";
@@ -29,6 +32,17 @@ async function Home() {
         </p>
         {page.deletedAt && (
           <Link href="/dashboard/subscription" className="rounded-xl bg-bad/10 px-4 py-3 text-sm text-bad underline">{t("deletionScheduled")}</Link>
+        )}
+        {page.isPublished && (hasPro(subscription) || FREE_LIMITS.pdf) ? (
+          <div className="flex flex-wrap gap-2">
+            {pageLanguages(page.primaryLang as Locale, page.enEnabled).map((lang) => (
+              <a key={lang} href={`/${page.username}/pdf?lang=${lang}&download`} className="inline-flex min-h-11 items-center gap-2 rounded-full border border-line px-4 text-sm font-medium hover:bg-navy/5">
+                <FileDown aria-hidden="true" size={18} /> {t("downloadPdf", { lang })}
+              </a>
+            ))}
+          </div>
+        ) : (
+          <p className="text-sm text-muted">{page.isPublished ? t("pdfPro") : t("pdfPublishFirst")}</p>
         )}
         {subscription?.status === "trialing" && daysLeft > 0 && (
           <Link href="/dashboard/subscription" className="rounded-xl bg-blue/10 px-4 py-3 text-sm text-blue">{t("trial", { days: daysLeft })} <span className="underline">{t("subscribe")}</span></Link>

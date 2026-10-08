@@ -45,7 +45,10 @@
     "yourLink": "رابط صفحتك:",
     "comingSoon": "هذا القسم قيد البناء، وبيكون جاهز قريب.",
     "deletionScheduled": "حسابك مجدول للحذف وصفحتك مخفية. اضغط هنا عشان تتراجع.",
-    "subscribe": "اشترك الحين"
+    "subscribe": "اشترك الحين",
+    "downloadPdf": "حمّل الميديا كت PDF {lang, select, ar {(عربي)} other {(إنجليزي)}}",
+    "pdfPro": "ملف PDF للميديا كت متاح للمشتركين في Pro.",
+    "pdfPublishFirst": "انشر صفحتك عشان تقدر تحمّل ملف PDF."
   },
   "Onboarding": {
     "title": "اختر اسم صفحتك",
@@ -122,7 +125,8 @@
     "countries": "الدول",
     "cities": "المدن",
     "playVideo": "تشغيل الفيديو: {title}",
-    "whatsappMessage": "مرحباً، وصلت لك من صفحتك على وصول: {link}"
+    "whatsappMessage": "مرحباً، وصلت لك من صفحتك على وصول: {link}",
+    "page": "الصفحة"
   },
   "EditPage": {
     "pageStatus": "حالة الصفحة",

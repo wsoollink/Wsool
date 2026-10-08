@@ -45,7 +45,10 @@
     "yourLink": "Your link:",
     "comingSoon": "This section is being built and will be ready soon.",
     "deletionScheduled": "Your account is scheduled for deletion and your page is hidden. Tap here to undo.",
-    "subscribe": "Subscribe now"
+    "subscribe": "Subscribe now",
+    "downloadPdf": "Download media kit PDF {lang, select, ar {(Arabic)} other {(English)}}",
+    "pdfPro": "The PDF media kit is a Pro feature.",
+    "pdfPublishFirst": "Publish your page to download the PDF."
   },
   "Onboarding": {
     "title": "Choose your page name",
@@ -122,7 +125,8 @@
     "countries": "Countries",
     "cities": "Cities",
     "playVideo": "Play video: {title}",
-    "whatsappMessage": "Hi, I found you through your Wsool page: {link}"
+    "whatsappMessage": "Hi, I found you through your Wsool page: {link}",
+    "page": "Page"
   },
   "EditPage": {
     "pageStatus": "Page status",

@@ -12,8 +12,9 @@ import * as fontkit from "fontkit";
 
 type Weight = 400 | 700;
 const FILES = {
-  arabic: { 400: "ibm-plex-sans-arabic-arabic-400-normal.woff", 700: "ibm-plex-sans-arabic-arabic-700-normal.woff" },
-  latin: { 400: "ibm-plex-sans-arabic-latin-400-normal.woff", 700: "ibm-plex-sans-arabic-latin-700-normal.woff" },
+  // Noto Kufi Arabic covers both scripts (same text font as the site).
+  arabic: { 400: "NotoKufiArabic-Regular.ttf", 700: "NotoKufiArabic-Bold.ttf" },
+  latin: { 400: "NotoKufiArabic-Regular.ttf", 700: "NotoKufiArabic-Bold.ttf" },
   /** Wide display font for big numbers (Latin only). */
   numbers: { 400: "unbounded-latin-700-normal.woff", 700: "unbounded-latin-700-normal.woff" },
 } as const;

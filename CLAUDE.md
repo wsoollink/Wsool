@@ -77,10 +77,12 @@ Logos: Arabic and English logo files (owner will add to `/public/brand/`).
 | line | `rgba(2,25,65,0.09)` | borders |
 | good / warn / bad | `#12805C` / `#B45309` / `#C0362C` | status |
 
-Fonts: **GT America Arabic** (text) and **Menda** (big numbers). These are **commercial fonts and
-the web license is not purchased yet.** Until the owner confirms the license, use a free fallback
-(e.g. IBM Plex Sans Arabic for text, a bold display font for numbers) behind CSS variables
-`--font-text` and `--font-numbers` so they can be swapped in one place.
+Fonts: text = **Noto Kufi Arabic** (Google, free OFL license; Arabic + Latin, variable weight
+100-900), chosen by the owner (Oct 2026) instead of the commercial GT America Arabic. Web file:
+`src/styles/fonts/NotoKufiArabic-Variable.woff2` (loaded with `next/font/local` in
+`src/styles/fonts.ts`); OG image and PDF use the static Regular/Bold TTFs in `assets/fonts/`.
+Big numbers: Unbounded (free) until the owner decides on Menda. Both sit behind the CSS variables
+`--font-text` and `--font-numbers` so they can be swapped in one place. Emails use system fonts.
 
 Dashboard style: light, white cards (radius 18–24px), soft borders, pill-shaped primary buttons.
 

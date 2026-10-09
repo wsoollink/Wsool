@@ -276,7 +276,7 @@ export async function buildMediaKit(page: PublishedPage, lang: Locale): Promise<
   // Footer on every page.
   for (const p of doc.getPages()) {
     pdfPage = p;
-    if (page.showBranding) text(t("madeWith"), M, H - M + 6, { size: 9, color: theme.muted, width: CONTENT, align: "center" });
+    if (page.showBranding) text(t.markup("madeWith", { b: (s) => s }), M, H - M + 6, { size: 9, color: theme.muted, width: CONTENT, align: "center" });
   }
   return doc.save();
 }

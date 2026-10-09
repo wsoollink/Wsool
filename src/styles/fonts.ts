@@ -1,11 +1,14 @@
-import { IBM_Plex_Sans_Arabic, Unbounded } from "next/font/google";
+import localFont from "next/font/local";
+import { Unbounded } from "next/font/google";
 
-// TEMPORARY free fonts. GT America Arabic (text) and Menda (numbers) replace
-// these once the web license is bought: swap them here and in globals.css
-// (--font-text / --font-numbers). Nothing else needs to change.
-export const textFont = IBM_Plex_Sans_Arabic({
-  weight: ["400", "500", "600", "700"],
-  subsets: ["arabic", "latin"],
+// Text: Noto Kufi Arabic (Google, OFL; Arabic + Latin, variable weight 100-900),
+// chosen by the owner in place of GT America Arabic. Numbers: Unbounded until
+// the owner decides on Menda. Swap them here and in globals.css
+// (--font-text / --font-numbers); the OG image and PDF use the same text font
+// from assets/fonts (src/lib/og-text.ts).
+export const textFont = localFont({
+  src: "./fonts/NotoKufiArabic-Variable.woff2",
+  weight: "100 900",
   variable: "--font-text-fallback",
   display: "swap",
 });

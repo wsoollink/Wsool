@@ -15,8 +15,8 @@ import { textImage } from "@/lib/og-text";
 const SIZE = { width: 1200, height: 630 };
 const font = (file: string) => readFile(join(process.cwd(), "assets/fonts", file));
 const fontsPromise = Promise.all([
-  font("ibm-plex-sans-arabic-latin-400-normal.woff"),
-  font("ibm-plex-sans-arabic-latin-700-normal.woff"),
+  font("NotoKufiArabic-Regular.ttf"),
+  font("NotoKufiArabic-Bold.ttf"),
   font("unbounded-latin-700-normal.woff"),
 ]);
 
@@ -42,7 +42,7 @@ export async function GET(_request: NextRequest, { params }: RouteContext<"/[loc
   const { data, lang } = await loadCreatorPage(locale, username);
   if (data?.status !== "published") return new Response("Not found", { status: 404 });
 
-  const [plexLa400, plexLa700, unbounded] = await fontsPromise;
+  const [kufi400, kufi700, unbounded] = await fontsPromise;
   const theme = pageTheme(data.template, data.accent, data.customColors);
   const rtl = getDirection(lang) === "rtl";
   const tr = data.translations.find((x) => x.lang === lang) ?? data.translations[0];
@@ -110,7 +110,7 @@ export async function GET(_request: NextRequest, { params }: RouteContext<"/[loc
           backgroundColor: theme.bg,
           // The renderer crashes on an undefined backgroundImage, so only set it when present.
           ...(theme.bgImage ? { backgroundImage: theme.bgImage } : {}),
-          fontFamily: "PlexLatin",
+          fontFamily: "KufiText",
         }}
       >
         {photoBox}
@@ -120,8 +120,8 @@ export async function GET(_request: NextRequest, { params }: RouteContext<"/[loc
     {
       ...SIZE,
       fonts: [
-        { name: "PlexLatin", data: plexLa400, weight: 400 },
-        { name: "PlexLatin", data: plexLa700, weight: 700 },
+        { name: "KufiText", data: kufi400, weight: 400 },
+        { name: "KufiText", data: kufi700, weight: 700 },
         { name: "Unbounded", data: unbounded, weight: 700 },
       ],
     },

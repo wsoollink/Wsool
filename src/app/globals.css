@@ -2,8 +2,7 @@
 
 /*
  * Wsool design tokens (CLAUDE.md section 4).
- * Fonts: swap --font-text / --font-numbers when the GT America Arabic and
- * Menda licenses are bought.
+ * Fonts (src/styles/fonts.ts): text = Noto Kufi Arabic, numbers = Unbounded.
  */
 :root {
   --font-text: var(--font-text-fallback), system-ui, sans-serif;

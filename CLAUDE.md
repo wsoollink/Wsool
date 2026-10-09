@@ -468,8 +468,8 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
   scripts/preview-emails.ts <dir>`. `notify` uses `use-intl/core` (works outside requests).
 - Reminders run in the hourly job (`src/lib/reminders.ts`): trial day 10/13, yearly renewal 7 days
   before, verification expiring (7 days) and expired (status → none, page cache expired).
-- Bell dot: `UnreadDot` (server, in Suspense in the dashboard header); opening
-  `/dashboard/notifications` marks all read. All dashboard sections are built (no placeholder route).
+- Bell dot: `UnreadDot` (server, in Suspense in each page header); notifications are marked read
+  per item or with "mark all as read" (`markRead` / `markAllRead`), not on opening the page. All dashboard sections are built (no placeholder route).
 - **PDF media kit**: `/<username>/pdf` (route handler, Pro pages only, `?lang=` one of the page's
   languages, `&download` for attachment) → `buildMediaKit()` (`src/lib/pdf/media-kit.ts`, pdf-lib,
   A4, template colors, identity, totals, platforms, logos, rates if `showInPdf`, contact + QR
@@ -516,3 +516,15 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
   template keeps its free color pickers).
 - Creator page: language switch sets the `NEXT_LOCALE` cookie and reloads; share uses
   `navigator.share` or copies the link (`PageActions.tsx`).
+- Dashboard shell (design pass): `app-backdrop` background, frosted `Card` (radius 18), blue primary
+  buttons (still pills), 48px inputs, `Switch` (`src/components/ui/Switch.tsx`, role=switch), and a
+  `PageHeader` per page (title + subtitle from `DashboardHeader` messages, bell, language pill).
+  Sections with one save for everything use `SaveBar` (fixed above the tab bar on phones).
+- Ad rates: one bundle per page (`MAX_BUNDLES = 1`; the public page shows only the first), rate
+  currencies SAR/USD/AED/KWD (`RateCurrency` enum, separate from the subscription `Currency`).
+- Accent color: presets only (`ACCENT_SWATCHES`, light + dark variant chosen by `pageTheme`).
+- Cancelling auto-renew can carry a reason (`CANCEL_REASONS`, table `cancellation_feedback`).
+- Licenses can be verified: `licenses.verification_status` (+ reason, dates); creators send from the
+  Verification page, staff decide in the queue's Licenses tab (`decideLicense`, audited, notified);
+  saving the license list keeps the status of unchanged licenses.
+- Contact: `pages.whatsapp_visible` / `email_visible` hide a channel without deleting it.

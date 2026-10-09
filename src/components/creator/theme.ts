@@ -1,6 +1,7 @@
 import type { CSSProperties } from "react";
 import type { Template } from "@/generated/prisma/enums";
 import { contrast, ensureContrast, isDark, isHexColor, mix, readableOn, withAlpha } from "@/lib/color";
+import { swatchFor } from "@/lib/validation/appearance";
 
 /**
  * Colors a creator page template provides, as CSS variables. Values come from
@@ -133,7 +134,9 @@ export function pageTheme(template: Template, accent: string | null, customColor
   const custom = template === "custom" ? parseCustomColors(customColors) : null;
   const { glow, grid, ...base } = custom ? customBase(custom) : TEMPLATES[template === "custom" ? "white" : template];
   const dark = isDark(base.bg);
-  const accentColor = ensureContrast(isHexColor(accent) ? accent : base.accent, base.solid, 3);
+  // Preset accents switch to their light/dark variant to fit the template.
+  const picked = swatchFor(isHexColor(accent) ? accent : null, dark);
+  const accentColor = ensureContrast(picked ?? base.accent, base.solid, 3);
   const finalAccent = ensureContrast(accentColor, base.bg, 4.5);
   return {
     ...base,

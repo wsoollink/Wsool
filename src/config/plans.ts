@@ -65,3 +65,7 @@ export function addCycle(from: Date, cycle: BillingCycle) {
   d.setUTCFullYear(y, m, Math.min(from.getUTCDate(), lastDay));
   return d;
 }
+
+/** Answers to "why are you cancelling?" (shown when turning off auto-renew). */
+export const CANCEL_REASONS = ["price", "not_needed", "no_deals", "technical", "other"] as const;
+export type CancelReason = (typeof CANCEL_REASONS)[number];

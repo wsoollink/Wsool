@@ -8,6 +8,7 @@ import { requireCreator } from "@/lib/creator";
 import { db } from "@/lib/db";
 import { AppearanceEditor } from "./AppearanceEditor";
 import { PageHeader } from "@/components/dashboard/PageHeader";
+import { ACCENT_SWATCHES } from "@/lib/validation/appearance";
 
 async function Editor() {
   const { user, page } = await requireCreator();
@@ -26,7 +27,8 @@ async function Editor() {
       initial={{
         template: page.template,
         customColors: parseCustomColors(page.customColors) ?? { colors: ["#0060e6"], mode: "light" },
-        accent: page.accent,
+        // Accents are presets now; an older free-picked color starts as "template color".
+        accent: ACCENT_SWATCHES.some((sw) => sw.light === page.accent) ? page.accent : null,
         numberFont: page.numberFont,
         hideBranding: page.hideBranding,
       }}

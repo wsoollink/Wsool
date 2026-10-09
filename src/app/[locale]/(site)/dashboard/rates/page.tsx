@@ -26,7 +26,8 @@ async function Editor() {
           : { showOnPage: true, showInPdf: true, currency: page.primaryLang === "en" ? "USD" : "SAR", vatIncluded: true }
       }
       accounts={accounts.map((a) => ({ id: a.id, platform: a.platform, handle: a.handle, rates: a.rates.map(rate) }))}
-      bundles={bundles.map((b) => ({ name: b.name ?? "", nameEn: b.nameEn ?? "", accountIds: b.platforms.map((p) => p.accountId), rates: b.rates.map(rate) }))}
+      // One bundle per page: older pages may have more; the first one is kept.
+      bundle={bundles[0] ? { name: bundles[0].name ?? "", nameEn: bundles[0].nameEn ?? "", accountIds: bundles[0].platforms.map((p) => p.accountId), rates: bundles[0].rates.map(rate) } : null}
       lang={{ primary: page.primaryLang as "ar" | "en", showEnglish: page.primaryLang === "ar" && page.enEnabled }}
     />
   );

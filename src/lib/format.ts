@@ -12,7 +12,7 @@ export function formatCompact(value: number, lang: Locale) {
   return new Intl.NumberFormat(toIntlLocale(lang), { notation: "compact", maximumFractionDigits: 1 }).format(value);
 }
 
-export function formatPrice(value: number, currency: Currency, lang: Locale) {
+export function formatPrice(value: number, currency: Currency | string, lang: Locale) {
   return new Intl.NumberFormat(toIntlLocale(lang), {
     style: "currency",
     currency,

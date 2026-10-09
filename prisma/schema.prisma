@@ -48,6 +48,14 @@ enum Currency {
   USD
 }
 
+/// Currencies a creator can show their ad rates in (subscriptions stay SAR/USD).
+enum RateCurrency {
+  SAR
+  USD
+  AED
+  KWD
+}
+
 enum SubscriptionStatus {
   trialing
   active
@@ -72,6 +80,7 @@ model User {
   notificationSettings NotificationSettings?
 
   @@map("users")
+  cancellationFeedback CancellationFeedback[]
 }
 
 /// The creator's public page at wsool.link/<username>.
@@ -320,8 +329,8 @@ model RateSettings {
   pageId      String   @id @map("page_id") @db.Uuid
   showOnPage  Boolean  @default(true) @map("show_on_page")
   showInPdf   Boolean  @default(true) @map("show_in_pdf")
-  currency    Currency @default(SAR)
-  vatIncluded Boolean  @default(true) @map("vat_included")
+  currency    RateCurrency @default(SAR)
+  vatIncluded Boolean      @default(true) @map("vat_included")
 
   page Page @relation(fields: [pageId], references: [id], onDelete: Cascade)
 
@@ -654,4 +663,19 @@ model NewsletterSubscriber {
 
   @@index([status])
   @@map("newsletter_subscribers")
+}
+
+/// Answer to "why are you cancelling?" when a creator turns off auto-renew.
+model CancellationFeedback {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  /// One of CANCEL_REASONS (src/config/plans.ts).
+  reason    String   @db.VarChar(30)
+  note      String?  @db.VarChar(300)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([createdAt])
+  @@map("cancellation_feedback")
 }

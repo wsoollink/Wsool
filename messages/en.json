@@ -386,7 +386,24 @@
     "noComparison": "No comparison: the same name must exist on every chosen platform.",
     "removeBundle": "Delete bundle {n}",
     "addBundle": "Add bundle",
-    "bundleIncomplete": "Each bundle needs at least two platforms, and an ad type and price on every line."
+    "bundleIncomplete": "Each bundle needs at least two platforms, and an ad type and price on every line.",
+    "showOnPageOn": "Visitors see your rates on your page",
+    "showInPdfHint": "Handy when you send the file to a specific brand",
+    "currencies": {
+      "SAR": "Saudi riyal",
+      "USD": "US dollar",
+      "AED": "UAE dirham",
+      "KWD": "Kuwaiti dinar"
+    },
+    "perPlatform": "Rates per platform",
+    "perPlatformHint": "Turn on the platforms you sell ads on, and add their rate types and prices.",
+    "off": "Off",
+    "ratesCount": "{count, plural, one {1 rate type} other {# rate types}}",
+    "platformRates": "{platform} ads",
+    "bundle": "All-in bundle",
+    "bundleHint": "One price for posting on several platforms",
+    "saved": "Saved",
+    "failed": "Something went wrong. Try again."
   },
   "ContactPage": {
     "intro": "Brands contact you from your page with one tap. Leave a field empty to hide it.",
@@ -425,7 +442,7 @@
     "dark": "Dark",
     "customHint": "We derive the rest of the palette from your colors and adjust them slightly when needed so text stays readable.",
     "accent": "Accent color",
-    "accentHint": "Used for your specialty, the WhatsApp button and highlights. Very light colors are darkened a bit so they stay readable.",
+    "accentHint": "Shows in your specialty under your name and on the verified badge.",
     "templateAccent": "Template color",
     "anyColor": "Or pick any color",
     "numberFont": "Number font",
@@ -441,7 +458,34 @@
     "whatsapp": "WhatsApp",
     "email": "Email",
     "footer": "Made with ❤️ on Wsool",
-    "previewCaption": "Approximate preview. Save to update your page."
+    "previewCaption": "Approximate preview. Save to update your page.",
+    "templateHint": "8 templates for every style; you can change the accent color after you pick.",
+    "paid": "Paid",
+    "fits": {
+      "white": "Tech, business, education",
+      "black": "Tech, gaming, cars",
+      "sand": "Fashion, decor, coffee, travel",
+      "pink": "Beauty, skincare, parenting",
+      "black_gold": "Luxury, perfume, watches",
+      "vivid": "Entertainment, food, family, sports",
+      "green": "Health, fitness, healthy food",
+      "custom": "Your own colors"
+    },
+    "useSecond": "Use a second color",
+    "mode": "Template style",
+    "swatch": {
+      "template": "Template color",
+      "blue": "Blue",
+      "green": "Green",
+      "orange": "Orange",
+      "purple": "Purple",
+      "pink": "Pink"
+    },
+    "numberFontHint": "For your follower count, platform numbers and views.",
+    "hideBrandingPro": "Removes the Wsool line at the bottom of your page. Part of the paid plan.",
+    "preview": "Preview",
+    "closePreview": "Close preview",
+    "failed": "Something went wrong. Try again."
   },
   "Suspended": {
     "title": "Your account is suspended",
@@ -792,7 +836,15 @@
       "mismatch": "Username doesn't match.",
       "scheduledTitle": "Your account will be deleted",
       "scheduledBody": "Your page is hidden and everything will be deleted for good on {date}. You can undo before then.",
-      "undo": "Undo deletion"
+      "undo": "Undo deletion",
+      "intro": "You can delete your account, page and all your data anytime. Download a copy of your data first if you like.",
+      "modalTitle": "Delete your account for good?",
+      "b1": "Your page <link></link> disappears right away",
+      "b2": "Your subscription is cancelled; nothing is charged after today",
+      "b3": "You have 30 days to undo by signing in",
+      "b4": "After that, all your data is deleted and the link becomes available to others",
+      "typeUsername2": "To confirm, type your username: <u></u>",
+      "cancel": "Cancel"
     },
     "invoice": {
       "title": "Simplified tax invoice",
@@ -822,7 +874,45 @@
       "payOk": "Pay with test card (succeeds)",
       "payRenewFails": "Pay with test card (renewal fails)",
       "decline": "Decline payment"
-    }
+    },
+    "cancelSub": "Cancel subscription",
+    "cancelSure": "Sure you want to cancel?",
+    "cancelBody": "You keep every feature until {date}. Then your page moves to the free plan: the verified badge and analytics go away, the template goes back to White, and only your first 6 works show.",
+    "whyCancel": "Why are you cancelling? (optional)",
+    "cancelReasons": {
+      "price": "It's too expensive",
+      "not_needed": "I didn't need the paid features",
+      "no_deals": "I didn't get deals from the page",
+      "technical": "I had a technical problem",
+      "other": "Something else"
+    },
+    "cancelNote": "Anything to add? (optional)",
+    "keepPlan": "Keep my plan",
+    "confirmCancelBtn": "Confirm cancellation",
+    "cancelled": "Renewal cancelled. Your plan stays active until {date}.",
+    "resume": "Resume",
+    "paidPlan": "Paid plan",
+    "freePlan": "Free plan",
+    "unitMonth": "{currency} per month",
+    "unitYear": "{currency} per year",
+    "paymentMethod": "Payment method",
+    "compare": "Compare plans",
+    "trialTitle": "14-day free trial",
+    "trialBody": "Every paid feature with no card. We remind you before it ends; if you don't subscribe, your page moves to the free plan and none of your data is deleted.",
+    "cmp": {
+      "feature": "Feature",
+      "page": "Your page and link",
+      "templates": "Templates",
+      "works": "Past works",
+      "unlimited": "Unlimited",
+      "rates": "Ad rates",
+      "audience": "Audience data",
+      "badge": "Verified badge",
+      "analytics": "Analytics",
+      "pdf": "PDF media kit",
+      "branding": "Hide “Made with ❤️ Wsool”"
+    },
+    "viewInvoice": "View invoice from {date}"
   },
   "Analytics": {
     "range": "Period",
@@ -1093,5 +1183,10 @@
     "notifications": "Everything that happened on your page and account",
     "more": "The rest of your dashboard",
     "home": "Here's your page today"
+  },
+  "SaveBar": {
+    "save": "Save changes",
+    "saving": "Saving…",
+    "saved": "✓ Saved"
   }
 }

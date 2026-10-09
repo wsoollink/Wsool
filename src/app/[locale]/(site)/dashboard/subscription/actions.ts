@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { updateTag } from "next/cache";
 import { z } from "zod";
+import { CANCEL_REASONS } from "@/config/plans";
 import { getAdmin } from "@/lib/admin";
 import { setAutoRenew, setNextCycle, startCheckout, type CheckoutError } from "@/lib/billing";
 import { requireCreator } from "@/lib/creator";
@@ -27,9 +28,17 @@ export async function checkout(cycleInput: string, currencyInput: string): Promi
   redirect(res.url);
 }
 
-export async function toggleAutoRenew(on: boolean) {
+const feedbackSchema = z.object({ reason: z.enum(CANCEL_REASONS), note: z.string().trim().max(300).default("") });
+
+/** Auto-renew on/off. Turning it off can carry the "why are you cancelling?" answer. */
+export async function toggleAutoRenew(on: boolean, feedback?: { reason: string; note?: string }) {
   const { user } = await requireCreator();
-  return { ok: await setAutoRenew(user.id, !!on) };
+  const ok = await setAutoRenew(user.id, !!on);
+  const parsed = feedback ? feedbackSchema.safeParse(feedback) : null;
+  if (ok && !on && parsed?.success) {
+    await db.cancellationFeedback.create({ data: { userId: user.id, reason: parsed.data.reason, note: parsed.data.note || null } });
+  }
+  return { ok };
 }
 
 export async function changeCycle(next: string) {

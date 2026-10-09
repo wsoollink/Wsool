@@ -3,14 +3,15 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Card } from "@/components/ui/Card";
-import { hasPro, trialDaysLeft } from "@/config/plans";
+import { PRICES, hasPro, trialDaysLeft } from "@/config/plans";
 import { isLocale, toIntlLocale, type Locale } from "@/i18n/config";
 import { DELETE_AFTER_DAYS } from "@/lib/account-deletion";
 import { getAdmin } from "@/lib/admin";
 import { invoiceLabel } from "@/lib/billing";
 import { requireCreator } from "@/lib/creator";
 import { db } from "@/lib/db";
-import { formatPrice } from "@/lib/format";
+import { formatNumber, formatPrice } from "@/lib/format";
+import { CreditCard, FileText } from "lucide-react";
 import { paymentProvider } from "@/lib/payments";
 import { DangerZone } from "./DangerZone";
 import { ManageCard } from "./ManageCard";
@@ -49,37 +50,61 @@ async function Subscription({ lang, searchParams }: { lang: Locale; searchParams
         </p>
       )}
 
-      <Card className="flex flex-col gap-2">
-        <p className="text-xs text-muted">{t("currentPlan")}</p>
-        <p className="text-2xl font-bold">{pro ? "Pro" : t("free")}{active && sub?.cycle && <span className="ms-2 text-sm font-normal text-muted">{t(sub.cycle)}</span>}</p>
-        <p className={`text-sm ${sub?.status === "past_due" ? "text-bad" : "text-muted"}`}>{status}</p>
-        {active && sub?.paymentMethodLabel && <p className="text-sm text-muted" dir="ltr">{sub.paymentMethodLabel}</p>}
+      <Card className="flex flex-col gap-4">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex flex-col gap-0.5">
+            <span className="text-[13px] text-muted">{t("currentPlan")}</span>
+            <h2 className="text-xl font-bold">{pro ? t("paidPlan") : t("freePlan")}</h2>
+            <p className={`text-[13px] ${sub?.status === "past_due" ? "text-bad" : "text-muted"}`}>{status}</p>
+          </div>
+          {active && sub?.cycle && sub.currency && (
+            <div className="flex shrink-0 flex-col items-end">
+              <span dir="ltr" className="font-numbers text-3xl font-black">{formatNumber(PRICES[sub.currency][sub.cycle], lang)}</span>
+              <span className="text-xs text-muted">{t(sub.cycle === "yearly" ? "unitYear" : "unitMonth", { currency: sub.currency })}</span>
+            </div>
+          )}
+        </div>
+        {active && sub?.paymentMethodLabel && (
+          <div className="flex items-center gap-3 rounded-xl bg-navy/5 px-3 py-2.5">
+            <CreditCard aria-hidden="true" size={18} />
+            <span className="flex flex-col">
+              <span className="text-[13px] font-bold">{t("paymentMethod")}</span>
+              <span dir="ltr" className="text-xs text-muted rtl:text-end">{sub.paymentMethodLabel}</span>
+            </span>
+          </div>
+        )}
+        {active && sub?.cycle && sub.currentPeriodEnd && (
+          <ManageCard autoRenew={!sub.cancelAtPeriodEnd} cycle={sub.cycle} hasCard={!!sub.paymentToken} endDate={date.format(sub.currentPeriodEnd)} />
+        )}
       </Card>
 
-      {active && sub?.cycle && !sub.cancelAtPeriodEnd ? (
-        <ManageCard autoRenew cycle={sub.cycle} hasCard={!!sub.paymentToken} />
-      ) : active && sub?.cycle ? (
-        <>
-          <ManageCard autoRenew={false} cycle={sub.cycle} hasCard={!!sub.paymentToken} />
-          {!sub.paymentToken && <PlanPicker defaultCurrency={sub.currency ?? (lang === "en" ? "USD" : "SAR")} canPay={canPay} renew />}
-        </>
-      ) : (
-        <PlanPicker defaultCurrency={sub?.currency ?? (lang === "en" ? "USD" : "SAR")} canPay={canPay} renew={false} />
+      {!(active && sub?.cycle && !sub.cancelAtPeriodEnd) && (!active || !sub?.paymentToken) && (
+        <PlanPicker
+          defaultCurrency={sub?.currency ?? (lang === "en" ? "USD" : "SAR")} canPay={canPay}
+          renew={active && !!sub?.cycle} showTrial={!sub || sub.status === "trialing"}
+        />
       )}
 
-      <Card className="flex flex-col gap-2">
-        <h2 className="font-bold">{t("invoices")}</h2>
+      <Card className="flex flex-col gap-1">
+        <h2 className="mb-1 font-bold">{t("invoices")}</h2>
         {invoices.length === 0 ? (
           <p className="text-sm text-muted">{t("noInvoices")}</p>
         ) : (
-          <ul className="flex flex-col divide-y divide-line">
+          <ul className="flex flex-col divide-y divide-navy/6">
             {invoices.map((inv) => (
-              <li key={inv.id} className="flex flex-wrap items-center gap-x-4 gap-y-1 py-3 text-sm">
-                <span className="font-medium" dir="ltr">{invoiceLabel(inv.number)}</span>
-                <span className="text-muted">{date.format(inv.paidAt ?? inv.createdAt)}</span>
-                <span className="font-numbers">{formatPrice(Number(inv.amount), inv.currency, lang)}</span>
-                <span className={inv.status === "paid" ? "text-good" : inv.status === "refunded" ? "text-warn" : "text-bad"}>{t(`invoiceStatus.${inv.status}`)}</span>
-                {inv.number && <Link href={`/dashboard/subscription/invoices/${inv.id}`} className="ms-auto min-h-11 content-center text-blue underline">{t("view")}</Link>}
+              <li key={inv.id} className="flex items-center gap-3 py-2.5">
+                <span className="flex min-w-0 flex-1 flex-col">
+                  <span className="text-sm font-medium">{date.format(inv.paidAt ?? inv.createdAt)}</span>
+                  <span className={`text-xs ${inv.status === "paid" ? "text-good" : inv.status === "refunded" ? "text-warn" : "text-bad"}`}>
+                    {t(`invoiceStatus.${inv.status}`)} {inv.number && <span dir="ltr" className="text-muted">· {invoiceLabel(inv.number)}</span>}
+                  </span>
+                </span>
+                <span className="font-numbers text-sm font-bold">{formatPrice(Number(inv.amount), inv.currency, lang)}</span>
+                {inv.number && (
+                  <Link href={`/dashboard/subscription/invoices/${inv.id}`} aria-label={t("viewInvoice", { date: date.format(inv.paidAt ?? inv.createdAt) })} className="inline-flex size-11 items-center justify-center rounded-xl bg-navy/5">
+                    <FileText aria-hidden="true" size={18} />
+                  </Link>
+                )}
               </li>
             ))}
           </ul>

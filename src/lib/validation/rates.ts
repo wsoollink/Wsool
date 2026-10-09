@@ -1,8 +1,10 @@
 import { z } from "zod";
 
 export const MAX_RATES = 10;
-export const MAX_BUNDLES = 5;
+/** One bundle per page (owner decision, Oct 2026). */
+export const MAX_BUNDLES = 1;
 export const MAX_PRICE = 10_000_000;
+export const RATE_CURRENCIES = ["SAR", "USD", "AED", "KWD"] as const;
 
 const price = z.number().finite().min(0).max(MAX_PRICE);
 const rate = z.object({
@@ -27,7 +29,7 @@ export const bundlesSchema = z
 export const rateSettingsSchema = z.object({
   showOnPage: z.boolean(),
   showInPdf: z.boolean(),
-  currency: z.enum(["SAR", "USD"]),
+  currency: z.enum(RATE_CURRENCIES),
   vatIncluded: z.boolean(),
 });
 

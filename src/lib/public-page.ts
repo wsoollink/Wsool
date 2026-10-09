@@ -110,7 +110,8 @@ export async function getPublicPage(username: string) {
     portfolio: isPro ? page.portfolioItems : page.portfolioItems.slice(0, FREE_LIMITS.portfolioItems),
     // No saved settings yet = the defaults (shown, VAT included, SAR or USD by primary language).
     rateSettings: page.rateSettings ?? { showOnPage: true, showInPdf: true, currency: page.primaryLang === "en" ? ("USD" as const) : ("SAR" as const), vatIncluded: true },
-    bundles: page.rateBundles.map((b) => ({
+    // One bundle per page (older pages may still have more saved).
+    bundles: page.rateBundles.slice(0, 1).map((b) => ({
       id: b.id,
       name: b.name,
       nameEn: b.nameEn,

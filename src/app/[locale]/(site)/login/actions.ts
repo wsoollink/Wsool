@@ -1,5 +1,6 @@
 "use server";
 
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { ensureAccount } from "@/lib/account";
@@ -55,6 +56,20 @@ export async function verifyCode(_prev: LoginState, formData: FormData): Promise
 
   await ensureAccount({ id: data.user.id, email: data.user.email ?? email.data });
   redirect("/dashboard");
+}
+
+/** Google: Supabase sends the visitor to Google, then back to /api/auth/callback. */
+export async function signInWithGoogle() {
+  const h = await headers();
+  const host = h.get("x-forwarded-host") ?? h.get("host");
+  const proto = h.get("x-forwarded-proto") ?? (host?.startsWith("localhost") ? "http" : "https");
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: { redirectTo: `${proto}://${host}/api/auth/callback`, queryParams: { prompt: "select_account" } },
+  });
+  if (error || !data.url) redirect("/login?error=google");
+  redirect(data.url);
 }
 
 export async function signOut() {

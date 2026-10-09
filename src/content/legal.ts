@@ -1,7 +1,7 @@
 /**
  * Terms of Use and Privacy Policy, from the owner's document "وصول — شروط
  * الاستخدام وسياسة الخصوصية", adjusted to how Wsool actually works (Netlify
- * hosting, email code sign-in without passwords, no stored IP addresses).
+ * hosting, email code or Google sign-in without passwords, no stored IP addresses).
  * {entity}, {registration}, {email}, {gateway}, {mailer}, {servers} are filled
  * from LEGAL in src/config/site.ts. Should be reviewed by a Saudi lawyer.
  */
@@ -86,7 +86,7 @@ export const LEGAL_TEXT: Record<"ar" | "en", Record<LegalKind, LegalDoc>> = {
         { h: "1. البيانات التي نجمعها" },
         { table: [
           ["النوع", "أمثلة", "مصدرها"],
-          ["بيانات الحساب", "البريد الإلكتروني (ندخلك برمز يوصلك عليه، بدون كلمة مرور)", "أنت عند التسجيل"],
+          ["بيانات الحساب", "البريد الإلكتروني (ندخلك برمز يوصلك عليه، بدون كلمة مرور). وإذا دخلت بحساب Google ناخذ منه الإيميل والاسم فقط", "أنت عند التسجيل، أو Google بموافقتك"],
           ["محتوى صفحتك", "الاسم، النبذة، الصور، روابط الحسابات، أرقام المتابعين، الأعمال، رقم الترخيص", "أنت من لوحة التحكم"],
           ["لقطات التوثيق", "صور شاشة حساباتك لإثبات الأرقام، تُحفظ بشكل خاص ويراها فريق المراجعة فقط", "أنت عند طلب التوثيق"],
           ["بيانات التواصل المعروضة", "رقم واتساب، البريد الإلكتروني", "أنت، وتُعرض للعامة بقرارك"],
@@ -111,6 +111,7 @@ export const LEGAL_TEXT: Record<"ar" | "en", Record<LegalKind, LegalDoc>> = {
         { p: "نشاركها فقط مع مزودي خدمة يساعدوننا في تشغيل المنصة، وبالقدر اللازم:" },
         { ul: [
           "Supabase: قاعدة البيانات وتسجيل الدخول وتخزين الملفات.",
+          "Google: تسجيل الدخول بحساب Google لمن يختاره.",
           "Netlify و Cloudflare: استضافة الموقع وتوصيله.",
           "{gateway}: معالجة المدفوعات.",
           "{mailer}: إرسال الرسائل.",
@@ -137,7 +138,7 @@ export const LEGAL_TEXT: Record<"ar" | "en", Record<LegalKind, LegalDoc>> = {
         { h: "8. ملفات تعريف الارتباط" },
         { p: "نستخدم ملفات ضرورية فقط لتسجيل الدخول وحفظ اللغة. لا نستخدم ملفات إعلانية أو تتبع من طرف ثالث." },
         { h: "9. حماية البيانات" },
-        { p: "نستخدم التشفير أثناء النقل، والدخول برموز لمرة واحدة بدل كلمات المرور، وصلاحيات وصول محدودة لفريقنا حسب الحاجة مع سجل لكل إجراء. ومع ذلك لا توجد وسيلة حماية كاملة 100%." },
+        { p: "نستخدم التشفير أثناء النقل، والدخول برموز لمرة واحدة أو بحساب Google بدل كلمات المرور، وصلاحيات وصول محدودة لفريقنا حسب الحاجة مع سجل لكل إجراء. ومع ذلك لا توجد وسيلة حماية كاملة 100%." },
         { h: "10. الأطفال" },
         { p: "المنصة غير موجهة لمن هم دون 18 سنة، ولا نجمع بياناتهم عن علم." },
         { h: "11. تحديث السياسة" },
@@ -223,7 +224,7 @@ export const LEGAL_TEXT: Record<"ar" | "en", Record<LegalKind, LegalDoc>> = {
         { h: "1. Data we collect" },
         { table: [
           ["Type", "Examples", "Source"],
-          ["Account data", "Email address (you sign in with a code we send there; no password)", "You, at signup"],
+          ["Account data", "Email address (you sign in with a code we send there; no password). If you sign in with Google, we receive only your email and name", "You, at signup, or Google with your consent"],
           ["Page content", "Name, bio, photos, social links, follower counts, work samples, licence number", "You, from the dashboard"],
           ["Verification screenshots", "Screenshots of your accounts proving your numbers, stored privately and seen only by our review team", "You, when requesting verification"],
           ["Public contact details", "WhatsApp number, email", "You; shown publicly by your choice"],
@@ -248,6 +249,7 @@ export const LEGAL_TEXT: Record<"ar" | "en", Record<LegalKind, LegalDoc>> = {
         { p: "Only with service providers that help us run Wsool, and only as needed:" },
         { ul: [
           "Supabase: database, sign-in and file storage.",
+          "Google: sign-in with a Google account, for those who choose it.",
           "Netlify and Cloudflare: website hosting and delivery.",
           "{gateway}: payment processing.",
           "{mailer}: sending emails.",
@@ -274,7 +276,7 @@ export const LEGAL_TEXT: Record<"ar" | "en", Record<LegalKind, LegalDoc>> = {
         { h: "8. Cookies" },
         { p: "We use only essential cookies for login and language preference. We do not use advertising or third-party tracking cookies." },
         { h: "9. Security" },
-        { p: "We use encryption in transit, one-time sign-in codes instead of passwords, and limited, need-based staff access with every action logged. No method of protection is 100% secure." },
+        { p: "We use encryption in transit, one-time sign-in codes or Google sign-in instead of passwords, and limited, need-based staff access with every action logged. No method of protection is 100% secure." },
         { h: "10. Children" },
         { p: "Wsool is not intended for anyone under 18, and we do not knowingly collect their data." },
         { h: "11. Changes to this policy" },

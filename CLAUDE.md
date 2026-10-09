@@ -281,6 +281,13 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
   hold one bilingual body (Arabic, code, English) with `{{ .Token }}`. Free projects can only
   edit templates with custom SMTP, which is why Resend is connected. The OTP is 8 digits
   (the form accepts 6-10).
+- **Google sign-in**: `signInWithGoogle` (server action, PKCE) → Supabase → Google → `/api/auth/callback`
+  (`exchangeCodeForSession`, then `ensureAccount` = same trial as email sign-up) → `/dashboard`. Errors go to
+  `/login?error=google`. The button shows only when Google is enabled in Supabase
+  (`googleSignInEnabled()` reads `/auth/v1/settings`, cached minutes), so no code change is needed to
+  turn it on. Owner setup: Google Cloud OAuth client (redirect URI = the Supabase callback
+  `https://<project>.supabase.co/auth/v1/callback`), then Supabase → Providers → Google, and every site
+  origin's `/api/auth/callback` in Supabase's Redirect URLs. Same-email accounts are linked by Supabase.
 - Supabase project: `wsool-eu` in Frankfurt (eu-central-1).
 - Sandbox only: run the app with `NODE_USE_ENV_PROXY=1` (Node's fetch ignores HTTPS_PROXY
   otherwise) and the overrides in `.env.local`.

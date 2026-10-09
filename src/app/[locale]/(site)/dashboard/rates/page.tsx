@@ -5,6 +5,7 @@ import { isLocale, toIntlLocale } from "@/i18n/config";
 import { requireCreator } from "@/lib/creator";
 import { db } from "@/lib/db";
 import { RatesEditor } from "./RatesEditor";
+import { PageHeader } from "@/components/dashboard/PageHeader";
 
 async function Editor() {
   const { page } = await requireCreator();
@@ -39,7 +40,7 @@ export default async function RatesPage({ params }: PageProps<"/[locale]/dashboa
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-2xl font-bold">{t("rates")}</h1>
+      <PageHeader title={t("rates")} section="rates" />
       <Suspense fallback={null}>
         <Editor />
       </Suspense>

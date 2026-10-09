@@ -15,6 +15,7 @@ import { paymentProvider } from "@/lib/payments";
 import { DangerZone } from "./DangerZone";
 import { ManageCard } from "./ManageCard";
 import { PlanPicker } from "./PlanPicker";
+import { PageHeader } from "@/components/dashboard/PageHeader";
 
 type SP = Promise<Record<string, string | string[] | undefined>>;
 
@@ -97,7 +98,7 @@ export default async function SubscriptionPage({ params, searchParams }: PagePro
   const nav = await getTranslations("DashboardNav");
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-2xl font-bold">{nav("subscription")}</h1>
+      <PageHeader title={nav("subscription")} section="subscription" />
       <Suspense fallback={null}><Subscription lang={locale} searchParams={searchParams} /></Suspense>
     </div>
   );

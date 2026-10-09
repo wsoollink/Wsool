@@ -12,6 +12,7 @@ import { requireCreator } from "@/lib/creator";
 import { db } from "@/lib/db";
 import { formatNumber, formatPercent } from "@/lib/format";
 import { DailyChart } from "./DailyChart";
+import { PageHeader } from "@/components/dashboard/PageHeader";
 
 type SP = Promise<Record<string, string | string[] | undefined>>;
 
@@ -119,7 +120,7 @@ export default async function AnalyticsPage({ params, searchParams }: PageProps<
   const nav = await getTranslations("DashboardNav");
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-2xl font-bold">{nav("analytics")}</h1>
+      <PageHeader title={nav("analytics")} section="analytics" />
       <Suspense fallback={null}><Report lang={locale} searchParams={searchParams} /></Suspense>
     </div>
   );

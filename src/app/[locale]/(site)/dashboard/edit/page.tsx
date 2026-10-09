@@ -10,6 +10,7 @@ import { LicensesCard } from "./LicensesCard";
 import { PhotoCard } from "./PhotoCard";
 import { PublishCard } from "./PublishCard";
 import { TagsCard } from "./TagsCard";
+import { PageHeader } from "@/components/dashboard/PageHeader";
 
 const empty = { fullName: "", specialty: "", bio: "", city: "", country: "" };
 
@@ -54,7 +55,7 @@ export default async function EditPage({ params }: PageProps<"/[locale]/dashboar
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-2xl font-bold">{t("edit")}</h1>
+      <PageHeader title={t("edit")} section="edit" />
       <Suspense fallback={null}>
         <Editor />
       </Suspense>

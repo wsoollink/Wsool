@@ -7,6 +7,7 @@ import { isLocale, toIntlLocale, type Locale } from "@/i18n/config";
 import { requireCreator } from "@/lib/creator";
 import { db } from "@/lib/db";
 import { AppearanceEditor } from "./AppearanceEditor";
+import { PageHeader } from "@/components/dashboard/PageHeader";
 
 async function Editor() {
   const { user, page } = await requireCreator();
@@ -49,7 +50,7 @@ export default async function AppearancePage({ params }: PageProps<"/[locale]/da
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-2xl font-bold">{t("appearance")}</h1>
+      <PageHeader title={t("appearance")} section="appearance" />
       <Suspense fallback={null}>
         <Editor />
       </Suspense>

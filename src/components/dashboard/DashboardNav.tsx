@@ -31,8 +31,8 @@ export function SidebarNav() {
             <Link
               href={s.href}
               aria-current={active ? "page" : undefined}
-              className={`flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm font-medium transition-colors ${
-                active ? "bg-blue/10 text-blue" : "text-navy hover:bg-navy/5"
+              className={`flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm transition-colors ${
+                active ? "bg-navy/5 font-bold text-navy" : "font-medium text-muted hover:bg-navy/5 hover:text-navy"
               }`}
             >
               <SectionIcon section={s.key} />
@@ -59,8 +59,8 @@ export function TabBar() {
             <Link
               href={tab.href}
               aria-current={active ? "page" : undefined}
-              className={`flex min-h-14 flex-col items-center justify-center gap-1 text-[11px] font-medium ${
-                active ? "text-blue" : "text-muted"
+              className={`flex min-h-14 flex-col items-center justify-center gap-1 text-[11.5px] ${
+                active ? "font-bold text-blue" : "font-medium text-muted"
               }`}
             >
               <SectionIcon section={tab.key} />

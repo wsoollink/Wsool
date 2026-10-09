@@ -9,6 +9,7 @@ import { db } from "@/lib/db";
 import { notificationText } from "@/lib/notify";
 import { EmailSettings } from "./EmailSettings";
 import { MarkRead } from "./MarkRead";
+import { PageHeader } from "@/components/dashboard/PageHeader";
 
 async function List({ lang }: { lang: Locale }) {
   const { user } = await requireCreator();
@@ -57,7 +58,7 @@ export default async function NotificationsPage({ params }: PageProps<"/[locale]
   const nav = await getTranslations("DashboardNav");
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-2xl font-bold">{nav("notifications")}</h1>
+      <PageHeader title={nav("notifications")} section="notifications" />
       <Suspense fallback={null}><List lang={locale} /></Suspense>
     </div>
   );

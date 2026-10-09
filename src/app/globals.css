@@ -27,10 +27,10 @@
   --font-sans: var(--font-text);
   --font-numbers: var(--font-numbers);
 
-  --radius-card: 20px;
+  --radius-card: 18px;
   --radius-card-lg: 24px;
 
-  --shadow-card: 0 1px 2px rgba(2, 25, 65, 0.04), 0 8px 24px rgba(2, 25, 65, 0.05);
+  --shadow-card: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 1px 2px rgba(2, 25, 65, 0.04);
 }
 
 @layer base {
@@ -75,4 +75,16 @@
   background-clip: text;
   -webkit-text-fill-color: transparent;
   letter-spacing: -0.01em;
+}
+
+/* App background from the dashboard design: soft glows + a 32px grid. */
+@utility app-backdrop {
+  background-color: var(--color-bg);
+  background-image:
+    radial-gradient(520px 420px at 100% 0px, rgba(2, 25, 65, 0.06), transparent 70%),
+    radial-gradient(520px 520px at 0% 800px, rgba(2, 25, 65, 0.05), transparent 70%),
+    linear-gradient(rgba(2, 25, 65, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(2, 25, 65, 0.045) 1px, transparent 1px);
+  background-size: auto, auto, 32px 32px, 32px 32px;
+  background-repeat: no-repeat, no-repeat, repeat, repeat;
 }

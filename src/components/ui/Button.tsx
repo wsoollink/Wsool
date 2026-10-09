@@ -3,9 +3,10 @@ import type { ButtonHTMLAttributes } from "react";
 type Variant = "primary" | "accent" | "secondary";
 
 const variants: Record<Variant, string> = {
-  primary: "bg-navy text-white hover:bg-navy/90",
+  // Design: primary actions are blue; secondary ones a soft navy fill without a border.
+  primary: "bg-blue text-white hover:bg-blue/90",
   accent: "bg-blue text-white hover:bg-blue/90",
-  secondary: "border border-line bg-card text-navy hover:bg-bg",
+  secondary: "bg-navy/5 text-navy hover:bg-navy/10",
 };
 
 /** Pill-shaped button with a 44px minimum touch target. */

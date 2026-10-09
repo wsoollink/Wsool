@@ -10,6 +10,7 @@ import { requireCreator } from "@/lib/creator";
 import { db } from "@/lib/db";
 import { toVerifyAccounts } from "./accounts";
 import { VerificationList } from "./VerificationList";
+import { PageHeader } from "@/components/dashboard/PageHeader";
 
 async function Accounts() {
   const { user, page } = await requireCreator();
@@ -50,7 +51,7 @@ export default async function VerificationPage({ params }: PageProps<"/[locale]/
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-2xl font-bold">{nav("verification")}</h1>
+      <PageHeader title={nav("verification")} section="verification" />
       <Card className="flex flex-col gap-2">
         <h2 className="font-bold">{t("howTitle")}</h2>
         <ol className="list-decimal space-y-1 ps-5 text-sm text-muted">

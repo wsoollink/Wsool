@@ -47,3 +47,15 @@ export async function analyticsReport(pageId: string, days: Range) {
 }
 
 export type AnalyticsReport = Awaited<ReturnType<typeof analyticsReport>>;
+
+/** Views and contact taps for one page between two days (inclusive), for "vs previous period". */
+export async function periodTotals(pageId: string, from: Date, to: Date) {
+  const where = { pageId, day: { gte: from, lte: to } };
+  const [views, clicks, countries] = await Promise.all([
+    db.pageView.count({ where }),
+    db.contactClick.groupBy({ by: ["kind"], where, _count: true }),
+    db.pageView.groupBy({ by: ["country"], where: { ...where, country: { not: null } }, _count: true }),
+  ]);
+  const click = (k: string) => clicks.find((c) => c.kind === k)?._count ?? 0;
+  return { views, whatsapp: click("whatsapp"), email: click("email"), countries: countries.length };
+}

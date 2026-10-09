@@ -1,11 +1,9 @@
-import { Suspense } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { LogOut } from "lucide-react";
 import { SidebarNav, TabBar } from "@/components/dashboard/DashboardNav";
-import { SectionIcon } from "@/components/dashboard/SectionIcon";
-import { UnreadDot } from "@/components/dashboard/UnreadDot";
 import { SubmitButton } from "@/components/SubmitButton";
 import { isLocale, toIntlLocale } from "@/i18n/config";
 import { signOut } from "../login/actions";
@@ -19,10 +17,10 @@ export default async function DashboardLayout({ children, params }: LayoutProps<
   const t = await getTranslations("DashboardNav");
 
   return (
-    <div className="flex min-h-dvh flex-1">
-      <aside className="sticky top-0 hidden h-dvh w-64 shrink-0 flex-col gap-6 border-e border-line bg-card p-4 md:flex">
-        <Link href="/dashboard" className="brand-gradient bg-clip-text px-3 pt-2 text-2xl font-bold text-transparent">
-          {t("brand")}
+    <div className="app-backdrop flex min-h-dvh flex-1">
+      <aside className="sticky top-0 hidden h-dvh w-[260px] shrink-0 flex-col gap-6 border-e border-navy/8 bg-white/82 px-4 py-6 backdrop-blur-[14px] md:flex">
+        <Link href="/dashboard" className="inline-flex min-h-11 items-center px-3" aria-label={t("brand")}>
+          <Image src={locale === "en" ? "/brand/logo-en.png" : "/brand/logo-ar.png"} alt={t("brand")} width={96} height={32} className="h-8 w-auto" priority />
         </Link>
         <nav aria-label={t("menu")} className="flex-1 overflow-y-auto">
           <SidebarNav />
@@ -36,26 +34,12 @@ export default async function DashboardLayout({ children, params }: LayoutProps<
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-10 flex h-14 items-center justify-between border-b border-line bg-bg/90 px-4 backdrop-blur">
-          <Link href="/dashboard" className="brand-gradient bg-clip-text text-xl font-bold text-transparent md:invisible">
-            {t("brand")}
-          </Link>
-          <Link
-            href="/dashboard/notifications"
-            aria-label={t("notifications")}
-            className="relative inline-flex size-11 items-center justify-center rounded-full text-navy hover:bg-navy/5"
-          >
-            <SectionIcon section="notifications" />
-            <Suspense fallback={null}><UnreadDot label={t("unread")} /></Suspense>
-          </Link>
-        </header>
-
-        <main className="mx-auto w-full max-w-3xl flex-1 px-4 pt-6 pb-28 md:pb-10">{children}</main>
+        <main className="mx-auto w-full max-w-[1160px] flex-1 px-4 pt-5 pb-28 md:px-8 md:pt-7 md:pb-10">{children}</main>
       </div>
 
       <nav
         aria-label={t("menu")}
-        className="fixed inset-x-0 bottom-0 z-10 border-t border-line bg-card pb-[env(safe-area-inset-bottom)] md:hidden"
+        className="fixed inset-x-0 bottom-0 z-10 border-t border-navy/8 bg-white/82 pb-[env(safe-area-inset-bottom)] backdrop-blur-[14px] md:hidden"
       >
         <TabBar />
       </nav>

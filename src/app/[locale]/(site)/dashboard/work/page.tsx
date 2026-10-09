@@ -8,6 +8,7 @@ import { db } from "@/lib/db";
 import { pageLanguages } from "@/lib/page-language";
 import { BrandsCard } from "./BrandsCard";
 import { WorksCard } from "./WorksCard";
+import { PageHeader } from "@/components/dashboard/PageHeader";
 
 async function Editor() {
   const { user, page } = await requireCreator();
@@ -42,7 +43,7 @@ export default async function WorkPage({ params }: PageProps<"/[locale]/dashboar
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-2xl font-bold">{t("work")}</h1>
+      <PageHeader title={t("work")} section="work" />
       <Suspense fallback={null}>
         <Editor />
       </Suspense>

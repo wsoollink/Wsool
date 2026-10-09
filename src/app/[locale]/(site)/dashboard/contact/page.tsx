@@ -4,6 +4,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { isLocale, toIntlLocale } from "@/i18n/config";
 import { requireCreator } from "@/lib/creator";
 import { ContactForm } from "./ContactForm";
+import { PageHeader } from "@/components/dashboard/PageHeader";
 
 async function Editor() {
   const { user, page } = await requireCreator();
@@ -18,7 +19,7 @@ export default async function ContactPage({ params }: PageProps<"/[locale]/dashb
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-2xl font-bold">{t("contact")}</h1>
+      <PageHeader title={t("contact")} section="contact" />
       <Suspense fallback={null}>
         <Editor />
       </Suspense>

@@ -42,3 +42,8 @@ export function resolveLocale(cookieValue: string | undefined, acceptLanguage: s
   if (isLocale(cookieValue)) return cookieValue;
   return localeFromAcceptLanguage(acceptLanguage) ?? defaultLocale;
 }
+
+/** "ar-u-nu-latn" (next-intl's locale) -> "ar". */
+export function fromIntlLocale(intl: string): Locale {
+  return intl.startsWith("en") ? "en" : "ar";
+}

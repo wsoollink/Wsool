@@ -7,6 +7,7 @@ import { db } from "@/lib/db";
 import { AccountsCard } from "./AccountsCard";
 import { AudienceCard, type AudienceValue } from "./AudienceCard";
 import { ViewsCard } from "./ViewsCard";
+import { PageHeader } from "@/components/dashboard/PageHeader";
 
 async function Editor() {
   const { page } = await requireCreator();
@@ -48,7 +49,7 @@ export default async function AccountsPage({ params }: PageProps<"/[locale]/dash
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-2xl font-bold">{t("accounts")}</h1>
+      <PageHeader title={t("accounts")} section="accounts" />
       <Suspense fallback={null}>
         <Editor />
       </Suspense>

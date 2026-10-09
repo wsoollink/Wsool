@@ -10,6 +10,7 @@ import { MORE_SECTIONS } from "@/config/dashboard";
 import { isLocale, toIntlLocale } from "@/i18n/config";
 import { requireCreator } from "@/lib/creator";
 import { signOut } from "../../login/actions";
+import { PageHeader } from "@/components/dashboard/PageHeader";
 
 async function Guard() {
   await requireCreator();
@@ -28,7 +29,7 @@ export default async function MorePage({ params }: PageProps<"/[locale]/dashboar
       <Suspense fallback={null}>
         <Guard />
       </Suspense>
-      <h1 className="text-2xl font-bold">{t("more")}</h1>
+      <PageHeader title={t("more")} section="more" />
       <Card className="p-2">
         <ul className="flex flex-col">
           {MORE_SECTIONS.map((s) => (

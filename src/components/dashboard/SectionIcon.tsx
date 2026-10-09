@@ -1,19 +1,19 @@
 import {
-  BadgeCheck, Bell, Briefcase, ChartColumn, CreditCard, Ellipsis, House,
-  MessageCircle, Palette, Pencil, Tag, Users, type LucideProps,
+  Activity, BadgeCheck, Bell, Briefcase, ChartColumn, CreditCard, Ellipsis, House,
+  MessageCircle, Palette, Pencil, Tag, type LucideProps,
 } from "lucide-react";
 import type { SectionKey } from "@/config/dashboard";
 
 const ICONS: Record<SectionKey, React.ComponentType<LucideProps>> = {
   home: House,
   edit: Pencil,
-  accounts: Users,
+  accounts: ChartColumn,
   work: Briefcase,
   rates: Tag,
   contact: MessageCircle,
   verification: BadgeCheck,
   appearance: Palette,
-  analytics: ChartColumn,
+  analytics: Activity,
   subscription: CreditCard,
   notifications: Bell,
   more: Ellipsis,

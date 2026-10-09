@@ -598,17 +598,18 @@
     "menu": "قائمة الإدارة",
     "nav": {
       "overview": "نظرة عامة",
-      "verifications": "طابور التوثيق",
+      "verifications": "طلبات التوثيق",
       "users": "المستخدمين",
       "subscriptions": "الاشتراكات والمدفوعات",
       "finance": "المالية",
       "team": "الفريق والصلاحيات",
-      "audit": "سجل العمليات"
+      "audit": "سجل العمليات",
+      "pendingBadge": "بانتظار المراجعة"
     },
     "overview": {
       "users": "المستخدمين",
       "published": "صفحات منشورة",
-      "trialing": "في الفترة التجريبية",
+      "trialing": "في التجربة",
       "pro": "مشتركين Pro",
       "pending": "{n} طلب توثيق ينتظر",
       "overdue": "{n} طلب تعدّى {hours} ساعة",
@@ -616,7 +617,36 @@
       "openQueue": "افتح الطابور",
       "newsletter": "{n} مشترك في القائمة البريدية",
       "newsletterHint": "المؤكدين بالإيميل فقط.",
-      "exportCsv": "تحميل CSV"
+      "exportCsv": "تحميل CSV",
+      "creators": "إجمالي الصناع",
+      "thisWeek": "+{n} هالأسبوع",
+      "paid": "مشتركين مدفوع",
+      "ofCreators": "{p}% من الصناع",
+      "endingWeek": "{n} تنتهي هالأسبوع",
+      "mrr": "الإيراد الشهري المتكرر",
+      "sar": "ريال",
+      "pendingTile": "توثيق ينتظر",
+      "oldest": "أقدم طلب من {h} ساعة",
+      "conversion": "تحويل التجربة",
+      "conversionHint": "آخر 30 يوم، من {n} تجربة انتهت",
+      "signups": "التسجيلات اليومية",
+      "last30": "آخر 30 يوم",
+      "signupsAria": "{n} تسجيل في آخر 30 يوم",
+      "queueTitle": "طلبات التوثيق",
+      "queueSplit": "{accounts} حساب · {licenses} رخصة",
+      "oldestLate": "أقدم طلب له {h} ساعة (المدة {hours} ساعة)",
+      "startReview": "ابدأ المراجعة",
+      "funnelTitle": "رحلة الصانع",
+      "funnel": {
+        "signedUp": "سجّل",
+        "claimed": "حجز رابطه",
+        "published": "نشر صفحته",
+        "verified": "وثّق حساب",
+        "paid": "اشترك"
+      },
+      "activity": "آخر الإجراءات",
+      "seeAll": "عرض الكل",
+      "noActivity": "ما فيه إجراءات للحين."
     },
     "verifications": {
       "tabPending": "تنتظر المراجعة",
@@ -671,10 +701,25 @@
       "tabLicenses": "الرخص",
       "openLicense": "افتح ملف الرخصة",
       "licenseCheck": "الاسم والرقم في الملف يطابقون المكتوب، والملف واضح وساري",
-      "approveLicense": "قبول الرخصة"
+      "approveLicense": "قبول الرخصة",
+      "stats": {
+        "pending": "تنتظر",
+        "overdue": "تعدّت {hours} ساعة",
+        "today": "تمت مراجعتها اليوم",
+        "avg": "متوسط وقت المراجعة"
+      },
+      "hours": "{n} ساعة",
+      "emptyTitle": "خلصت الطلبات",
+      "backToList": "رجوع للقائمة",
+      "screenshot": "لقطة الشاشة",
+      "entered": "البيانات اللي أدخلها الصانع",
+      "account": "الحساب",
+      "reasonSent": "يوصل السبب للصانع بالإيميل والإشعارات.",
+      "confirmReject": "تأكيد الرفض",
+      "back": "رجوع"
     },
     "users": {
-      "search": "ابحث باسم المستخدم أو الإيميل",
+      "search": "ابحث بالاسم أو الرابط أو الإيميل",
       "noResults": "ما لقينا أحد.",
       "noPage": "بدون صفحة",
       "suspended": "موقوف",
@@ -747,7 +792,33 @@
           "approve": "قبل توثيق رخصة",
           "reject": "رفض توثيق رخصة"
         }
-      }
+      },
+      "filters": "فلترة المستخدمين",
+      "filter": {
+        "all": "الكل",
+        "paid": "مدفوع",
+        "trial": "تجربة",
+        "free": "مجاني"
+      },
+      "tableCaption": "{n} مستخدم",
+      "creator": "الصانع",
+      "followers": "المتابعين",
+      "lastActive": "آخر نشاط",
+      "status": "الحالة",
+      "cycle": {
+        "monthly": "شهري",
+        "yearly": "سنوي"
+      },
+      "daysLeft": "باقي {n} يوم",
+      "today": "اليوم",
+      "state": {
+        "published": "منشورة",
+        "hidden": "مخفية",
+        "noPage": "بدون صفحة",
+        "deleted": "محذوفة",
+        "suspended": "موقوف"
+      },
+      "first100": "يظهر أول 100 فقط، استخدم البحث للوصول لغيرهم."
     },
     "team": {
       "owner": "المالك",
@@ -758,8 +829,8 @@
       "role": "الدور",
       "roles": {
         "verifier": "مراجع توثيق",
-        "support": "دعم",
-        "finance": "مالية",
+        "support": "دعم فني",
+        "finance": "محاسب",
         "custom": "مخصص"
       },
       "permissions": "الصلاحيات",
@@ -797,14 +868,23 @@
         "invalid_email": "اكتب إيميل صحيح.",
         "exists": "هذا الإيميل موجود في الفريق.",
         "owner_email": "هذا إيميل المالك."
-      }
+      },
+      "groups": {
+        "verification": "التوثيق",
+        "users": "المستخدمين",
+        "money": "المالية"
+      },
+      "roleHint": "اختيار دور يعبّي الصلاحيات المناسبة، وتقدر تعدّلها.",
+      "ownerOnly": "إضافة الأعضاء وتعديل الصلاحيات وإعدادات المنصة للمالك فقط.",
+      "activeHint": "إذا قفلته ما يقدر يدخل لوحة الإدارة."
     },
     "audit": {
       "empty": "ما فيه عمليات للحين.",
       "when": "متى",
       "who": "مين",
       "what": "وش سوى",
-      "details": "تفاصيل"
+      "details": "تفاصيل",
+      "latest200": "يظهر آخر 200 إجراء."
     },
     "later": {
       "subscriptions": "هذا القسم يجي مع المدفوعات في المرحلة 5.",
@@ -815,7 +895,7 @@
       "providerLive": "الدفع شغّال عبر {name}.",
       "providerOff": "الدفع مقفل (ما فيه مزوّد).",
       "trialing": "في التجربة",
-      "active": "مشتركين",
+      "active": "مشتركين مدفوع",
       "pastDue": "دفع متعثر",
       "ended": "انتهى اشتراكهم",
       "mrrSar": "الإيراد الشهري المتكرر (ريال)",
@@ -827,7 +907,8 @@
         "creator": "الصانع",
         "amount": "المبلغ",
         "status": "الحالة",
-        "date": "التاريخ"
+        "date": "التاريخ",
+        "plan": "الخطة"
       },
       "kind": {
         "checkout": "اشتراك",
@@ -841,7 +922,74 @@
       },
       "refund": "استرجاع",
       "confirmRefund": "تسترجع كامل مبلغ {label}؟ ينتهي Pro للصانع على طول.",
-      "refundFailed": "ما قدرنا نسترجع المبلغ."
+      "refundFailed": "ما قدرنا نسترجع المبلغ.",
+      "split": "{monthly} شهري · {yearly} سنوي",
+      "mrr": "الإيراد الشهري المتكرر",
+      "sarVat": "ريال، شامل الضريبة",
+      "revenueMonth": "إيراد هالشهر",
+      "sarNoVat": "ريال، بدون الضريبة",
+      "failedTitle": "دفعات فشلت وتحتاج متابعة",
+      "failedHint": "نعيد المحاولة بعد يوم ثم بعد 3 أيام، وبعدها يرجع الحساب مجاني.",
+      "attempts": "{n} محاولة فشلت",
+      "nextRetry": "المحاولة الجاية {date}",
+      "noRetry": "ما فيه محاولة جاية",
+      "exportCsv": "تحميل CSV",
+      "cycle": {
+        "monthly": "شهري",
+        "yearly": "سنوي"
+      }
+    },
+    "roleOwner": "مالك الحساب",
+    "roleStaff": "فريق وصول",
+    "searchLabel": "بحث عن صانع",
+    "searchPlaceholder": "ابحث عن صانع أو رابط أو إيميل",
+    "sub": {
+      "overview": "حالة المنصة اليوم",
+      "verifications": "راجع لقطة الشاشة وقارنها بالبيانات المدخلة",
+      "users": "كل الصناع المسجلين في وصول",
+      "subscriptions": "الإيرادات والفواتير والدفعات الفاشلة",
+      "finance": "الإيرادات والمصروفات وصافي الربح",
+      "team": "أضف موظفين وحدد وش يقدرون يسوون",
+      "audit": "كل إجراء سوّاه الفريق، مين ومتى"
+    },
+    "sentence": {
+      "verification": {
+        "approve": "وثّق {platform} ‎@{handle}",
+        "reject": "رفض توثيق ‎@{handle}"
+      },
+      "license": {
+        "approve": "وثّق رخصة «{name}» لـ {username}",
+        "reject": "رفض رخصة «{name}» لـ {username}"
+      },
+      "user": {
+        "trial_extend": "مدّد تجربة {username} {days} يوم",
+        "suspend": "أوقف حساب {username}",
+        "unsuspend": "رجّع حساب {username}"
+      },
+      "page": {
+        "publish": "نشر صفحة {username}",
+        "hide": "أخفى صفحة {username}"
+      },
+      "team": {
+        "invite": "أضاف {email} للفريق",
+        "update": "عدّل صلاحيات {email}",
+        "remove": "شال {email} من الفريق"
+      },
+      "invoice": {
+        "refund": "استرجع فاتورة لـ {username}",
+        "export": "حمّل الفواتير ({count})"
+      },
+      "expense": {
+        "add": "أضاف مصروف",
+        "delete": "حذف مصروف"
+      },
+      "investor_link": {
+        "create": "أنشأ رابط مستثمر «{label}»",
+        "revoke": "ألغى رابط مستثمر «{label}»"
+      },
+      "newsletter": {
+        "export": "حمّل قائمة المشتركين ({count})"
+      }
     }
   },
   "Billing": {
@@ -1246,8 +1394,15 @@
     "open": "افتح",
     "linkUnavailable": "هذا الرابط غير متاح (منتهي أو ملغي).",
     "reportMeta": "آخر {months} أشهر · محدّث {date}",
-    "printPdf": "اطبع / PDF",
-    "confidential": "تقرير سري للمستلم فقط. الرابط ينتهي {date}."
+    "printPdf": "تحميل PDF",
+    "confidential": "تقرير سري للمستلم فقط. الرابط ينتهي {date}.",
+    "margin": "هامش الربح",
+    "marginHint": "صافي الربح من الإيراد",
+    "ltvCac": "LTV إلى CAC",
+    "ltvCacHint": "3x أو أكثر يعتبر صحي",
+    "revenueVsExpenses": "الإيراد مقابل المصروفات",
+    "byCategory": "المصروفات حسب الفئة",
+    "readOnly": "للقراءة فقط"
   },
   "Site": {
     "followUs": "تابعنا",

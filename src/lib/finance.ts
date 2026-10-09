@@ -96,8 +96,16 @@ export async function financeReport(months: number) {
   const arpu = last.customers ? last.mrr / last.customers : null;
   const marketing3 = recent.reduce((s, r) => s + r.marketing, 0), new3 = recent.reduce((s, r) => s + r.newCustomers, 0);
 
+  const byCategory: Record<string, number> = {};
+  for (const e of expenses) {
+    const sum = keys.reduce((s, key) => s + expenseInMonth(e, key), 0);
+    if (sum) byCategory[e.category] = (byCategory[e.category] ?? 0) + sum;
+  }
+
   return {
     months: clean,
+    /** Expenses in the window per category (SAR), largest first. */
+    byCategory: Object.entries(byCategory).sort((a, b) => b[1] - a[1]),
     totals: {
       revenue: clean.reduce((s, r) => s + r.revenue, 0),
       expenses: clean.reduce((s, r) => s + r.expenses, 0),

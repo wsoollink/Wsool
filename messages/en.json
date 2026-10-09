@@ -598,17 +598,18 @@
     "menu": "Admin menu",
     "nav": {
       "overview": "Overview",
-      "verifications": "Verification queue",
+      "verifications": "Verification requests",
       "users": "Users",
       "subscriptions": "Subscriptions & payments",
       "finance": "Finance",
       "team": "Team & permissions",
-      "audit": "Activity log"
+      "audit": "Activity log",
+      "pendingBadge": "waiting for review"
     },
     "overview": {
       "users": "Users",
       "published": "Published pages",
-      "trialing": "On trial",
+      "trialing": "In trial",
       "pro": "Pro subscribers",
       "pending": "{n} verification requests waiting",
       "overdue": "{n} older than {hours} hours",
@@ -616,7 +617,36 @@
       "openQueue": "Open queue",
       "newsletter": "{n} newsletter subscribers",
       "newsletterHint": "Confirmed by email only.",
-      "exportCsv": "Download CSV"
+      "exportCsv": "Download CSV",
+      "creators": "Total creators",
+      "thisWeek": "+{n} this week",
+      "paid": "Paid subscribers",
+      "ofCreators": "{p}% of creators",
+      "endingWeek": "{n} ending this week",
+      "mrr": "MRR",
+      "sar": "SAR",
+      "pendingTile": "Pending verifications",
+      "oldest": "Oldest is {h}h old",
+      "conversion": "Trial conversion",
+      "conversionHint": "Last 30 days, of {n} ended trials",
+      "signups": "Daily signups",
+      "last30": "Last 30 days",
+      "signupsAria": "{n} signups in the last 30 days",
+      "queueTitle": "Verification requests",
+      "queueSplit": "{accounts} accounts · {licenses} licenses",
+      "oldestLate": "Oldest request is {h}h old (target {hours}h)",
+      "startReview": "Start reviewing",
+      "funnelTitle": "Creator funnel",
+      "funnel": {
+        "signedUp": "Signed up",
+        "claimed": "Claimed a link",
+        "published": "Published",
+        "verified": "Verified an account",
+        "paid": "Subscribed"
+      },
+      "activity": "Recent activity",
+      "seeAll": "See all",
+      "noActivity": "No actions yet."
     },
     "verifications": {
       "tabPending": "Waiting",
@@ -671,10 +701,25 @@
       "tabLicenses": "Licenses",
       "openLicense": "Open license file",
       "licenseCheck": "Name and number in the file match, and the file is clear and valid",
-      "approveLicense": "Approve license"
+      "approveLicense": "Approve license",
+      "stats": {
+        "pending": "Waiting",
+        "overdue": "Older than {hours}h",
+        "today": "Reviewed today",
+        "avg": "Average review time"
+      },
+      "hours": "{n}h",
+      "emptyTitle": "All caught up",
+      "backToList": "Back to the list",
+      "screenshot": "Screenshot",
+      "entered": "What the creator entered",
+      "account": "Account",
+      "reasonSent": "The reason is sent to the creator by email and notification.",
+      "confirmReject": "Confirm rejection",
+      "back": "Back"
     },
     "users": {
-      "search": "Search by username or email",
+      "search": "Search by name, link or email",
       "noResults": "No one found.",
       "noPage": "No page",
       "suspended": "Suspended",
@@ -747,7 +792,33 @@
           "approve": "Approved a license",
           "reject": "Rejected a license"
         }
-      }
+      },
+      "filters": "Filter users",
+      "filter": {
+        "all": "All",
+        "paid": "Paid",
+        "trial": "Trial",
+        "free": "Free"
+      },
+      "tableCaption": "{n} users",
+      "creator": "Creator",
+      "followers": "Followers",
+      "lastActive": "Last active",
+      "status": "Status",
+      "cycle": {
+        "monthly": "Monthly",
+        "yearly": "Yearly"
+      },
+      "daysLeft": "{n} days left",
+      "today": "Today",
+      "state": {
+        "published": "Published",
+        "hidden": "Hidden",
+        "noPage": "No page",
+        "deleted": "Deleted",
+        "suspended": "Suspended"
+      },
+      "first100": "Showing the first 100 only. Use search to find others."
     },
     "team": {
       "owner": "Owner",
@@ -759,7 +830,7 @@
       "roles": {
         "verifier": "Verifier",
         "support": "Support",
-        "finance": "Finance",
+        "finance": "Accountant",
         "custom": "Custom"
       },
       "permissions": "Permissions",
@@ -797,14 +868,23 @@
         "invalid_email": "Enter a valid email.",
         "exists": "This email is already on the team.",
         "owner_email": "That's the owner's email."
-      }
+      },
+      "groups": {
+        "verification": "Verification",
+        "users": "Users",
+        "money": "Finance"
+      },
+      "roleHint": "Picking a role fills in its permissions; you can change them.",
+      "ownerOnly": "Only the owner can add members, change permissions and platform settings.",
+      "activeHint": "Turn off to block their access to the admin panel."
     },
     "audit": {
       "empty": "No actions yet.",
       "when": "When",
       "who": "Who",
       "what": "What",
-      "details": "Details"
+      "details": "Details",
+      "latest200": "Showing the latest 200 actions."
     },
     "later": {
       "subscriptions": "This section comes with payments in phase 5.",
@@ -815,7 +895,7 @@
       "providerLive": "Payments are live via {name}.",
       "providerOff": "Payments are off (no provider).",
       "trialing": "On trial",
-      "active": "Subscribers",
+      "active": "Paid subscribers",
       "pastDue": "Past due",
       "ended": "Ended",
       "mrrSar": "Monthly recurring revenue (SAR)",
@@ -827,7 +907,8 @@
         "creator": "Creator",
         "amount": "Amount",
         "status": "Status",
-        "date": "Date"
+        "date": "Date",
+        "plan": "Plan"
       },
       "kind": {
         "checkout": "Subscription",
@@ -841,7 +922,74 @@
       },
       "refund": "Refund",
       "confirmRefund": "Refund the full amount of {label}? The creator's Pro ends right away.",
-      "refundFailed": "Couldn't refund."
+      "refundFailed": "Couldn't refund.",
+      "split": "{monthly} monthly · {yearly} yearly",
+      "mrr": "MRR",
+      "sarVat": "SAR, VAT included",
+      "revenueMonth": "Revenue this month",
+      "sarNoVat": "SAR, without VAT",
+      "failedTitle": "Failed payments to follow up",
+      "failedHint": "We retry after 1 day, then after 3 days; then the account drops to Free.",
+      "attempts": "{n} failed attempts",
+      "nextRetry": "Next try {date}",
+      "noRetry": "No retry scheduled",
+      "exportCsv": "Download CSV",
+      "cycle": {
+        "monthly": "Monthly",
+        "yearly": "Yearly"
+      }
+    },
+    "roleOwner": "Account owner",
+    "roleStaff": "Wsool team",
+    "searchLabel": "Search creators",
+    "searchPlaceholder": "Search a creator, link or email",
+    "sub": {
+      "overview": "The platform today",
+      "verifications": "Check the screenshot against what was entered",
+      "users": "Every creator registered on Wsool",
+      "subscriptions": "Revenue, invoices and failed payments",
+      "finance": "Revenue, expenses and net profit",
+      "team": "Add staff and choose what they can do",
+      "audit": "Every action the team took, who and when"
+    },
+    "sentence": {
+      "verification": {
+        "approve": "Verified {platform} @{handle}",
+        "reject": "Rejected verification of @{handle}"
+      },
+      "license": {
+        "approve": "Verified license “{name}” for {username}",
+        "reject": "Rejected license “{name}” for {username}"
+      },
+      "user": {
+        "trial_extend": "Extended {username}'s trial by {days} days",
+        "suspend": "Suspended {username}",
+        "unsuspend": "Restored {username}"
+      },
+      "page": {
+        "publish": "Published {username}'s page",
+        "hide": "Hid {username}'s page"
+      },
+      "team": {
+        "invite": "Added {email} to the team",
+        "update": "Changed {email}'s permissions",
+        "remove": "Removed {email} from the team"
+      },
+      "invoice": {
+        "refund": "Refunded an invoice for {username}",
+        "export": "Exported invoices ({count})"
+      },
+      "expense": {
+        "add": "Added an expense",
+        "delete": "Deleted an expense"
+      },
+      "investor_link": {
+        "create": "Created investor link “{label}”",
+        "revoke": "Revoked investor link “{label}”"
+      },
+      "newsletter": {
+        "export": "Downloaded the newsletter list ({count})"
+      }
     }
   },
   "Billing": {
@@ -1246,8 +1394,15 @@
     "open": "Open",
     "linkUnavailable": "This link isn't available (expired or revoked).",
     "reportMeta": "Last {months} months · updated {date}",
-    "printPdf": "Print / PDF",
-    "confidential": "Confidential report for the recipient only. The link expires {date}."
+    "printPdf": "Download PDF",
+    "confidential": "Confidential report for the recipient only. The link expires {date}.",
+    "margin": "Profit margin",
+    "marginHint": "Net profit over revenue",
+    "ltvCac": "LTV to CAC",
+    "ltvCacHint": "3x or more is healthy",
+    "revenueVsExpenses": "Revenue vs expenses",
+    "byCategory": "Expenses by category",
+    "readOnly": "Read only"
   },
   "Site": {
     "followUs": "Follow us",

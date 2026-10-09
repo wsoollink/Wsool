@@ -499,6 +499,16 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
   links (no stored token) for `/newsletter/confirm` and `/newsletter/unsubscribe`, one-click
   `List-Unsubscribe` POST at `/api/newsletter/unsubscribe`, one confirmation per address per 10 min.
   Admin overview shows the confirmed count; CSV at `/api/admin/newsletter` (`users.view`, audited).
+- **Admin design pass**: `AdminHeader` (title, subtitle, creator search → `/admin/users?q=`; the
+  search part is in its own `<Suspense>` because it reads the session). Sidebar badge = pending
+  account + license requests. Overview: 6 tiles, 30-day signups, navy queue card, funnel, activity.
+  Users: table with filters `?f=all|paid|trial|free` (+ counts) and `?q=` (name, username, email).
+  Verification queue: master/detail (`?id=`), only the open request gets a signed screenshot URL;
+  approve/reject side by side, reject asks for the reason. Team: list + detail, permissions grouped
+  by `PERMISSION_GROUPS` (`src/config/admin.ts`). Invoices CSV: `/api/admin/invoices` (`revenue.view`,
+  audited); CSV helper `src/lib/csv.ts`. Audit entries are shown as sentences by `auditSentences()`
+  (`src/lib/audit-text.ts`, messages `Admin.sentence.<action>`): **every new audit action needs a
+  sentence in both languages**.
 - **Terms / Privacy** (`/terms`, `/privacy`): text in `src/content/legal.ts` (from the owner's doc,
   adjusted to the real stack), rendered by `src/components/legal/LegalPage.tsx`. Blanks (entity,
   registration, payment gateway, effective date) come from `LEGAL` in `src/config/site.ts`; empty

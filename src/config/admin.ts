@@ -16,10 +16,17 @@ export type Permission = (typeof PERMISSIONS)[number];
 
 /** Presets offered when inviting a member; "custom" starts empty. */
 export const ROLE_PRESETS: Record<"verifier" | "support" | "finance" | "custom", Permission[]> = {
-  verifier: ["verifications.view", "verifications.decide"],
+  verifier: ["verifications.view", "verifications.decide", "users.view"],
   support: ["users.view", "users.edit", "trial.extend", "verifications.view"],
   finance: ["revenue.view", "refunds", "users.view"],
   custom: [],
+};
+
+/** How permissions are grouped in the Team page (every permission in exactly one group). */
+export const PERMISSION_GROUPS: Record<"verification" | "users" | "money", Permission[]> = {
+  verification: ["verifications.view", "verifications.decide"],
+  users: ["users.view", "users.edit", "users.suspend", "trial.extend"],
+  money: ["revenue.view", "refunds"],
 };
 
 export const ADMIN_SECTIONS = [

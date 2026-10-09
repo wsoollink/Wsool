@@ -21,7 +21,7 @@ function isActive(pathname: string, href: string) {
 }
 
 /** Admin sections the signed-in staff member may open. Sidebar on desktop, scrolling row on mobile. */
-export function AdminNav({ allowed, variant }: { allowed: AdminSectionKey[]; variant: "sidebar" | "row" }) {
+export function AdminNav({ allowed, variant, pending }: { allowed: AdminSectionKey[]; variant: "sidebar" | "row"; pending: number }) {
   const t = useTranslations("Admin.nav");
   const pathname = usePathname().replace(/^\/(?:ar|en)(?=\/|$)/, "") || "/";
   const sections = ADMIN_SECTIONS.filter((s) => allowed.includes(s.key));
@@ -35,12 +35,17 @@ export function AdminNav({ allowed, variant }: { allowed: AdminSectionKey[]; var
             <Link
               href={s.href}
               aria-current={active ? "page" : undefined}
-              className={`flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm font-medium whitespace-nowrap transition-colors ${
-                active ? "bg-blue/10 text-blue" : "text-navy hover:bg-navy/5"
+              className={`flex min-h-[46px] items-center gap-3 rounded-[14px] px-3 text-[14.5px] whitespace-nowrap transition-colors ${
+                active ? "bg-navy font-bold text-white" : "font-medium text-muted hover:bg-navy/5 hover:text-navy"
               }`}
             >
               <Icon aria-hidden="true" size={18} />
-              {t(s.key)}
+              <span className="flex-1">{t(s.key)}</span>
+              {s.key === "verifications" && pending > 0 && (
+                <span className="inline-flex h-[22px] min-w-[22px] items-center justify-center rounded-full bg-blue px-1.5 text-xs font-bold text-white">
+                  {pending}<span className="sr-only"> {t("pendingBadge")}</span>
+                </span>
+              )}
             </Link>
           </li>
         );

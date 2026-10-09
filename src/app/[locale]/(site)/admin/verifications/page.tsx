@@ -3,15 +3,18 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Card } from "@/components/ui/Card";
-import { profileUrl } from "@/config/platforms";
+import { PLATFORM_NAMES, profileUrl } from "@/config/platforms";
+import { PlatformIcon } from "@/components/creator/PlatformIcon";
+import { CheckCheck } from "lucide-react";
 import { REVIEW_HOURS } from "@/config/verification";
 import { isLocale, toIntlLocale, type Locale } from "@/i18n/config";
 import { can, requireAdmin } from "@/lib/admin";
 import { db } from "@/lib/db";
-import { formatNumber } from "@/lib/format";
+import { formatCompact, formatNumber } from "@/lib/format";
 import { signedVerificationUrl } from "@/lib/storage";
 import { LicenseReviewCard } from "./LicenseReviewCard";
 import { ReviewCard } from "./ReviewCard";
+import { AdminHeader } from "@/components/admin/AdminHeader";
 
 const PAGE_SIZE = 20;
 
@@ -24,7 +27,7 @@ function age(from: Date, now: number, lang: Locale) {
   return hours < 48 ? rtf.format(-hours, "hour") : rtf.format(-Math.floor(hours / 24), "day");
 }
 
-async function Queue({ lang, tab }: { lang: Locale; tab: Tab }) {
+async function Queue({ lang, tab, id }: { lang: Locale; tab: Tab; id: string }) {
   const admin = await requireAdmin("verifications.view");
   const t = await getTranslations("Admin.verifications");
   const now = new Date().getTime();
@@ -83,8 +86,8 @@ async function Queue({ lang, tab }: { lang: Locale; tab: Tab }) {
     );
   }
 
-  // Oldest first: first come, first served.
-  const [requests, total] = await Promise.all([
+  // Oldest first: first come, first served. Master/detail as in the design.
+  const [requests, total, overdue, decidedToday, recent] = await Promise.all([
     db.verificationRequest.findMany({
       where: { status: "pending" },
       orderBy: { createdAt: "asc" },
@@ -92,29 +95,92 @@ async function Queue({ lang, tab }: { lang: Locale; tab: Tab }) {
       include: { account: { select: { verificationStatus: true, verifiedUntil: true, page: { select: { username: true } } } } },
     }),
     db.verificationRequest.count({ where: { status: "pending" } }),
+    db.verificationRequest.count({ where: { status: "pending", createdAt: { lt: new Date(now - REVIEW_HOURS * 3_600_000) } } }),
+    db.verificationRequest.count({ where: { status: { in: ["approved", "rejected"] }, reviewedAt: { gte: new Date(now - (now % 86_400_000)) } } }),
+    db.verificationRequest.findMany({ where: { reviewedAt: { gte: new Date(now - 7 * 86_400_000) } }, select: { createdAt: true, reviewedAt: true } }),
   ]);
-  if (requests.length === 0) return <Card><p className="text-sm text-muted">{t("empty")}</p></Card>;
-
-  const items = await Promise.all(
-    requests.map(async (r) => ({
-      id: r.id,
-      platform: r.platform,
-      handle: r.handle,
-      followers: formatNumber(r.followers, lang),
-      profileUrl: profileUrl(r.platform, r.handle),
-      username: r.account.page.username,
-      screenshotUrl: await signedVerificationUrl(r.screenshotPath),
-      waiting: age(r.createdAt, now, lang),
-      overdue: now - r.createdAt.getTime() > REVIEW_HOURS * 3_600_000,
-      renewal: r.account.verificationStatus === "verified" && !!r.account.verifiedUntil && r.account.verifiedUntil.getTime() > now,
-    })),
+  const avgHours = recent.length ? Math.round(recent.reduce((s, r) => s + (r.reviewedAt!.getTime() - r.createdAt.getTime()), 0) / recent.length / 3_600_000) : null;
+  const stats = [
+    { label: t("stats.pending"), value: formatNumber(total, lang) },
+    { label: t("stats.overdue", { hours: REVIEW_HOURS }), value: formatNumber(overdue, lang), bad: overdue > 0 },
+    { label: t("stats.today"), value: formatNumber(decidedToday, lang) },
+    { label: t("stats.avg"), value: avgHours === null ? "—" : t("hours", { n: avgHours }) },
+  ];
+  const statsRow = (
+    <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+      {stats.map((s) => (
+        <Card key={s.label} className="flex flex-col gap-1 py-4">
+          <span className="text-xs text-muted">{s.label}</span>
+          <span className={`font-numbers text-2xl font-black ${s.bad ? "text-bad" : ""}`}>{s.value}</span>
+        </Card>
+      ))}
+    </div>
   );
 
+  if (requests.length === 0) {
+    return (
+      <>
+        {statsRow}
+        <Card className="flex flex-col items-center gap-2 py-12 text-center">
+          <span className="inline-flex size-14 items-center justify-center rounded-full bg-good/10 text-good"><CheckCheck aria-hidden="true" size={26} /></span>
+          <p className="font-bold">{t("emptyTitle")}</p>
+          <p className="text-sm text-muted">{t("empty")}</p>
+        </Card>
+      </>
+    );
+  }
+
+  const current = requests.find((r) => r.id === id) ?? requests[0];
+  const item = {
+    id: current.id,
+    platform: current.platform,
+    handle: current.handle,
+    followers: formatNumber(current.followers, lang),
+    profileUrl: profileUrl(current.platform, current.handle),
+    username: current.account.page.username,
+    // Only the open request gets a (10-minute) signed screenshot URL.
+    screenshotUrl: await signedVerificationUrl(current.screenshotPath),
+    waiting: age(current.createdAt, now, lang),
+    overdue: now - current.createdAt.getTime() > REVIEW_HOURS * 3_600_000,
+    renewal: current.account.verificationStatus === "verified" && !!current.account.verifiedUntil && current.account.verifiedUntil.getTime() > now,
+  };
+
   return (
-    <div className="flex flex-col gap-3">
-      <p className="text-sm text-muted">{t("count", { shown: items.length, total })}</p>
-      {items.map((item) => <ReviewCard key={item.id} item={item} canDecide={can(admin, "verifications.decide")} />)}
-    </div>
+    <>
+      {statsRow}
+      <div className="grid items-start gap-4 lg:grid-cols-[380px_minmax(0,1fr)]">
+        <Card className={`flex flex-col gap-1 p-2 ${id ? "max-lg:hidden" : ""}`}>
+          <p className="px-3 pt-2 pb-1 text-xs text-muted">{t("count", { shown: requests.length, total })}</p>
+          <ul className="flex flex-col gap-1">
+            {requests.map((r) => {
+              const late = now - r.createdAt.getTime() > REVIEW_HOURS * 3_600_000;
+              const selected = r.id === current.id;
+              return (
+                <li key={r.id}>
+                  <Link
+                    href={`/admin/verifications?id=${r.id}`} aria-current={selected ? "true" : undefined}
+                    className={`flex min-h-[60px] items-center gap-3 rounded-[14px] px-3 py-2 ${selected ? "bg-navy/[0.06] ring-1 ring-navy/10" : "hover:bg-navy/[0.03]"}`}
+                  >
+                    <span className="inline-flex size-10 shrink-0 items-center justify-center rounded-xl bg-white ring-1 ring-navy/8"><PlatformIcon platform={r.platform} size={18} /></span>
+                    <span className="flex min-w-0 flex-1 flex-col">
+                      <bdi dir="ltr" className="truncate text-sm font-bold rtl:text-end">@{r.handle}</bdi>
+                      <span className="truncate text-xs text-muted">{PLATFORM_NAMES[r.platform]} · <span className="font-numbers">{formatCompact(r.followers, lang)}</span></span>
+                    </span>
+                    <span className={`flex shrink-0 items-center gap-1.5 text-[11px] ${late ? "font-bold text-bad" : "text-muted"}`}>
+                      {late && <span aria-hidden="true" className="size-1.5 rounded-full bg-bad" />}{age(r.createdAt, now, lang)}
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </Card>
+        <div className={`flex flex-col gap-3 ${id ? "" : "max-lg:hidden"}`}>
+          {id && <Link href="/admin/verifications" className="inline-flex min-h-11 items-center self-start text-sm font-bold text-blue lg:hidden">{t("backToList")}</Link>}
+          <ReviewCard key={item.id} item={item} canDecide={can(admin, "verifications.decide")} />
+        </div>
+      </div>
+    </>
   );
 }
 
@@ -127,7 +193,7 @@ export default async function VerificationsPage({ params, searchParams }: PagePr
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-2xl font-bold">{nav("verifications")}</h1>
+      <AdminHeader title={nav("verifications")} subtitle={(await getTranslations("Admin.sub"))("verifications")} />
       <Suspense fallback={null}>
         <Tabs searchParams={searchParams} labels={{ pending: t("tabPending"), licenses: t("tabLicenses"), decided: t("tabDecided") }} />
       </Suspense>
@@ -152,7 +218,7 @@ async function Tabs({ searchParams, labels }: { searchParams: Promise<Record<str
       {(["pending", "licenses", "decided"] as const).map((k) => (
         <Link
           key={k} role="tab" aria-selected={tab === k} href={k === "pending" ? "/admin/verifications" : `/admin/verifications?tab=${k}`}
-          className={`min-h-11 content-center rounded-full px-4 text-sm font-medium ${tab === k ? "bg-navy text-white" : "border border-line bg-card"}`}
+          className={`inline-flex min-h-11 items-center rounded-full px-4 text-[13.5px] font-bold ${tab === k ? "bg-navy text-white" : "bg-white ring-1 ring-navy/10"}`}
         >
           {labels[k]}
         </Link>
@@ -162,5 +228,6 @@ async function Tabs({ searchParams, labels }: { searchParams: Promise<Record<str
 }
 
 async function QueueFromParams({ lang, searchParams }: { lang: Locale; searchParams: Promise<Record<string, string | string[] | undefined>> }) {
-  return <Queue lang={lang} tab={await tabOf(searchParams)} />;
+  const id = (await searchParams).id;
+  return <Queue lang={lang} tab={await tabOf(searchParams)} id={typeof id === "string" ? id : ""} />;
 }

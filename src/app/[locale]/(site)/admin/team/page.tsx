@@ -6,6 +6,7 @@ import { isLocale, toIntlLocale } from "@/i18n/config";
 import { requireAdmin } from "@/lib/admin";
 import { db } from "@/lib/db";
 import { TeamEditor, type Member } from "./TeamEditor";
+import { AdminHeader } from "@/components/admin/AdminHeader";
 
 async function Team() {
   await requireAdmin("owner");
@@ -33,7 +34,7 @@ export default async function TeamPage({ params }: PageProps<"/[locale]/admin/te
   const nav = await getTranslations("Admin.nav");
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-2xl font-bold">{nav("team")}</h1>
+      <AdminHeader title={nav("team")} subtitle={(await getTranslations("Admin.sub"))("team")} />
       <Suspense fallback={null}><Team /></Suspense>
     </div>
   );

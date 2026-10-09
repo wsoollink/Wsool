@@ -1,6 +1,8 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
+import Image from "next/image";
+import { Eye } from "lucide-react";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Card } from "@/components/ui/Card";
@@ -38,9 +40,10 @@ async function Report({ params, lang }: { params: Promise<{ token: string }>; la
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-bold">{link.label}</h1>
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div className="flex flex-col gap-1">
+          <span className="text-[13px] font-bold text-blue">{t("investorReport")}</span>
+          <h1 className="text-[28px] leading-tight font-black">{link.label}</h1>
           <p className="text-sm text-muted">{t("reportMeta", { months: link.months, date: date.format(now) })}</p>
         </div>
         <PrintButton label={t("printPdf")} />
@@ -58,7 +61,10 @@ export default async function InvestorPage({ params }: PageProps<"/[locale]/inve
   const t = await getTranslations("Finance");
   return (
     <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-6 px-4 py-8">
-      <p className="text-sm font-bold"><span className="brand-gradient bg-clip-text text-xl text-transparent">{t("brand")}</span> <span className="text-muted">{t("investorReport")}</span></p>
+      <header className="flex items-center justify-between gap-3 border-b border-navy/8 pb-4">
+        <Image src={locale === "en" ? "/brand/logo-en.png" : "/brand/logo-ar.png"} alt={t("brand")} width={90} height={30} className="h-[30px] w-auto" priority />
+        <span className="inline-flex h-8 items-center gap-1.5 rounded-full bg-navy/5 px-3 text-xs font-bold text-muted"><Eye aria-hidden="true" size={14} /> {t("readOnly")}</span>
+      </header>
       <Suspense fallback={null}><Report params={params as Promise<{ token: string }>} lang={locale} /></Suspense>
     </main>
   );

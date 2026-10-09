@@ -11,6 +11,7 @@ import { financeReport, growthCounts } from "@/lib/finance";
 import { formatPrice } from "@/lib/format";
 import { ExpensesCard } from "./ExpensesCard";
 import { InvestorLinks } from "./InvestorLinks";
+import { AdminHeader } from "@/components/admin/AdminHeader";
 
 type SP = Promise<Record<string, string | string[] | undefined>>;
 
@@ -33,7 +34,7 @@ async function Finance({ lang, searchParams }: { lang: Locale; searchParams: SP 
       <nav aria-label={t("period")} className="flex flex-wrap gap-2">
         {FINANCE_PERIODS.map((m) => (
           <Link key={m} href={`/admin/finance?months=${m}`} aria-current={m === months ? "page" : undefined}
-            className={`min-h-11 content-center rounded-full px-4 text-sm font-medium ${m === months ? "bg-navy text-white" : "border border-line bg-card"}`}>
+            className={`inline-flex min-h-11 items-center rounded-full px-4 text-[13.5px] font-bold ${m === months ? "bg-navy text-white" : "bg-white ring-1 ring-navy/10"}`}>
             {t("lastMonths", { n: m })}
           </Link>
         ))}
@@ -65,7 +66,7 @@ export default async function FinancePage({ params, searchParams }: PageProps<"/
   const nav = await getTranslations("Admin.nav");
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-2xl font-bold">{nav("finance")}</h1>
+      <AdminHeader title={nav("finance")} subtitle={(await getTranslations("Admin.sub"))("finance")} search={false} />
       <Suspense fallback={null}><Finance lang={locale} searchParams={searchParams} /></Suspense>
     </div>
   );

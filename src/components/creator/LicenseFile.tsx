@@ -2,11 +2,13 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { FileText } from "lucide-react";
 import { Modal } from "./Modal";
 
-/** Opens a license file (PDF or image) in a pop-up. */
-export function LicenseFile({ url, name }: { url: string; name: string }) {
+/**
+ * The license number as an underlined button (as in the design); it opens the
+ * license file (PDF or image) on an A4-shaped white sheet.
+ */
+export function LicenseFile({ url, name, number }: { url: string; name: string; number: string }) {
   const t = useTranslations("CreatorPage");
   const [open, setOpen] = useState(false);
   const isPdf = /\.pdf($|\?)/i.test(url);
@@ -17,17 +19,26 @@ export function LicenseFile({ url, name }: { url: string; name: string }) {
         type="button"
         onClick={() => setOpen(true)}
         aria-haspopup="dialog"
-        className="inline-flex min-h-11 shrink-0 items-center gap-1 font-medium text-[var(--page-accent)]"
+        aria-label={t("viewLicense", { name })}
+        className="inline-flex min-h-11 items-center text-[var(--page-text)] underline underline-offset-[3px]"
       >
-        <FileText aria-hidden="true" size={16} /> {t("viewFile")}
+        <bdi dir="ltr">{number || t("viewFile")}</bdi>
       </button>
       <Modal open={open} onClose={() => setOpen(false)} title={name} closeLabel={t("close")}>
-        {isPdf ? (
-          <iframe src={url} title={name} className="h-[70dvh] w-full rounded-[12px] bg-white" />
-        ) : (
-          // eslint-disable-next-line @next/next/no-img-element -- arbitrary uploaded file, natural size
-          <img src={url} alt={name} className="max-h-[70dvh] w-full rounded-[12px] object-contain" />
-        )}
+        <div className="flex w-[min(440px,100%)] flex-col gap-3">
+          <div className="mx-auto flex aspect-[1/1.414] max-h-[calc(100dvh-170px)] w-full items-center justify-center overflow-hidden rounded-[12px] bg-white">
+            {isPdf ? (
+              <iframe src={url} title={name} className="size-full bg-white" />
+            ) : (
+              // eslint-disable-next-line @next/next/no-img-element -- arbitrary uploaded file, natural size
+              <img src={url} alt={name} className="size-full object-contain" />
+            )}
+          </div>
+          <div className="flex flex-col gap-0.5 text-center text-white">
+            <span className="font-bold">{name}</span>
+            {number && <span dir="ltr" className="text-sm text-[#D5D8DE]">{number}</span>}
+          </div>
+        </div>
       </Modal>
     </>
   );

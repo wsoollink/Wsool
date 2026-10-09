@@ -50,7 +50,7 @@ export async function GET(_request: NextRequest, { params }: RouteContext<"/[loc
   const total = data.accounts.reduce((sum, a) => sum + a.followers, 0);
   const verified = data.accounts.some((a) => a.verified);
   const photo = await imageDataUrl(data.photoUrl);
-  const surface = theme.glass ? "rgba(255,255,255,0.08)" : theme.surface;
+  const surface = theme.solid;
   // Text column width: 1200 - padding (2 x 60) - photo (420) - gap (56).
   const textWidth = 604;
   const nameImg = textImage({ text: name, size: 66, color: theme.text, weight: 700, rtl, maxWidth: verified ? textWidth - 68 : textWidth });

@@ -66,3 +66,13 @@
     animation-name: marquee-rtl;
   }
 }
+
+/* Creator page big numbers: gradient from the text color to the template's
+   --page-grad-end (as in the design). */
+@utility grad-num {
+  background-image: linear-gradient(90deg, var(--page-text) 15%, var(--page-grad-end));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.01em;
+}

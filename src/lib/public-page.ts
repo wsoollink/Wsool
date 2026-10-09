@@ -96,6 +96,7 @@ export async function getPublicPage(username: string) {
         handle: a.handle,
         url: a.url,
         followers: a.followers,
+        followersUpdatedAt: a.followersUpdatedAt?.toISOString() ?? null,
         // The badge is a Pro feature (CLAUDE.md section 6).
         verified: verified && isPro,
         audience: a.audience,
@@ -103,6 +104,8 @@ export async function getPublicPage(username: string) {
       };
     }),
     monthlyViews: page.monthlyViews[0] ? Number(page.monthlyViews[0].views) : null,
+    /** First day (UTC) of the month those views belong to. */
+    monthlyViewsMonth: page.monthlyViews[0]?.month.toISOString() ?? null,
     brandLogos: page.brandLogos,
     portfolio: isPro ? page.portfolioItems : page.portfolioItems.slice(0, FREE_LIMITS.portfolioItems),
     // No saved settings yet = the defaults (shown, VAT included, SAR or USD by primary language).

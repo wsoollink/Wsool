@@ -317,8 +317,12 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
 - Demo page: `scripts/seed-demo.ts` creates `/demo` (reserved username) with sample data and
   assets in `public/demo/`. Local: `DATABASE_URL=<local> npx tsx scripts/seed-demo.ts`.
 - Templates: `src/components/creator/theme.ts` turns template + accent + custom colors into CSS
-  variables (`--page-bg`, `--page-surface`, `--page-text`, `--page-muted`, `--page-line`,
-  `--page-accent`, `--page-on-accent`). Custom = 1-2 hex colors + light/dark, palette derived
+  variables (`--page-bg`, `--page-surface` frosted card, `--page-solid` opaque box, `--page-soft`,
+  `--page-text`, `--page-muted`, `--page-line`, `--page-accent`, `--page-on-accent`,
+  `--page-grad-end` for `grad-num` big numbers, `--page-pill`, `--page-panel`). Colors, grid + glow
+  background and layout follow the owner's design artifact "وصول — صفحة الصانع" (Oct 2026).
+  Shared class strings live in `src/components/creator/styles.ts` (never export plain values from a
+  "use client" file to server components: they arrive as references). Custom = 1-2 hex colors + light/dark, palette derived
   automatically. Contrast guards (`src/lib/color.ts`) keep text >= 7:1 and accent >= 4.5:1.
 - Free/Pro limits live in `FREE_LIMITS` (`src/config/plans.ts`) and are applied in
   `getPublicPage`: Free pages fall back to White if their template isn't free, show at most
@@ -500,3 +504,15 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
   registration, payment gateway, effective date) come from `LEGAL` in `src/config/site.ts`; empty
   ones show as [placeholders]. Login shows "by continuing you agree…" with both links.
   Update the text whenever a provider or data practice changes.
+
+### Design pass (Oct 2026, owner decisions)
+- The built screens are being matched to the owner's design artifacts ("صفحة الصانع", "لوحة التحكم",
+  "لوحة الإدارة"), in that order. Where a design conflicts with this file, this file wins (44px touch
+  targets, sticky desktop sidebar, uploaded videos, server-built profile links, SAR finance, link expiry).
+- Monthly views stay **before** the platform cards (owner).
+- Buttons: pill shape (section 4), primary color per the dashboard design (owner left it to Claude).
+- Owner said yes to these design-only features: license verification, a "why are you cancelling?"
+  survey, AED + KWD rate currencies, a **single** ad-rate bundle, preset accent colors (Custom
+  template keeps its free color pickers).
+- Creator page: language switch sets the `NEXT_LOCALE` cookie and reloads; share uses
+  `navigator.share` or copies the link (`PageActions.tsx`).

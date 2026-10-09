@@ -20,6 +20,23 @@ export function formatPrice(value: number, currency: Currency, lang: Locale) {
   }).format(value);
 }
 
+/** Short currency label shown after a price ("2,500 ر.س"), as in the design. */
+const CURRENCY_LABELS: Record<string, { ar: string; en: string }> = {
+  SAR: { ar: "ر.س", en: "SAR" },
+  USD: { ar: "دولار", en: "USD" },
+  AED: { ar: "د.إ", en: "AED" },
+  KWD: { ar: "د.ك", en: "KWD" },
+};
+
+export function currencyLabel(currency: string, lang: Locale) {
+  return CURRENCY_LABELS[currency]?.[lang] ?? currency;
+}
+
+/** Price without the currency (shown next to currencyLabel). */
+export function formatAmount(value: number, lang: Locale) {
+  return new Intl.NumberFormat(toIntlLocale(lang), { maximumFractionDigits: value % 1 === 0 ? 0 : 2, minimumFractionDigits: value % 1 === 0 ? 0 : 2 }).format(value);
+}
+
 /** 15 -> "15%" (direction-safe in Arabic). */
 export function formatPercent(value: number, lang: Locale) {
   return new Intl.NumberFormat(toIntlLocale(lang), { style: "percent", maximumFractionDigits: 0 }).format(value / 100);
@@ -46,4 +63,10 @@ export function decimalInput(value: string, maxLength = 12) {
   const [whole, ...rest] = western.split(".");
   const cleanWhole = whole.replace(/^0+(?=\d)/, "");
   return (rest.length ? `${cleanWhole || "0"}.${rest.join("").slice(0, 2)}` : cleanWhole).slice(0, maxLength);
+}
+
+/** International digits -> "+966 55 102 7278" (Saudi mobiles grouped, others "+<digits>"). */
+export function formatPhone(digits: string) {
+  const m = digits.match(/^966(5\d)(\d{3})(\d{4})$/);
+  return m ? `+966 ${m[1]} ${m[2]} ${m[3]}` : `+${digits}`;
 }

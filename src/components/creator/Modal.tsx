@@ -9,15 +9,19 @@ type Props = {
   title: string;
   closeLabel: string;
   children: ReactNode;
-  /** Narrow portrait sheet for videos. */
-  size?: "default" | "portrait";
+  /**
+   * "media": dark backdrop, content floats on it (videos, license files).
+   * "panel": blurred backdrop with a frosted panel (audience data).
+   */
+  variant?: "media" | "panel";
 };
 
 /**
  * Pop-up built on the native <dialog>: focus is trapped, Esc closes it and
- * focus returns to the button that opened it.
+ * focus returns to the button that opened it. As in the design there is no
+ * header bar: a round close button floats in the top corner.
  */
-export function Modal({ open, onClose, title, closeLabel, children, size = "default" }: Props) {
+export function Modal({ open, onClose, title, closeLabel, children, variant = "media" }: Props) {
   const ref = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
@@ -32,23 +36,25 @@ export function Modal({ open, onClose, title, closeLabel, children, size = "defa
       ref={ref}
       aria-label={title}
       onClose={onClose}
-      onClick={(e) => e.target === e.currentTarget && onClose()}
-      className={`m-auto w-[calc(100%-2rem)] rounded-[24px] border border-[var(--page-line)] bg-[var(--page-bg)] p-0 text-[var(--page-text)] backdrop:bg-black/60 backdrop:backdrop-blur-sm ${
-        size === "portrait" ? "max-w-sm" : "max-w-md"
+      className={`m-0 h-dvh max-h-none w-full max-w-none bg-transparent p-0 text-[var(--page-text)] ${
+        variant === "media" ? "backdrop:bg-[rgba(10,12,16,0.85)]" : "backdrop:bg-[rgba(10,12,16,0.5)] backdrop:backdrop-blur-[6px]"
       }`}
     >
-      <div className="flex items-center justify-between gap-3 border-b border-[var(--page-line)] px-4 py-2">
-        <h2 className="truncate font-bold">{title}</h2>
+      {/* Clicking outside the content closes the pop-up. */}
+      <div
+        className="flex min-h-full items-center justify-center px-4 pt-[72px] pb-6"
+        onClick={(e) => e.target === e.currentTarget && onClose()}
+      >
         <button
           type="button"
           onClick={onClose}
           aria-label={closeLabel}
-          className="inline-flex size-11 shrink-0 items-center justify-center rounded-full hover:bg-[var(--page-surface)]"
+          className="fixed end-4 top-4 inline-flex size-11 items-center justify-center rounded-full border border-black/5 bg-white/95 text-[#12151A] backdrop-blur-md"
         >
           <X aria-hidden="true" size={20} />
         </button>
+        {open && children}
       </div>
-      <div className="p-4">{open && children}</div>
     </dialog>
   );
 }

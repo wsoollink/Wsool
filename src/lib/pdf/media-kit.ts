@@ -61,7 +61,7 @@ export async function buildMediaKit(page: PublishedPage, lang: Locale): Promise<
   const rtl = lang === "ar";
   const theme = pageTheme(page.template, page.accent, page.customColors);
   const bg = theme.bg;
-  const surface = theme.glass ? mix(bg, "#ffffff", 0.08) : theme.surface;
+  const surface = theme.solid;
   const C = { bg: color(bg, bg), surface: color(surface, bg), text: color(theme.text, bg), muted: color(theme.muted, bg), line: color(theme.line, bg), accent: color(theme.accent, bg), onAccent: color(theme.onAccent, bg) };
   const numbersWide = page.numberFont === "wide";
   const tr = page.translations.find((x) => x.lang === lang) ?? page.translations[0];

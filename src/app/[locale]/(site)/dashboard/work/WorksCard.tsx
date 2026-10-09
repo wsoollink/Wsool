@@ -2,7 +2,7 @@
 
 import { useId, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
-import { ArrowDown, ArrowUp, Film, ImageIcon, Play, Trash2 } from "lucide-react";
+import { ArrowDown, ArrowUp, ChevronDown, Film, ImageIcon, Play, Trash2 } from "lucide-react";
 import { buttonClasses } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { PLATFORM_NAMES, PLATFORMS } from "@/config/platforms";
@@ -29,7 +29,7 @@ type Row = {
 
 const newKey = () => Math.random().toString(36).slice(2);
 const iconButton = "inline-flex size-11 shrink-0 items-center justify-center rounded-full text-muted hover:bg-navy/5 disabled:opacity-30";
-const control = "min-h-11 w-full rounded-xl border border-line bg-card px-3 text-base";
+const control = "h-12 w-full rounded-xl border border-navy/16 bg-white px-3 text-[15px]";
 const emptyText = { brand: "", type: "" };
 
 /** Past works: portrait video, optional cover, platform, brand and type per language. */
@@ -46,6 +46,7 @@ export function WorksCard({ initial, langs, freeLimit }: { initial: WorkRow[]; l
   const [status, setStatus] = useState<"" | "saved" | "failed">("");
   const [uploadError, setUploadError] = useState("");
   const [pending, startTransition] = useTransition();
+  const [openKey, setOpenKey] = useState<string | null>(null);
 
   const update = (key: string, patch: Partial<Row>) => {
     setRows((all) => all.map((r) => (r.key === key ? { ...r, ...patch } : r)));
@@ -75,7 +76,10 @@ export function WorksCard({ initial, langs, freeLimit }: { initial: WorkRow[]; l
     setUploadError("");
     const key = existingKey ?? newKey();
     if (existingKey) update(key, { uploading: "video" });
-    else setRows((all) => [...all, { key, platform: null, video: { path: null, url: null }, thumb: { path: null, url: null }, cover: null, ar: emptyText, en: emptyText, uploading: "video" }]);
+    else {
+      setRows((all) => [...all, { key, platform: null, video: { path: null, url: null }, thumb: { path: null, url: null }, cover: null, ar: emptyText, en: emptyText, uploading: "video" }]);
+      setOpenKey(key);
+    }
 
     const uploaded = await uploadFile("video", file);
     if ("error" in uploaded) {
@@ -115,8 +119,23 @@ export function WorksCard({ initial, langs, freeLimit }: { initial: WorkRow[]; l
       <ul className="flex flex-col gap-3">
         {rows.map((row, i) => (
           <li key={row.key}>
-            <fieldset className="flex min-w-0 flex-col gap-3 rounded-2xl border border-line p-3">
-              <legend className="px-1 text-sm font-medium">{t("workN", { n: i + 1 })}</legend>
+            <div className="flex flex-col rounded-[16px] border border-navy/8 bg-white/60">
+              <button type="button" aria-expanded={openKey === row.key} onClick={() => setOpenKey(openKey === row.key ? null : row.key)} className="flex min-h-16 w-full items-center gap-3 p-3 text-start">
+                <span className="relative flex h-16 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-[linear-gradient(160deg,#1A2030,#0C0F16)]">
+                  {/* eslint-disable-next-line @next/next/no-img-element -- local preview or storage URL */}
+                  {row.cover && <img src={row.cover} alt="" className="absolute inset-0 size-full object-cover" />}
+                  <Play aria-hidden="true" size={12} className="relative fill-white text-white" />
+                </span>
+                <span className="flex min-w-0 flex-1 flex-col">
+                  <span className="truncate text-sm font-bold">{label(row, i)}</span>
+                  <span className="truncate text-xs text-muted">{[row.ar.type || row.en.type, row.platform ? PLATFORM_NAMES[row.platform] : null].filter(Boolean).join(" · ") || t("noDetails")}</span>
+                  {row.uploading && <span className="text-[11.5px] text-blue">{e("uploading")}</span>}
+                </span>
+                <ChevronDown aria-hidden="true" size={18} className={`shrink-0 text-muted transition-transform ${openKey === row.key ? "rotate-180" : ""}`} />
+              </button>
+              {openKey === row.key && (
+            <fieldset className="flex min-w-0 flex-col gap-3 px-3 pb-3">
+              <legend className="sr-only">{t("workN", { n: i + 1 })}</legend>
               <div className="flex gap-3">
                 <span className="relative flex aspect-[9/16] w-20 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-line bg-navy/5">
                   {/* eslint-disable-next-line @next/next/no-img-element -- local preview or storage URL */}
@@ -165,13 +184,15 @@ export function WorksCard({ initial, langs, freeLimit }: { initial: WorkRow[]; l
                 <button type="button" onClick={() => { setRows(rows.filter((r) => r.key !== row.key)); setStatus(""); }} aria-label={e("remove", { item: label(row, i) })} className={iconButton}><Trash2 aria-hidden="true" size={16} /></button>
               </div>
             </fieldset>
+              )}
+            </div>
           </li>
         ))}
       </ul>
 
       {rows.length < MAX_WORKS && (
         <div>
-          <label htmlFor={fileId} className={`${buttonClasses("secondary")} cursor-pointer`}>
+          <label htmlFor={fileId} className="flex min-h-14 cursor-pointer items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-navy/15 text-sm font-bold">
             <Film aria-hidden="true" size={18} /> {t("addWork")}
           </label>
           <input id={fileId} type="file" accept={UPLOAD_KINDS.video.types.join(",")} className="sr-only" onChange={(ev) => { uploadVideo(ev.target.files?.[0]); ev.target.value = ""; }} />

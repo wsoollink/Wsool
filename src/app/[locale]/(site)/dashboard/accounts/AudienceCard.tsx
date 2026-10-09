@@ -30,7 +30,7 @@ const control = "min-h-11 rounded-xl border border-line bg-card px-3 text-base";
 export function AudienceCard({ accounts }: { accounts: AudienceAccount[] }) {
   const t = useTranslations("AccountsPage");
   return (
-    <Card className="flex flex-col gap-4">
+    <Card id="audience" className="flex scroll-mt-6 flex-col gap-4">
       <div>
         <h2 className="font-bold">{t("audience")}</h2>
         <p className="text-xs text-muted">{t("audienceHint")}</p>
@@ -148,7 +148,7 @@ function AudienceForm({ account }: { account: AudienceAccount }) {
             >
               <option value="">{t("chooseCountry")}</option>
               {COUNTRIES.map((c) => (
-                <option key={c} value={c} disabled={c !== r.label && countries.some((x) => x.label === c)}>{regions.of(c)}</option>
+                <option key={c} value={c} disabled={c !== r.label && countries.some((x) => x.label === c)} suppressHydrationWarning>{regions.of(c)}</option>
               ))}
             </select>
             {percentInput(countries, touch(setCountries), i, r.label ? (regions.of(r.label) ?? r.label) : t("country", { n: i + 1 }))}

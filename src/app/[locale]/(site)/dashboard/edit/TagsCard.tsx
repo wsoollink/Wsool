@@ -2,14 +2,14 @@
 
 import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
-import { ArrowDown, ArrowUp, Plus, X } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import { buttonClasses } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import type { Locale } from "@/i18n/config";
 import { MAX_TAGS } from "@/lib/validation/profile";
 import { saveTags } from "./actions";
 
-const iconButton = "inline-flex size-11 items-center justify-center rounded-full text-muted hover:bg-navy/5 disabled:opacity-30";
+const iconButton = "inline-flex size-11 items-center justify-center rounded-lg text-muted hover:text-navy";
 
 /** Tags per language: add, remove, reorder (max 18 characters each). */
 export function TagsCard({ langs, initial }: { langs: Locale[]; initial: Record<Locale, string[]> }) {
@@ -41,24 +41,17 @@ function TagList({ lang, initial, showTitle }: { lang: Locale; initial: string[]
     setDraft("");
     setStatus("");
   };
-  const move = (i: number, by: number) => {
-    const next = [...tags];
-    [next[i], next[i + by]] = [next[i + by], next[i]];
-    setTags(next);
-    setStatus("");
-  };
   const save = () => startTransition(async () => setStatus((await saveTags(lang, tags)).ok ? "saved" : "failed"));
 
   return (
     <section className="flex flex-col gap-3">
       {showTitle && <h3 className="text-sm font-bold">{lang === "ar" ? t("arabicContent") : t("englishContent")}</h3>}
-      <ul className="flex flex-col gap-1">
-        {tags.map((tag, i) => (
-          <li key={tag} className="flex items-center gap-1 rounded-xl border border-line ps-3">
-            <span dir={dir} lang={lang} className="flex-1 truncate text-sm">{tag}</span>
-            <button type="button" onClick={() => move(i, -1)} disabled={i === 0} aria-label={t("moveUp", { item: tag })} className={iconButton}><ArrowUp aria-hidden="true" size={16} /></button>
-            <button type="button" onClick={() => move(i, 1)} disabled={i === tags.length - 1} aria-label={t("moveDown", { item: tag })} className={iconButton}><ArrowDown aria-hidden="true" size={16} /></button>
-            <button type="button" onClick={() => { setTags(tags.filter((x) => x !== tag)); setStatus(""); }} aria-label={t("remove", { item: tag })} className={iconButton}><X aria-hidden="true" size={16} /></button>
+      {/* Chips as in the design; order = the order they were added. */}
+      <ul className="flex flex-wrap gap-2">
+        {tags.map((tag) => (
+          <li key={tag} className="inline-flex items-center gap-0.5 rounded-xl bg-navy/5 ps-3 text-[12.5px] font-medium">
+            <span dir={dir} lang={lang} className="truncate">{tag}</span>
+            <button type="button" onClick={() => { setTags(tags.filter((x) => x !== tag)); setStatus(""); }} aria-label={t("remove", { item: tag })} className={iconButton}><X aria-hidden="true" size={14} /></button>
           </li>
         ))}
       </ul>
@@ -69,10 +62,10 @@ function TagList({ lang, initial, showTitle }: { lang: Locale; initial: string[]
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); add(); } }}
           disabled={tags.length >= MAX_TAGS}
-          className="min-h-11 min-w-0 flex-1 rounded-xl border border-line bg-card px-4 text-base"
+          className="h-12 min-w-0 flex-1 rounded-xl border border-navy/16 bg-white px-4 text-[15px]"
         />
-        <button type="button" onClick={add} disabled={!draft.trim() || tags.length >= MAX_TAGS} aria-label={t("addTag")} className={buttonClasses("secondary", "px-3")}>
-          <Plus aria-hidden="true" size={18} />
+        <button type="button" onClick={add} disabled={!draft.trim() || tags.length >= MAX_TAGS} className={buttonClasses("primary", "h-12 px-4")}>
+          <Plus aria-hidden="true" size={18} /> {t("addTag")}
         </button>
       </div>
       <div className="flex items-center justify-between gap-3">

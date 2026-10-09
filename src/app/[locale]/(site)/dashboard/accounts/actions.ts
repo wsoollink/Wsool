@@ -75,11 +75,13 @@ function currentMonth() {
 }
 
 /** Sets this month's total views, or clears them (null) to hide the box. */
-export async function saveMonthlyViews(views: number | null): Promise<{ ok?: boolean; error?: "failed" }> {
+export async function saveMonthlyViews(views: number | null, monthsAgo = 0): Promise<{ ok?: boolean; error?: "failed" }> {
   const { page } = await requireCreator();
   const parsed = monthlyViewsSchema.safeParse(views);
-  if (!parsed.success) return { error: "failed" };
-  const month = currentMonth();
+  // The design lets the creator pick this month or one of the two before.
+  if (!parsed.success || ![0, 1, 2].includes(monthsAgo)) return { error: "failed" };
+  const now = currentMonth();
+  const month = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - monthsAgo, 1));
   if (parsed.data === null) {
     await db.monthlyView.deleteMany({ where: { pageId: page.id } });
   } else {

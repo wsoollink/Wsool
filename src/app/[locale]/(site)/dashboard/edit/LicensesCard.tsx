@@ -52,7 +52,7 @@ export function LicensesCard({ initial, showEnglish }: { initial: Omit<LicenseIn
           onRemove={() => { setRows(rows.filter((r) => r.key !== row.key)); setStatus(""); }} />
       ))}
       {rows.length < MAX_LICENSES && (
-        <button type="button" onClick={() => setRows([...rows, { key: newKey(), name: "", nameEn: "", number: "", filePath: null, fileUrl: null }])} className={buttonClasses("secondary")}>
+        <button type="button" onClick={() => setRows([...rows, { key: newKey(), name: "", nameEn: "", number: "", filePath: null, fileUrl: null }])} className="inline-flex min-h-11 items-center gap-2 self-start text-sm font-bold">
           <Plus aria-hidden="true" size={18} /> {t("addLicense")}
         </button>
       )}
@@ -75,25 +75,28 @@ function LicenseRow({ row, index, showEnglish, onChange, onAttach, onRemove }: R
   const fileId = useId();
   const hasFile = !!(row.filePath || row.fileUrl);
   return (
-    <fieldset className="flex flex-col gap-3 rounded-[18px] border border-line p-4">
-      <legend className="px-1 text-sm font-medium">{t("licenseN", { n: index + 1 })}</legend>
-      <TextField id={`lic-${row.key}-name`} label={t("licenseName")} hint={t("licenseNameHint")} value={row.name} maxLength={60} onChange={(e) => onChange({ name: e.target.value })} />
+    <fieldset className="flex min-w-0 flex-col gap-2 border-t border-navy/6 pt-3 first-of-type:border-0 first-of-type:pt-0">
+      <legend className="sr-only">{t("licenseN", { n: index + 1 })}</legend>
+      <div className="grid grid-cols-[minmax(0,3fr)_minmax(0,2fr)] gap-2">
+        <TextField id={`lic-${row.key}-name`} label={t("licenseName")} placeholder={t("licenseNameHint")} value={row.name} maxLength={60} onChange={(e) => onChange({ name: e.target.value })} />
+        <TextField id={`lic-${row.key}-num`} label={t("licenseNumber")} dir="ltr" value={row.number} maxLength={60} onChange={(e) => onChange({ number: e.target.value })} />
+      </div>
       {showEnglish && (
         <TextField id={`lic-${row.key}-en`} label={t("licenseNameEn")} dir="ltr" lang="en" value={row.nameEn} maxLength={60} onChange={(e) => onChange({ nameEn: e.target.value })} />
       )}
-      <TextField id={`lic-${row.key}-num`} label={t("licenseNumber")} dir="ltr" value={row.number} maxLength={60} onChange={(e) => onChange({ number: e.target.value })} />
-      <div className="flex flex-wrap items-center gap-2">
-        <label htmlFor={fileId} className={`${buttonClasses("secondary")} cursor-pointer ${row.uploading ? "pointer-events-none opacity-50" : ""}`}>
-          <FileText aria-hidden="true" size={16} /> {row.uploading ? t("uploading") : hasFile ? t("replaceFile") : t("attachFile")}
+      <div className="flex gap-2">
+        <label htmlFor={fileId} className={`flex min-h-12 flex-1 cursor-pointer items-center gap-3 rounded-xl px-3 py-2 ${hasFile ? "bg-good/8" : "bg-navy/5"} ${row.uploading ? "pointer-events-none opacity-50" : ""}`}>
+          <FileText aria-hidden="true" size={18} className="shrink-0" />
+          <span className="flex flex-col">
+            <span className="text-[13px] font-medium">{row.uploading ? t("uploading") : hasFile ? t("replaceFile") : t("attachFile")}</span>
+            <span className={`text-xs ${hasFile ? "text-good" : "text-muted"}`}>{hasFile ? t("fileAttached") : t("fileTypes")}</span>
+          </span>
         </label>
         <input id={fileId} type="file" accept="image/jpeg,image/png,image/webp,application/pdf" className="sr-only" disabled={row.uploading} onChange={(e) => onAttach(e.target.files?.[0])} />
         {hasFile && !row.uploading && (
-          <>
-            <span className="text-sm text-good">{t("fileAttached")}</span>
-            <button type="button" onClick={() => onChange({ filePath: null, fileUrl: null })} className="min-h-11 px-2 text-sm text-muted underline">{t("removeFile")}</button>
-          </>
+          <button type="button" onClick={() => onChange({ filePath: null, fileUrl: null })} className="min-h-12 px-2 text-xs text-muted underline">{t("removeFile")}</button>
         )}
-        <button type="button" onClick={onRemove} aria-label={t("removeLicense", { n: index + 1 })} className={buttonClasses("secondary", "ms-auto px-3")}>
+        <button type="button" onClick={onRemove} aria-label={t("removeLicense", { n: index + 1 })} className="inline-flex w-12 shrink-0 items-center justify-center rounded-xl bg-navy/5">
           <Trash2 aria-hidden="true" size={18} />
         </button>
       </div>

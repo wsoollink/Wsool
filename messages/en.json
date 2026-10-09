@@ -281,7 +281,12 @@
     "fileAttached": "✓ File attached",
     "removeFile": "Remove file",
     "removeLicense": "Remove license {n}",
-    "licenseIncomplete": "Each license needs a name and a number."
+    "licenseIncomplete": "Each license needs a name and a number.",
+    "contentLang": "Content language",
+    "basicInfo": "Basic info",
+    "language": "Language",
+    "primaryLangHint": "Visitors see your page in their device language if you offer it, otherwise in this one.",
+    "fileTypes": "Image or PDF, optional"
   },
   "AccountsPage": {
     "accounts": "Your accounts",
@@ -321,7 +326,21 @@
     "city": "City {n}",
     "cityPlaceholder": "City name",
     "addCity": "Add city",
-    "over100": "Each group's percentages must add up to 100% or less."
+    "over100": "Each group's percentages must add up to 100% or less.",
+    "totalTitle": "Total followers across all platforms",
+    "totalHint": "Calculated from your accounts",
+    "orderHint": "They show on your page in this order",
+    "vstatus": {
+      "verified": "Verified",
+      "in_review": "In review",
+      "none": "Not verified"
+    },
+    "audienceRow": "Audience data",
+    "verifyWithScreenshot": "Verify with a screenshot",
+    "removeAccount": "Delete account",
+    "pickPlatform": "Pick the platform",
+    "month": "Month",
+    "shownOnPage": "Shows on your page"
   },
   "WorkPage": {
     "brands": "Brands you worked with",
@@ -352,7 +371,9 @@
     "typePlaceholderAr": "مثل: إعلان منتج",
     "typePlaceholderEn": "e.g. Product ad",
     "addWork": "Add work (video)",
-    "videoHint": "MP4 or MOV up to 50 MB. The cover is taken from the start of the video; you can change it."
+    "videoHint": "MP4 or MOV up to 50 MB. The cover is taken from the start of the video; you can change it.",
+    "addLogo": "Add logo",
+    "noDetails": "Add the brand and type"
   },
   "RatesPage": {
     "settings": "Display settings",
@@ -996,7 +1017,16 @@
     "privacy": "We don't store any personal data about visitors. Your own visits while signed in aren't counted.",
     "lockedTitle": "Analytics is a Pro feature",
     "lockedBody": "See how many people visited your page, from which countries, and how many tapped WhatsApp or email. We collect the numbers already; you'll see them once you subscribe.",
-    "upgrade": "Go Pro"
+    "upgrade": "Go Pro",
+    "newPeriod": "New in this period",
+    "vsPrev": "{change} vs previous period",
+    "contactRateHint": "Share of visitors who tapped WhatsApp or email",
+    "referrersHint": "By the link they came from",
+    "devicesAlt": "Mobile {mobile}, desktop {desktop}",
+    "devicesHint": "Most brands open your page on a phone, so make sure your photo and numbers read well there.",
+    "topClicks": "What visitors tapped most",
+    "clickSocial": "{platform} account",
+    "clickWork": "Work video on {platform}"
   },
   "Notify": {
     "footer": "You got this email because you have a Wsool account. Manage reminder emails under Notifications in your dashboard.",

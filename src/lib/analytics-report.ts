@@ -13,13 +13,14 @@ export async function analyticsReport(pageId: string, days: Range) {
   const start = new Date(end.getTime() - (days - 1) * 86_400_000);
   const where = { pageId, day: { gte: start, lte: end } };
 
-  const [daily, unique, clicks, countries, referrers, devices] = await Promise.all([
+  const [daily, unique, clicks, countries, referrers, devices, clickTargets] = await Promise.all([
     db.pageView.groupBy({ by: ["day"], where, _count: true }),
     db.pageView.findMany({ where, distinct: ["visitorHash", "day"], select: { visitorHash: true } }),
     db.contactClick.groupBy({ by: ["kind"], where, _count: true }),
     db.pageView.groupBy({ by: ["country"], where: { ...where, country: { not: null } }, _count: true, orderBy: { _count: { country: "desc" } }, take: 6 }),
     db.pageView.groupBy({ by: ["referrer"], where: { ...where, referrer: { not: null } }, _count: true, orderBy: { _count: { referrer: "desc" } }, take: 6 }),
     db.pageView.groupBy({ by: ["device"], where, _count: true }),
+    db.contactClick.groupBy({ by: ["kind", "platform"], where, _count: true, orderBy: { _count: { kind: "desc" } }, take: 6 }),
   ]);
 
   // Every day in the range, zero when there were no visits.
@@ -43,6 +44,8 @@ export async function analyticsReport(pageId: string, days: Range) {
     countries: list(countries, (r: { country: string | null }) => r.country),
     referrers: list(referrers, (r: { referrer: string | null }) => r.referrer),
     devices: list(devices, (r: { device: string }) => r.device).sort((a, b) => b.count - a.count),
+    /** What visitors tapped most: WhatsApp, email, a social icon or a work video (with its platform). */
+    topClicks: clickTargets.map((c) => ({ kind: c.kind, platform: c.platform, count: c._count })),
   };
 }
 

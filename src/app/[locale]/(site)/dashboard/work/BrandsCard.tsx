@@ -2,7 +2,7 @@
 
 import { useId, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
-import { ArrowDown, ArrowUp, ImagePlus, Trash2 } from "lucide-react";
+import { ImagePlus, X } from "lucide-react";
 import { buttonClasses } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { UPLOAD_KINDS } from "@/config/uploads";
@@ -12,7 +12,6 @@ import { saveBrands } from "./actions";
 
 type Row = { key: string; name: string; path: string | null; url: string | null; preview: string | null; uploading?: boolean; error?: boolean };
 const newKey = () => Math.random().toString(36).slice(2);
-const iconButton = "inline-flex size-11 shrink-0 items-center justify-center rounded-full text-muted hover:bg-navy/5 disabled:opacity-30";
 
 /** Brand logos: upload, name (used as the image's text alternative), reorder, delete. */
 export function BrandsCard({ initial }: { initial: { name: string; url: string }[] }) {
@@ -26,12 +25,6 @@ export function BrandsCard({ initial }: { initial: { name: string; url: string }
 
   const update = (key: string, patch: Partial<Row>) => {
     setRows((all) => all.map((r) => (r.key === key ? { ...r, ...patch } : r)));
-    setStatus("");
-  };
-  const move = (i: number, by: number) => {
-    const next = [...rows];
-    [next[i], next[i + by]] = [next[i + by], next[i]];
-    setRows(next);
     setStatus("");
   };
 
@@ -68,45 +61,44 @@ export function BrandsCard({ initial }: { initial: { name: string; url: string }
         <p className="text-xs text-muted">{t("brandsHint", { max: MAX_BRANDS })}</p>
       </div>
 
-      {rows.length === 0 && <p className="text-sm text-muted">{t("noBrands")}</p>}
-      <ul className="flex flex-col gap-2">
+      {/* Logo tiles as in the design; the name under each tile is the logo's text alternative. */}
+      <ul className="grid grid-cols-3 gap-2.5">
         {rows.map((row, i) => (
-          <li key={row.key} className="flex flex-col gap-2 rounded-2xl border border-line p-2">
-            <div className="flex items-center gap-2">
-              <span className="flex h-12 w-20 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-line bg-white">
-                {/* eslint-disable-next-line @next/next/no-img-element -- local preview or storage URL */}
-                {row.preview && <img src={row.preview} alt="" className={`max-h-full max-w-full object-contain p-1 ${row.uploading ? "opacity-40" : ""}`} />}
-              </span>
-              <label htmlFor={`brand-${row.key}`} className="sr-only">{t("brandName")}</label>
-              <input
-                id={`brand-${row.key}`} value={row.name} maxLength={60} placeholder={t("brandName")}
-                aria-invalid={!!row.error}
-                onChange={(ev) => update(row.key, { name: ev.target.value, error: false })}
-                className="min-h-11 min-w-0 flex-1 rounded-xl border border-line bg-card px-3 text-base aria-[invalid=true]:border-bad"
-              />
-            </div>
-            <div className="flex items-center justify-end gap-1">
-              {row.uploading && <span className="me-auto ps-2 text-xs text-muted">{e("uploading")}</span>}
-              <button type="button" onClick={() => move(i, -1)} disabled={i === 0} aria-label={e("moveUp", { item: row.name || t("logoN", { n: i + 1 }) })} className={iconButton}><ArrowUp aria-hidden="true" size={16} /></button>
-              <button type="button" onClick={() => move(i, 1)} disabled={i === rows.length - 1} aria-label={e("moveDown", { item: row.name || t("logoN", { n: i + 1 }) })} className={iconButton}><ArrowDown aria-hidden="true" size={16} /></button>
-              <button type="button" onClick={() => { setRows(rows.filter((r) => r.key !== row.key)); setStatus(""); }} aria-label={e("remove", { item: row.name || t("logoN", { n: i + 1 }) })} className={iconButton}><Trash2 aria-hidden="true" size={16} /></button>
-            </div>
+          <li key={row.key} className="flex min-w-0 flex-col gap-1">
+            <span className="relative flex h-[72px] items-center justify-center overflow-hidden rounded-[14px] border border-navy/8 bg-white">
+              {/* eslint-disable-next-line @next/next/no-img-element -- local preview or storage URL */}
+              {row.preview && <img src={row.preview} alt="" className={`max-h-full max-w-full object-contain px-3 py-2.5 ${row.uploading ? "opacity-40" : ""}`} />}
+              {row.uploading && <span className="absolute inset-x-0 bottom-0 bg-black/55 py-0.5 text-center text-[10px] text-white">{e("uploading")}</span>}
+              <button
+                type="button" onClick={() => { setRows(rows.filter((r) => r.key !== row.key)); setStatus(""); }}
+                aria-label={e("remove", { item: row.name || t("logoN", { n: i + 1 }) })}
+                className="absolute end-0.5 top-0.5 inline-flex size-11 items-start justify-end p-1"
+              >
+                <span className="inline-flex size-7 items-center justify-center rounded-full bg-bg text-muted"><X aria-hidden="true" size={14} /></span>
+              </button>
+            </span>
+            <label htmlFor={`brand-${row.key}`} className="sr-only">{t("brandName")}</label>
+            <input
+              id={`brand-${row.key}`} value={row.name} maxLength={60} placeholder={t("brandName")}
+              aria-invalid={!!row.error}
+              onChange={(ev) => update(row.key, { name: ev.target.value, error: false })}
+              className="h-9 min-w-0 rounded-lg border border-transparent bg-transparent px-1 text-center text-xs hover:border-navy/12 focus:border-navy/16 aria-[invalid=true]:border-bad"
+            />
           </li>
         ))}
+        {rows.length < MAX_BRANDS && (
+          <li>
+            <label htmlFor={fileId} className="flex h-[72px] cursor-pointer flex-col items-center justify-center gap-1 rounded-[14px] border-2 border-dashed border-navy/15 text-[12.5px] font-bold">
+              <ImagePlus aria-hidden="true" size={18} /> {t("addLogo")}
+            </label>
+            <input
+              id={fileId} type="file" multiple accept={UPLOAD_KINDS.logo.types.join(",")} className="sr-only"
+              onChange={(ev) => { add(ev.target.files); ev.target.value = ""; }}
+            />
+          </li>
+        )}
       </ul>
-
-      {rows.length < MAX_BRANDS && (
-        <div>
-          <label htmlFor={fileId} className={`${buttonClasses("secondary")} cursor-pointer`}>
-            <ImagePlus aria-hidden="true" size={18} /> {t("addLogos")}
-          </label>
-          <input
-            id={fileId} type="file" multiple accept={UPLOAD_KINDS.logo.types.join(",")} className="sr-only"
-            onChange={(ev) => { add(ev.target.files); ev.target.value = ""; }}
-          />
-          <p className="mt-1.5 text-xs text-muted">{t("logoHint")}</p>
-        </div>
-      )}
+      <p className="text-xs text-muted">{t("logoHint")}</p>
       {uploadError && <p role="alert" className="text-sm text-bad">{uploadError}</p>}
 
       <div className="flex items-center justify-between gap-3">

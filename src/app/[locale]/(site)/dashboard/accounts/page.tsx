@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { isLocale, toIntlLocale } from "@/i18n/config";
+import { isLocale, toIntlLocale, type Locale } from "@/i18n/config";
 import { requireCreator } from "@/lib/creator";
 import { db } from "@/lib/db";
 import { AccountsCard } from "./AccountsCard";
@@ -9,7 +9,13 @@ import { AudienceCard, type AudienceValue } from "./AudienceCard";
 import { ViewsCard } from "./ViewsCard";
 import { PageHeader } from "@/components/dashboard/PageHeader";
 
-async function Editor() {
+/** Whole months between a stored month (first day, UTC) and this month. */
+function monthsBetween(month: Date) {
+  const now = new Date();
+  return (now.getUTCFullYear() - month.getUTCFullYear()) * 12 + now.getUTCMonth() - month.getUTCMonth();
+}
+
+async function Editor({ lang }: { lang: Locale }) {
   const { page } = await requireCreator();
   // Scoped to the creator's own page from the verified session.
   const [accounts, views] = await Promise.all([
@@ -31,7 +37,14 @@ async function Editor() {
       <AccountsCard
         initial={accounts.map((a) => ({ id: a.id, platform: a.platform, handle: a.handle, followers: a.followers, verificationStatus: a.verificationStatus }))}
       />
-      <ViewsCard initial={views ? Number(views.views) : null} />
+      <ViewsCard
+        initial={views ? Number(views.views) : null}
+        initialMonthsAgo={views ? monthsBetween(views.month) : 0}
+        monthLabels={[0, 1, 2].map((ago) => {
+          const now = new Date();
+          return new Intl.DateTimeFormat(toIntlLocale(lang), { month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - ago, 1)));
+        })}
+      />
       <AudienceCard
         // Remount when the list changes so each form starts from saved data.
         key={accounts.map((a) => a.id).join()}
@@ -51,7 +64,7 @@ export default async function AccountsPage({ params }: PageProps<"/[locale]/dash
     <div className="flex flex-col gap-4">
       <PageHeader title={t("accounts")} section="accounts" />
       <Suspense fallback={null}>
-        <Editor />
+        <Editor lang={locale} />
       </Suspense>
     </div>
   );

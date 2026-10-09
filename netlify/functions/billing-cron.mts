@@ -3,7 +3,7 @@
  * cancelled plans (src/lib/billing.ts runBillingJob). Needs CRON_SECRET and
  * URL (set by Netlify) in the environment.
  */
-export default async () => {
+const billingCron = async () => {
   const secret = process.env.CRON_SECRET;
   const base = process.env.URL;
   if (!secret || !base) {
@@ -13,5 +13,7 @@ export default async () => {
   const res = await fetch(`${base}/api/cron/billing`, { method: "POST", headers: { authorization: `Bearer ${secret}` } });
   console.log("billing-cron:", res.status, await res.text());
 };
+
+export default billingCron;
 
 export const config = { schedule: "@hourly" };

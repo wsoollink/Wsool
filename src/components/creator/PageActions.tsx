@@ -6,7 +6,6 @@ import type { Locale } from "@/i18n/config";
 
 type Props = {
   /** Language the page is shown in. */
-  lang: Locale;
   /** The other language, when the creator offers both. */
   otherLang: Locale | null;
   url: string;
@@ -32,7 +31,7 @@ function ShareIcon() {
 }
 
 /** Language switch + share, as in the design (hero corners on mobile, header bar on desktop). */
-export function PageActions({ lang, otherLang, url, title, variant }: Props) {
+export function PageActions({ otherLang, url, title, variant }: Props) {
   const t = useTranslations("CreatorPage");
   const [copied, setCopied] = useState(false);
 

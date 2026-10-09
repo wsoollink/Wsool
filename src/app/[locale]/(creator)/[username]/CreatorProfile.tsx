@@ -86,7 +86,7 @@ export async function CreatorProfile({ page, lang }: Props) {
           <Link href="/" className="text-[22px] font-bold">{t("brand")}</Link>
           <div className="flex items-center gap-2.5">
             <span dir="ltr" className="text-sm text-[var(--page-muted)]">{shortUrl}</span>
-            <PageActions lang={lang} otherLang={otherLang} url={pageUrl} title={name} variant="header" />
+            <PageActions otherLang={otherLang} url={pageUrl} title={name} variant="header" />
           </div>
         </div>
       </header>
@@ -104,7 +104,7 @@ export async function CreatorProfile({ page, lang }: Props) {
               <div className="brand-gradient size-full [mask-image:linear-gradient(to_bottom,#000_45%,transparent_100%)]" aria-hidden="true" />
             )}
             <div className="md:hidden">
-              <PageActions lang={lang} otherLang={otherLang} url={pageUrl} title={name} variant="photo" />
+              <PageActions otherLang={otherLang} url={pageUrl} title={name} variant="photo" />
             </div>
           </div>
 

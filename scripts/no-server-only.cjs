@@ -1,4 +1,5 @@
 // Scripts only: lets server modules load outside Next (server-only would throw).
+// eslint-disable-next-line @typescript-eslint/no-require-imports -- CommonJS preload script
 const Module = require("module");
 const orig = Module._resolveFilename;
 Module._resolveFilename = function (req, ...rest) {

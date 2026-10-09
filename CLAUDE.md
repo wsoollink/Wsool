@@ -505,6 +505,7 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
   `useMarketing.ts`; computed texts (claim messages, FAQ, prices from `PRICES`) in `content.ts`.
   Page wrappers: `src/components/marketing/Pages.tsx`. Hand fixes go in `marketing.css`.
   Owner wording (Oct 2026): "ملفك الإعلامي" instead of "ميديا كِت", "تقنع أي شركة", paid plan badge "الاحترافية".
+  On phones the header shows "Log in" as a round person icon next to "Start free" (CSS in `marketing.css`).
   Text changes are made in the `design/marketing/*.dc.html` files, then the script is re-run.
 - Home "claim your link": live check (`checkLink`), then cookie `wsool_claim` → `/login`;
   onboarding pre-fills that name.

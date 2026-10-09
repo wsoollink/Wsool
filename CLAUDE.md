@@ -138,7 +138,7 @@ show in PDF, currency, VAT included or not. Hidden → show "الأسعار عن
 
 ## 8. Dashboard sections
 
-Home · Edit page · Accounts & numbers · Brands & work · **Ad rates** · Contact · Verification ·
+Home · Edit page · Accounts & numbers · Brands & work · **Ad rates** · **Links & services** · Contact · Verification ·
 Appearance · Analytics · Subscription · Notifications (bell with unread dot in every header).
 Mobile: bottom tab bar (Home, My page, Accounts, Analytics, More). Desktop: left sidebar.
 Subscription page also holds **self-service account deletion**: download data → type username
@@ -564,3 +564,14 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
   Verification page, staff decide in the queue's Licenses tab (`decideLicense`, audited, notified);
   saving the license list keeps the status of unchanged licenses.
 - Contact: `pages.whatsapp_visible` / `email_visible` hide a channel without deleting it.
+- **My links & My services** (owner, Oct 2026; keeps Wsool a media kit, not a general page builder):
+  dashboard `dashboard/links/` (one `SaveBar`, `saveLinksAndServices` replaces both lists). Tables
+  `page_links` (title + optional `titleEn`, https url, optional image = upload kind `linkImage`) and
+  `services` (name, description, optional price = "on request" when empty, unit, English versions);
+  limits `MAX_LINKS` 10 / `MAX_SERVICES` 12 (`src/lib/validation/links.ts`, URLs normalised to https by
+  `normalizeLinkUrl`). Public page order: ad rates → **My services** → **My links** → contact. A link
+  without an image gets an icon from `linkKind()` (`src/lib/link-kind.ts`: map / store / video / link).
+  "Request" on a service opens WhatsApp (else email) with a prefilled message. Free pages show the first
+  `FREE_LIMITS.links` / `FREE_LIMITS.services` (3 each). Services print in the PDF after the rates.
+  Taps are counted as click kinds `link` / `service` with `contact_clicks.target_id` (checked to belong
+  to the page) and shown by name in Analytics. Shared upload helpers: `src/lib/page-files.ts`.

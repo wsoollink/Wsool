@@ -17,6 +17,7 @@ export async function GET() {
           socialAccounts: { include: { audience: true, rates: true } },
           portfolioItems: { include: { translations: true } },
           rateBundles: { include: { platforms: true, rates: true } },
+          links: true, services: true,
         },
       },
     },

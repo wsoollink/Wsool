@@ -244,6 +244,25 @@ export async function buildMediaKit(page: PublishedPage, lang: Locale): Promise<
     }
   }
 
+  // 5b) My services: name and price (or "on request"), description under it.
+  if (page.services.length) {
+    heading(t("services"));
+    const pick = (ar: string, en: string | null) => (lang === "en" && en ? en : ar);
+    for (const sv of page.services) {
+      const description = pick(sv.description, sv.descriptionEn);
+      const unit = pick(sv.unit, sv.unitEn);
+      ensure(description ? 52 : 28);
+      const price = sv.price === null ? t("onRequest") : `${formatPrice(sv.price, page.rateSettings.currency, lang)}${unit ? ` · ${unit}` : ""}`;
+      text(pick(sv.name, sv.nameEn), M + 16, top + 6, { size: 10.5, weight: 700, color: theme.text, width: CONTENT * 0.55 });
+      text(price, M + 16, top + 5, { size: 10.5, weight: 700, color: theme.text, width: CONTENT - 32, align: "end" });
+      top += 22;
+      if (description) top += text(description, M + 16, top, { size: 9, color: theme.muted, width: CONTENT - 32, maxLines: 2 }) + 6;
+      pdfPage.drawLine({ start: { x: M + 16, y: H - top + 2 }, end: { x: M + CONTENT - 16, y: H - top + 2 }, thickness: 0.5, color: C.line });
+      top += 6;
+    }
+    top += 12;
+  }
+
   // 6) Contact + QR code to the live page.
   const link = `${siteOrigin().replace(/^https?:\/\//, "")}/${page.username}`;
   ensure(120);

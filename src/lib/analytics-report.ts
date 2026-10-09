@@ -20,7 +20,7 @@ export async function analyticsReport(pageId: string, days: Range) {
     db.pageView.groupBy({ by: ["country"], where: { ...where, country: { not: null } }, _count: true, orderBy: { _count: { country: "desc" } }, take: 6 }),
     db.pageView.groupBy({ by: ["referrer"], where: { ...where, referrer: { not: null } }, _count: true, orderBy: { _count: { referrer: "desc" } }, take: 6 }),
     db.pageView.groupBy({ by: ["device"], where, _count: true }),
-    db.contactClick.groupBy({ by: ["kind", "platform"], where, _count: true, orderBy: { _count: { kind: "desc" } }, take: 6 }),
+    db.contactClick.groupBy({ by: ["kind", "platform", "targetId"], where, _count: true, orderBy: { _count: { kind: "desc" } }, take: 6 }),
   ]);
 
   // Every day in the range, zero when there were no visits.
@@ -45,8 +45,19 @@ export async function analyticsReport(pageId: string, days: Range) {
     referrers: list(referrers, (r: { referrer: string | null }) => r.referrer),
     devices: list(devices, (r: { device: string }) => r.device).sort((a, b) => b.count - a.count),
     /** What visitors tapped most: WhatsApp, email, a social icon or a work video (with its platform). */
-    topClicks: clickTargets.map((c) => ({ kind: c.kind, platform: c.platform, count: c._count })),
+    topClicks: await withTargetNames(clickTargets.map((c) => ({ kind: c.kind, platform: c.platform, targetId: c.targetId, count: c._count }))),
   };
+}
+
+/** Adds the current title of tapped links / services (null once deleted). */
+async function withTargetNames<T extends { kind: string; targetId: string | null }>(rows: T[]) {
+  const ids = (kind: string) => rows.filter((r) => r.kind === kind && r.targetId).map((r) => r.targetId!);
+  const [links, services] = await Promise.all([
+    db.pageLink.findMany({ where: { id: { in: ids("link") } }, select: { id: true, title: true } }),
+    db.service.findMany({ where: { id: { in: ids("service") } }, select: { id: true, name: true } }),
+  ]);
+  const names = new Map([...links.map((l) => [l.id, l.title] as const), ...services.map((s) => [s.id, s.name] as const)]);
+  return rows.map((r) => ({ ...r, targetName: r.targetId ? names.get(r.targetId) ?? null : null }));
 }
 
 export type AnalyticsReport = Awaited<ReturnType<typeof analyticsReport>>;

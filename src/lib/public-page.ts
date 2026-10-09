@@ -47,6 +47,8 @@ export async function getPublicPage(username: string) {
         orderBy: { sort: "asc" },
         include: { platforms: true, rates: { orderBy: { sort: "asc" } } },
       },
+      links: { orderBy: { sort: "asc" } },
+      services: { orderBy: { sort: "asc" } },
     },
   });
 
@@ -118,6 +120,12 @@ export async function getPublicPage(username: string) {
       nameEn: b.nameEn,
       accountIds: b.platforms.map((p) => p.accountId),
       rates: b.rates.map((r) => ({ id: r.id, name: r.name, nameEn: r.nameEn, price: Number(r.price) })),
+    })),
+    // Free pages show the first few (FREE_LIMITS); the dashboard keeps them all.
+    links: (isPro ? page.links : page.links.slice(0, FREE_LIMITS.links)).map((l) => ({ id: l.id, title: l.title, titleEn: l.titleEn, url: l.url, imageUrl: l.imageUrl })),
+    services: (isPro ? page.services : page.services.slice(0, FREE_LIMITS.services)).map((s) => ({
+      id: s.id, name: s.name, nameEn: s.nameEn, description: s.description, descriptionEn: s.descriptionEn,
+      price: s.price === null ? null : Number(s.price), unit: s.unit, unitEn: s.unitEn,
     })),
   };
 }

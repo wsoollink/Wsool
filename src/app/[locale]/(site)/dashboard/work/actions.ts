@@ -1,32 +1,15 @@
 "use server";
 
 import { updateTag } from "next/cache";
-import type { UploadKind } from "@/config/uploads";
 import type { Platform } from "@/generated/prisma/enums";
 import { requireCreator } from "@/lib/creator";
 import { db } from "@/lib/db";
 import { pageLanguages } from "@/lib/page-language";
 import { pageCacheTag } from "@/lib/public-page";
-import { isOwnUploadedFile, pathFromPublicUrl, publicFileUrl, removeFiles } from "@/lib/storage";
-import { brandsSchema, worksSchema, type BrandInput, type FileRef, type WorkInput } from "@/lib/validation/work";
+import { removeUnused, resolveFile } from "@/lib/page-files";
+import { brandsSchema, worksSchema, type BrandInput, type WorkInput } from "@/lib/validation/work";
 
 export type WorkResult = { ok?: boolean; error?: "failed" | "missing_file" };
-
-/**
- * Resolves a file reference to the URL to store: a fresh upload must be in the
- * creator's own folder for that kind; an unchanged file must be one the
- * creator's rows already have. Anything else is refused (undefined).
- */
-async function resolveFile(userId: string, kind: UploadKind, ref: FileRef, current: Set<string>): Promise<string | null | undefined> {
-  if (ref.path) return (await isOwnUploadedFile(userId, kind, ref.path)) ? publicFileUrl(ref.path) : undefined;
-  if (ref.url) return current.has(ref.url) ? ref.url : undefined;
-  return null;
-}
-
-/** Deletes files that were used before and are not used anymore. */
-async function removeUnused(before: Iterable<string>, after: Set<string | null>) {
-  await removeFiles([...before].filter((u) => !after.has(u)).map((u) => pathFromPublicUrl(u))).catch(() => {});
-}
 
 /** Replaces the creator's brand logos (order = list order). Every brand needs a logo. */
 export async function saveBrands(items: BrandInput[]): Promise<WorkResult> {

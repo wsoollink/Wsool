@@ -7,6 +7,7 @@ export const UPLOAD_KINDS = {
   photo: { types: ["image/jpeg", "image/png", "image/webp", "image/avif"], maxBytes: 8 * 1024 * 1024, bucket: MEDIA_BUCKET },
   logo: { types: ["image/jpeg", "image/png", "image/webp", "image/avif"], maxBytes: 4 * 1024 * 1024, bucket: MEDIA_BUCKET },
   license: { types: ["image/jpeg", "image/png", "image/webp", "application/pdf"], maxBytes: 10 * 1024 * 1024, bucket: MEDIA_BUCKET },
+  linkImage: { types: ["image/jpeg", "image/png", "image/webp", "image/avif"], maxBytes: 4 * 1024 * 1024, bucket: MEDIA_BUCKET },
   thumb: { types: ["image/jpeg", "image/png", "image/webp"], maxBytes: 4 * 1024 * 1024, bucket: MEDIA_BUCKET },
   video: { types: ["video/mp4", "video/quicktime"], maxBytes: 50 * 1024 * 1024, bucket: MEDIA_BUCKET },
   verification: { types: ["image/jpeg", "image/png", "image/webp"], maxBytes: 10 * 1024 * 1024, bucket: VERIFICATION_BUCKET },

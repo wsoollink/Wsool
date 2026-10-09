@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { ArrowUpRight, Link2, MapPin, Play, ShoppingBag } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { getTranslations } from "next-intl/server";
@@ -17,6 +18,7 @@ import { toIntlLocale, type Locale } from "@/i18n/config";
 import { siteOrigin } from "@/lib/site-url";
 import { currencyLabel, formatAmount, formatPercent, formatPhone } from "@/lib/format";
 import type { PublishedPage } from "@/lib/public-page";
+import { linkKind, type LinkKind } from "@/lib/link-kind";
 import { bundleComparison, rateName } from "@/lib/rates";
 
 type Props = { page: PublishedPage; lang: Locale };
@@ -253,6 +255,8 @@ export async function CreatorProfile({ page, lang }: Props) {
           )}
 
           <Rates page={page} lang={lang} t={t} numbersFont={numbersFont} />
+          <Services page={page} lang={lang} t={t} numbersFont={numbersFont} />
+          <Links page={page} lang={lang} t={t} />
 
           <div className="md:hidden">{contact(false)}</div>
 
@@ -356,6 +360,92 @@ function Rates({ page, lang, t, numbersFont }: Props & { t: T; numbersFont: stri
           </div>
         ))}
       </div>
+    </Section>
+  );
+}
+
+const LINK_ICONS: Record<LinkKind, typeof Link2> = { map: MapPin, store: ShoppingBag, video: Play, link: Link2 };
+
+/** "My services": name, unit, description, price (or "on request") and a request button. */
+function Services({ page, lang, t, numbersFont }: Props & { t: T; numbersFont: string }) {
+  if (page.services.length === 0) return null;
+  const currency = currencyLabel(page.rateSettings.currency, lang);
+  const link = `${siteOrigin().replace(/^https?:\/\//, "")}/${page.username}`;
+  const pick = (ar: string, en: string | null) => (lang === "en" && en ? en : ar);
+  const request = (service: string) =>
+    page.whatsapp
+      ? `https://wa.me/${page.whatsapp}?text=${encodeURIComponent(t("serviceMessage", { service, link }))}`
+      : page.contactEmail
+        ? `mailto:${page.contactEmail}?subject=${encodeURIComponent(t("serviceSubject", { service }))}&body=${encodeURIComponent(t("serviceMessage", { service, link }))}`
+        : null;
+  return (
+    <Section title={t("services")}>
+      <ul className="grid grid-cols-1 gap-3 md:grid-cols-2">
+        {page.services.map((s) => {
+          const name = pick(s.name, s.nameEn);
+          const unit = pick(s.unit, s.unitEn);
+          const description = pick(s.description, s.descriptionEn);
+          const href = request(name);
+          return (
+            <li key={s.id} className={`${glassCard} flex min-w-0 flex-col gap-2.5 rounded-[18px] p-4`}>
+              <h3 dir="auto" className="text-[16px] font-bold">{name}</h3>
+              {description && <p dir="auto" className="text-[13.5px] leading-6 text-[var(--page-muted)]">{description}</p>}
+              <div className="mt-auto flex flex-wrap items-end justify-between gap-x-3 gap-y-2 border-t border-[var(--page-line)] pt-3">
+                {s.price === null ? (
+                  <span className="text-[14px] font-bold">{t("onRequest")}</span>
+                ) : (
+                  <span className="flex items-baseline gap-1.5">
+                    <span dir="ltr" className={`${numbersFont} grad-num text-xl font-black`}>{formatAmount(s.price, lang)}</span>
+                    <span className="text-xs text-[var(--page-muted)]">{currency}{unit && <> · <bdi>{unit}</bdi></>}</span>
+                  </span>
+                )}
+                {href && (
+                  <a
+                    href={href} target="_blank" rel="noopener noreferrer" data-track={`service:${s.id}`}
+                    className="inline-flex min-h-11 items-center rounded-full bg-[var(--page-accent)] px-4 text-[13.5px] font-bold text-[var(--page-on-accent)]"
+                  >
+                    {t("requestService")}
+                  </a>
+                )}
+              </div>
+              {s.price === null && unit && <span dir="auto" className="-mt-1 text-xs text-[var(--page-muted)]">{unit}</span>}
+            </li>
+          );
+        })}
+      </ul>
+    </Section>
+  );
+}
+
+/** "My links": image (or an icon from the link) + title, opening in a new tab. */
+function Links({ page, lang, t }: Props & { t: T }) {
+  if (page.links.length === 0) return null;
+  return (
+    <Section title={t("links")}>
+      <ul className="grid grid-cols-1 gap-3 md:grid-cols-2">
+        {page.links.map((l) => {
+          const Kind = LINK_ICONS[linkKind(l.url)];
+          const title = lang === "en" && l.titleEn ? l.titleEn : l.title;
+          return (
+            <li key={l.id}>
+              <a
+                href={l.url} target="_blank" rel="noopener noreferrer nofollow ugc" data-track={`link:${l.id}`}
+                className={`${glassCard} flex min-h-[72px] items-center gap-3.5 rounded-[18px] p-3 transition-transform hover:-translate-y-0.5`}
+              >
+                <span className="relative inline-flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-[14px] bg-[var(--page-soft)] text-[var(--page-accent)]">
+                  {l.imageUrl ? <Image src={l.imageUrl} alt="" fill unoptimized sizes="56px" className="object-cover" /> : <Kind aria-hidden="true" size={24} />}
+                </span>
+                <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+                  <span dir="auto" className="truncate text-[15px] font-bold">{title}</span>
+                  <span dir="ltr" className="truncate text-xs text-[var(--page-muted)] rtl:text-end">{l.url.replace(/^https:\/\/(www\.)?/, "").replace(/\/$/, "")}</span>
+                </span>
+                <ArrowUpRight aria-hidden="true" size={18} className="shrink-0 text-[var(--page-muted)] rtl:-scale-x-100" />
+                <span className="sr-only">{t("opensNewTab")}</span>
+              </a>
+            </li>
+          );
+        })}
+      </ul>
     </Section>
   );
 }

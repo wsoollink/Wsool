@@ -8,8 +8,10 @@ const body = z.discriminatedUnion("type", [
   z.object({ type: z.literal("view"), username: z.string().max(20), lang: z.enum(["ar", "en"]), referrer: z.string().max(500).nullable() }),
   z.object({
     type: z.literal("click"), username: z.string().max(20),
-    kind: z.enum(["whatsapp", "email", "social", "work"]),
+    kind: z.enum(["whatsapp", "email", "social", "work", "link", "service"]),
     platform: z.enum(PLATFORMS as [string, ...string[]]).nullable(),
+    /** The link or service id for kinds link / service. */
+    target: z.uuid().optional(),
   }),
 ]);
 
@@ -53,8 +55,17 @@ export async function POST(req: Request) {
       },
     });
   } else {
+    let targetId: string | null = null;
+    if (data.kind === "link" || data.kind === "service") {
+      // Only this page's own links/services count.
+      if (!data.target) return done;
+      const where = { id: data.target, pageId: page.id };
+      const exists = data.kind === "link" ? await db.pageLink.count({ where }) : await db.service.count({ where });
+      if (!exists) return done;
+      targetId = data.target;
+    }
     await db.contactClick.create({
-      data: { pageId: page.id, day, visitorHash: hash, kind: data.kind, platform: data.platform as never },
+      data: { pageId: page.id, day, visitorHash: hash, kind: data.kind, platform: data.platform as never, targetId },
     });
   }
   return done;

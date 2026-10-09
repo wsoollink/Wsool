@@ -8,6 +8,7 @@ export const DASHBOARD_SECTIONS = [
   { key: "accounts", href: "/dashboard/accounts" },
   { key: "work", href: "/dashboard/work" },
   { key: "rates", href: "/dashboard/rates" },
+  { key: "links", href: "/dashboard/links" },
   { key: "contact", href: "/dashboard/contact" },
   { key: "verification", href: "/dashboard/verification" },
   { key: "appearance", href: "/dashboard/appearance" },

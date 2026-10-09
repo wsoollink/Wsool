@@ -86,8 +86,8 @@ async function Report({ lang, searchParams }: { lang: Locale; searchParams: SP }
   ];
   const deviceTotal = r.devices.reduce((s, d) => s + d.count, 0) || 1;
   const mobilePct = Math.round(((r.devices.find((d) => d.key === "mobile")?.count ?? 0) / deviceTotal) * 100);
-  const clickLabel = (c: { kind: string; platform: string | null }) =>
-    c.kind === "whatsapp" ? "WhatsApp" : c.kind === "email" ? t("email") : c.kind === "social" ? t("clickSocial", { platform: c.platform ? PLATFORM_NAMES[c.platform as keyof typeof PLATFORM_NAMES] : "" }) : t("clickWork", { platform: c.platform ? PLATFORM_NAMES[c.platform as keyof typeof PLATFORM_NAMES] : "" });
+  const clickLabel = (c: { kind: string; platform: string | null; targetName?: string | null }) =>
+    c.kind === "link" ? t("clickLink", { name: c.targetName ?? t("deleted") }) : c.kind === "service" ? t("clickService", { name: c.targetName ?? t("deleted") }) : c.kind === "whatsapp" ? "WhatsApp" : c.kind === "email" ? t("email") : c.kind === "social" ? t("clickSocial", { platform: c.platform ? PLATFORM_NAMES[c.platform as keyof typeof PLATFORM_NAMES] : "" }) : t("clickWork", { platform: c.platform ? PLATFORM_NAMES[c.platform as keyof typeof PLATFORM_NAMES] : "" });
 
   return (
     <div className="flex flex-col gap-4">
@@ -144,7 +144,7 @@ async function Report({ lang, searchParams }: { lang: Locale; searchParams: SP }
               {r.topClicks.length === 0 ? <p className="text-sm text-muted">{t("noData")}</p> : (
                 <ol className="flex flex-col divide-y divide-navy/6">
                   {r.topClicks.map((c, i) => (
-                    <li key={`${c.kind}-${c.platform}`} className="flex min-h-11 items-center gap-3">
+                    <li key={`${c.kind}-${c.platform}-${c.targetId}`} className="flex min-h-11 items-center gap-3">
                       <span className="w-6 text-[13px] font-bold text-muted">{i + 1}</span>
                       <span className="flex-1 text-sm">{clickLabel(c)}</span>
                       <span dir="ltr" className="font-numbers font-black">{formatNumber(c.count, lang)}</span>

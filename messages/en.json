@@ -168,7 +168,8 @@
     "signOut": "Sign out",
     "signingOut": "Signing out…",
     "accountsShort": "Accounts",
-    "unread": "You have new notifications"
+    "unread": "You have new notifications",
+    "links": "Links & services"
   },
   "CreatorPage": {
     "brand": "Wsool",
@@ -222,7 +223,14 @@
     "linkCopied": "Link copied",
     "viewLicense": "View {name}",
     "accountsOf": "{name}'s accounts",
-    "licenseVerified": "Verified license"
+    "licenseVerified": "Verified license",
+    "services": "My services",
+    "links": "My links",
+    "onRequest": "Price on request",
+    "requestService": "Request",
+    "serviceMessage": "Hi, I saw your “{service}” service on your Wsool page and would like the details: {link}",
+    "serviceSubject": "Service request: {service}",
+    "opensNewTab": "(opens in a new tab)"
   },
   "EditPage": {
     "pageStatus": "Page status",
@@ -1244,7 +1252,10 @@
     "devicesHint": "Most brands open your page on a phone, so make sure your photo and numbers read well there.",
     "topClicks": "What visitors tapped most",
     "clickSocial": "{platform} account",
-    "clickWork": "Work video on {platform}"
+    "clickWork": "Work video on {platform}",
+    "clickLink": "Link: {name}",
+    "clickService": "Service request: {name}",
+    "deleted": "(deleted)"
   },
   "Notify": {
     "footer": "You got this email because you have a Wsool account. Manage reminder emails under Notifications in your dashboard.",
@@ -1522,11 +1533,46 @@
     "subscription": "Your plan, invoices and payment method",
     "notifications": "Everything that happened on your page and account",
     "more": "The rest of your dashboard",
-    "home": "Here's your page today"
+    "home": "Here's your page today",
+    "links": "Your store and course links, and services besides ads"
   },
   "SaveBar": {
     "save": "Save changes",
     "saving": "Saving…",
     "saved": "✓ Saved"
+  },
+  "LinksPage": {
+    "linksTitle": "My links",
+    "linksHint": "Your store, course, location on the map… up to {max} links. Shown on your page before “Contact me”.",
+    "linkN": "Link {n}",
+    "linkTitle": "Title",
+    "linkTitlePh": "e.g. My store, Photography course, Studio location",
+    "titleEn": "English title (optional)",
+    "linkUrl": "Link",
+    "linkUrlHint": "Copy the link and paste it here. Map and store links get an icon automatically.",
+    "addImage": "Image",
+    "changeImage": "Change",
+    "removeImage": "Remove image",
+    "imageFor": "Image for {item} (optional)",
+    "addLink": "Add link",
+    "servicesTitle": "My services",
+    "servicesHint": "Services you offer besides ads (photography, hosting events, consulting…). Up to {max}.",
+    "serviceN": "Service {n}",
+    "serviceName": "Service name",
+    "serviceNamePh": "e.g. Product photography",
+    "description": "Description (optional)",
+    "descriptionPh": "A couple of lines about what it includes",
+    "price": "Price (optional)",
+    "priceHint": "Empty = “on request”",
+    "unit": "Unit (optional)",
+    "unitPh": "e.g. per hour, per project",
+    "englishVersion": "English version (optional)",
+    "addService": "Add service",
+    "currencyNote": "Currency: {currency}, same as your ad rates (change it in Ad rates).",
+    "freeLimit": "The Free plan shows the first {n} on your page. The rest is saved and appears when you subscribe.",
+    "fixErrors": "Some fields need fixing (marked in red).",
+    "errors": {
+      "url": "That link isn't valid. Use a full link like https://example.com"
+    }
   }
 }

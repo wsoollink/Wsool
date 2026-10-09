@@ -11,7 +11,8 @@ function send(payload: object) {
 
 /**
  * Counts the visit once, and taps on elements marked data-track="kind" or
- * "kind:platform" (WhatsApp, email, social icons, past work). No cookies.
+ * "kind:platform" (WhatsApp, email, social icons, past work) or
+ * "link:<id>" / "service:<id>" (My links, My services). No cookies.
  */
 export function Tracker({ username, lang }: { username: string; lang: "ar" | "en" }) {
   useEffect(() => {
@@ -19,8 +20,9 @@ export function Tracker({ username, lang }: { username: string; lang: "ar" | "en
     const onClick = (e: MouseEvent) => {
       const el = (e.target as Element | null)?.closest?.("[data-track]");
       if (!el) return;
-      const [kind, platform] = (el.getAttribute("data-track") ?? "").split(":");
-      send({ type: "click", username, kind, platform: platform || null });
+      const [kind, value] = (el.getAttribute("data-track") ?? "").split(":");
+      const target = kind === "link" || kind === "service";
+      send({ type: "click", username, kind, platform: target ? null : value || null, ...(target && { target: value }) });
     };
     document.addEventListener("click", onClick, { capture: true });
     return () => document.removeEventListener("click", onClick, { capture: true });

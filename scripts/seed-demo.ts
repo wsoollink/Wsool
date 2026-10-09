@@ -71,6 +71,19 @@ async function main() {
             })),
           },
           rateSettings: { create: { showOnPage: true, showInPdf: true, currency: "SAR", vatIncluded: true } },
+          links: {
+            create: [
+              { title: "متجري", titleEn: "My store", url: "https://example.salla.sa", sort: 0 },
+              { title: "دورة التصوير بالجوال", titleEn: "Phone photography course", url: "https://example.com/course", sort: 1 },
+              { title: "موقع الاستوديو", titleEn: "Studio location", url: "https://maps.app.goo.gl/example", sort: 2 },
+            ],
+          },
+          services: {
+            create: [
+              { name: "تصوير منتجات", nameEn: "Product photography", description: "جلسة تصوير لمنتجك مع 10 صور معدّلة جاهزة للنشر.", descriptionEn: "A shoot for your product with 10 edited photos ready to post.", price: 1500, unit: "للجلسة", unitEn: "per session", sort: 0 },
+              { name: "تقديم فعاليات", nameEn: "Event hosting", description: "تقديم افتتاحيات وفعاليات الشركات بالعربي والإنجليزي.", descriptionEn: "Hosting openings and company events in Arabic and English.", price: null, unit: "", sort: 1 },
+            ],
+          },
         },
       },
     },

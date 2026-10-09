@@ -9,6 +9,9 @@ export const TRIAL_DAYS = 14;
 export const FREE_LIMITS = {
   /** Past works shown on the page. */
   portfolioItems: 6,
+  /** "My links" and "My services" shown on the page (the dashboard keeps all). */
+  links: 3,
+  services: 3,
   /** Templates a Free page can use; others fall back to the first one. */
   templates: ["white", "black"] as readonly Template[],
   verifiedBadge: false,

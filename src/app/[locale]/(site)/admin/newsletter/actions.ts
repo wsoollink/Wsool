@@ -1,6 +1,5 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import { z } from "zod";
 import type { Locale } from "@/i18n/config";
 import { audit, requireAdmin } from "@/lib/admin";
@@ -22,10 +21,10 @@ const draftSchema = z.object({
 
 type Result = { ok?: boolean; error?: string };
 
-export async function createCampaign() {
+/** New empty draft; the browser then opens its editor (no server redirect). */
+export async function createCampaign(): Promise<{ id: string }> {
   const admin = await requireAdmin("newsletter.send");
-  const row = await db.newsletterCampaign.create({ data: { createdBy: admin.userId }, select: { id: true } });
-  redirect(`/admin/newsletter/${row.id}`);
+  return db.newsletterCampaign.create({ data: { createdBy: admin.userId }, select: { id: true } });
 }
 
 export async function saveCampaign(campaignId: string, input: CampaignInput): Promise<Result> {
@@ -102,8 +101,9 @@ export async function retryFailed(campaignId: string): Promise<Result> {
   return ok ? { ok: true } : { error: "invalid" };
 }
 
-export async function deleteDraft(campaignId: string) {
+export async function deleteDraft(campaignId: string): Promise<Result> {
   await requireAdmin("newsletter.send");
-  if (id.safeParse(campaignId).success) await db.newsletterCampaign.deleteMany({ where: { id: campaignId, status: "draft" } });
-  redirect("/admin/newsletter");
+  if (!id.safeParse(campaignId).success) return { error: "invalid" };
+  const res = await db.newsletterCampaign.deleteMany({ where: { id: campaignId, status: "draft" } });
+  return res.count ? { ok: true } : { error: "not_draft" };
 }

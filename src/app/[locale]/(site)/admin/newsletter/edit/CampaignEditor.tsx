@@ -158,7 +158,14 @@ export function CampaignEditor({ id, status, initial, audience, progress, sentOn
                 <button type="button" onClick={onSave} disabled={pending} className={buttonClasses("secondary")}>{pending && !run ? t("saving") : t("save")}</button>
                 <button
                   type="button" disabled={pending}
-                  onClick={() => { if (window.confirm(t("confirmDelete"))) startTransition(() => deleteDraft(id)); }}
+                  onClick={() => {
+                    if (!window.confirm(t("confirmDelete"))) return;
+                    startTransition(async () => {
+                      const res = await deleteDraft(id);
+                      if (res.ok) router.push("/admin/newsletter");
+                      else fail(res.error);
+                    });
+                  }}
                   className={buttonClasses("secondary", "ms-auto gap-2 text-bad")}
                 >
                   <Trash2 aria-hidden="true" size={16} /> {t("deleteDraft")}

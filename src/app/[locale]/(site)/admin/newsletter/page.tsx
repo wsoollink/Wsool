@@ -2,16 +2,15 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Download, Plus } from "lucide-react";
+import { Download } from "lucide-react";
 import { AdminHeader } from "@/components/admin/AdminHeader";
-import { SubmitButton } from "@/components/SubmitButton";
 import { Card } from "@/components/ui/Card";
 import { isLocale, toIntlLocale, type Locale } from "@/i18n/config";
 import { can, requireAdmin } from "@/lib/admin";
 import { db } from "@/lib/db";
 import { formatNumber } from "@/lib/format";
 import { audienceCounts } from "@/lib/newsletter-campaign";
-import { createCampaign } from "./actions";
+import { NewCampaignButton } from "./NewCampaignButton";
 import { statusTone } from "./status";
 
 /** Subscriber numbers, CSV export, and the list of issues (newest first). */
@@ -41,9 +40,7 @@ async function Newsletter({ lang }: { lang: Locale }) {
         ))}
       </div>
       <div className="flex flex-wrap items-center gap-2">
-        <form action={createCampaign}>
-          <SubmitButton pendingText={t("newCampaign")} className="gap-2"><Plus aria-hidden="true" size={18} /> {t("newCampaign")}</SubmitButton>
-        </form>
+        <NewCampaignButton label={t("newCampaign")} />
         {can(admin, "users.view") && (
           // A route handler download, not a page: plain <a>.
           <a href="/api/admin/newsletter" download className="inline-flex min-h-11 items-center gap-2 rounded-full bg-navy/5 px-5 text-sm font-bold">
@@ -61,7 +58,7 @@ async function Newsletter({ lang }: { lang: Locale }) {
           <ul className="flex flex-col">
             {campaigns.map((c) => (
               <li key={c.id}>
-                <Link href={`/admin/newsletter/${c.id}`} className="flex min-h-[60px] flex-wrap items-center gap-x-4 gap-y-1 rounded-[14px] px-3 py-2 hover:bg-navy/[0.03]">
+                <Link href={`/admin/newsletter/edit?id=${c.id}`} className="flex min-h-[60px] flex-wrap items-center gap-x-4 gap-y-1 rounded-[14px] px-3 py-2 hover:bg-navy/[0.03]">
                   <span className="min-w-0 flex-1 truncate text-sm font-bold">{c.subjectAr || c.subjectEn || t("untitled")}</span>
                   {c.status !== "draft" && (
                     <span className="text-xs text-muted">

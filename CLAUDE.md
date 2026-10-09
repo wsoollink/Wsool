@@ -509,7 +509,9 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
   links (no stored token) for `/newsletter/confirm` and `/newsletter/unsubscribe`, one-click
   `List-Unsubscribe` POST at `/api/newsletter/unsubscribe`, one confirmation per address per 10 min.
   Admin overview shows the confirmed count; CSV at `/api/admin/newsletter` (`users.view`, audited).
-- **Sending the newsletter** (`admin/newsletter/`, permission `newsletter.send`): tables
+- **Sending the newsletter** (`admin/newsletter/`, editor at `/admin/newsletter/edit?id=`; no server-action
+  redirects (they showed a blank page on Netlify): actions return data and the client navigates;
+  permission `newsletter.send`): tables
   `newsletter_campaigns` (subject/body/button per language, status draft → sending → sent, counts) and
   `newsletter_deliveries` (one row per campaign × subscriber, written **before** sending, so a resumed
   or double-clicked send never emails anyone twice). Each subscriber gets their language's version, or

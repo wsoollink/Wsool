@@ -81,7 +81,8 @@ Fonts: text = **Noto Kufi Arabic** (Google, free OFL license; Arabic + Latin, va
 100-900), chosen by the owner (Oct 2026) instead of the commercial GT America Arabic. Web file:
 `src/styles/fonts/NotoKufiArabic-Variable.woff2` (loaded with `next/font/local` in
 `src/styles/fonts.ts`); OG image and PDF use the static Regular/Bold TTFs in `assets/fonts/`.
-Big numbers: Unbounded (free) until the owner decides on Menda. Both sit behind the CSS variables
+Big numbers: the same font's **Black (900)** cut (owner, instead of Menda), forced whatever weight a
+class asks for (`NotoKufiArabic-Black.woff2` / `.ttf`). Both sit behind the CSS variables
 `--font-text` and `--font-numbers` so they can be swapped in one place. Emails use system fonts.
 
 Dashboard style: light, white cards (radius 18–24px), soft borders, pill-shaped primary buttons.

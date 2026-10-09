@@ -15,8 +15,8 @@ const FILES = {
   // Noto Kufi Arabic covers both scripts (same text font as the site).
   arabic: { 400: "NotoKufiArabic-Regular.ttf", 700: "NotoKufiArabic-Bold.ttf" },
   latin: { 400: "NotoKufiArabic-Regular.ttf", 700: "NotoKufiArabic-Bold.ttf" },
-  /** Wide display font for big numbers (Latin only). */
-  numbers: { 400: "unbounded-latin-700-normal.woff", 700: "unbounded-latin-700-normal.woff" },
+  /** Big numbers: the Black (900) cut. */
+  numbers: { 400: "NotoKufiArabic-Black.ttf", 700: "NotoKufiArabic-Black.ttf" },
 } as const;
 
 const cache = new Map<string, fontkit.Font>();

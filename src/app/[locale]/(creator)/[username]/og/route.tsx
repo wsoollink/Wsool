@@ -17,7 +17,7 @@ const font = (file: string) => readFile(join(process.cwd(), "assets/fonts", file
 const fontsPromise = Promise.all([
   font("NotoKufiArabic-Regular.ttf"),
   font("NotoKufiArabic-Bold.ttf"),
-  font("unbounded-latin-700-normal.woff"),
+  font("NotoKufiArabic-Black.ttf"),
 ]);
 
 const LABELS = {
@@ -42,7 +42,7 @@ export async function GET(_request: NextRequest, { params }: RouteContext<"/[loc
   const { data, lang } = await loadCreatorPage(locale, username);
   if (data?.status !== "published") return new Response("Not found", { status: 404 });
 
-  const [kufi400, kufi700, unbounded] = await fontsPromise;
+  const [kufi400, kufi700, kufiBlack] = await fontsPromise;
   const theme = pageTheme(data.template, data.accent, data.customColors);
   const rtl = getDirection(lang) === "rtl";
   const tr = data.translations.find((x) => x.lang === lang) ?? data.translations[0];
@@ -81,7 +81,7 @@ export async function GET(_request: NextRequest, { params }: RouteContext<"/[loc
       <div style={{ display: "flex", flexDirection: "column", alignItems: rtl ? "flex-end" : "flex-start", marginTop: 26, padding: "22px 30px", borderRadius: 28, background: surface, border: `2px solid ${theme.line}` }}>
         {/* eslint-disable-next-line @next/next/no-img-element -- rendered by next/og */}
         <img src={labelImg.src} width={labelImg.width} height={labelImg.height} alt="" />
-        <div style={{ fontFamily: "Unbounded", fontSize: 76, fontWeight: 700, color: theme.text }}>
+        <div style={{ fontFamily: "KufiNumbers", fontSize: 76, fontWeight: 900, color: theme.text }}>
           {new Intl.NumberFormat(toIntlLocale(lang)).format(total)}
         </div>
         <div style={{ display: "flex", gap: 14, marginTop: 8, flexDirection: rtl ? "row-reverse" : "row" }}>
@@ -122,7 +122,7 @@ export async function GET(_request: NextRequest, { params }: RouteContext<"/[loc
       fonts: [
         { name: "KufiText", data: kufi400, weight: 400 },
         { name: "KufiText", data: kufi700, weight: 700 },
-        { name: "Unbounded", data: unbounded, weight: 700 },
+        { name: "KufiNumbers", data: kufiBlack, weight: 900 },
       ],
     },
   );

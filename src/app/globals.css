@@ -2,7 +2,7 @@
 
 /*
  * Wsool design tokens (CLAUDE.md section 4).
- * Fonts (src/styles/fonts.ts): text = Noto Kufi Arabic, numbers = Unbounded.
+ * Fonts (src/styles/fonts.ts): text = Noto Kufi Arabic, numbers = its Black (900) cut.
  */
 :root {
   --font-text: var(--font-text-fallback), system-ui, sans-serif;

@@ -30,6 +30,7 @@ export async function auditSentences(entries: Entry[]) {
       email: str(d.email),
       label: str(d.label),
       count: str(d.count),
+      subject: str(d.subject),
     };
     return t.has(e.action) ? t(e.action, values) : e.action;
   });

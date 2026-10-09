@@ -608,7 +608,8 @@
       "finance": "Finance",
       "team": "Team & permissions",
       "audit": "Activity log",
-      "pendingBadge": "waiting for review"
+      "pendingBadge": "waiting for review",
+      "newsletter": "Newsletter"
     },
     "overview": {
       "users": "Users",
@@ -854,7 +855,10 @@
         "revenue": {
           "view": "View revenue"
         },
-        "refunds": "Issue refunds"
+        "refunds": "Issue refunds",
+        "newsletter": {
+          "send": "Writes and sends the newsletter"
+        }
       },
       "invite": "Add",
       "invited": "✓ Added. They can sign in with their email now.",
@@ -876,7 +880,8 @@
       "groups": {
         "verification": "Verification",
         "users": "Users",
-        "money": "Finance"
+        "money": "Finance",
+        "newsletter": "Newsletter"
       },
       "roleHint": "Picking a role fills in its permissions; you can change them.",
       "ownerOnly": "Only the owner can add members, change permissions and platform settings.",
@@ -954,7 +959,8 @@
       "subscriptions": "Revenue, invoices and failed payments",
       "finance": "Revenue, expenses and net profit",
       "team": "Add staff and choose what they can do",
-      "audit": "Every action the team took, who and when"
+      "audit": "Every action the team took, who and when",
+      "newsletter": "Write an issue and send it to confirmed subscribers"
     },
     "sentence": {
       "verification": {
@@ -992,7 +998,67 @@
         "revoke": "Revoked investor link “{label}”"
       },
       "newsletter": {
-        "export": "Downloaded the newsletter list ({count})"
+        "export": "Downloaded the newsletter list ({count})",
+        "send": "Sent the newsletter “{subject}” to {count} subscribers",
+        "retry": "Resent the newsletter to {count} failed"
+      }
+    },
+    "newsletter": {
+      "confirmed": "Confirmed subscribers",
+      "ar": "Arabic",
+      "en": "English",
+      "pending": "Awaiting confirmation",
+      "unsubscribedNote": "{n} unsubscribed (they get nothing).",
+      "newCampaign": "New issue",
+      "exportCsv": "Download CSV",
+      "campaigns": "Issues",
+      "empty": "No issues sent yet. Start with “New issue”.",
+      "untitled": "Untitled",
+      "status": {
+        "draft": "Draft",
+        "sending": "Sending",
+        "sent": "Sent"
+      },
+      "sentTo": "Reached {n}",
+      "failedN": "{n} failed",
+      "back": "All issues",
+      "arabic": "Arabic",
+      "english": "English",
+      "subject": "Subject",
+      "body": "Text",
+      "bodyHint": "Leave an empty line between paragraphs. Links (https://…) become clickable.",
+      "cta": "Button (optional)",
+      "ctaLabel": "Button text",
+      "ctaUrl": "Button link",
+      "ctaHint": "Starts with https://. One link for both versions.",
+      "preview": "Preview",
+      "previewEmpty": "Write a subject and text to see the preview.",
+      "save": "Save draft",
+      "saving": "Saving…",
+      "saved": "✓ Saved.",
+      "sendTest": "Send me a test",
+      "testSent": "✓ Test sent to {email}.",
+      "sendAll": "Send to {n} subscribers",
+      "confirmSend": "Send this issue to {n} confirmed subscribers? Once it starts it can't be edited.",
+      "progress": "Sending… {done} of {total}",
+      "keepOpen": "Keep this page open until sending finishes.",
+      "resume": "Resume sending",
+      "doneMsg": "✓ Sending finished.",
+      "retry": "Resend to the failed ones ({n})",
+      "deleteDraft": "Delete draft",
+      "confirmDelete": "Delete this draft?",
+      "sentOn": "Sent {date}",
+      "langNote": "Each subscriber gets their language's version; if it's empty they get the other one.",
+      "audience": "Goes to {n} confirmed subscribers ({ar} Arabic, {en} English).",
+      "errors": {
+        "invalid": "A field is longer than allowed.",
+        "empty": "Write a subject and text for at least one version.",
+        "cta": "The button needs text (for each written language) and a link starting with https://.",
+        "no_key": "Email isn't set up: add RESEND_API_KEY in Netlify.",
+        "no_subscribers": "No confirmed subscribers left to reach.",
+        "not_draft": "Sending has started; it can't be edited.",
+        "failed": "Something went wrong. Try again.",
+        "not_sending": "Sending is stopped."
       }
     }
   },
@@ -1438,7 +1504,11 @@
     "adminTitle": "Newsletter",
     "adminCount": "{n} confirmed subscribers",
     "adminPending": "{n} waiting to confirm",
-    "adminExport": "Download CSV"
+    "adminExport": "Download CSV",
+    "campaign": {
+      "footer": "You're getting this because you subscribed to the Wsool newsletter. Unsubscribe: {url}",
+      "unsubscribeSample": "(each subscriber's own unsubscribe link)"
+    }
   },
   "DashboardHeader": {
     "edit": "Changes show on your page after you save",

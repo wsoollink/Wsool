@@ -671,8 +671,61 @@ model NewsletterSubscriber {
   unsubscribedAt DateTime?        @map("unsubscribed_at") @db.Timestamptz
   createdAt      DateTime         @default(now()) @map("created_at") @db.Timestamptz
 
+  deliveries NewsletterDelivery[]
+
   @@index([status])
   @@map("newsletter_subscribers")
+}
+
+enum CampaignStatus {
+  draft
+  /// Sending started; batches go out until every confirmed subscriber has a delivery row.
+  sending
+  sent
+}
+
+/// One newsletter issue written in the admin panel. Subscribers get their
+/// language's version, or the other one when theirs is empty.
+model NewsletterCampaign {
+  id          String         @id @default(uuid()) @db.Uuid
+  subjectAr   String         @default("") @map("subject_ar") @db.VarChar(150)
+  bodyAr      String         @default("") @map("body_ar")
+  subjectEn   String         @default("") @map("subject_en") @db.VarChar(150)
+  bodyEn      String         @default("") @map("body_en")
+  /// Optional button under the text.
+  ctaLabelAr  String         @default("") @map("cta_label_ar") @db.VarChar(40)
+  ctaLabelEn  String         @default("") @map("cta_label_en") @db.VarChar(40)
+  ctaUrl      String         @default("") @map("cta_url") @db.VarChar(500)
+  status      CampaignStatus @default(draft)
+  createdBy   String         @map("created_by") @db.Uuid
+  createdAt   DateTime       @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime       @updatedAt @map("updated_at") @db.Timestamptz
+  startedAt   DateTime?      @map("started_at") @db.Timestamptz
+  sentAt      DateTime?      @map("sent_at") @db.Timestamptz
+  sentCount   Int            @default(0) @map("sent_count")
+  failedCount Int            @default(0) @map("failed_count")
+
+  deliveries NewsletterDelivery[]
+
+  @@index([createdAt])
+  @@map("newsletter_campaigns")
+}
+
+/// Who a campaign went to. The row is written before sending, so a resumed
+/// send never emails the same subscriber twice.
+model NewsletterDelivery {
+  campaignId   String   @map("campaign_id") @db.Uuid
+  subscriberId String   @map("subscriber_id") @db.Uuid
+  /// sending | sent | failed
+  status       String   @default("sending") @db.VarChar(10)
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  campaign   NewsletterCampaign   @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  subscriber NewsletterSubscriber @relation(fields: [subscriberId], references: [id], onDelete: Cascade)
+
+  @@id([campaignId, subscriberId])
+  @@index([subscriberId])
+  @@map("newsletter_deliveries")
 }
 
 /// Answer to "why are you cancelling?" when a creator turns off auto-renew.

@@ -45,7 +45,8 @@ Surfaces:
 - Enable **Row Level Security** on every Supabase table. A creator can only read/write their own rows.
   Public page data is read through a server-side query, never by exposing other users' rows.
 - Validate every input on the server (zod).
-- Mobile-first. Every screen must work at 360px wide.
+- Mobile-first. Every screen must work at 360px wide. Text fields are at least 16px on touch screens
+  (rule in `globals.css`), otherwise iPhone Safari zooms the page when a field is tapped.
 - Accessibility: real `<button>`/`<a>`, labels on inputs, visible focus, 44px touch targets.
 - Small commits with clear messages. Run the app and fix errors before saying a step is done.
 
@@ -503,6 +504,8 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
   (`LINKS`), buttons (`BUTTONS`) and holes (`v.*`) are wired in the script and in
   `useMarketing.ts`; computed texts (claim messages, FAQ, prices from `PRICES`) in `content.ts`.
   Page wrappers: `src/components/marketing/Pages.tsx`. Hand fixes go in `marketing.css`.
+  Owner wording (Oct 2026): "ملفك الإعلامي" instead of "ميديا كِت", "تقنع أي شركة", paid plan badge "الاحترافية".
+  Text changes are made in the `design/marketing/*.dc.html` files, then the script is re-run.
 - Home "claim your link": live check (`checkLink`), then cookie `wsool_claim` → `/login`;
   onboarding pre-fills that name.
 - **Newsletter** (`src/lib/newsletter.ts`, table `newsletter_subscribers`): double opt-in, HMAC

@@ -38,3 +38,9 @@
   [style*="repeat(4, minmax(0, 1fr))"] > div { padding: 8px 3px !important; }
   [style*="repeat(4, minmax(0, 1fr))"] > div > span[dir="ltr"] { font-size: 12.5px !important; }
 }
+
+/* Home hero (owner): on phones the example phone frame wraps onto its own line
+   and stuck to the start side; keep it in the middle of the screen. */
+@media (max-width: 767px) {
+  .mk-home-5 > .mk-home-15 { margin-inline: auto !important; }
+}

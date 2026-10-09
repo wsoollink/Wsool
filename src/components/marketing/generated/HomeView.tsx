@@ -111,7 +111,7 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
             <div role="img" aria-label={t(22)} style={{"position": "relative", "zIndex": "2", "width": "304px", "borderRadius": "44px", "padding": "9px", "background": "linear-gradient(160deg, #0E2A5C, #021941)", "boxShadow": "0 50px 100px rgba(2,25,65,0.35), inset 0 0 0 1px rgba(255,255,255,0.08)"}} className="ws-float mk-home-17">
               <div style={{"borderRadius": "36px", "overflow": "hidden", "background": "#F6F8FC"}}>
                 <div style={{"position": "relative", "width": "100%", "aspectRatio": "1 / 0.9"}}>
-                  <img src="/marketing/4fb3e447104aa9686e8633c83300f7f0.jpg" alt="" style={{"position": "absolute", "inset": "0", "width": "100%", "height": "100%", "objectFit": "cover", "objectPosition": "center 15%", "display": "block", "WebkitMaskImage": "linear-gradient(to bottom, #000 50%, transparent 100%)", "maskImage": "linear-gradient(to bottom, #000 50%, transparent 100%)"}} />
+                  <img src={v.en ? "/marketing/fd09a17e0b58ec7890f59ce7bd4f7075.jpg" : "/marketing/4fb3e447104aa9686e8633c83300f7f0.jpg"} alt="" style={{"position": "absolute", "inset": "0", "width": "100%", "height": "100%", "objectFit": "cover", "objectPosition": "center 15%", "display": "block", "WebkitMaskImage": "linear-gradient(to bottom, #000 50%, transparent 100%)", "maskImage": "linear-gradient(to bottom, #000 50%, transparent 100%)"}} />
                 </div>
                 <div style={{"marginTop": "-44px", "position": "relative", "padding": "0 12px 16px", "display": "flex", "flexDirection": "column", "alignItems": "center", "gap": "5px", "textAlign": "center", "color": "#021941"}}>
                   <span style={{"display": "flex", "alignItems": "center", "gap": "5px", "fontWeight": "700", "fontSize": "17px"}}>
@@ -390,7 +390,7 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
                   </span>
                 </div>
                 <div style={{"padding": "18px", "display": "flex", "gap": "16px", "alignItems": "center"}}>
-                  <img src="/marketing/4fb3e447104aa9686e8633c83300f7f0.jpg" alt="" style={{"width": "72px", "height": "72px", "borderRadius": "20px", "objectFit": "cover", "objectPosition": "center 15%", "display": "block", "flexShrink": "0"}} />
+                  <img src={v.en ? "/marketing/fd09a17e0b58ec7890f59ce7bd4f7075.jpg" : "/marketing/4fb3e447104aa9686e8633c83300f7f0.jpg"} alt="" style={{"width": "72px", "height": "72px", "borderRadius": "20px", "objectFit": "cover", "objectPosition": "center 15%", "display": "block", "flexShrink": "0"}} />
                   <div style={{"display": "flex", "flexDirection": "column", "gap": "3px"}}>
                     <span style={{"fontWeight": "900", "fontSize": "18px", "color": "#021941"}}>
                       {t(72)}
@@ -630,7 +630,7 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
                   <span style={{"height": "6px", "width": "80%", "borderRadius": "3px", "background": "#EEF3FB"}}></span>
                 </div>
                 <div style={{"position": "absolute", "bottom": "0", "left": "50%", "width": "120px", "height": "160px", "marginLeft": "-60px", "borderRadius": "12px", "background": "#FFFFFF", "border": "1px solid rgba(255,255,255,0.2)", "boxShadow": "0 16px 30px rgba(0,0,0,0.25)", "transform": "rotate(0deg) translateX(0px)", "transformOrigin": "bottom center", "padding": "12px", "boxSizing": "border-box", "display": "flex", "flexDirection": "column", "gap": "6px"}}>
-                  <span style={{"height": "56px", "borderRadius": "8px", "backgroundImage": "url('/marketing/4fb3e447104aa9686e8633c83300f7f0.jpg')", "backgroundSize": "cover", "backgroundPosition": "center 15%"}}></span>
+                  <span style={{"height": "56px", "borderRadius": "8px", "backgroundImage": v.en ? "url('/marketing/fd09a17e0b58ec7890f59ce7bd4f7075.jpg')" : "url('/marketing/4fb3e447104aa9686e8633c83300f7f0.jpg')", "backgroundSize": "cover", "backgroundPosition": "center 15%"}}></span>
                   <span style={{"height": "8px", "width": "70%", "borderRadius": "4px", "background": "#021941"}}></span>
                   <span dir="ltr" style={{"fontFamily": "var(--font-numbers)", "fontWeight": "900", "fontSize": "15px", "color": "#021941"}}>
                     {t(110)}
@@ -671,7 +671,7 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
                   <Fragment key={dIndex}>
                     <button type="button" onClick={d.pick} aria-label={`قالب ${d.name}`} aria-current={d.cur} style={{"position": "absolute", "top": "0", "left": "50%", "width": "210px", "height": "300px", "marginLeft": "-105px", "borderRadius": "26px", "border": "1px solid rgba(2,25,65,0.10)", "background": d.bg, "padding": "18px 14px", "boxSizing": "border-box", "display": "flex", "flexDirection": "column", "alignItems": "center", "justifyContent": "center", "gap": "10px", "cursor": "pointer", "fontFamily": "inherit", "transform": d.tf, "zIndex": d.z, "opacity": d.o, "filter": d.blur, "boxShadow": "0 30px 60px rgba(2,25,65,0.22)"}} className="ws-deck-item mk-home-44">
                       <span style={{"width": "60px", "height": "60px", "borderRadius": "50%", "border": `2.5px solid ${d.ac}`, "overflow": "hidden"}} className="mk-home-45">
-                        <img src="/marketing/4fb3e447104aa9686e8633c83300f7f0.jpg" alt="" style={{"width": "100%", "height": "100%", "objectFit": "cover", "objectPosition": "center 15%", "display": "block"}} />
+                        <img src={v.en ? "/marketing/fd09a17e0b58ec7890f59ce7bd4f7075.jpg" : "/marketing/4fb3e447104aa9686e8633c83300f7f0.jpg"} alt="" style={{"width": "100%", "height": "100%", "objectFit": "cover", "objectPosition": "center 15%", "display": "block"}} />
                       </span>
                       <span style={{"width": "70%", "height": "7px", "borderRadius": "4px", "background": d.ink}}></span>
                       <span style={{"width": "44%", "height": "5px", "borderRadius": "3px", "background": d.ac}}></span>

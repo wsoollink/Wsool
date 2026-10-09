@@ -2,7 +2,7 @@
 
 import { updateTag } from "next/cache";
 import { PLATFORM_NAMES } from "@/config/platforms";
-import { REJECT_REASONS, REVIEW_CHECKS, VERIFICATION_DAYS } from "@/config/verification";
+import { LICENSE_REJECT_REASONS, REJECT_REASONS, REVIEW_CHECKS, VERIFICATION_DAYS } from "@/config/verification";
 import { audit, requireAdmin } from "@/lib/admin";
 import { db } from "@/lib/db";
 import { notify } from "@/lib/notify";
@@ -65,5 +65,28 @@ export async function rejectVerification(requestId: string, reason: string): Pro
   if (!decided) return { error: "already_decided" };
   updateTag(pageCacheTag(request.account.page.username));
   await notify(request.account.page.userId, "verification_rejected", { platform: PLATFORM_NAMES[request.platform], handle: request.handle, reason });
+  return { ok: true };
+}
+
+/** Approves or rejects a license file (status still in review, so only one staff member decides). */
+export async function decideLicense(licenseId: string, approve: boolean, reason?: string): Promise<DecisionResult> {
+  const admin = await requireAdmin("verifications.decide");
+  if (!approve && !(LICENSE_REJECT_REASONS as readonly string[]).includes(String(reason))) return { error: "failed" };
+  const license = await db.license.findFirst({ where: { id: String(licenseId), verificationStatus: "in_review" }, include: { page: { select: { username: true, userId: true } } } });
+  if (!license) return { error: "already_decided" };
+
+  const now = new Date();
+  const decided = await db.$transaction(async (tx) => {
+    const { count } = await tx.license.updateMany({
+      where: { id: license.id, verificationStatus: "in_review" },
+      data: { verificationStatus: approve ? "verified" : "rejected", rejectReason: approve ? null : String(reason), reviewedAt: now, reviewedBy: admin.userId },
+    });
+    if (count !== 1) return false;
+    await audit(admin, approve ? "license.approve" : "license.reject", { type: "license", id: license.id }, { name: license.name, number: license.number, username: license.page.username, ...(approve ? {} : { reason }) }, tx);
+    return true;
+  });
+  if (!decided) return { error: "already_decided" };
+  updateTag(pageCacheTag(license.page.username));
+  await notify(license.page.userId, approve ? "license_verified" : "license_rejected", { license: license.name, reason: approve ? null : reason });
   return { ok: true };
 }

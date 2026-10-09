@@ -103,6 +103,9 @@ model Page {
   /// WhatsApp number in international format, digits only (e.g. 9665XXXXXXXX).
   whatsapp          String?    @db.VarChar(20)
   contactEmail      String?    @map("contact_email") @db.VarChar(254)
+  /// Show/hide each contact on the public page while keeping the value.
+  whatsappVisible   Boolean    @default(true) @map("whatsapp_visible")
+  emailVisible      Boolean    @default(true) @map("email_visible")
   isPublished       Boolean    @default(false) @map("is_published")
   /// Set when the creator deletes the account (30-day undo window).
   deletedAt         DateTime?  @map("deleted_at") @db.Timestamptz
@@ -225,10 +228,17 @@ model License {
   number  String  @db.VarChar(60)
   fileUrl String? @map("file_url")
   sort    Int     @default(0)
+  /// Staff check of the license file (owner decision, Oct 2026). Editing the license resets it.
+  verificationStatus VerificationStatus @default(none) @map("verification_status")
+  rejectReason       String?            @map("reject_reason") @db.VarChar(40)
+  submittedAt        DateTime?          @map("submitted_at") @db.Timestamptz
+  reviewedAt         DateTime?          @map("reviewed_at") @db.Timestamptz
+  reviewedBy         String?            @map("reviewed_by") @db.Uuid
 
   page Page @relation(fields: [pageId], references: [id], onDelete: Cascade)
 
   @@index([pageId, sort])
+  @@index([verificationStatus])
   @@map("licenses")
 }
 

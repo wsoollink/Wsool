@@ -16,13 +16,14 @@ async function Accounts() {
   const { user, page } = await requireCreator();
   const t = await getTranslations("VerificationPage");
   // Scoped to the creator's own page from the verified session.
-  const [accounts, sub] = await Promise.all([
+  const [accounts, sub, licenses] = await Promise.all([
     db.socialAccount.findMany({
       where: { pageId: page.id },
       orderBy: { sort: "asc" },
       include: { verificationRequests: { where: { status: { in: ["pending", "approved", "rejected"] } }, orderBy: { createdAt: "desc" }, take: 1 } },
     }),
     db.subscription.findUnique({ where: { userId: user.id }, select: { status: true, trialEndsAt: true } }),
+    db.license.findMany({ where: { pageId: page.id }, orderBy: { sort: "asc" } }),
   ]);
 
   if (accounts.length === 0) {
@@ -37,7 +38,13 @@ async function Accounts() {
   return (
     <>
       {!hasPro(sub) && <p className="rounded-xl bg-warn/10 p-3 text-sm text-warn">{t("freeNote")}</p>}
-      <VerificationList accounts={toVerifyAccounts(accounts)} />
+      <VerificationList
+        accounts={toVerifyAccounts(accounts)}
+        licenses={licenses.map((l) => ({
+          id: l.id, name: l.name, number: l.number, hasFile: !!l.fileUrl, rejectReason: l.rejectReason,
+          status: l.verificationStatus === "verified" || l.verificationStatus === "in_review" || l.verificationStatus === "rejected" ? l.verificationStatus : "none",
+        }))}
+      />
     </>
   );
 }
@@ -52,17 +59,27 @@ export default async function VerificationPage({ params }: PageProps<"/[locale]/
   return (
     <div className="flex flex-col gap-4">
       <PageHeader title={nav("verification")} section="verification" />
-      <Card className="flex flex-col gap-2">
-        <h2 className="font-bold">{t("howTitle")}</h2>
-        <ol className="list-decimal space-y-1 ps-5 text-sm text-muted">
-          <li>{t("how1")}</li>
-          <li>{t("how2")}</li>
-          <li>{t("how3")}</li>
-        </ol>
-      </Card>
-      <Suspense fallback={null}>
-        <Accounts />
-      </Suspense>
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
+        <div className="flex min-w-0 flex-col gap-4">
+          <Suspense fallback={null}>
+            <Accounts />
+          </Suspense>
+        </div>
+        <Card className="flex flex-col gap-3 lg:sticky lg:top-6">
+          <h2 className="font-bold">{t("howTitle")}</h2>
+          <ol className="flex flex-col gap-3">
+            {(["1", "2", "3"] as const).map((n) => (
+              <li key={n} className="flex gap-3">
+                <span aria-hidden="true" className="inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-navy/5 text-[13px] font-bold">{n}</span>
+                <span className="flex flex-col gap-0.5">
+                  <span className="text-sm font-bold">{t(`step${n}Title`)}</span>
+                  <span className="text-[12.5px] text-muted">{t(`step${n}Body`)}</span>
+                </span>
+              </li>
+            ))}
+          </ol>
+        </Card>
+      </div>
     </div>
   );
 }

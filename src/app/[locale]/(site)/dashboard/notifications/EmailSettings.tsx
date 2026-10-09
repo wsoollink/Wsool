@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { Card } from "@/components/ui/Card";
+import { Switch } from "@/components/ui/Switch";
 import { saveEmailSettings } from "./actions";
 
 export function EmailSettings({ initial }: { initial: { reminders: boolean; productNews: boolean } }) {
@@ -16,18 +17,12 @@ export function EmailSettings({ initial }: { initial: { reminders: boolean; prod
     setSaved(false);
     startTransition(async () => { await saveEmailSettings(next.reminders, next.productNews); setSaved(true); });
   };
-  const row = "flex min-h-11 cursor-pointer items-start gap-3 rounded-xl border border-line p-3";
   return (
-    <Card className="flex flex-col gap-3">
-      <h2 className="font-bold">{t("emailSettings")}</h2>
-      <label className={row}>
-        <input type="checkbox" checked={value.reminders} onChange={(e) => toggle({ reminders: e.target.checked })} className="mt-0.5 size-5 accent-blue" />
-        <span className="flex flex-col"><span className="text-sm font-medium">{t("reminders")}</span><span className="text-xs text-muted">{t("remindersHint")}</span></span>
-      </label>
-      <label className={row}>
-        <input type="checkbox" checked={value.productNews} onChange={(e) => toggle({ productNews: e.target.checked })} className="mt-0.5 size-5 accent-blue" />
-        <span className="flex flex-col"><span className="text-sm font-medium">{t("productNews")}</span><span className="text-xs text-muted">{t("productNewsHint")}</span></span>
-      </label>
+    <Card className="flex flex-col gap-1">
+      <h2 className="mb-1 font-bold">{t("emailSettings")}</h2>
+      <Switch checked={value.reminders} onChange={(v) => toggle({ reminders: v })} label={t("reminders")} hint={t("remindersHint")} />
+      <Switch checked={value.productNews} onChange={(v) => toggle({ productNews: v })} label={t("productNews")} hint={t("productNewsHint")} />
+      <Switch checked disabled onChange={() => {}} label={t("billingEmails")} hint={t("billingEmailsHint")} />
       <p className="text-xs text-muted">{t("alwaysSent")}</p>
       <p role="status" className="text-sm text-good">{saved ? t("saved") : ""}</p>
     </Card>

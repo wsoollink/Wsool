@@ -217,7 +217,8 @@
     "sharePage": "Share this page",
     "linkCopied": "Link copied",
     "viewLicense": "View {name}",
-    "accountsOf": "{name}'s accounts"
+    "accountsOf": "{name}'s accounts",
+    "licenseVerified": "Verified license"
   },
   "EditPage": {
     "pageStatus": "Page status",
@@ -407,15 +408,28 @@
   },
   "ContactPage": {
     "intro": "Brands contact you from your page with one tap. Leave a field empty to hide it.",
-    "whatsapp": "WhatsApp number",
+    "whatsapp": "WhatsApp",
     "whatsappHint": "With the country code, e.g. <num>+966 50 123 4567</num>. A Saudi number starting with 05 gets <num>+966</num> added automatically.",
     "whatsappInvalid": "That number isn't valid. Include the country code.",
     "opensNewTab": "(opens in a new tab)",
-    "email": "Contact email",
-    "emailHint": "Can be different from your Wsool account email.",
+    "email": "Email",
+    "emailHint": "Tapping it opens a new email to you.",
     "emailInvalid": "Enter a valid email.",
     "useAccountEmail": "Use my account email:",
-    "noneWarning": "No contact method. Brands won't be able to reach you from your page."
+    "noneWarning": "No contact method. Brands won't be able to reach you from your page.",
+    "whatsappNumber": "WhatsApp number",
+    "countryCode": "Country code",
+    "showWhatsapp": "Show WhatsApp on your page",
+    "showEmail": "Show email on your page",
+    "stateShown": "Shown on your page",
+    "stateHidden": "Hidden from your page",
+    "stateEmpty": "Not added yet",
+    "shownAs": "Shows on your page as: <n></n>",
+    "whatsappEmptyHint": "Type your number without the leading zero",
+    "tapsThisMonth": "Taps this month",
+    "tryLink": "Try the link",
+    "privacyNote": "Your number and email are visible to anyone who opens your page. For privacy, use a work number and email.",
+    "fixErrors": "Fix the fields marked in red."
   },
   "AppearancePage": {
     "template": "Template",
@@ -522,12 +536,41 @@
       "unclear": "The screenshot is unclear or cropped.",
       "edited": "The screenshot looks edited.",
       "not_owner": "We couldn't confirm the account is yours.",
-      "other_account": "The screenshot shows a different account."
+      "other_account": "The screenshot shows a different account.",
+      "license_unclear": "The license file isn't clear.",
+      "license_mismatch": "The name or number in the file doesn't match what you entered.",
+      "license_expired": "The license has expired.",
+      "license_edited": "The file looks edited."
     },
     "sendScreenshot": "Upload screenshot",
     "replaceScreenshot": "Replace screenshot",
     "renew": "Renew verification",
-    "cancelRequest": "Cancel request"
+    "cancelRequest": "Cancel request",
+    "summaryTitle": "Your verified accounts",
+    "summaryHint": "Verified accounts get a ✓ badge on your page",
+    "accountsTitle": "Accounts",
+    "licensesTitle": "Licenses & certificates",
+    "noLicenses": "You haven't added any licenses yet.",
+    "addLicense": "Add a license",
+    "verifyAccount": "Verify account",
+    "sendAgain": "Send again",
+    "dropTitle": "Upload a screenshot",
+    "dropHint": "Of your account page, showing the account name and follower count",
+    "dropChange": "Tap to pick another image",
+    "submit": "Send for verification",
+    "verifyLicense": "Verify license",
+    "uploadFile": "Upload the file",
+    "licenseStatus": {
+      "in_review": "In review",
+      "verified": "Verified",
+      "rejected": "Rejected"
+    },
+    "step1Title": "Upload a screenshot",
+    "step1Body": "Of your account page, with the account name and follower count clearly visible.",
+    "step2Title": "We review it within 48 hours",
+    "step2Body": "We check the account is yours and the number matches your page.",
+    "step3Title": "The badge shows on your page",
+    "step3Body": "Verification lasts 90 days; we remind you a week before it ends."
   },
   "Admin": {
     "panel": "Admin",
@@ -585,7 +628,11 @@
         "unclear": "Unclear or cropped",
         "edited": "Looks edited",
         "not_owner": "Can't confirm ownership",
-        "other_account": "Different account"
+        "other_account": "Different account",
+        "license_unclear": "File not clear",
+        "license_mismatch": "Name or number doesn't match",
+        "license_expired": "License expired",
+        "license_edited": "File looks edited"
       },
       "errors": {
         "failed": "Something went wrong. Try again.",
@@ -599,7 +646,11 @@
         "when": "When",
         "approved": "Approved",
         "rejected": "Rejected"
-      }
+      },
+      "tabLicenses": "Licenses",
+      "openLicense": "Open license file",
+      "licenseCheck": "Name and number in the file match, and the file is clear and valid",
+      "approveLicense": "Approve license"
     },
     "users": {
       "search": "Search by username or email",
@@ -670,6 +721,10 @@
         },
         "newsletter": {
           "export": "Downloaded the newsletter list"
+        },
+        "license": {
+          "approve": "Approved a license",
+          "reject": "Rejected a license"
         }
       }
     },
@@ -1035,6 +1090,18 @@
       "body": "You were added to the Wsool team as \"{role}\".\nSign in with your email ({email}), then open wsool.link/admin.",
       "cta": "Sign in",
       "footer": "You got this email because the Wsool owner added you to the team. If this means nothing to you, ignore it."
+    },
+    "license_verified": {
+      "subject": "{license} is verified",
+      "title": "Your license is verified",
+      "body": "We reviewed your {license} file and verified it. A check mark now shows next to it on your page.",
+      "cta": "See verification"
+    },
+    "license_rejected": {
+      "subject": "We couldn't verify {license}",
+      "title": "License verification rejected",
+      "body": "We reviewed your {license} file and couldn't verify it: {reason}\nUpdate the file in Edit page and send it again.",
+      "cta": "Update the file"
     }
   },
   "Notifications": {
@@ -1046,7 +1113,21 @@
     "productNews": "Wsool news and tips",
     "productNewsHint": "New features and tips for working with brands, at most once a month.",
     "alwaysSent": "Account, billing and verification emails are always sent.",
-    "saved": "✓ Saved."
+    "saved": "✓ Saved.",
+    "filter": "Filter notifications",
+    "all": "All",
+    "unread": "Unread",
+    "markAll": "Mark all as read",
+    "markRead": "Mark as read",
+    "noUnread": "No unread notifications",
+    "allGood": "All good 👌",
+    "groups": {
+      "today": "Today",
+      "week": "This week",
+      "older": "Older"
+    },
+    "billingEmails": "Subscription & billing",
+    "billingEmailsHint": "Invoices and failed payments; these can't be turned off"
   },
   "Finance": {
     "brand": "Wsool",

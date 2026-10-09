@@ -18,6 +18,15 @@ export const WHATSAPP_PATTERN = /^[1-9]\d{7,14}$/;
 export const contactSchema = z.object({
   whatsapp: z.string().max(40).transform(normalizeWhatsapp).pipe(z.union([z.literal(""), z.string().regex(WHATSAPP_PATTERN)])),
   email: z.string().trim().toLowerCase().max(254).pipe(z.union([z.literal(""), z.email()])),
+  whatsappVisible: z.boolean().default(true),
+  emailVisible: z.boolean().default(true),
 });
+
+/** Country codes offered next to the WhatsApp number (design). */
+export const COUNTRY_CODES = [
+  { code: "966", flag: "🇸🇦" }, { code: "971", flag: "🇦🇪" }, { code: "965", flag: "🇰🇼" }, { code: "974", flag: "🇶🇦" },
+  { code: "973", flag: "🇧🇭" }, { code: "968", flag: "🇴🇲" }, { code: "20", flag: "🇪🇬" }, { code: "962", flag: "🇯🇴" },
+  { code: "1", flag: "🇺🇸" }, { code: "44", flag: "🇬🇧" },
+] as const;
 
 export type ContactInput = z.input<typeof contactSchema>;

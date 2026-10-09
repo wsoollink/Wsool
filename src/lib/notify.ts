@@ -29,6 +29,8 @@ export const NOTIFICATIONS = {
   verification_rejected: { href: "/dashboard/verification", reminder: false },
   verification_expiring: { href: "/dashboard/verification", reminder: true },
   verification_expired: { href: "/dashboard/verification", reminder: false },
+  license_verified: { href: "/dashboard/verification", reminder: false },
+  license_rejected: { href: "/dashboard/verification", reminder: false },
   deletion_scheduled: { href: "/dashboard/subscription", reminder: false },
 } as const;
 export type NotificationType = keyof typeof NOTIFICATIONS;
@@ -62,7 +64,7 @@ export function notificationText(type: string, data: unknown, lang: Locale) {
   if (!(type in NOTIFICATIONS)) return null;
   const values = present((data ?? {}) as Data, lang);
   const key = type as NotificationType;
-  return { title: t(`${key}.title`, values), body: t(`${key}.body`, values), href: NOTIFICATIONS[key].href };
+  return { title: t(`${key}.title`, values), body: t(`${key}.body`, values), href: NOTIFICATIONS[key].href, cta: t.has(`${key}.cta`) ? t(`${key}.cta`) : null };
 }
 
 function emailFor(type: NotificationType, data: Data, lang: Locale, footer: string) {

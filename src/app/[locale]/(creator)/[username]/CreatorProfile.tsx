@@ -136,6 +136,11 @@ export async function CreatorProfile({ page, lang }: Props) {
                     <li key={license.id} className="flex flex-wrap items-center justify-center gap-1.5 text-sm text-[var(--page-muted)]">
                       <span className="text-[var(--page-text)]"><Icon d={SHIELD} /></span>
                       <span className="font-medium text-[var(--page-text)]">{licenseName}</span>
+                      {license.verified && (
+                        <span role="img" aria-label={t("licenseVerified")} className="inline-flex size-4 items-center justify-center rounded-full bg-[var(--page-accent)] text-[var(--page-on-accent)]">
+                          <Check size={10} />
+                        </span>
+                      )}
                       {(license.number || license.fileUrl) && <span aria-hidden="true">·</span>}
                       {license.fileUrl ? (
                         <LicenseFile url={license.fileUrl} name={licenseName} number={license.number ?? ""} />

@@ -16,8 +16,8 @@ export async function saveContact(input: ContactInput): Promise<ContactResult> {
     const fields = new Set(parsed.error.issues.map((i) => i.path[0]));
     return { errors: { whatsapp: fields.has("whatsapp"), email: fields.has("email") } };
   }
-  const { whatsapp, email } = parsed.data;
-  await db.page.update({ where: { id: page.id }, data: { whatsapp: whatsapp || null, contactEmail: email || null } });
+  const { whatsapp, email, whatsappVisible, emailVisible } = parsed.data;
+  await db.page.update({ where: { id: page.id }, data: { whatsapp: whatsapp || null, contactEmail: email || null, whatsappVisible, emailVisible } });
   updateTag(pageCacheTag(page.username));
   return { ok: true, whatsapp, email };
 }

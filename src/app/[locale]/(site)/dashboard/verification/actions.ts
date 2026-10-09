@@ -49,3 +49,23 @@ export async function cancelVerification(accountId: string): Promise<VerifyResul
   updateTag(pageCacheTag(page.username));
   return { ok: true };
 }
+
+/** Sends one of the creator's own licenses (with a file) for staff review. */
+export async function submitLicense(licenseId: string): Promise<VerifyResult> {
+  const { page } = await requireCreator();
+  const { count } = await db.license.updateMany({
+    where: { id: String(licenseId), pageId: page.id, fileUrl: { not: null }, verificationStatus: { in: ["none", "rejected"] } },
+    data: { verificationStatus: "in_review", submittedAt: new Date(), rejectReason: null },
+  });
+  return count === 1 ? { ok: true } : { error: "failed" };
+}
+
+/** Withdraws a license review request. */
+export async function cancelLicense(licenseId: string): Promise<VerifyResult> {
+  const { page } = await requireCreator();
+  const { count } = await db.license.updateMany({
+    where: { id: String(licenseId), pageId: page.id, verificationStatus: "in_review" },
+    data: { verificationStatus: "none", submittedAt: null },
+  });
+  return count === 1 ? { ok: true } : { error: "failed" };
+}

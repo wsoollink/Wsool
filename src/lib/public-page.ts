@@ -30,7 +30,7 @@ export async function getPublicPage(username: string) {
     select: {
       id: true, username: true, primaryLang: true, enEnabled: true, template: true,
       customColors: true, accent: true, numberFont: true, hideBranding: true,
-      isPublished: true, deletedAt: true, photoUrl: true, whatsapp: true, contactEmail: true,
+      isPublished: true, deletedAt: true, photoUrl: true, whatsapp: true, contactEmail: true, whatsappVisible: true, emailVisible: true,
       user: { select: { suspendedAt: true, subscription: { select: { plan: true, status: true, trialEndsAt: true } } } },
       translations: true,
       tags: { orderBy: { sort: "asc" } },
@@ -82,11 +82,12 @@ export async function getPublicPage(username: string) {
     // Hiding the footer is a Pro feature unless the Free limits allow it.
     showBranding: !(page.hideBranding && (isPro || FREE_LIMITS.hideBranding)),
     photoUrl: page.photoUrl,
-    whatsapp: page.whatsapp,
-    contactEmail: page.contactEmail,
+    whatsapp: page.whatsappVisible ? page.whatsapp : null,
+    contactEmail: page.emailVisible ? page.contactEmail : null,
     translations: page.translations,
     tags: page.tags,
-    licenses: page.licenses,
+    // The license check mark is a Pro feature like the account badge.
+    licenses: page.licenses.map((l) => ({ id: l.id, name: l.name, nameEn: l.nameEn, number: l.number, fileUrl: l.fileUrl, verified: isPro && l.verificationStatus === "verified" })),
     accounts: page.socialAccounts.map((a) => {
       const until = a.verifiedUntil?.getTime() ?? 0;
       const verified = a.verificationStatus === "verified" && until > now;

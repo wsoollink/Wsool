@@ -25,3 +25,6 @@ export function verificationDisplay(status: string, verifiedUntil: Date | null, 
   if (left <= 0) return "expired";
   return left <= EXPIRY_WARNING_DAYS * 86_400_000 ? "expiring" : "verified";
 }
+
+/** Preset reasons for rejecting a license file. */
+export const LICENSE_REJECT_REASONS = ["license_unclear", "license_mismatch", "license_expired", "license_edited"] as const;

@@ -10,6 +10,7 @@ import { can, requireAdmin } from "@/lib/admin";
 import { db } from "@/lib/db";
 import { formatNumber } from "@/lib/format";
 import { signedVerificationUrl } from "@/lib/storage";
+import { LicenseReviewCard } from "./LicenseReviewCard";
 import { ReviewCard } from "./ReviewCard";
 
 const PAGE_SIZE = 20;
@@ -23,10 +24,30 @@ function age(from: Date, now: number, lang: Locale) {
   return hours < 48 ? rtf.format(-hours, "hour") : rtf.format(-Math.floor(hours / 24), "day");
 }
 
-async function Queue({ lang, tab }: { lang: Locale; tab: "pending" | "decided" }) {
+async function Queue({ lang, tab }: { lang: Locale; tab: Tab }) {
   const admin = await requireAdmin("verifications.view");
   const t = await getTranslations("Admin.verifications");
   const now = new Date().getTime();
+
+  if (tab === "licenses") {
+    const licenses = await db.license.findMany({
+      where: { verificationStatus: "in_review", fileUrl: { not: null } },
+      orderBy: { submittedAt: "asc" },
+      take: PAGE_SIZE,
+      include: { page: { select: { username: true } } },
+    });
+    if (licenses.length === 0) return <Card><p className="text-sm text-muted">{t("empty")}</p></Card>;
+    return (
+      <div className="flex flex-col gap-3">
+        {licenses.map((l) => (
+          <LicenseReviewCard
+            key={l.id} canDecide={can(admin, "verifications.decide")}
+            item={{ id: l.id, name: l.name, number: l.number, username: l.page.username, fileUrl: l.fileUrl!, waiting: l.submittedAt ? age(l.submittedAt, now, lang) : "" }}
+          />
+        ))}
+      </div>
+    );
+  }
 
   if (tab === "decided") {
     const decided = await db.verificationRequest.findMany({
@@ -108,7 +129,7 @@ export default async function VerificationsPage({ params, searchParams }: PagePr
     <div className="flex flex-col gap-4">
       <h1 className="text-2xl font-bold">{nav("verifications")}</h1>
       <Suspense fallback={null}>
-        <Tabs searchParams={searchParams} labels={{ pending: t("tabPending"), decided: t("tabDecided") }} />
+        <Tabs searchParams={searchParams} labels={{ pending: t("tabPending"), licenses: t("tabLicenses"), decided: t("tabDecided") }} />
       </Suspense>
       <Suspense fallback={null}>
         <QueueFromParams lang={locale} searchParams={searchParams} />
@@ -117,17 +138,20 @@ export default async function VerificationsPage({ params, searchParams }: PagePr
   );
 }
 
-async function tabOf(searchParams: Promise<Record<string, string | string[] | undefined>>) {
-  return (await searchParams).tab === "decided" ? "decided" : "pending";
+type Tab = "pending" | "licenses" | "decided";
+
+async function tabOf(searchParams: Promise<Record<string, string | string[] | undefined>>): Promise<Tab> {
+  const tab = (await searchParams).tab;
+  return tab === "decided" || tab === "licenses" ? tab : "pending";
 }
 
-async function Tabs({ searchParams, labels }: { searchParams: Promise<Record<string, string | string[] | undefined>>; labels: Record<"pending" | "decided", string> }) {
+async function Tabs({ searchParams, labels }: { searchParams: Promise<Record<string, string | string[] | undefined>>; labels: Record<Tab, string> }) {
   const tab = await tabOf(searchParams);
   return (
     <div role="tablist" className="flex gap-2">
-      {(["pending", "decided"] as const).map((k) => (
+      {(["pending", "licenses", "decided"] as const).map((k) => (
         <Link
-          key={k} role="tab" aria-selected={tab === k} href={k === "pending" ? "/admin/verifications" : "/admin/verifications?tab=decided"}
+          key={k} role="tab" aria-selected={tab === k} href={k === "pending" ? "/admin/verifications" : `/admin/verifications?tab=${k}`}
           className={`min-h-11 content-center rounded-full px-4 text-sm font-medium ${tab === k ? "bg-navy text-white" : "border border-line bg-card"}`}
         >
           {labels[k]}

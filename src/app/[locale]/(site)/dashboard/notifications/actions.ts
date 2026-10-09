@@ -17,3 +17,10 @@ export async function saveEmailSettings(reminders: boolean, productNews: boolean
   await db.notificationSettings.upsert({ where: { userId: user.id }, create: { userId: user.id, ...data }, update: data });
   return { ok: true };
 }
+
+/** Marks one of the signed-in creator's notifications as read. */
+export async function markRead(id: string) {
+  const { user } = await requireCreator();
+  await db.notification.updateMany({ where: { id: String(id), userId: user.id, readAt: null }, data: { readAt: new Date() } });
+  return { ok: true };
+}

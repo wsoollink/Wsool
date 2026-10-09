@@ -103,7 +103,10 @@ export async function saveLicenses(items: LicenseInput[]): Promise<SaveState> {
   const parsed = licensesSchema.safeParse(items);
   if (!parsed.success) return { error: "failed" };
 
-  const current = await db.license.findMany({ where: { pageId: page.id }, select: { fileUrl: true } });
+  const current = await db.license.findMany({
+    where: { pageId: page.id },
+    select: { name: true, number: true, fileUrl: true, verificationStatus: true, rejectReason: true, submittedAt: true, reviewedAt: true, reviewedBy: true },
+  });
   const currentUrls = new Set(current.map((l) => l.fileUrl).filter(Boolean));
 
   const rows = [];
@@ -116,7 +119,12 @@ export async function saveLicenses(items: LicenseInput[]): Promise<SaveState> {
       if (!currentUrls.has(item.fileUrl)) return { error: "failed" };
       fileUrl = item.fileUrl;
     }
-    rows.push({ pageId: page.id, name: item.name, nameEn: item.nameEn || null, number: item.number, fileUrl, sort });
+    // An unchanged license (same name, number and file) keeps its verification.
+    const same = current.find((c) => c.name === item.name && c.number === item.number && c.fileUrl === fileUrl);
+    const review = same
+      ? { verificationStatus: same.verificationStatus, rejectReason: same.rejectReason, submittedAt: same.submittedAt, reviewedAt: same.reviewedAt, reviewedBy: same.reviewedBy }
+      : {};
+    rows.push({ pageId: page.id, name: item.name, nameEn: item.nameEn || null, number: item.number, fileUrl, sort, ...review });
   }
 
   await db.$transaction([db.license.deleteMany({ where: { pageId: page.id } }), db.license.createMany({ data: rows })]);

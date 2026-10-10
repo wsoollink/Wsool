@@ -10,15 +10,15 @@ export async function GET() {
   const rows = await db.invoice.findMany({
     where: { status: { in: ["paid", "refunded", "failed"] } },
     orderBy: { createdAt: "asc" },
-    select: { number: true, kind: true, status: true, cycle: true, currency: true, amount: true, vatAmount: true, paidAt: true, refundedAt: true, createdAt: true, subscription: { select: { user: { select: { page: { select: { username: true } } } } } } },
+    select: { number: true, kind: true, status: true, cycle: true, currency: true, amount: true, vatAmount: true, discountAmount: true, paidAt: true, refundedAt: true, createdAt: true, subscription: { select: { user: { select: { page: { select: { username: true } } } } } } },
   });
   await audit(admin, "invoice.export", undefined, { count: rows.length });
   return csvResponse(
     "invoices",
-    "invoice,username,kind,status,cycle,currency,amount,vat,paid_at,refunded_at,created_at",
+    "invoice,username,kind,status,cycle,currency,amount,vat,discount,paid_at,refunded_at,created_at",
     rows.map((r) => [
       r.number ? invoiceLabel(r.number) : "", r.subscription.user.page?.username ?? "", r.kind, r.status, r.cycle, r.currency,
-      r.amount.toFixed(2), r.vatAmount.toFixed(2), r.paidAt?.toISOString() ?? "", r.refundedAt?.toISOString() ?? "", r.createdAt.toISOString(),
+      r.amount.toFixed(2), r.vatAmount.toFixed(2), r.discountAmount.toFixed(2), r.paidAt?.toISOString() ?? "", r.refundedAt?.toISOString() ?? "", r.createdAt.toISOString(),
     ]),
   );
 }

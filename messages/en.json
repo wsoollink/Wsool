@@ -617,7 +617,8 @@
       "team": "Team & permissions",
       "audit": "Activity log",
       "pendingBadge": "waiting for review",
-      "newsletter": "Newsletter"
+      "newsletter": "Newsletter",
+      "discounts": "Discount codes"
     },
     "overview": {
       "users": "Users",
@@ -866,6 +867,9 @@
         "refunds": "Issue refunds",
         "newsletter": {
           "send": "Writes and sends the newsletter"
+        },
+        "discounts": {
+          "manage": "Creates and revokes discount codes"
         }
       },
       "invite": "Add",
@@ -968,7 +972,8 @@
       "finance": "Revenue, expenses and net profit",
       "team": "Add staff and choose what they can do",
       "audit": "Every action the team took, who and when",
-      "newsletter": "Write an issue and send it to confirmed subscribers"
+      "newsletter": "Write an issue and send it to confirmed subscribers",
+      "discounts": "First-payment discounts for people you choose"
     },
     "sentence": {
       "verification": {
@@ -1009,6 +1014,10 @@
         "export": "Downloaded the newsletter list ({count})",
         "send": "Sent the newsletter “{subject}” to {count} subscribers",
         "retry": "Resent the newsletter to {count} failed"
+      },
+      "discount": {
+        "create": "Created {count} discount codes at {percent}%",
+        "revoke": "Revoked discount code {code}"
       }
     },
     "newsletter": {
@@ -1068,6 +1077,55 @@
         "failed": "Something went wrong. Try again.",
         "not_sending": "Sending is stopped."
       }
+    },
+    "discounts": {
+      "filters": "Filter codes",
+      "filter": {
+        "all": "All",
+        "unused": "Unused",
+        "used": "Used",
+        "expired": "Expired",
+        "revoked": "Revoked"
+      },
+      "empty": "No codes here.",
+      "table": {
+        "code": "Code",
+        "percent": "Discount",
+        "for": "For",
+        "created": "Created",
+        "expires": "Expires",
+        "status": "Status"
+      },
+      "status": {
+        "unused": "Unused",
+        "used": "Used",
+        "expired": "Expired",
+        "revoked": "Revoked"
+      },
+      "createTitle": "Create discount codes",
+      "createHint": "Each code works once, on the first payment (monthly or yearly), and is valid for {days} days.",
+      "percent": "Discount",
+      "other": "Other",
+      "percentHint": "From {min}% to {max}%. For free time, use “Extend trial” on the user's page.",
+      "people": "Who are they for? (one code per row)",
+      "noteN": "Name or note {n}",
+      "emailN": "Email {n}",
+      "notePh": "Name or note (e.g. Ahmed, Ramadan campaign)",
+      "emailPh": "Email (optional)",
+      "emailHint": "With an email, only that account can use the code.",
+      "addPerson": "Add person",
+      "removeRow": "Remove row {n}",
+      "create": "Create {n, plural, one {1 code} other {# codes}}",
+      "creating": "Creating…",
+      "created": "✓ Created {n, plural, one {1 code} other {# codes}}. Copy them and send them out.",
+      "copyAll": "Copy all",
+      "copyCode": "Copy {code}",
+      "confirmRevoke": "Revoke {code}? Nobody can use it after that.",
+      "revoke": "Revoke",
+      "errors": {
+        "invalid": "Check the percent and the emails.",
+        "failed": "Something went wrong. Try again."
+      }
     }
   },
   "Billing": {
@@ -1126,7 +1184,11 @@
     "errors": {
       "disabled": "Payments aren't available yet.",
       "already_active": "Your plan is already active.",
-      "failed": "Something went wrong. Try again."
+      "failed": "Something went wrong. Try again.",
+      "invalid": "That code isn't valid.",
+      "expired": "That code has expired.",
+      "used": "That code was already used.",
+      "not_yours": "This code belongs to another account."
     },
     "delete": {
       "title": "Delete account",
@@ -1165,7 +1227,8 @@
       "subtotal": "Subtotal before VAT",
       "vat": "VAT 15%",
       "total": "Total incl. VAT",
-      "refunded": "This invoice was refunded."
+      "refunded": "This invoice was refunded.",
+      "discount": "Discount (promo code)"
     },
     "mock": {
       "badge": "Test payment",
@@ -1214,7 +1277,20 @@
       "pdf": "PDF media kit",
       "branding": "Hide “Made with ❤️ Wsool”"
     },
-    "viewInvoice": "View invoice from {date}"
+    "viewInvoice": "View invoice from {date}",
+    "haveCode": "Have a discount code?",
+    "discountCode": "Discount code",
+    "apply": "Apply",
+    "applying": "Checking…",
+    "removeCode": "Remove discount code",
+    "discountApplied": "{percent}% off",
+    "discountFirstOnly": "Off your first payment; renewals are at the regular price.",
+    "codeErrors": {
+      "invalid": "That code isn't valid.",
+      "expired": "That code has expired.",
+      "used": "That code was already used.",
+      "not_yours": "This code belongs to another account."
+    }
   },
   "Analytics": {
     "range": "Period",

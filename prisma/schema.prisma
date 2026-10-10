@@ -549,6 +549,9 @@ model Invoice {
   provider          String        @db.VarChar(20)
   providerPaymentId String?       @unique @map("provider_payment_id")
   failureReason     String?       @map("failure_reason") @db.VarChar(200)
+  /// Discount code used on this (first) payment; amount is already after the discount.
+  discountCodeId    String?       @map("discount_code_id") @db.Uuid
+  discountAmount    Decimal       @default(0) @map("discount_amount") @db.Decimal(10, 2)
   paidAt            DateTime?     @map("paid_at") @db.Timestamptz
   refundedAt        DateTime?     @map("refunded_at") @db.Timestamptz
   createdAt         DateTime      @default(now()) @map("created_at") @db.Timestamptz
@@ -787,4 +790,27 @@ model CancellationFeedback {
 
   @@index([createdAt])
   @@map("cancellation_feedback")
+}
+
+/// One-time discount code made by staff: a percentage off the first payment
+/// (monthly or yearly), valid for 30 days, optionally only for one email.
+model DiscountCode {
+  id        String    @id @default(uuid()) @db.Uuid
+  /// "WSL-7KQ2M9", stored uppercase.
+  code      String    @unique @db.VarChar(20)
+  percent   Int
+  /// Only this account email can use it (lowercase); null = whoever enters it first.
+  email     String?   @db.VarChar(254)
+  /// Who it's for (name, campaign…), staff only.
+  note      String    @default("") @db.VarChar(120)
+  createdBy String    @map("created_by") @db.Uuid
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  expiresAt DateTime  @map("expires_at") @db.Timestamptz
+  revokedAt DateTime? @map("revoked_at") @db.Timestamptz
+  usedAt    DateTime? @map("used_at") @db.Timestamptz
+  usedBy    String?   @map("used_by") @db.Uuid
+  invoiceId String?   @unique @map("invoice_id") @db.Uuid
+
+  @@index([createdAt])
+  @@map("discount_codes")
 }

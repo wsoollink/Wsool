@@ -2,6 +2,7 @@ import "server-only";
 import { addCycle, PRICES, RENEWAL_RETRY_DAYS, vatPart } from "@/config/plans";
 import type { BillingCycle, Currency } from "@/generated/prisma/enums";
 import { db } from "@/lib/db";
+import { checkDiscountCode, discountedPrice, type CodeError } from "@/lib/discounts";
 import { paymentProvider, type Payment } from "@/lib/payments";
 import { notify } from "@/lib/notify";
 import { expirePage } from "@/lib/public-page";
@@ -23,24 +24,29 @@ function periodStart(sub: { status: string; trialEndsAt: Date | null; currentPer
   return start;
 }
 
-export type CheckoutError = "disabled" | "already_active" | "failed";
+export type CheckoutError = "disabled" | "already_active" | "failed" | CodeError;
 
 /**
  * Starts a Pro checkout for the signed-in user: creates a pending invoice and
  * returns the payment page URL. Prices come from config, never the browser.
  */
-export async function startCheckout(user: { id: string; email: string }, cycle: BillingCycle, currency: Currency): Promise<{ url: string } | { error: CheckoutError }> {
+export async function startCheckout(user: { id: string; email: string }, cycle: BillingCycle, currency: Currency, discountCode?: string): Promise<{ url: string } | { error: CheckoutError }> {
   const provider = paymentProvider();
   if (!provider) return { error: "disabled" };
   const sub = await db.subscription.findUnique({ where: { userId: user.id } });
   if (!sub) return { error: "failed" };
   if (sub.status === "active" && !sub.cancelAtPeriodEnd) return { error: "already_active" };
 
-  const amount = PRICES[currency][cycle];
+  // A discount code (first payment only) is checked again here, whatever the browser showed.
+  const discount = discountCode ? await checkDiscountCode(discountCode, user) : null;
+  if (discount && "error" in discount) return { error: discount.error };
+  const full = PRICES[currency][cycle];
+  const amount = discount ? discountedPrice(full, discount.percent) : full;
   const invoice = await db.invoice.create({
     data: {
       userId: user.id, subscriptionId: sub.id, kind: "checkout", cycle, currency,
       amount, vatAmount: vatPart(amount), provider: provider.name,
+      ...(discount && { discountCodeId: discount.id, discountAmount: Math.round((full - amount) * 100) / 100 }),
     },
   });
   try {
@@ -83,6 +89,13 @@ export async function settleCheckout(invoiceId: string, payment: Payment): Promi
       data: { status: "paid", number: Number(nextval), providerPaymentId: payment.id, paidAt: now, periodStart: start, periodEnd: end, failureReason: null },
     });
     if (count !== 1) return false;
+    // The code is spent once its payment goes through (a code used meanwhile stays with its first invoice).
+    if (invoice.discountCodeId) {
+      await tx.discountCode.updateMany({
+        where: { id: invoice.discountCodeId, usedAt: null },
+        data: { usedAt: now, usedBy: invoice.userId, invoiceId: invoice.id },
+      });
+    }
     await tx.subscription.update({
       where: { id: invoice.subscriptionId },
       data: {

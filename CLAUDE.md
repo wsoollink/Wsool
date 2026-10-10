@@ -576,3 +576,11 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
   `FREE_LIMITS.links` / `FREE_LIMITS.services` (3 each). Services print in the PDF after the rates.
   Taps are counted as click kinds `link` / `service` with `contact_clicks.target_id` (checked to belong
   to the page) and shown by name in Analytics. Shared upload helpers: `src/lib/page-files.ts`.
+- **Discount codes** (owner, Oct 2026): admin `admin/discounts/` (permission `discounts.manage`, in the
+  money group): one code per row (name/note + optional email lock), percent 5-90 (`DISCOUNT_MIN/MAX`;
+  free time = "extend trial"), valid `DISCOUNT_DAYS` = 30, statuses unused / used (by whom, when) /
+  expired / revoked; create and revoke are audited. Table `discount_codes` (server only). Creators enter a
+  code on the Subscription page ("Have a discount code?", `applyDiscount` checks it for their email);
+  `startCheckout` re-checks it and charges `discountedPrice()` on the **first payment only** (renewals use
+  `PRICES`); the invoice stores `discount_code_id` / `discount_amount`, and `settleCheckout` marks the code
+  used inside the paid transaction. Invoices show the discount line before VAT. Logic: `src/lib/discounts.ts`.

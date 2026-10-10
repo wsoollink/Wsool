@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { vatPart } from "@/config/plans";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Card } from "@/components/ui/Card";
@@ -25,6 +26,10 @@ async function Invoice({ params, lang }: { params: Promise<{ id: string }>; lang
   const date = new Intl.DateTimeFormat(toIntlLocale(lang), { dateStyle: "long" });
   const money = (v: number) => formatPrice(v, inv.currency, lang);
   const total = Number(inv.amount), vat = Number(inv.vatAmount);
+  // Prices include VAT; a discount is shown before VAT: full line, minus the discount, = subtotal.
+  const discount = Number(inv.discountAmount);
+  const subtotal = Math.round((total - vat) * 100) / 100;
+  const lineEx = discount ? Math.round((total + discount - vatPart(total + discount)) * 100) / 100 : subtotal;
 
   return (
     <Card className="flex flex-col gap-6 print:border-0 print:shadow-none">
@@ -48,8 +53,9 @@ async function Invoice({ params, lang }: { params: Promise<{ id: string }>; lang
       <table className="w-full text-sm">
         <thead><tr className="border-b border-line text-xs text-muted"><th scope="col" className="py-2 text-start font-medium">{t("item")}</th><th scope="col" className="py-2 text-end font-medium">{t("amount")}</th></tr></thead>
         <tbody>
-          <tr className="border-b border-line"><td className="py-3">{t("line", { cycle: t(inv.cycle) })}</td><td className="py-3 text-end">{money(total - vat)}</td></tr>
-          <tr><td className="py-2 text-muted">{t("subtotal")}</td><td className="py-2 text-end">{money(total - vat)}</td></tr>
+          <tr className="border-b border-line"><td className="py-3">{t("line", { cycle: t(inv.cycle) })}</td><td className="py-3 text-end">{money(lineEx)}</td></tr>
+          {discount > 0 && <tr className="border-b border-line"><td className="py-3">{t("discount")}</td><td className="py-3 text-end text-good">−{money(Math.round((lineEx - subtotal) * 100) / 100)}</td></tr>}
+          <tr><td className="py-2 text-muted">{t("subtotal")}</td><td className="py-2 text-end">{money(subtotal)}</td></tr>
           <tr><td className="py-2 text-muted">{t("vat")}</td><td className="py-2 text-end">{money(vat)}</td></tr>
           <tr className="border-t border-line font-bold"><td className="py-3">{t("total")}</td><td className="py-3 text-end">{money(total)}</td></tr>
         </tbody>

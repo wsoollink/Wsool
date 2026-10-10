@@ -42,7 +42,7 @@ async function Editor() {
       <PagePreview username={page.username} langs={langs} />
     <div className="flex flex-col gap-4 lg:col-start-1 lg:row-start-1">
       <PublishCard username={page.username} published={page.isPublished} />
-      <PhotoCard photoUrl={page.photoUrl} />
+      <PhotoCard photoUrl={page.photoUrl} shape={page.photoShape} />
       <LogoCard logoUrl={page.logoUrl} />
       <ProfileForm primaryLang={page.primaryLang as Locale} enEnabled={page.enEnabled} texts={texts} />
       <CategoriesCard categories={categories} initial={picked.map((p) => p.categoryId)} />

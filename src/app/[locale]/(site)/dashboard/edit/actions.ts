@@ -79,6 +79,18 @@ export async function savePhoto(path: string | null): Promise<SaveState & { url?
   return { ok: true, url };
 }
 
+const photoShape = z.enum(["full", "circle"]);
+
+/** How the photo shows on the page: full (square fading down) or circle. */
+export async function savePhotoShape(shape: "full" | "circle"): Promise<SaveState> {
+  const { page } = await requireCreator();
+  const parsed = photoShape.safeParse(shape);
+  if (!parsed.success) return { error: "failed" };
+  await db.page.update({ where: { id: page.id }, data: { photoShape: parsed.data } });
+  updateTag(pageCacheTag(page.username));
+  return { ok: true };
+}
+
 /** The creator's own logo for the PDF media kit (fresh upload in their folder, or null to remove). */
 export async function saveLogo(path: string | null): Promise<SaveState & { url?: string | null }> {
   const { user, page } = await requireCreator();

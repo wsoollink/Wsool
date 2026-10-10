@@ -107,7 +107,7 @@ Desktop: left sticky sidebar with photo, info and contact; main column with the 
 **8 templates**: White, Black (glass), Sand, Pink, Black & Gold, Vivid, Green, **Custom**
 (creator picks 1–2 colors + light/dark; palette is derived automatically, with contrast guards).
 Templates are fixed: there is **no visitor light/dark toggle**.
-Creator can also pick an accent color and the photo shape (full = square fading into the page, or circle).
+Creator can also pick an accent color (Appearance) and the photo shape (Edit page photo card: full = square fading into the page, or circle).
 Big numbers always use the wide Black cut (the number-font choice was removed by the owner, Oct 2026).
 
 **Licenses**: a flexible list. Each item = free-text name (e.g. "رخصة موثوق") + number + optional
@@ -598,7 +598,8 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
   country/city are unified by `countryCode()` / `cityKey()` (`src/lib/places.ts`: Intl names ar/en + aliases).
   Users page has the same filters (`?cat=&country=&city=&platform=&size=`, `none` = not set) and an export:
   `/api/admin/users` (CSV, same filters, audited `creators.export`). Shared UI: `src/components/admin/CreatorFilters.tsx`.
-- **Owner batch (Oct 2026)**: `pages.photo_shape` (`full` | `circle`, Appearance; public hero, OG image and PDF follow it)
+- **Owner batch (Oct 2026)**: `pages.photo_shape` (`full` | `circle`, chosen in the Edit page photo card, `savePhotoShape`, saved on tap;
+  public hero, OG image, PDF and the Appearance preview follow it)
   replaced `number_font` (dropped). `pages.logo_url` = the creator's own logo (Edit page `LogoCard` → `saveLogo`, upload
   kind `logo`, shrunk to PNG so pdf-lib embeds it without sharp), drawn at the top of the PDF only.
   Edit page preview: `/<username>/preview?lang=` (owner only, fresh data via `getPreviewPage()`, works while hidden,

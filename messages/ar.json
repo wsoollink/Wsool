@@ -311,7 +311,12 @@
     "previewHint": "تتحدّث تلقائياً بعد كل حفظ. أنت بس تشوفها، حتى لو صفحتك مخفية.",
     "previewOpen": "معاينة صفحتي",
     "previewClose": "إغلاق المعاينة",
-    "previewReload": "تحديث المعاينة"
+    "previewReload": "تحديث المعاينة",
+    "photoShape": "شكل الصورة",
+    "shape": {
+      "full": "كاملة",
+      "circle": "دائرية"
+    }
   },
   "AccountsPage": {
     "accounts": "حساباتك",
@@ -539,13 +544,7 @@
     "hideBrandingPro": "يشيل سطر وصول من أسفل صفحتك. متاح في الخطة المدفوعة.",
     "preview": "معاينة",
     "closePreview": "إغلاق المعاينة",
-    "failed": "صار خطأ، جرّب مرة ثانية.",
-    "photoShape": "شكل الصورة",
-    "photoShapeHint": "كيف تطلع صورتك في أعلى صفحتك وفي ملف الـPDF.",
-    "shape": {
-      "full": "كاملة",
-      "circle": "دائرية"
-    }
+    "failed": "صار خطأ، جرّب مرة ثانية."
   },
   "Suspended": {
     "title": "حسابك موقوف",

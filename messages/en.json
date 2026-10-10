@@ -311,7 +311,12 @@
     "previewHint": "Updates after every save. Only you can see it, even while your page is hidden.",
     "previewOpen": "Preview my page",
     "previewClose": "Close preview",
-    "previewReload": "Reload preview"
+    "previewReload": "Reload preview",
+    "photoShape": "Photo shape",
+    "shape": {
+      "full": "Full",
+      "circle": "Circle"
+    }
   },
   "AccountsPage": {
     "accounts": "Your accounts",
@@ -539,13 +544,7 @@
     "hideBrandingPro": "Removes the Wsool line at the bottom of your page. Part of the paid plan.",
     "preview": "Preview",
     "closePreview": "Close preview",
-    "failed": "Something went wrong. Try again.",
-    "photoShape": "Photo shape",
-    "photoShapeHint": "How your photo shows at the top of your page and in the PDF.",
-    "shape": {
-      "full": "Full",
-      "circle": "Circle"
-    }
+    "failed": "Something went wrong. Try again."
   },
   "Suspended": {
     "title": "Your account is suspended",

@@ -10,7 +10,6 @@ export const appearanceSchema = z
     customColors: z.object({ colors: z.array(hex).min(1).max(2), mode: z.enum(["light", "dark"]) }).nullable(),
     /** null = the template's own accent; otherwise one of ACCENT_SWATCHES (stored as its light hex). */
     accent: hex.refine((v) => ACCENT_SWATCHES.some((s) => s.light === v), { message: "preset" }).nullable(),
-    photoShape: z.enum(["full", "circle"]),
     hideBranding: z.boolean(),
   })
   .refine((v) => v.template !== "custom" || v.customColors !== null, { path: ["customColors"] });

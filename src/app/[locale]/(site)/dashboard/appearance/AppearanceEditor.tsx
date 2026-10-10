@@ -133,30 +133,6 @@ export function AppearanceEditor({ initial, isPro, freeTemplates, preview }: { i
           </div>
         </Card>
 
-        <Card className="flex flex-col gap-3">
-          <div>
-            <h2 className="font-bold">{t("photoShape")}</h2>
-            <p className="text-xs text-muted">{t("photoShapeHint")}</p>
-          </div>
-          <div className="grid grid-cols-2 gap-2">
-            {(["full", "circle"] as const).map((f) => (
-              <button
-                key={f} type="button" aria-pressed={value.photoShape === f} onClick={() => set({ photoShape: f })}
-                className={`flex flex-col items-center gap-2 rounded-[14px] border bg-white/72 py-3 ${value.photoShape === f ? "border-blue ring-2 ring-blue/25" : "border-navy/8"}`}
-              >
-                {/* Small drawing of each layout: wide photo fading down, or a round photo. */}
-                <span aria-hidden="true" className="flex h-14 w-16 flex-col items-center overflow-hidden rounded-lg bg-navy/5">
-                  {f === "full"
-                    ? <span className="h-10 w-full bg-gradient-to-b from-blue/60 to-transparent" />
-                    : <span className="mt-2 size-8 rounded-full bg-blue/60" />}
-                  <span className="mt-1 h-1.5 w-8 rounded-full bg-navy/20" />
-                </span>
-                <span className="text-xs text-muted">{t(`shape.${f}`)}</span>
-              </button>
-            ))}
-          </div>
-        </Card>
-
         <Card>
           <Switch
             checked={value.hideBranding} disabled={!isPro && !value.hideBranding}

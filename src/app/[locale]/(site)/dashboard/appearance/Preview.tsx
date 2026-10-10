@@ -13,6 +13,8 @@ export type PreviewData = {
   name: string;
   specialty: string;
   photoUrl: string | null;
+  /** Chosen in Edit page (photo card); the preview draws it like the public page. */
+  photoShape: "full" | "circle";
   followers: number;
   accounts: { platform: Platform; followers: number }[];
   lang: Locale;
@@ -34,11 +36,23 @@ export function Preview({ value, data }: { value: AppearanceInput; data: Preview
         lang={data.lang} dir={data.lang === "ar" ? "rtl" : "ltr"} style={themeStyle(theme)}
         className={`overflow-hidden rounded-[24px] border border-line text-[var(--page-text)] shadow-card ${theme.glass ? "glass" : ""}`}
       >
-        <div className="flex flex-col items-center gap-2 px-4 pt-6 pb-4 text-center">
-          <div className={`size-20 overflow-hidden bg-[var(--page-surface)] ${value.photoShape === "circle" ? "rounded-full" : "rounded-[20px]"}`}>
-            {/* eslint-disable-next-line @next/next/no-img-element -- creator photo from storage */}
-            {data.photoUrl && <img src={data.photoUrl} alt="" className="size-full object-cover" />}
+        {data.photoShape === "circle" ? (
+          // Same as the public page: round photo centred above the name.
+          <div className="flex justify-center pt-6">
+            <div className="size-24 overflow-hidden rounded-full bg-[var(--page-soft)] shadow-md ring-4 ring-[var(--page-solid)]">
+              {/* eslint-disable-next-line @next/next/no-img-element -- creator photo from storage */}
+              {data.photoUrl ? <img src={data.photoUrl} alt="" className="size-full object-cover" /> : <span className="brand-gradient block size-full" />}
+            </div>
           </div>
+        ) : (
+          // Full: wide square photo fading into the page, the name over its bottom.
+          <div className="aspect-square w-full overflow-hidden">
+            {/* eslint-disable-next-line @next/next/no-img-element -- creator photo from storage */}
+            {data.photoUrl ? <img src={data.photoUrl} alt="" className="size-full object-cover [mask-image:linear-gradient(to_bottom,#000_45%,transparent_100%)]" />
+              : <span className="brand-gradient block size-full [mask-image:linear-gradient(to_bottom,#000_45%,transparent_100%)]" />}
+          </div>
+        )}
+        <div className={`relative flex flex-col items-center gap-2 px-4 pb-4 text-center ${data.photoShape === "circle" ? "pt-3" : "-mt-12"}`}>
           <p className="flex items-center gap-1 text-lg font-bold">
             {data.name || t("sampleName")} <BadgeCheck aria-hidden="true" size={18} className="text-[var(--page-accent)]" />
           </p>

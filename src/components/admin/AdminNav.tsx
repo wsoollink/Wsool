@@ -3,17 +3,19 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { BadgeCheck, CreditCard, LayoutDashboard, Mail, ScrollText, TicketPercent, ShieldCheck, Users, Wallet, type LucideIcon } from "lucide-react";
+import { BadgeCheck, ChartPie, CreditCard, LayoutDashboard, Mail, ScrollText, Shapes, TicketPercent, ShieldCheck, Users, Wallet, type LucideIcon } from "lucide-react";
 import { ADMIN_SECTIONS, type AdminSectionKey } from "@/config/admin";
 
 const ICONS: Record<AdminSectionKey, LucideIcon> = {
   overview: LayoutDashboard,
   verifications: BadgeCheck,
   users: Users,
+  insights: ChartPie,
   subscriptions: CreditCard,
   finance: Wallet,
   newsletter: Mail,
   discounts: TicketPercent,
+  categories: Shapes,
   team: ShieldCheck,
   audit: ScrollText,
 };

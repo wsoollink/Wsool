@@ -2,15 +2,18 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Search } from "lucide-react";
+import { Download, Search } from "lucide-react";
 import { AdminHeader } from "@/components/admin/AdminHeader";
+import { ActiveFilters, CreatorFilterForm, dimensionOptions, withParams } from "@/components/admin/CreatorFilters";
 import { Card } from "@/components/ui/Card";
 import type { Prisma } from "@/generated/prisma/client";
 import { isLocale, toIntlLocale, type Locale } from "@/i18n/config";
 import { requireAdmin } from "@/lib/admin";
+import { listCategories } from "@/lib/categories";
+import { creatorRows, FILTER_KEYS, hasFilters, matchesFilters, readFilters } from "@/lib/creator-insights";
 import { db } from "@/lib/db";
 import { formatCompact, formatNumber } from "@/lib/format";
-import { planLabel } from "./plan";
+import { planLabel } from "@/config/plans";
 
 type SP = Promise<Record<string, string | string[] | undefined>>;
 const FILTERS = ["all", "paid", "trial", "free"] as const;
@@ -36,9 +39,16 @@ async function Results({ lang, searchParams }: { lang: Locale; searchParams: SP 
   const q = String(sp.q ?? "").trim().toLowerCase().replace(/^@|^\//, "").slice(0, 100);
   const filter: Filter = FILTERS.includes(sp.f as Filter) ? (sp.f as Filter) : "all";
   const now = new Date();
-  const search: Prisma.UserWhereInput = q
+  const insight = readFilters(sp);
+  const [rows, categories] = await Promise.all([creatorRows(now), listCategories()]);
+  const options = await dimensionOptions(rows, categories, lang);
+  const text: Prisma.UserWhereInput = q
     ? { OR: [{ email: { contains: q, mode: "insensitive" } }, { page: { username: { contains: q } } }, { page: { translations: { some: { fullName: { contains: q, mode: "insensitive" } } } } }] }
     : {};
+  // Category / country / city / platform / size are worked out per creator (lib/creator-insights).
+  const search: Prisma.UserWhereInput = hasFilters(insight)
+    ? { AND: [text, { id: { in: rows.filter((r) => matchesFilters(r, insight)).map((r) => r.userId) } }] }
+    : text;
   const [counts, users] = await Promise.all([
     Promise.all(FILTERS.map((f) => db.user.count({ where: { AND: [search, filterWhere(f, now)] } }))),
     db.user.findMany({
@@ -54,10 +64,16 @@ async function Results({ lang, searchParams }: { lang: Locale; searchParams: SP 
   ]);
   const date = new Intl.DateTimeFormat(toIntlLocale(lang), { dateStyle: "medium" });
   const ago = new Intl.RelativeTimeFormat(toIntlLocale(lang), { numeric: "auto" });
-  const href = (f: Filter) => `/admin/users?${new URLSearchParams({ ...(q ? { q } : {}), ...(f !== "all" ? { f } : {}) })}`;
+  const keep = { q: q || undefined, f: filter !== "all" ? filter : undefined };
+  const href = (f: Filter) => withParams("/admin/users", { ...insight, q: q || undefined, f: f !== "all" ? f : undefined });
 
   return (
     <>
+      <details className="rounded-2xl bg-white/70 p-3 ring-1 ring-navy/8" open={hasFilters(insight)}>
+        <summary className="min-h-9 cursor-pointer text-sm font-bold">{t("moreFilters")}</summary>
+        <div className="mt-3"><CreatorFilterForm action="/admin/users" options={options} filters={insight} keep={keep} /></div>
+      </details>
+      <ActiveFilters path="/admin/users" filters={insight} options={options} keep={keep} />
       <nav aria-label={t("filters")} className="flex flex-wrap gap-2">
         {FILTERS.map((f, i) => (
           <Link
@@ -67,6 +83,9 @@ async function Results({ lang, searchParams }: { lang: Locale; searchParams: SP 
             {t(`filter.${f}`)} <span className={`font-numbers text-xs ${f === filter ? "text-white/70" : "text-muted"}`}>{formatNumber(counts[i], lang)}</span>
           </Link>
         ))}
+        <a href={withParams("/api/admin/users", { ...insight, ...keep })} download className="ms-auto inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-4 text-[13.5px] font-bold text-navy ring-1 ring-navy/10">
+          <Download aria-hidden="true" size={16} /> {t("export", { n: counts[FILTERS.indexOf(filter)] })}
+        </a>
       </nav>
 
       {users.length === 0 ? (
@@ -135,7 +154,7 @@ async function SearchBox({ searchParams, label }: { searchParams: SP; label: str
   const sp = await searchParams;
   return (
     <form role="search" className="relative w-full sm:max-w-md">
-      {typeof sp.f === "string" && <input type="hidden" name="f" value={sp.f} />}
+      {(["f", ...FILTER_KEYS] as const).map((k) => typeof sp[k] === "string" && <input key={k} type="hidden" name={k} value={sp[k]} />)}
       <Search aria-hidden="true" size={18} className="pointer-events-none absolute start-4 top-1/2 -translate-y-1/2 text-muted" />
       <input name="q" type="search" aria-label={label} defaultValue={String(sp.q ?? "")} placeholder={label} className="h-[46px] w-full rounded-full border border-navy/10 bg-white ps-11 pe-4 text-sm" />
     </form>

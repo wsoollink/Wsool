@@ -39,6 +39,12 @@ export function hasPro(sub: SubscriptionLike, now = Date.now()): boolean {
   return sub.status === "trialing" && !!sub.trialEndsAt && sub.trialEndsAt.getTime() > now;
 }
 
+/** Short plan label for staff lists: pro (paid), trial, free. */
+export function planLabel(sub: SubscriptionLike): "pro" | "trial" | "free" {
+  if (sub?.status === "active" || sub?.status === "past_due") return "pro";
+  return hasPro(sub) ? "trial" : "free";
+}
+
 /**
  * Pro prices (CLAUDE.md section 6): fixed in every country, VAT included.
  * Arabic site in SAR, English site in USD.

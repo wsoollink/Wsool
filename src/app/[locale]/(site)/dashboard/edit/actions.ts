@@ -6,6 +6,8 @@ import { isOwnUploadedFile, pathFromPublicUrl, publicFileUrl, removeFiles } from
 import { db } from "@/lib/db";
 import { pageCacheTag } from "@/lib/public-page";
 import { pageLanguages } from "@/lib/page-language";
+import { MAX_PAGE_CATEGORIES } from "@/config/categories";
+import { z } from "zod";
 import { licensesSchema, profileSchema, tagsSchema, TRANSLATION_FIELDS } from "@/lib/validation/profile";
 
 export type SaveState = { ok?: boolean; errors?: Record<string, string>; error?: "failed" | "needs_name" };
@@ -88,6 +90,22 @@ export async function saveTags(lang: "ar" | "en", labels: string[]): Promise<Sav
     db.tag.createMany({ data: unique.map((label, sort) => ({ pageId: page.id, lang, label, sort })) }),
   ]);
   updateTag(pageCacheTag(page.username));
+  return { ok: true };
+}
+
+const categoryIds = z.array(z.uuid()).max(MAX_PAGE_CATEGORIES);
+
+/** Replaces the creator's categories (ids must exist in the owner's list). */
+export async function saveCategories(ids: string[]): Promise<SaveState> {
+  const { page } = await requireCreator();
+  const parsed = categoryIds.safeParse([...new Set(ids)]);
+  if (!parsed.success) return { error: "failed" };
+  const found = await db.category.count({ where: { id: { in: parsed.data } } });
+  if (found !== parsed.data.length) return { error: "failed" };
+  await db.$transaction([
+    db.pageCategory.deleteMany({ where: { pageId: page.id } }),
+    db.pageCategory.createMany({ data: parsed.data.map((categoryId) => ({ pageId: page.id, categoryId })) }),
+  ]);
   return { ok: true };
 }
 

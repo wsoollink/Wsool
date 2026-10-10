@@ -588,3 +588,13 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
   `startCheckout` re-checks it and charges `discountedPrice()` on the **first payment only** (renewals use
   `PRICES`); the invoice stores `discount_code_id` / `discount_amount`, and `settleCheckout` marks the code
   used inside the paid transaction. Invoices show the discount line before VAT. Logic: `src/lib/discounts.ts`.
+- **Creator categories & insights** (owner, Oct 2026): table `categories` (name ar/en, sort; seeded with 14, owner
+  edits the list at `admin/categories`, owner only, `saveCategoryList` replaces the whole list, audited
+  `category.update`) and `page_categories` (creator picks up to `MAX_PAGE_CATEGORIES` = 2 in Edit page,
+  `CategoriesCard` / `saveCategories`; not shown on the public page). `admin/insights` (`users.view`): creators by
+  category, country, city, platform, size band (`SIZE_BANDS`) and plan; each row links to Users with that filter.
+  Per-creator data: `creatorRows()` (`src/lib/creator-insights.ts`, in memory: fine for thousands). Free-text
+  country/city are unified by `countryCode()` / `cityKey()` (`src/lib/places.ts`: Intl names ar/en + aliases).
+  Users page has the same filters (`?cat=&country=&city=&platform=&size=`, `none` = not set) and an export:
+  `/api/admin/users` (CSV, same filters, audited `creators.export`). Shared UI: `src/components/admin/CreatorFilters.tsx`.
+

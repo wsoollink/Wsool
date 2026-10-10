@@ -234,6 +234,8 @@
     "opensNewTab": "(opens in a new tab)"
   },
   "EditPage": {
+    "categories": "Your content category",
+    "categoriesHint": "Pick one or two (up to {max}). Not shown on your page; it helps the Wsool team know your field.",
     "pageStatus": "Page status",
     "published": "Published, anyone can see it",
     "hidden": "Hidden, only you can see it",
@@ -619,7 +621,9 @@
       "audit": "Activity log",
       "pendingBadge": "waiting for review",
       "newsletter": "Newsletter",
-      "discounts": "Discount codes"
+      "discounts": "Discount codes",
+      "insights": "Creator insights",
+      "categories": "Categories"
     },
     "overview": {
       "users": "Users",
@@ -833,7 +837,9 @@
         "deleted": "Deleted",
         "suspended": "Suspended"
       },
-      "first100": "Showing the first 100 only. Use search to find others."
+      "first100": "Showing the first 100 only. Use search to find others.",
+      "moreFilters": "More filters: category, country, city, platform, size",
+      "export": "Export ({n})"
     },
     "team": {
       "owner": "Owner",
@@ -974,7 +980,9 @@
       "team": "Add staff and choose what they can do",
       "audit": "Every action the team took, who and when",
       "newsletter": "Write an issue and send it to confirmed subscribers",
-      "discounts": "First-payment discounts for people you choose"
+      "discounts": "First-payment discounts for people you choose",
+      "insights": "Creators by category, country, city, platform and size",
+      "categories": "The list creators pick their content category from"
     },
     "sentence": {
       "verification": {
@@ -1019,6 +1027,12 @@
       "discount": {
         "create": "Created {count} discount codes at {percent}%",
         "revoke": "Revoked discount code {code}"
+      },
+      "creators": {
+        "export": "Downloaded the creators list ({count})"
+      },
+      "category": {
+        "update": "Edited the category list ({count} categories, {added} added, {removed} removed)"
       }
     },
     "newsletter": {
@@ -1126,6 +1140,61 @@
       "errors": {
         "invalid": "Check the percent and the emails.",
         "failed": "Something went wrong. Try again."
+      }
+    },
+    "insights": {
+      "none": "Not set",
+      "all": "All",
+      "apply": "Apply",
+      "activeFilters": "Active filters",
+      "removeFilter": "Remove filter {name}",
+      "clearFilters": "Clear all",
+      "dim": {
+        "cat": "Category",
+        "country": "Country",
+        "city": "City",
+        "platform": "Platform",
+        "size": "Account size"
+      },
+      "size": {
+        "none": "No followers",
+        "nano": "Nano (under 10K)",
+        "micro": "Micro (10K–100K)",
+        "mid": "Mid (100K–1M)",
+        "macro": "Macro (1M+)"
+      },
+      "tiles": {
+        "creators": "Creators",
+        "withCategory": "Set a category",
+        "withCountry": "Set a country",
+        "withCity": "Set a city"
+      },
+      "export": "Export list ({n})",
+      "manageCategories": "Manage categories",
+      "empty": "No creators match these filters.",
+      "plan": "Plan",
+      "note": "Counted: every creator with a page that isn't deleted. Country and city come from what creators typed; Arabic and English names are matched automatically. Tap a row to see its creators."
+    },
+    "categories": {
+      "title": "Category list",
+      "hint": "Creators pick one or two in Edit page. Reorder with the arrows (up to {max}).",
+      "nameAr": "Arabic name",
+      "nameEn": "English name",
+      "nameArN": "Arabic name of category {n}",
+      "nameEnN": "English name of category {n}",
+      "uses": "{n} creators",
+      "moveUp": "Move category {n} up",
+      "moveDown": "Move category {n} down",
+      "delete": "Delete category {n}",
+      "confirmDelete": "“{name}” is picked by {n} creators and will be removed from them. Delete it?",
+      "add": "Add category",
+      "save": "Save",
+      "saving": "Saving…",
+      "status": {
+        "saved": "Saved",
+        "invalid": "Every category needs an Arabic and an English name (up to 40 characters).",
+        "duplicate": "Two names are the same.",
+        "failed": "Something went wrong, try again."
       }
     }
   },

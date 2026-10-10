@@ -18,6 +18,7 @@ export async function GET() {
           portfolioItems: { include: { translations: true } },
           rateBundles: { include: { platforms: true, rates: true } },
           links: true, services: true,
+          categories: { select: { category: { select: { nameAr: true, nameEn: true } } } },
         },
       },
     },

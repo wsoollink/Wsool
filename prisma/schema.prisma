@@ -124,6 +124,7 @@ model Page {
   rateBundles    RateBundle[]
   links          PageLink[]
   services       Service[]
+  categories     PageCategory[]
   pageViews      PageView[]
   contactClicks  ContactClick[]
 
@@ -813,4 +814,30 @@ model DiscountCode {
 
   @@index([createdAt])
   @@map("discount_codes")
+}
+
+/// Creator categories (cooking, travel, ...) managed by the owner in the admin panel.
+/// Creators pick up to MAX_PAGE_CATEGORIES; used for staff insights and filters.
+model Category {
+  id        String   @id @default(uuid()) @db.Uuid
+  nameAr    String   @map("name_ar") @db.VarChar(40)
+  nameEn    String   @map("name_en") @db.VarChar(40)
+  sort      Int      @default(0)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  pages PageCategory[]
+
+  @@map("categories")
+}
+
+model PageCategory {
+  pageId     String @map("page_id") @db.Uuid
+  categoryId String @map("category_id") @db.Uuid
+
+  page     Page     @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([pageId, categoryId])
+  @@index([categoryId])
+  @@map("page_categories")
 }

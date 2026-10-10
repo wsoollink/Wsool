@@ -11,7 +11,7 @@ import { isLocale, locales, toIntlLocale, type Locale } from "@/i18n/config";
 import { can, requireAdmin } from "@/lib/admin";
 import { db } from "@/lib/db";
 import { formatNumber } from "@/lib/format";
-import { planLabel } from "../plan";
+import { planLabel } from "@/config/plans";
 import { UserActions } from "./UserActions";
 
 // Placeholder id so the page shell can be prerendered; real ids render on request.

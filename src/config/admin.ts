@@ -36,10 +36,12 @@ export const ADMIN_SECTIONS = [
   { key: "overview", href: "/admin", permission: null },
   { key: "verifications", href: "/admin/verifications", permission: "verifications.view" },
   { key: "users", href: "/admin/users", permission: "users.view" },
+  { key: "insights", href: "/admin/insights", permission: "users.view" },
   { key: "subscriptions", href: "/admin/subscriptions", permission: "revenue.view" },
   { key: "finance", href: "/admin/finance", permission: "revenue.view" },
   { key: "discounts", href: "/admin/discounts", permission: "discounts.manage" },
   { key: "newsletter", href: "/admin/newsletter", permission: "newsletter.send" },
+  { key: "categories", href: "/admin/categories", permission: "owner" },
   { key: "team", href: "/admin/team", permission: "owner" },
   { key: "audit", href: "/admin/audit", permission: "owner" },
 ] as const;

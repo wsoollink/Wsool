@@ -6,6 +6,8 @@ import { requireCreator } from "@/lib/creator";
 import { db } from "@/lib/db";
 import { ProfileForm } from "./ProfileForm";
 import { pageLanguages } from "@/lib/page-language";
+import { listCategories } from "@/lib/categories";
+import { CategoriesCard } from "./CategoriesCard";
 import { LicensesCard } from "./LicensesCard";
 import { PhotoCard } from "./PhotoCard";
 import { PublishCard } from "./PublishCard";
@@ -17,10 +19,12 @@ const empty = { fullName: "", specialty: "", bio: "", city: "", country: "" };
 async function Editor() {
   const { page } = await requireCreator();
   // Scoped to the creator's own page from the verified session.
-  const [translations, tags, licenses] = await Promise.all([
+  const [translations, tags, licenses, categories, picked] = await Promise.all([
     db.pageTranslation.findMany({ where: { pageId: page.id } }),
     db.tag.findMany({ where: { pageId: page.id }, orderBy: { sort: "asc" } }),
     db.license.findMany({ where: { pageId: page.id }, orderBy: { sort: "asc" } }),
+    listCategories(),
+    db.pageCategory.findMany({ where: { pageId: page.id }, select: { categoryId: true } }),
   ]);
   const langs = pageLanguages(page.primaryLang as Locale, page.enEnabled);
   const texts = Object.fromEntries(
@@ -35,6 +39,7 @@ async function Editor() {
       <PublishCard username={page.username} published={page.isPublished} />
       <PhotoCard photoUrl={page.photoUrl} />
       <ProfileForm primaryLang={page.primaryLang as Locale} enEnabled={page.enEnabled} texts={texts} />
+      <CategoriesCard categories={categories} initial={picked.map((p) => p.categoryId)} />
       <TagsCard
         langs={langs}
         initial={{ ar: tags.filter((x) => x.lang === "ar").map((x) => x.label), en: tags.filter((x) => x.lang === "en").map((x) => x.label) }}

@@ -82,6 +82,7 @@ model User {
 
   @@map("users")
   cancellationFeedback CancellationFeedback[]
+  aiReads              AiRead[]
 }
 
 /// The creator's public page at wsool.link/<username>.
@@ -470,6 +471,8 @@ model VerificationRequest {
   reason         String?       @db.VarChar(40)
   reviewedBy     String?       @map("reviewed_by") @db.Uuid
   reviewedAt     DateTime?     @map("reviewed_at") @db.Timestamptz
+  /// What the AI read from the screenshot (src/lib/ai/screenshots.ts), shown to staff. Null = not read.
+  aiResult       Json?         @map("ai_result")
   createdAt      DateTime      @default(now()) @map("created_at") @db.Timestamptz
 
   account SocialAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
@@ -843,4 +846,28 @@ model PageCategory {
   @@id([pageId, categoryId])
   @@index([categoryId])
   @@map("page_categories")
+}
+
+enum AiReadKind {
+  account
+  audience
+}
+
+/// One AI reading of a screenshot (account page for verification, or audience stats).
+/// Also the daily limit per creator (AI_DAILY_LIMIT). Server only.
+model AiRead {
+  id        String     @id @default(uuid()) @db.Uuid
+  userId    String     @map("user_id") @db.Uuid
+  kind      AiReadKind
+  /// Private storage path of the screenshot (account reads; audience images are deleted after reading).
+  path      String?
+  accountId String?    @map("account_id") @db.Uuid
+  ok        Boolean
+  result    Json?
+  createdAt DateTime   @default(now()) @map("created_at") @db.Timestamptz
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@map("ai_reads")
 }

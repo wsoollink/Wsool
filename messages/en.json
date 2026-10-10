@@ -370,7 +370,17 @@
     "removeAccount": "Delete account",
     "pickPlatform": "Pick the platform",
     "month": "Month",
-    "shownOnPage": "Shows on your page"
+    "shownOnPage": "Shows on your page",
+    "ai": {
+      "fill": "Fill from a stats screenshot",
+      "reading": "AI is reading your stats…",
+      "hint": "Upload a screenshot of your audience stats page from the app and we'll fill these in for you.",
+      "filled": "✨ Filled from your screenshot. Check the numbers, then save.",
+      "off": "Smart reading isn't available right now; fill it in manually.",
+      "limit": "You've reached today's smart reading limit; try again tomorrow.",
+      "not_stats": "This screenshot has no audience stats. Upload the stats page (gender, ages, countries).",
+      "failed": "We couldn't read the screenshot; try a clearer one or fill it in manually."
+    }
   },
   "WorkPage": {
     "brands": "Brands you worked with",
@@ -615,7 +625,20 @@
     "step2Title": "We review it within 48 hours",
     "step2Body": "We check the account is yours and the number matches your page.",
     "step3Title": "The badge shows on your page",
-    "step3Body": "Verification lasts 90 days; we remind you a week before it ends."
+    "step3Body": "Verification lasts 90 days; we remind you a week before it ends.",
+    "ai": {
+      "reading": "AI is reading your screenshot… just a few seconds.",
+      "match": "We read @{handle} with {followers} followers on {platform}. It matches your account, send it for verification.",
+      "checkTitle": "Check before sending",
+      "platformMismatch": "The screenshot is from {seen}, but this account is on {expected}.",
+      "usernameMismatch": "The username in the screenshot (@{seen}) isn't your account (@{expected}). Make sure you uploaded the right account.",
+      "usernameMissing": "We couldn't find the username in the screenshot. Make sure it's visible.",
+      "followersDiff": "The screenshot shows {seen} followers; you entered {entered}.",
+      "useFollowers": "Update my count to {n}",
+      "followersMissing": "We couldn't find the follower count in the screenshot. Make sure it's visible.",
+      "unreadable": "We couldn't read the screenshot clearly. Upload a screenshot of your profile page showing the username and follower count.",
+      "sendAnyway": "Send for review anyway"
+    }
   },
   "Admin": {
     "panel": "Admin",
@@ -744,7 +767,45 @@
       "account": "Account",
       "reasonSent": "The reason is sent to the creator by email and notification.",
       "confirmReject": "Confirm rejection",
-      "back": "Back"
+      "back": "Back",
+      "ai": {
+        "filter": "AI filter",
+        "filters": {
+          "all": "All",
+          "match": "Matching",
+          "check": "Needs review"
+        },
+        "badge": {
+          "match": "AI: matches",
+          "check": "AI: needs attention"
+        },
+        "noneInFilter": "No requests in this filter.",
+        "title": "AI reading",
+        "readNow": "Read the screenshot with AI",
+        "reading": "Reading…",
+        "readFailed": "Couldn't read the screenshot; review it manually.",
+        "overall": {
+          "match": "Matches",
+          "check": "Needs attention",
+          "unreadable": "Unreadable"
+        },
+        "check": {
+          "match": "Matches",
+          "close": "Close",
+          "mismatch": "Different",
+          "unknown": "Unclear"
+        },
+        "platform": "Platform",
+        "username": "Username in screenshot",
+        "followers": "Followers in screenshot",
+        "quality": "Screenshot quality",
+        "qualities": {
+          "clear": "Clear",
+          "blurry": "Blurry",
+          "cropped": "Cropped"
+        },
+        "humanCheck": "The AI only reads and compares. Checking that the screenshot isn't edited is up to you."
+      }
     },
     "users": {
       "search": "Search by name, link or email",
@@ -1016,7 +1077,8 @@
     "sentence": {
       "verification": {
         "approve": "Verified {platform} @{handle}",
-        "reject": "Rejected verification of @{handle}"
+        "reject": "Rejected verification of @{handle}",
+        "ai_read": "Read @{handle}'s verification screenshot with AI"
       },
       "license": {
         "approve": "Verified license “{name}” for {username}",

@@ -64,3 +64,13 @@ export async function signedVerificationUrl(path: string, seconds = 600): Promis
 export async function removeVerificationFiles(paths: string[]) {
   if (paths.length) await createSupabaseAdmin().storage.from(VERIFICATION_BUCKET).remove(paths);
 }
+
+/** A private screenshot as base64 for the AI reader (null if missing or too big for the API). */
+export async function readPrivateImage(path: string): Promise<{ data: string; mediaType: "image/jpeg" | "image/png" | "image/webp" } | null> {
+  const ext = path.split(".").pop();
+  const mediaType = ext === "png" ? "image/png" : ext === "webp" ? "image/webp" : ext === "jpg" ? "image/jpeg" : null;
+  if (!mediaType) return null;
+  const { data } = await createSupabaseAdmin().storage.from(VERIFICATION_BUCKET).download(path);
+  if (!data || data.size > 5 * 1024 * 1024) return null;
+  return { data: Buffer.from(await data.arrayBuffer()).toString("base64"), mediaType };
+}

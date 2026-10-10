@@ -12,6 +12,8 @@ import { can, requireAdmin } from "@/lib/admin";
 import { db } from "@/lib/db";
 import { formatCompact, formatNumber } from "@/lib/format";
 import { signedVerificationUrl } from "@/lib/storage";
+import { compareRead, type AccountRead } from "@/lib/ai/compare";
+import { aiEnabled } from "@/lib/ai/screenshots";
 import { LicenseReviewCard } from "./LicenseReviewCard";
 import { ReviewCard } from "./ReviewCard";
 import { AdminHeader } from "@/components/admin/AdminHeader";
@@ -27,7 +29,9 @@ function age(from: Date, now: number, lang: Locale) {
   return hours < 48 ? rtf.format(-hours, "hour") : rtf.format(-Math.floor(hours / 24), "day");
 }
 
-async function Queue({ lang, tab, id }: { lang: Locale; tab: Tab; id: string }) {
+type AiFilter = "" | "match" | "check";
+
+async function Queue({ lang, tab, id, ai }: { lang: Locale; tab: Tab; id: string; ai: AiFilter }) {
   const admin = await requireAdmin("verifications.view");
   const t = await getTranslations("Admin.verifications");
   const now = new Date().getTime();
@@ -87,11 +91,12 @@ async function Queue({ lang, tab, id }: { lang: Locale; tab: Tab; id: string }) 
   }
 
   // Oldest first: first come, first served. Master/detail as in the design.
-  const [requests, total, overdue, decidedToday, recent] = await Promise.all([
+  const [all, total, overdue, decidedToday, recent] = await Promise.all([
     db.verificationRequest.findMany({
       where: { status: "pending" },
       orderBy: { createdAt: "asc" },
-      take: PAGE_SIZE,
+      // Enough to sort by the AI result; the list shows PAGE_SIZE.
+      take: 200,
       include: { account: { select: { verificationStatus: true, verifiedUntil: true, page: { select: { username: true } } } } },
     }),
     db.verificationRequest.count({ where: { status: "pending" } }),
@@ -99,6 +104,10 @@ async function Queue({ lang, tab, id }: { lang: Locale; tab: Tab; id: string }) 
     db.verificationRequest.count({ where: { status: { in: ["approved", "rejected"] }, reviewedAt: { gte: new Date(now - (now % 86_400_000)) } } }),
     db.verificationRequest.findMany({ where: { reviewedAt: { gte: new Date(now - 7 * 86_400_000) } }, select: { createdAt: true, reviewedAt: true } }),
   ]);
+  // AI result per request: "match" (username + followers fit), "check", or "none" (not read).
+  const aiOf = (r: (typeof all)[number]) => (r.aiResult ? (compareRead(r.aiResult as AccountRead, r).overall === "match" ? "match" : "check") : "none");
+  const aiCounts = { match: all.filter((r) => aiOf(r) === "match").length, check: all.filter((r) => aiOf(r) !== "match").length };
+  const requests = all.filter((r) => !ai || (ai === "match" ? aiOf(r) === "match" : aiOf(r) !== "match")).slice(0, PAGE_SIZE);
   const avgHours = recent.length ? Math.round(recent.reduce((s, r) => s + (r.reviewedAt!.getTime() - r.createdAt.getTime()), 0) / recent.length / 3_600_000) : null;
   const stats = [
     { label: t("stats.pending"), value: formatNumber(total, lang) },
@@ -117,6 +126,25 @@ async function Queue({ lang, tab, id }: { lang: Locale; tab: Tab; id: string }) 
     </div>
   );
 
+  const aiChips = (
+    <nav aria-label={t("ai.filter")} className="flex flex-wrap gap-2 px-2 pt-1">
+      {(["", "match", "check"] as const).map((k) => (
+        <Link key={k || "all"} href={k ? `/admin/verifications?ai=${k}` : "/admin/verifications"} aria-current={ai === k ? "page" : undefined}
+          className={`inline-flex min-h-9 items-center gap-1.5 rounded-full px-3 text-xs font-bold ${ai === k ? "bg-navy text-white" : "bg-navy/5"}`}>
+          {t(`ai.filters.${k || "all"}`)}{k && <span className="font-numbers opacity-70">{aiCounts[k]}</span>}
+        </Link>
+      ))}
+    </nav>
+  );
+
+  if (requests.length === 0 && ai) {
+    return (
+      <>
+        {statsRow}
+        <Card className="flex flex-col gap-3">{aiChips}<p className="px-2 text-sm text-muted">{t("ai.noneInFilter")}</p></Card>
+      </>
+    );
+  }
   if (requests.length === 0) {
     return (
       <>
@@ -143,6 +171,10 @@ async function Queue({ lang, tab, id }: { lang: Locale; tab: Tab; id: string }) 
     waiting: age(current.createdAt, now, lang),
     overdue: now - current.createdAt.getTime() > REVIEW_HOURS * 3_600_000,
     renewal: current.account.verificationStatus === "verified" && !!current.account.verifiedUntil && current.account.verifiedUntil.getTime() > now,
+    ai: current.aiResult
+      ? { read: current.aiResult as AccountRead, comparison: compareRead(current.aiResult as AccountRead, current) }
+      : null,
+    aiAvailable: aiEnabled(),
   };
 
   return (
@@ -150,6 +182,7 @@ async function Queue({ lang, tab, id }: { lang: Locale; tab: Tab; id: string }) 
       {statsRow}
       <div className="grid items-start gap-4 lg:grid-cols-[380px_minmax(0,1fr)]">
         <Card className={`flex flex-col gap-1 p-2 ${id ? "max-lg:hidden" : ""}`}>
+          {aiChips}
           <p className="px-3 pt-2 pb-1 text-xs text-muted">{t("count", { shown: requests.length, total })}</p>
           <ul className="flex flex-col gap-1">
             {requests.map((r) => {
@@ -158,7 +191,7 @@ async function Queue({ lang, tab, id }: { lang: Locale; tab: Tab; id: string }) 
               return (
                 <li key={r.id}>
                   <Link
-                    href={`/admin/verifications?id=${r.id}`} aria-current={selected ? "true" : undefined}
+                    href={`/admin/verifications?${new URLSearchParams({ ...(ai && { ai }), id: r.id })}`} aria-current={selected ? "true" : undefined}
                     className={`flex min-h-[60px] items-center gap-3 rounded-[14px] px-3 py-2 ${selected ? "bg-navy/[0.06] ring-1 ring-navy/10" : "hover:bg-navy/[0.03]"}`}
                   >
                     <span className="inline-flex size-10 shrink-0 items-center justify-center rounded-xl bg-white ring-1 ring-navy/8"><PlatformIcon platform={r.platform} size={18} /></span>
@@ -166,6 +199,11 @@ async function Queue({ lang, tab, id }: { lang: Locale; tab: Tab; id: string }) 
                       <bdi dir="ltr" className="truncate text-sm font-bold rtl:text-end">@{r.handle}</bdi>
                       <span className="truncate text-xs text-muted">{PLATFORM_NAMES[r.platform]} · <span className="font-numbers">{formatCompact(r.followers, lang)}</span></span>
                     </span>
+                    {aiOf(r) !== "none" && (
+                      <span title={t(`ai.badge.${aiOf(r)}`)} className={`inline-flex h-6 shrink-0 items-center rounded-full px-2 text-[11px] font-bold ${aiOf(r) === "match" ? "bg-good/10 text-good" : "bg-warn/10 text-warn"}`}>
+                        {aiOf(r) === "match" ? "✓ AI" : "! AI"}
+                      </span>
+                    )}
                     <span className={`flex shrink-0 items-center gap-1.5 text-[11px] ${late ? "font-bold text-bad" : "text-muted"}`}>
                       {late && <span aria-hidden="true" className="size-1.5 rounded-full bg-bad" />}{age(r.createdAt, now, lang)}
                     </span>
@@ -228,6 +266,6 @@ async function Tabs({ searchParams, labels }: { searchParams: Promise<Record<str
 }
 
 async function QueueFromParams({ lang, searchParams }: { lang: Locale; searchParams: Promise<Record<string, string | string[] | undefined>> }) {
-  const id = (await searchParams).id;
-  return <Queue lang={lang} tab={await tabOf(searchParams)} id={typeof id === "string" ? id : ""} />;
+  const { id, ai } = await searchParams;
+  return <Queue lang={lang} tab={await tabOf(searchParams)} id={typeof id === "string" ? id : ""} ai={ai === "match" || ai === "check" ? ai : ""} />;
 }

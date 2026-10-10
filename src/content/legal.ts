@@ -113,6 +113,7 @@ export const LEGAL_TEXT: Record<"ar" | "en", Record<LegalKind, LegalDoc>> = {
         { ul: [
           "Supabase: قاعدة البيانات وتسجيل الدخول وتخزين الملفات.",
           "Google: تسجيل الدخول بحساب Google لمن يختاره.",
+          "Anthropic (Claude): قراءة لقطات الشاشة التي ترفعها للتوثيق أو لإحصائيات الجمهور بالذكاء الاصطناعي، لاستخراج اسم المستخدم والأرقام منها. لا نشارك سوى الصورة نفسها، وتُحذف صور الإحصائيات فور قراءتها.",
           "Netlify و Cloudflare: استضافة الموقع وتوصيله.",
           "{gateway}: معالجة المدفوعات.",
           "{mailer}: إرسال الرسائل.",
@@ -252,6 +253,7 @@ export const LEGAL_TEXT: Record<"ar" | "en", Record<LegalKind, LegalDoc>> = {
         { ul: [
           "Supabase: database, sign-in and file storage.",
           "Google: sign-in with a Google account, for those who choose it.",
+          "Anthropic (Claude): AI reading of the screenshots you upload for verification or audience stats, to extract the username and numbers. Only the image itself is shared, and audience screenshots are deleted right after reading.",
           "Netlify and Cloudflare: website hosting and delivery.",
           "{gateway}: payment processing.",
           "{mailer}: sending emails.",

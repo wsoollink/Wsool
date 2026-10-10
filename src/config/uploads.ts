@@ -11,6 +11,8 @@ export const UPLOAD_KINDS = {
   thumb: { types: ["image/jpeg", "image/png", "image/webp"], maxBytes: 4 * 1024 * 1024, bucket: MEDIA_BUCKET },
   video: { types: ["video/mp4", "video/quicktime"], maxBytes: 50 * 1024 * 1024, bucket: MEDIA_BUCKET },
   verification: { types: ["image/jpeg", "image/png", "image/webp"], maxBytes: 10 * 1024 * 1024, bucket: VERIFICATION_BUCKET },
+  /** Audience stats screenshot: read by the AI, then deleted (private bucket). */
+  audienceShot: { types: ["image/jpeg", "image/png", "image/webp"], maxBytes: 10 * 1024 * 1024, bucket: VERIFICATION_BUCKET },
 } as const;
 
 export type UploadKind = keyof typeof UPLOAD_KINDS;

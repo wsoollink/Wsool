@@ -3,14 +3,15 @@
 import { useState, useTransition, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, Sparkles } from "lucide-react";
 import { Modal } from "@/components/creator/Modal";
 import { PlatformIcon } from "@/components/creator/PlatformIcon";
 import { Card } from "@/components/ui/Card";
 import { PLATFORM_NAMES } from "@/config/platforms";
 import { REJECT_REASONS, REVIEW_CHECKS } from "@/config/verification";
 import type { Platform } from "@/generated/prisma/enums";
-import { approveVerification, rejectVerification } from "./actions";
+import type { AccountRead, Check, ReadComparison } from "@/lib/ai/compare";
+import { approveVerification, readRequestWithAi, rejectVerification } from "./actions";
 
 export type ReviewItem = {
   id: string;
@@ -23,7 +24,64 @@ export type ReviewItem = {
   waiting: string;
   overdue: boolean;
   renewal: boolean;
+  /** What the AI read from the screenshot, compared with the snapshot (null = not read). */
+  ai: { read: AccountRead; comparison: ReadComparison } | null;
+  aiAvailable: boolean;
 };
+
+const mark: Record<Check, { sign: string; tone: string }> = {
+  match: { sign: "✓", tone: "text-good" },
+  close: { sign: "≈", tone: "text-warn" },
+  mismatch: { sign: "✗", tone: "text-bad" },
+  unknown: { sign: "?", tone: "text-muted" },
+};
+
+/** The AI's reading of the screenshot for staff: what it saw and whether it fits what the creator entered. */
+function AiCard({ item }: { item: ReviewItem }) {
+  const t = useTranslations("Admin.verifications.ai");
+  const router = useRouter();
+  const [pending, startTransition] = useTransition();
+  const [failed, setFailed] = useState(false);
+  if (!item.ai) {
+    if (!item.aiAvailable) return null;
+    return (
+      <div className="flex flex-col gap-2 rounded-2xl bg-blue/5 p-3">
+        <button type="button" disabled={pending} onClick={() => startTransition(async () => { const r = await readRequestWithAi(item.id); setFailed(!r.ok); if (r.ok) router.refresh(); })}
+          className="inline-flex min-h-11 items-center gap-2 self-start rounded-full bg-white px-4 text-[13px] font-bold text-blue ring-1 ring-blue/20">
+          <Sparkles aria-hidden="true" size={16} /> {pending ? t("reading") : t("readNow")}
+        </button>
+        {failed && <p role="alert" className="text-xs text-bad">{t("readFailed")}</p>}
+      </div>
+    );
+  }
+  const { read, comparison: c } = item.ai;
+  const overallTone = c.overall === "match" ? "bg-good/10 text-good" : c.overall === "check" ? "bg-warn/10 text-warn" : "bg-bad/8 text-bad";
+  const row = (label: string, value: ReactNode, check?: Check) => (
+    <div className="flex items-center justify-between gap-3 border-b border-blue/10 py-2 last:border-0">
+      <dt className="text-[13px] text-muted">{label}</dt>
+      <dd className="flex items-center gap-2 text-end text-sm font-bold">
+        {value}
+        {check && <span aria-label={t(`check.${check}`)} className={`font-black ${mark[check].tone}`}>{mark[check].sign}</span>}
+      </dd>
+    </div>
+  );
+  return (
+    <section aria-label={t("title")} className="flex flex-col gap-1 rounded-2xl bg-blue/5 p-3">
+      <div className="flex items-center justify-between gap-2">
+        <h3 className="flex items-center gap-1.5 text-[13px] font-bold text-blue"><Sparkles aria-hidden="true" size={16} /> {t("title")}</h3>
+        <span className={`rounded-full px-2.5 py-1 text-xs font-bold ${overallTone}`}>{t(`overall.${c.overall}`)}</span>
+      </div>
+      <dl>
+        {row(t("platform"), read.platform === "unknown" ? "—" : PLATFORM_NAMES[read.platform], c.platform)}
+        {row(t("username"), read.username ? <bdi dir="ltr">@{read.username}</bdi> : "—", c.username)}
+        {row(t("followers"), read.followers !== null ? <span className="font-numbers">{read.followers_as_shown || read.followers.toLocaleString("en")}</span> : "—", c.followers)}
+        {row(t("quality"), t(`qualities.${read.quality}`))}
+      </dl>
+      {read.note && <p className="text-xs text-muted">{read.note}</p>}
+      <p className="text-[11px] text-muted">{t("humanCheck")}</p>
+    </section>
+  );
+}
 
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
@@ -38,7 +96,10 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
 export function ReviewCard({ item, canDecide }: { item: ReviewItem; canDecide: boolean }) {
   const t = useTranslations("Admin.verifications");
   const router = useRouter();
-  const [checks, setChecks] = useState<string[]>([]);
+  // The AI pre-ticks what it confirmed; "authentic" (not edited) is always the reviewer's call.
+  const [checks, setChecks] = useState<string[]>(() =>
+    item.ai ? [...(item.ai.comparison.username === "match" ? ["username"] : []), ...(item.ai.comparison.followers === "match" ? ["followers"] : [])] : [],
+  );
   const [reason, setReason] = useState("");
   const [zoom, setZoom] = useState(false);
   const [rejecting, setRejecting] = useState(false);
@@ -99,6 +160,8 @@ export function ReviewCard({ item, canDecide }: { item: ReviewItem; canDecide: b
               </Field>
             </dl>
           </div>
+
+          <AiCard item={item} />
 
           {canDecide ? (
             <>

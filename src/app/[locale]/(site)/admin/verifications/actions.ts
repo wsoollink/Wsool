@@ -7,6 +7,9 @@ import { audit, requireAdmin } from "@/lib/admin";
 import { db } from "@/lib/db";
 import { notify } from "@/lib/notify";
 import { pageCacheTag } from "@/lib/public-page";
+import { aiEnabled, readAccountScreenshot } from "@/lib/ai/screenshots";
+import { readPrivateImage } from "@/lib/storage";
+import type { Prisma } from "@/generated/prisma/client";
 
 export type DecisionResult = { ok?: boolean; error?: "failed" | "checks" | "already_decided" };
 
@@ -88,5 +91,26 @@ export async function decideLicense(licenseId: string, approve: boolean, reason?
   if (!decided) return { error: "already_decided" };
   updateTag(pageCacheTag(license.page.username));
   await notify(license.page.userId, approve ? "license_verified" : "license_rejected", { license: license.name, reason: approve ? null : reason });
+  return { ok: true };
+}
+
+/** Reads a pending request's screenshot with the AI (requests sent before the AI, or when it failed then). Audited. */
+export async function readRequestWithAi(requestId: string): Promise<{ ok?: boolean; error?: "failed" | "off" }> {
+  const admin = await requireAdmin("verifications.view");
+  if (!aiEnabled()) return { error: "off" };
+  const request = await db.verificationRequest.findFirst({ where: { id: String(requestId), status: "pending" }, select: { id: true, screenshotPath: true, handle: true } });
+  if (!request) return { error: "failed" };
+  let read = null;
+  try {
+    const image = await readPrivateImage(request.screenshotPath);
+    read = image ? await readAccountScreenshot(image) : null;
+  } catch (err) {
+    console.error("[ai] staff read failed", err);
+  }
+  if (!read) return { error: "failed" };
+  await db.$transaction(async (tx) => {
+    await tx.verificationRequest.update({ where: { id: request.id }, data: { aiResult: read as unknown as Prisma.InputJsonValue } });
+    await audit(admin, "verification.ai_read", { type: "verification_request", id: request.id }, { handle: request.handle }, tx);
+  });
   return { ok: true };
 }

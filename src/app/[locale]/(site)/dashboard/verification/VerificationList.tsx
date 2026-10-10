@@ -4,7 +4,7 @@ import { useId, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
-import { ChevronDown, FileBadge, ImageUp } from "lucide-react";
+import { AlertTriangle, CheckCircle2, ChevronDown, FileBadge, ImageUp, Sparkles } from "lucide-react";
 import { PlatformIcon } from "@/components/creator/PlatformIcon";
 import { Card } from "@/components/ui/Card";
 import { PLATFORM_NAMES } from "@/config/platforms";
@@ -14,7 +14,7 @@ import type { Platform } from "@/generated/prisma/enums";
 import { fromIntlLocale, toIntlLocale } from "@/i18n/config";
 import { formatNumber } from "@/lib/format";
 import { shrinkImage, uploadFile } from "@/lib/upload-client";
-import { cancelLicense, cancelVerification, submitLicense, submitVerification } from "./actions";
+import { applyReadFollowers, cancelLicense, cancelVerification, checkScreenshot, submitLicense, submitVerification, type ScreenshotCheck } from "./actions";
 
 export type VerifyAccount = {
   id: string;
@@ -100,7 +100,11 @@ function AccountRow({ account: a }: { account: VerifyAccount }) {
   const fileId = useId();
   const [open, setOpen] = useState(false);
   const [file, setFile] = useState<File | null>(null);
-  const [busy, setBusy] = useState<"" | "upload" | "cancel">("");
+  // Uploaded as soon as it's picked, then read by the AI; sent with "submit".
+  const [path, setPath] = useState<string | null>(null);
+  const [check, setCheck] = useState<ScreenshotCheck | null>(null);
+  const [followers, setFollowers] = useState(a.followers);
+  const [busy, setBusy] = useState<"" | "upload" | "reading" | "send" | "cancel" | "fix">("");
   const [error, setError] = useState("");
   const [, startTransition] = useTransition();
   const date = (iso: string) => new Intl.DateTimeFormat(toIntlLocale(lang), { dateStyle: "medium" }).format(new Date(iso));
@@ -108,20 +112,45 @@ function AccountRow({ account: a }: { account: VerifyAccount }) {
   const status: DisplayStatus = pending && a.status !== "verified" && a.status !== "expiring" ? "in_review" : a.status;
   const canAct = !pending && status !== "verified";
 
-  async function send() {
-    if (!file) return;
+  async function pick(next: File | null) {
+    setFile(next);
+    setPath(null);
+    setCheck(null);
     setError("");
+    if (!next) return;
     setBusy("upload");
-    const uploaded = await uploadFile("verification", await shrinkImage(file, 2400, 0.9));
+    const uploaded = await uploadFile("verification", await shrinkImage(next, 2400, 0.9));
     if ("error" in uploaded) {
       setBusy("");
       return setError(e(`uploadErrors.${uploaded.error}`));
     }
-    const res = await submitVerification(a.id, uploaded.path);
+    setPath(uploaded.path);
+    setBusy("reading");
+    setCheck(await checkScreenshot(a.id, uploaded.path).catch((): ScreenshotCheck => ({ skipped: true, reason: "failed" })));
+    setBusy("");
+  }
+
+  async function fixFollowers() {
+    if (!check || check.skipped) return;
+    setBusy("fix");
+    const res = await applyReadFollowers(check.readId);
+    setBusy("");
+    if (!res.ok || !res.comparison || res.followers === undefined) return setError(e("errors.failed"));
+    setFollowers(res.followers);
+    setCheck({ ...check, comparison: res.comparison });
+  }
+
+  async function send() {
+    if (!path) return;
+    setError("");
+    setBusy("send");
+    const res = await submitVerification(a.id, path, check && !check.skipped ? check.readId : null);
     setBusy("");
     if (!res.ok) return setError(e("errors.failed"));
     setOpen(false);
     setFile(null);
+    setPath(null);
+    setCheck(null);
     startTransition(() => router.refresh());
   }
 
@@ -134,7 +163,7 @@ function AccountRow({ account: a }: { account: VerifyAccount }) {
       router.refresh();
     });
 
-  let detail = t("followers", { n: formatNumber(a.followers, lang) });
+  let detail = t("followers", { n: formatNumber(followers, lang) });
   if ((status === "verified" || status === "expiring") && a.verifiedUntil) detail = status === "expiring" ? t("expiresIn", { days: a.daysLeft, date: date(a.verifiedUntil) }) : t("validUntil", { date: date(a.verifiedUntil) });
 
   return (
@@ -174,15 +203,64 @@ function AccountRow({ account: a }: { account: VerifyAccount }) {
               <span className="text-[13.5px] font-bold">{file ? file.name : t("dropTitle")}</span>
               <span className="text-xs text-muted">{file ? t("dropChange") : t("dropHint")}</span>
             </label>
-            <input id={fileId} type="file" accept={UPLOAD_KINDS.verification.types.join(",")} className="sr-only" disabled={!!busy} onChange={(ev) => { setFile(ev.target.files?.[0] ?? null); ev.target.value = ""; }} />
-            <button type="button" onClick={send} disabled={!file || !!busy} className="inline-flex h-12 items-center justify-center rounded-full bg-blue text-sm font-bold text-white disabled:bg-navy/10 disabled:text-muted">
-              {busy === "upload" ? e("uploading") : t("submit")}
+            <input id={fileId} type="file" accept={UPLOAD_KINDS.verification.types.join(",")} className="sr-only" disabled={!!busy && busy !== "send"} onChange={(ev) => { pick(ev.target.files?.[0] ?? null); ev.target.value = ""; }} />
+            {busy === "reading" && (
+              <p role="status" className="flex items-center gap-2 rounded-[14px] bg-blue/5 p-3 text-sm font-medium text-blue">
+                <Sparkles aria-hidden="true" size={18} className="shrink-0 motion-safe:animate-pulse" /> {t("ai.reading")}
+              </p>
+            )}
+            {check && !check.skipped && (
+              <AiResult account={{ ...a, followers }} check={check} lang={lang} fixing={busy === "fix"} onFix={fixFollowers} />
+            )}
+            <button type="button" onClick={send} disabled={!path || !!busy} className="inline-flex h-12 items-center justify-center rounded-full bg-blue text-sm font-bold text-white disabled:bg-navy/10 disabled:text-muted">
+              {busy === "upload" ? e("uploading") : busy === "send" ? e("saving") : check && !check.skipped && check.comparison.overall !== "match" ? t("ai.sendAnyway") : t("submit")}
             </button>
           </div>
         )}
         {error && <p role="alert" className="text-sm text-bad">{error}</p>}
       </Card>
     </li>
+  );
+}
+
+/** What the AI read from the screenshot, compared with the account, with a one-tap follower fix. */
+function AiResult({ account: a, check, lang, fixing, onFix }: { account: VerifyAccount; check: Extract<ScreenshotCheck, { readId: string }>; lang: "ar" | "en"; fixing: boolean; onFix: () => void }) {
+  const t = useTranslations("VerificationPage.ai");
+  const { read, comparison: c } = check;
+  const shown = read.followers_as_shown || (read.followers !== null ? formatNumber(read.followers, lang) : "");
+  if (c.overall === "unreadable") {
+    return (
+      <div role="status" className="flex gap-2 rounded-[14px] bg-warn/8 p-3 text-sm text-warn">
+        <AlertTriangle aria-hidden="true" size={18} className="mt-0.5 shrink-0" /> <span>{t("unreadable")}</span>
+      </div>
+    );
+  }
+  if (c.overall === "match") {
+    return (
+      <div role="status" className="flex gap-2 rounded-[14px] bg-good/8 p-3 text-sm text-good">
+        <CheckCircle2 aria-hidden="true" size={18} className="mt-0.5 shrink-0" />
+        <span>{t("match", { handle: read.username ?? a.handle, followers: shown, platform: PLATFORM_NAMES[a.platform] })}</span>
+      </div>
+    );
+  }
+  return (
+    <div role="status" className="flex flex-col gap-2 rounded-[14px] bg-warn/8 p-3 text-sm text-warn">
+      <p className="flex items-center gap-2 font-bold"><AlertTriangle aria-hidden="true" size={18} className="shrink-0" /> {t("checkTitle")}</p>
+      {c.platform === "mismatch" && read.platform !== "unknown" && <p>{t("platformMismatch", { seen: PLATFORM_NAMES[read.platform], expected: PLATFORM_NAMES[a.platform] })}</p>}
+      {c.username === "mismatch" && <p>{t("usernameMismatch", { seen: read.username ?? "", expected: a.handle })}</p>}
+      {c.username === "unknown" && <p>{t("usernameMissing")}</p>}
+      {(c.followers === "mismatch" || c.followers === "close") && read.followers !== null && (
+        <div className="flex flex-col gap-2">
+          <p>{t("followersDiff", { seen: shown, entered: formatNumber(a.followers, lang) })}</p>
+          {c.username !== "mismatch" && (
+            <button type="button" onClick={onFix} disabled={fixing} className="inline-flex min-h-11 items-center gap-2 self-start rounded-full bg-white px-4 text-[13px] font-bold text-navy ring-1 ring-warn/30">
+              <Sparkles aria-hidden="true" size={16} className="text-blue" /> {t("useFollowers", { n: formatNumber(read.followers, lang) })}
+            </button>
+          )}
+        </div>
+      )}
+      {c.followers === "unknown" && <p>{t("followersMissing")}</p>}
+    </div>
   );
 }
 

@@ -1,8 +1,8 @@
 "use client";
 
-import { useMemo, useState, useTransition } from "react";
+import { useId, useMemo, useState, useTransition } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Sparkles, Trash2 } from "lucide-react";
 import { PlatformIcon } from "@/components/creator/PlatformIcon";
 import { buttonClasses } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -11,7 +11,8 @@ import type { Platform } from "@/generated/prisma/enums";
 import { digitsOnly, formatPercent } from "@/lib/format";
 import type { Locale } from "@/i18n/config";
 import { AGE_GROUPS, MAX_AUDIENCE_ROWS } from "@/lib/validation/accounts";
-import { saveAudience } from "./actions";
+import { shrinkImage, uploadFile } from "@/lib/upload-client";
+import { readAudienceShot, saveAudience } from "./actions";
 
 type Share = { label: string; percent: number };
 export type AudienceValue = { gender: Share[]; ages: Share[]; countries: Share[]; cities: Share[] };
@@ -81,6 +82,27 @@ function AudienceForm({ account }: { account: AudienceAccount }) {
   const [cities, setCities] = useState(toRows(account.audience?.cities));
   const [status, setStatus] = useState<"" | "saved" | "failed" | "over_100">("");
   const [pending, startTransition] = useTransition();
+  const shotId = useId();
+  const [ai, setAi] = useState<"" | "reading" | "filled" | "off" | "limit" | "not_stats" | "failed">("");
+  // Codes the AI found outside the short picker list still show by name.
+  const countryOptions = [...COUNTRIES, ...countries.map((r) => r.label).filter((c) => c && !COUNTRIES.includes(c))];
+
+  /** Upload an audience stats screenshot; the AI fills the form, the creator reviews and saves. */
+  async function fillFromShot(file: File | undefined) {
+    if (!file) return;
+    setAi("reading");
+    setStatus("");
+    const uploaded = await uploadFile("audienceShot", await shrinkImage(file, 1800, 0.9));
+    if ("error" in uploaded) return setAi("failed");
+    const res = await readAudienceShot(account.id, uploaded.path).catch(() => ({ error: "failed" as const }));
+    if (!("audience" in res)) return setAi(res.error);
+    const a = res.audience;
+    setGender(fixed(["female", "male"], a.gender));
+    setAges(fixed(AGE_GROUPS, a.ages));
+    setCountries(toRows(a.countries));
+    setCities(toRows(a.cities));
+    setAi("filled");
+  }
 
   const touch = <T,>(setter: (v: T) => void) => (v: T) => { setter(v); setStatus(""); };
   const groups = [gender, ages, countries, cities];
@@ -117,6 +139,16 @@ function AudienceForm({ account }: { account: AudienceAccount }) {
 
   return (
     <div className="flex flex-col gap-5">
+      <div className="flex flex-col gap-2 rounded-[14px] bg-blue/5 p-3">
+        <label htmlFor={shotId} className={`inline-flex min-h-11 cursor-pointer items-center gap-2 self-start rounded-full bg-white px-4 text-[13.5px] font-bold text-blue ring-1 ring-blue/20 ${ai === "reading" ? "pointer-events-none opacity-60" : ""}`}>
+          <Sparkles aria-hidden="true" size={16} className={ai === "reading" ? "motion-safe:animate-pulse" : ""} /> {ai === "reading" ? t("ai.reading") : t("ai.fill")}
+        </label>
+        <input id={shotId} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" disabled={ai === "reading"} onChange={(ev) => { fillFromShot(ev.target.files?.[0]); ev.target.value = ""; }} />
+        <p role="status" aria-live="polite" className={`text-xs ${ai === "filled" ? "font-bold text-blue" : ai && ai !== "reading" ? "text-bad" : "text-muted"}`}>
+          {ai === "" || ai === "reading" ? t("ai.hint") : t(`ai.${ai}`)}
+        </p>
+      </div>
+
       <fieldset className="flex min-w-0 flex-col gap-2">
         <legend className="mb-2 flex w-full justify-between text-sm font-bold">{t("gender")} {total(gender)}</legend>
         {gender.map((r, i) => (
@@ -147,7 +179,7 @@ function AudienceForm({ account }: { account: AudienceAccount }) {
               className={`${control} min-w-0 flex-1`}
             >
               <option value="">{t("chooseCountry")}</option>
-              {COUNTRIES.map((c) => (
+              {countryOptions.map((c) => (
                 <option key={c} value={c} disabled={c !== r.label && countries.some((x) => x.label === c)} suppressHydrationWarning>{regions.of(c)}</option>
               ))}
             </select>

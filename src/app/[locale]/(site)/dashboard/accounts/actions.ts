@@ -6,6 +6,10 @@ import { profileUrl } from "@/config/platforms";
 import { requireCreator } from "@/lib/creator";
 import { db } from "@/lib/db";
 import { pageCacheTag } from "@/lib/public-page";
+import { audienceFromRead, type AudienceFill } from "@/lib/ai/audience";
+import { aiEnabled, readAudienceScreenshot, underDailyLimit } from "@/lib/ai/screenshots";
+import { isOwnUploadedFile, readPrivateImage, removeVerificationFiles } from "@/lib/storage";
+import type { Prisma } from "@/generated/prisma/client";
 import { accountsSchema, audienceSchema, monthlyViewsSchema, type AccountInput, type AudienceInput } from "@/lib/validation/accounts";
 
 export type AccountsResult = { ok?: boolean; error?: "failed"; accounts?: { id: string; handle: string; verificationReset: boolean }[] };
@@ -116,4 +120,36 @@ export async function saveAudience(accountId: string, input: AudienceInput): Pro
   }
   updateTag(pageCacheTag(page.username));
   return { ok: true };
+}
+
+export type AudienceReadResult = { ok: true; audience: AudienceFill } | { ok?: false; error: "off" | "limit" | "not_stats" | "failed" };
+
+/**
+ * Reads an audience stats screenshot with the AI and returns the values for
+ * the form (nothing is saved: the creator reviews, then saves). The image is
+ * deleted right after reading.
+ */
+export async function readAudienceShot(accountId: string, path: string): Promise<AudienceReadResult> {
+  const { user, page } = await requireCreator();
+  const owned = typeof path === "string" && (await isOwnUploadedFile(user.id, "audienceShot", path));
+  try {
+    if (!owned) return { error: "failed" };
+    if (!aiEnabled()) return { error: "off" };
+    const account = await db.socialAccount.findFirst({ where: { id: String(accountId), pageId: page.id }, select: { id: true } });
+    if (!account) return { error: "failed" };
+    if (!(await underDailyLimit(user.id))) return { error: "limit" };
+    let read = null;
+    try {
+      const image = await readPrivateImage(path);
+      read = image ? await readAudienceScreenshot(image) : null;
+    } catch (err) {
+      console.error("[ai] audience read failed", err);
+    }
+    await db.aiRead.create({ data: { userId: user.id, kind: "audience", accountId: account.id, ok: !!read, ...(read && { result: read as unknown as Prisma.InputJsonValue }) } });
+    if (!read) return { error: "failed" };
+    if (!read.is_audience_stats) return { error: "not_stats" };
+    return { ok: true, audience: audienceFromRead(read) };
+  } finally {
+    if (owned) await removeVerificationFiles([path]).catch(() => {});
+  }
 }

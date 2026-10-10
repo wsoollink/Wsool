@@ -135,17 +135,23 @@ export function AppearanceEditor({ initial, isPro, freeTemplates, preview }: { i
 
         <Card className="flex flex-col gap-3">
           <div>
-            <h2 className="font-bold">{t("numberFont")}</h2>
-            <p className="text-xs text-muted">{t("numberFontHint")}</p>
+            <h2 className="font-bold">{t("photoShape")}</h2>
+            <p className="text-xs text-muted">{t("photoShapeHint")}</p>
           </div>
           <div className="grid grid-cols-2 gap-2">
-            {(["wide", "text"] as const).map((f) => (
+            {(["full", "circle"] as const).map((f) => (
               <button
-                key={f} type="button" aria-pressed={value.numberFont === f} onClick={() => set({ numberFont: f })}
-                className={`flex flex-col items-center gap-1 rounded-[14px] border bg-white/72 py-3 ${value.numberFont === f ? "border-blue ring-2 ring-blue/25" : "border-navy/8"}`}
+                key={f} type="button" aria-pressed={value.photoShape === f} onClick={() => set({ photoShape: f })}
+                className={`flex flex-col items-center gap-2 rounded-[14px] border bg-white/72 py-3 ${value.photoShape === f ? "border-blue ring-2 ring-blue/25" : "border-navy/8"}`}
               >
-                <span dir="ltr" className={`${f === "wide" ? "font-numbers text-[22px]" : "font-sans text-2xl"} font-black`}>240,000</span>
-                <span className="text-xs text-muted">{t(`font.${f}`)}</span>
+                {/* Small drawing of each layout: wide photo fading down, or a round photo. */}
+                <span aria-hidden="true" className="flex h-14 w-16 flex-col items-center overflow-hidden rounded-lg bg-navy/5">
+                  {f === "full"
+                    ? <span className="h-10 w-full bg-gradient-to-b from-blue/60 to-transparent" />
+                    : <span className="mt-2 size-8 rounded-full bg-blue/60" />}
+                  <span className="mt-1 h-1.5 w-8 rounded-full bg-navy/20" />
+                </span>
+                <span className="text-xs text-muted">{t(`shape.${f}`)}</span>
               </button>
             ))}
           </div>

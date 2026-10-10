@@ -1,6 +1,7 @@
 "use client";
 
-import { startTransition, useActionState, useState, type FormEvent } from "react";
+import { notifySaved } from "@/lib/saved-event";
+import { startTransition, useActionState, useEffect, useState, type FormEvent } from "react";
 import { useTranslations } from "next-intl";
 import { buttonClasses } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -18,6 +19,7 @@ export function ProfileForm({ primaryLang: initialPrimary, enEnabled: initialEn,
   const [primaryLang, setPrimaryLang] = useState<Locale>(initialPrimary);
   const [enEnabled, setEnEnabled] = useState(initialEn);
   const langs: Locale[] = primaryLang === "ar" ? (enEnabled ? ["ar", "en"] : ["ar"]) : ["en"];
+  useEffect(() => { if (state.ok) notifySaved(); }, [state]);
   const err = (key: string) => (state.errors?.[key] ? t(`errors.${state.errors[key]}`) : undefined);
 
   // Submitting through onSubmit (not the form action) stops React from

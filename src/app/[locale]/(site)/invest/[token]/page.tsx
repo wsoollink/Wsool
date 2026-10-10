@@ -12,7 +12,7 @@ import { isLocale, locales, toIntlLocale, type Locale } from "@/i18n/config";
 import { db } from "@/lib/db";
 import { financeReport, growthCounts } from "@/lib/finance";
 import { hashToken, unlockCookie, unlockValue } from "@/lib/investor";
-import { PrintButton } from "./PrintButton";
+import { PrintButton } from "@/components/PrintButton";
 import { Unlock } from "./Unlock";
 
 export const metadata: Metadata = { robots: { index: false, follow: false }, referrer: "no-referrer" };

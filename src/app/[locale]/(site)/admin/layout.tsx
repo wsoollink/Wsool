@@ -50,7 +50,7 @@ export default async function AdminLayout({ children, params }: LayoutProps<"/[l
 
   return (
     <div className="flex min-h-dvh flex-1 bg-bg">
-      <aside className="sticky top-0 hidden h-dvh w-[260px] shrink-0 flex-col gap-6 border-e border-navy/8 bg-white px-4 py-6 md:flex">
+      <aside className="sticky top-0 hidden print:hidden h-dvh w-[260px] shrink-0 flex-col gap-6 border-e border-navy/8 bg-white px-4 py-6 md:flex">
         <Link href="/admin" className="flex min-h-11 items-center gap-2 px-2" aria-label={`${nav("brand")} ${t("panel")}`}>
           <Image src={locale === "en" ? "/brand/logo-en.png" : "/brand/logo-ar.png"} alt="" width={90} height={30} className="h-[30px] w-auto" priority />
           <span className="inline-flex h-6 items-center rounded-full bg-[#EEF3FB] px-2.5 text-[11.5px] font-bold text-blue">{t("panel")}</span>
@@ -70,7 +70,7 @@ export default async function AdminLayout({ children, params }: LayoutProps<"/[l
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-10 border-b border-navy/8 bg-white/90 backdrop-blur md:hidden">
+        <header className="sticky top-0 z-10 border-b border-navy/8 bg-white/90 backdrop-blur md:hidden print:hidden">
           <div className="flex h-14 items-center justify-between px-4">
             <Link href="/admin" className="flex items-center gap-2">
               <Image src={locale === "en" ? "/brand/logo-en.png" : "/brand/logo-ar.png"} alt={nav("brand")} width={78} height={26} className="h-[26px] w-auto" />
@@ -86,7 +86,7 @@ export default async function AdminLayout({ children, params }: LayoutProps<"/[l
             <Suspense fallback={null}><Nav variant="row" /></Suspense>
           </nav>
         </header>
-        <main className="w-full flex-1 px-4 pt-6 pb-10 md:px-8 md:pt-7">{children}</main>
+        <main className="w-full flex-1 px-4 pt-6 pb-10 md:px-8 md:pt-7 print:p-0">{children}</main>
       </div>
     </div>
   );

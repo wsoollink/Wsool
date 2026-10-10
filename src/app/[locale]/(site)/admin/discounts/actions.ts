@@ -57,3 +57,21 @@ export async function revokeCode(id: string): Promise<{ ok?: boolean; error?: st
   });
   return done ? { ok: true } : { error: "invalid" };
 }
+
+/**
+ * Deletes revoked codes for good: one (id) or all of them (null). Used codes
+ * are never deleted (their invoices point at them). Audited.
+ */
+export async function deleteRevoked(id: string | null): Promise<{ ok?: boolean; count?: number; error?: string }> {
+  const admin = await requireAdmin("discounts.manage");
+  if (id !== null && !z.uuid().safeParse(id).success) return { error: "invalid" };
+  const where = { revokedAt: { not: null }, usedAt: null, invoiceId: null, ...(id ? { id } : {}) };
+  const count = await db.$transaction(async (tx) => {
+    const rows = await tx.discountCode.findMany({ where, select: { code: true } });
+    if (!rows.length) return 0;
+    await tx.discountCode.deleteMany({ where });
+    await audit(admin, "discount.delete", undefined, { count: rows.length, code: rows.length === 1 ? rows[0].code : "" }, tx);
+    return rows.length;
+  });
+  return count ? { ok: true, count } : { error: "invalid" };
+}

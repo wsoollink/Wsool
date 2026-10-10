@@ -97,3 +97,11 @@
     font-size: max(16px, 1em) !important;
   }
 }
+
+/* Print / "Save as PDF" (finance report, investor link, invoices): A4 with margins. */
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+}

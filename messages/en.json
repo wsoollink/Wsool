@@ -301,7 +301,17 @@
     "basicInfo": "Basic info",
     "language": "Language",
     "primaryLangHint": "Visitors see your page in their device language if you offer it, otherwise in this one.",
-    "fileTypes": "Image or PDF, optional"
+    "fileTypes": "Image or PDF, optional",
+    "logo": "Your logo",
+    "logoHint": "Shown at the top of your PDF only. A PNG with a transparent background works best.",
+    "addLogo": "Upload logo",
+    "changeLogo": "Change logo",
+    "removeLogo": "Remove logo",
+    "previewTitle": "Your page preview",
+    "previewHint": "Updates after every save. Only you can see it, even while your page is hidden.",
+    "previewOpen": "Preview my page",
+    "previewClose": "Close preview",
+    "previewReload": "Reload preview"
   },
   "AccountsPage": {
     "accounts": "Your accounts",
@@ -495,11 +505,6 @@
     "accentHint": "Shows in your specialty under your name and on the verified badge.",
     "templateAccent": "Template color",
     "anyColor": "Or pick any color",
-    "numberFont": "Number font",
-    "font": {
-      "wide": "Wide and bold",
-      "text": "Same as text"
-    },
     "hideBranding": "Hide \"Made with ❤️ on Wsool\" on my page",
     "hideBrandingHint": "For Pro subscribers.",
     "sampleName": "Your name",
@@ -531,11 +536,16 @@
       "purple": "Purple",
       "pink": "Pink"
     },
-    "numberFontHint": "For your follower count, platform numbers and views.",
     "hideBrandingPro": "Removes the Wsool line at the bottom of your page. Part of the paid plan.",
     "preview": "Preview",
     "closePreview": "Close preview",
-    "failed": "Something went wrong. Try again."
+    "failed": "Something went wrong. Try again.",
+    "photoShape": "Photo shape",
+    "photoShapeHint": "How your photo shows at the top of your page and in the PDF.",
+    "shape": {
+      "full": "Full",
+      "circle": "Circle"
+    }
   },
   "Suspended": {
     "title": "Your account is suspended",
@@ -908,11 +918,31 @@
     },
     "audit": {
       "empty": "No actions yet.",
-      "when": "When",
-      "who": "Who",
-      "what": "What",
-      "details": "Details",
-      "latest200": "Showing the latest 200 actions."
+      "who": "Done by",
+      "latest200": "Showing the latest 200 actions.",
+      "period": "Period",
+      "periods": {
+        "all": "All",
+        "today": "Today",
+        "7": "Last 7 days",
+        "30": "Last 30 days"
+      },
+      "everyone": "Everyone",
+      "type": "Action type",
+      "allTypes": "All types",
+      "types": {
+        "verification": "Verification",
+        "users": "Users & pages",
+        "money": "Invoices, finance & codes",
+        "newsletter": "Newsletter",
+        "categories": "Categories",
+        "team": "Team"
+      },
+      "from": "From",
+      "to": "To",
+      "apply": "Apply",
+      "clear": "Clear filters",
+      "noMatch": "No actions match these filters."
     },
     "later": {
       "subscriptions": "This section comes with payments in phase 5.",
@@ -1026,7 +1056,8 @@
       },
       "discount": {
         "create": "Created {count} discount codes at {percent}%",
-        "revoke": "Revoked discount code {code}"
+        "revoke": "Revoked discount code {code}",
+        "delete": "Deleted {count} revoked discount code(s) {code}"
       },
       "creators": {
         "export": "Downloaded the creators list ({count})"
@@ -1140,7 +1171,11 @@
       "errors": {
         "invalid": "Check the percent and the emails.",
         "failed": "Something went wrong. Try again."
-      }
+      },
+      "delete": "Delete",
+      "deleteAllRevoked": "Delete all revoked ({n})",
+      "confirmDelete": "Delete code {code} for good?",
+      "confirmDeleteAll": "Delete {n} revoked codes for good? This can't be undone."
     },
     "insights": {
       "none": "Not set",
@@ -1629,7 +1664,9 @@
     "ltvCacHint": "3x or more is healthy",
     "revenueVsExpenses": "Revenue vs expenses",
     "byCategory": "Expenses by category",
-    "readOnly": "Read only"
+    "readOnly": "Read only",
+    "exportPdf": "Export PDF",
+    "printedOn": "Wsool financial report: last {months} months, made on {date}. Amounts in SAR, VAT excluded."
   },
   "Site": {
     "followUs": "Follow us",

@@ -8,10 +8,10 @@ export type ClientUploadError = "type" | "size" | "failed";
 
 /**
  * Shrinks a photo before upload: longest side at most `maxSide`, saved as JPEG
- * (or WebP for logos, which keeps transparency). Smaller uploads on mobile data
+ * (or WebP / PNG for logos, which keep transparency; PNG embeds straight into PDFs). Smaller uploads on mobile data
  * and faster pages. Other files pass through.
  */
-export async function shrinkImage(file: File, maxSide = 1600, quality = 0.85, outType: "image/jpeg" | "image/webp" = "image/jpeg"): Promise<File> {
+export async function shrinkImage(file: File, maxSide = 1600, quality = 0.85, outType: "image/jpeg" | "image/webp" | "image/png" = "image/jpeg"): Promise<File> {
   if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) return file;
   try {
     const bitmap = await createImageBitmap(file);
@@ -24,7 +24,7 @@ export async function shrinkImage(file: File, maxSide = 1600, quality = 0.85, ou
     const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, outType, quality));
     // A browser without WebP encoding returns PNG; keep the original then.
     if (!blob || blob.type !== outType) return file;
-    return new File([blob], file.name.replace(/\.\w+$/, outType === "image/webp" ? ".webp" : ".jpg"), { type: outType });
+    return new File([blob], file.name.replace(/\.\w+$/, { "image/webp": ".webp", "image/png": ".png", "image/jpeg": ".jpg" }[outType]), { type: outType });
   } catch {
     return file;
   }

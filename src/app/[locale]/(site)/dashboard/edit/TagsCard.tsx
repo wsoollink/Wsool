@@ -1,5 +1,6 @@
 "use client";
 
+import { notifySaved } from "@/lib/saved-event";
 import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { Plus, X } from "lucide-react";
@@ -41,7 +42,12 @@ function TagList({ lang, initial, showTitle }: { lang: Locale; initial: string[]
     setDraft("");
     setStatus("");
   };
-  const save = () => startTransition(async () => setStatus((await saveTags(lang, tags)).ok ? "saved" : "failed"));
+  const save = () =>
+    startTransition(async () => {
+      const ok = (await saveTags(lang, tags)).ok;
+      setStatus(ok ? "saved" : "failed");
+      if (ok) notifySaved();
+    });
 
   return (
     <section className="flex flex-col gap-3">

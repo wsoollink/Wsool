@@ -11,6 +11,7 @@ import { financeReport, growthCounts } from "@/lib/finance";
 import { formatPrice } from "@/lib/format";
 import { ExpensesCard } from "./ExpensesCard";
 import { InvestorLinks } from "./InvestorLinks";
+import { PrintButton } from "@/components/PrintButton";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 
 type SP = Promise<Record<string, string | string[] | undefined>>;
@@ -31,15 +32,19 @@ async function Finance({ lang, searchParams }: { lang: Locale; searchParams: SP 
 
   return (
     <div className="flex flex-col gap-6">
-      <nav aria-label={t("period")} className="flex flex-wrap gap-2">
+      {/* Only on paper / PDF: what this report covers and when it was made. */}
+      <p className="hidden text-sm text-muted print:block">{t("printedOn", { months, date: date.format(now) })}</p>
+      <nav aria-label={t("period")} className="flex flex-wrap items-center gap-2 print:hidden">
         {FINANCE_PERIODS.map((m) => (
           <Link key={m} href={`/admin/finance?months=${m}`} aria-current={m === months ? "page" : undefined}
             className={`inline-flex min-h-11 items-center rounded-full px-4 text-[13.5px] font-bold ${m === months ? "bg-navy text-white" : "bg-white ring-1 ring-navy/10"}`}>
             {t("lastMonths", { n: m })}
           </Link>
         ))}
+        <span className="ms-auto"><PrintButton label={t("exportPdf")} /></span>
       </nav>
       <FinanceView report={report} growth={growth} sections={INVESTOR_SECTIONS} lang={lang} />
+      <div className="print:hidden">
       <ExpensesCard
         today={now.toISOString().slice(0, 10)}
         rows={expenses.map((e) => ({
@@ -47,13 +52,16 @@ async function Finance({ lang, searchParams }: { lang: Locale; searchParams: SP 
           category: e.category, recurrence: e.recurrence, description: e.description,
         }))}
       />
+      </div>
       {admin.isOwner && (
+        <div className="print:hidden">
         <InvestorLinks
           links={links.map((l) => ({
             id: l.id, label: l.label, views: l.views, password: !!l.passwordHash, sections: l.sections as string[],
             status: l.revokedAt ? "revoked" : l.expiresAt < now ? "expired" : "active", expires: date.format(l.expiresAt),
           }))}
         />
+        </div>
       )}
     </div>
   );

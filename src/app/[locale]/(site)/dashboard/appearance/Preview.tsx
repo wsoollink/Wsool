@@ -24,7 +24,7 @@ const card = "rounded-[16px] border border-[var(--page-line)] bg-[var(--page-sur
 export function Preview({ value, data }: { value: AppearanceInput; data: PreviewData }) {
   const t = useTranslations("AppearancePage");
   const theme = pageTheme(value.template as Template, value.accent, value.customColors);
-  const numbers = value.numberFont === "wide" ? "font-numbers" : "font-sans";
+  const numbers = "font-numbers";
   const accounts = data.accounts.length ? data.accounts.slice(0, 2) : [{ platform: "tiktok" as const, followers: 125000 }, { platform: "instagram" as const, followers: 48000 }];
   const total = data.followers || accounts.reduce((s, a) => s + a.followers, 0);
 
@@ -35,7 +35,7 @@ export function Preview({ value, data }: { value: AppearanceInput; data: Preview
         className={`overflow-hidden rounded-[24px] border border-line text-[var(--page-text)] shadow-card ${theme.glass ? "glass" : ""}`}
       >
         <div className="flex flex-col items-center gap-2 px-4 pt-6 pb-4 text-center">
-          <div className="size-20 overflow-hidden rounded-[20px] bg-[var(--page-surface)]">
+          <div className={`size-20 overflow-hidden bg-[var(--page-surface)] ${value.photoShape === "circle" ? "rounded-full" : "rounded-[20px]"}`}>
             {/* eslint-disable-next-line @next/next/no-img-element -- creator photo from storage */}
             {data.photoUrl && <img src={data.photoUrl} alt="" className="size-full object-cover" />}
           </div>

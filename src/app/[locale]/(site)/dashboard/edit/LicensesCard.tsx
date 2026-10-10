@@ -1,5 +1,6 @@
 "use client";
 
+import { notifySaved } from "@/lib/saved-event";
 import { useId, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { FileText, Plus, Trash2 } from "lucide-react";
@@ -38,6 +39,7 @@ export function LicensesCard({ initial, showEnglish }: { initial: Omit<LicenseIn
     startTransition(async () => {
       const result = await saveLicenses(rows.map(({ name, nameEn, number, filePath, fileUrl }) => ({ name, nameEn, number, filePath, fileUrl })));
       setStatus(result.ok ? "saved" : "failed");
+      if (result.ok) notifySaved();
     });
   };
 

@@ -63,7 +63,8 @@ export async function buildMediaKit(page: PublishedPage, lang: Locale): Promise<
   const bg = theme.bg;
   const surface = theme.solid;
   const C = { bg: color(bg, bg), surface: color(surface, bg), text: color(theme.text, bg), muted: color(theme.muted, bg), line: color(theme.line, bg), accent: color(theme.accent, bg), onAccent: color(theme.onAccent, bg) };
-  const numbersWide = page.numberFont === "wide";
+  // Big numbers always use the wide Black cut (the owner removed the choice).
+  const numbersWide = true;
   const tr = page.translations.find((x) => x.lang === lang) ?? page.translations[0];
 
   const doc = await PDFDocument.create();
@@ -108,6 +109,15 @@ export async function buildMediaKit(page: PublishedPage, lang: Locale): Promise<
     pdfPage.drawSvgPath("M5 12.5l4.2 4.2L19 7", { x: x + size * 0.12, y: H - y - size * 0.1, scale: (size * 0.76) / 24, borderColor: C.onAccent, borderWidth: 2.4 });
   };
 
+  // 0) The creator's own logo (optional), at the start of the page above the identity card.
+  const logo = await loadImage(doc, page.logoUrl);
+  if (logo) {
+    const s = Math.min(160 / logo.width, 44 / logo.height);
+    const w = logo.width * s, h = logo.height * s;
+    pdfPage.drawImage(logo, { x: startX(M, CONTENT, w), y: H - top - h, width: w, height: h });
+    top += h + 14;
+  }
+
   // 1) Identity card: photo, name, specialty, location, bio.
   const photo = await loadImage(doc, page.photoUrl);
   const photoSize = 104;
@@ -124,6 +134,11 @@ export async function buildMediaKit(page: PublishedPage, lang: Locale): Promise<
     const px = rtl ? M + CONTENT - 16 - photoSize : M + 16;
     const s = Math.max(photoSize / photo.width, photoSize / photo.height);
     pdfPage.drawImage(photo, { x: px + (photoSize - photo.width * s) / 2, y: H - top - 16 - photoSize + (photoSize - photo.height * s) / 2, width: photo.width * s, height: photo.height * s });
+    // Round photo: cover the corners with the card color (square with a circular hole).
+    if (page.photoShape === "circle") {
+      const S = photoSize, r = S / 2;
+      pdfPage.drawSvgPath(`M-1 -1 H${S + 1} V${S + 1} H-1 Z M${r} 0 A${r} ${r} 0 0 0 0 ${r} A${r} ${r} 0 0 0 ${r} ${S} A${r} ${r} 0 0 0 ${S} ${r} A${r} ${r} 0 0 0 ${r} 0 Z`, { x: px, y: H - top - 16, color: C.surface });
+    }
     // Mask the overflow of non-square photos with the card color.
     if (photo.width !== photo.height) {
       const over = Math.abs(photo.width * s - photoSize) / 2;

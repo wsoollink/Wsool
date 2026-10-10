@@ -9,6 +9,8 @@ import { pageLanguages } from "@/lib/page-language";
 import { listCategories } from "@/lib/categories";
 import { CategoriesCard } from "./CategoriesCard";
 import { LicensesCard } from "./LicensesCard";
+import { LogoCard } from "./LogoCard";
+import { PagePreview } from "./PagePreview";
 import { PhotoCard } from "./PhotoCard";
 import { PublishCard } from "./PublishCard";
 import { TagsCard } from "./TagsCard";
@@ -35,9 +37,13 @@ async function Editor() {
   ) as Record<Locale, typeof empty>;
 
   return (
-    <div className="flex flex-col gap-4">
+    // Desktop: cards + sticky preview of the real page beside them.
+    <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
+      <PagePreview username={page.username} langs={langs} />
+    <div className="flex flex-col gap-4 lg:col-start-1 lg:row-start-1">
       <PublishCard username={page.username} published={page.isPublished} />
       <PhotoCard photoUrl={page.photoUrl} />
+      <LogoCard logoUrl={page.logoUrl} />
       <ProfileForm primaryLang={page.primaryLang as Locale} enEnabled={page.enEnabled} texts={texts} />
       <CategoriesCard categories={categories} initial={picked.map((p) => p.categoryId)} />
       <TagsCard
@@ -48,6 +54,7 @@ async function Editor() {
         showEnglish={langs.includes("en") && page.primaryLang === "ar"}
         initial={licenses.map((l) => ({ name: l.name, nameEn: l.nameEn ?? "", number: l.number, fileUrl: l.fileUrl }))}
       />
+    </div>
     </div>
   );
 }

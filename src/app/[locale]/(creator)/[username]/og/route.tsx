@@ -58,7 +58,7 @@ export async function GET(_request: NextRequest, { params }: RouteContext<"/[loc
   const labelImg = textImage({ text: LABELS[lang].followers, size: 26, color: theme.muted, rtl, maxWidth: textWidth, maxLines: 1 });
 
   const photoBox = (
-    <div style={{ display: "flex", width: 420, height: 420, borderRadius: 40, overflow: "hidden", background: "linear-gradient(135deg, #0A6CFF, #22B8F0)", flexShrink: 0 }}>
+    <div style={{ display: "flex", width: 420, height: 420, borderRadius: data.photoShape === "circle" ? 210 : 40, overflow: "hidden", background: "linear-gradient(135deg, #0A6CFF, #22B8F0)", flexShrink: 0 }}>
       {/* eslint-disable-next-line @next/next/no-img-element -- rendered by next/og, not the browser */}
       {photo && <img src={photo} width={420} height={420} alt="" style={{ objectFit: "cover" }} />}
     </div>

@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import { Check, Copy, Plus, Trash2 } from "lucide-react";
 import { buttonClasses } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { createCodes, revokeCode, type CreateResult } from "./actions";
+import { createCodes, deleteRevoked, revokeCode, type CreateResult } from "./actions";
 
 type Row = { key: string; note: string; email: string };
 const newKey = () => Math.random().toString(36).slice(2);
@@ -145,6 +145,28 @@ export function RevokeButton({ id, code }: { id: string; code: string }) {
       className="inline-flex min-h-11 items-center rounded-full px-3 text-[13px] font-bold text-bad hover:bg-bad/5"
     >
       {t("revoke")}
+    </button>
+  );
+}
+
+/** Deletes one revoked code, or all of them when no id is given (asks first). */
+export function DeleteRevokedButton({ id, code, count }: { id: string | null; code?: string; count?: number }) {
+  const t = useTranslations("Admin.discounts");
+  const router = useRouter();
+  const [pending, startTransition] = useTransition();
+  const all = id === null;
+  return (
+    <button
+      type="button" disabled={pending}
+      onClick={() => {
+        if (!window.confirm(all ? t("confirmDeleteAll", { n: count ?? 0 }) : t("confirmDelete", { code: code ?? "" }))) return;
+        startTransition(async () => { await deleteRevoked(id); router.refresh(); });
+      }}
+      className={all
+        ? "inline-flex min-h-11 items-center gap-2 rounded-full bg-bad/8 px-4 text-[13.5px] font-bold text-bad hover:bg-bad/12"
+        : "inline-flex min-h-11 items-center gap-1.5 rounded-full px-3 text-[13px] font-bold text-bad hover:bg-bad/5"}
+    >
+      <Trash2 aria-hidden="true" size={16} /> {all ? t("deleteAllRevoked", { n: count ?? 0 }) : t("delete")}
     </button>
   );
 }

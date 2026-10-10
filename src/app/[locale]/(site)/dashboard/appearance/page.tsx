@@ -29,7 +29,7 @@ async function Editor() {
         customColors: parseCustomColors(page.customColors) ?? { colors: ["#0060e6"], mode: "light" },
         // Accents are presets now; an older free-picked color starts as "template color".
         accent: ACCENT_SWATCHES.some((sw) => sw.light === page.accent) ? page.accent : null,
-        numberFont: page.numberFont,
+        photoShape: page.photoShape,
         hideBranding: page.hideBranding,
       }}
       preview={{

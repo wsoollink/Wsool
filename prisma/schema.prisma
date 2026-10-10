@@ -28,9 +28,10 @@ enum Template {
   custom
 }
 
-enum NumberFont {
-  wide
-  text
+/// How the creator's photo is shown: full-width square fading into the page, or a circle.
+enum PhotoShape {
+  full
+  circle
 }
 
 enum Plan {
@@ -96,10 +97,12 @@ model Page {
   /// Custom template: { colors: string[1..2], mode: "light" | "dark" }
   customColors      Json?      @map("custom_colors")
   accent            String?    @db.VarChar(7)
-  numberFont        NumberFont @default(wide) @map("number_font")
+  photoShape        PhotoShape @default(full) @map("photo_shape")
   hideBranding      Boolean    @default(false) @map("hide_branding")
   /// Square hero photo (Supabase Storage URL).
   photoUrl          String?    @map("photo_url")
+  /// Brand logo shown in the PDF media kit only.
+  logoUrl           String?    @map("logo_url")
   /// WhatsApp number in international format, digits only (e.g. 9665XXXXXXXX).
   whatsapp          String?    @db.VarChar(20)
   contactEmail      String?    @map("contact_email") @db.VarChar(254)

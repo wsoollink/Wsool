@@ -79,6 +79,19 @@ export async function savePhoto(path: string | null): Promise<SaveState & { url?
   return { ok: true, url };
 }
 
+/** The creator's own logo for the PDF media kit (fresh upload in their folder, or null to remove). */
+export async function saveLogo(path: string | null): Promise<SaveState & { url?: string | null }> {
+  const { user, page } = await requireCreator();
+  if (path !== null && (typeof path !== "string" || !(await isOwnUploadedFile(user.id, "logo", path)))) {
+    return { error: "failed" };
+  }
+  const url = path ? publicFileUrl(path) : null;
+  await db.page.update({ where: { id: page.id }, data: { logoUrl: url } });
+  await removeFiles([pathFromPublicUrl(page.logoUrl)]).catch(() => {});
+  updateTag(pageCacheTag(page.username));
+  return { ok: true, url };
+}
+
 /** Replaces the creator's tags for one language (order = list order). */
 export async function saveTags(lang: "ar" | "en", labels: string[]): Promise<SaveState> {
   const { page } = await requireCreator();

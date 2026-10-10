@@ -9,7 +9,7 @@ import { requireAdmin } from "@/lib/admin";
 import { db } from "@/lib/db";
 import { codeStatus, DISCOUNT_BATCH_MAX, DISCOUNT_DAYS, DISCOUNT_MAX, DISCOUNT_MIN, type CodeStatus } from "@/lib/discounts";
 import { formatNumber } from "@/lib/format";
-import { CreateCodes, RevokeButton } from "./CodesManager";
+import { CreateCodes, DeleteRevokedButton, RevokeButton } from "./CodesManager";
 
 type SP = Promise<Record<string, string | string[] | undefined>>;
 const FILTERS = ["all", "unused", "used", "expired", "revoked"] as const;
@@ -47,6 +47,9 @@ async function Codes({ lang, searchParams }: { lang: Locale; searchParams: SP })
             {t(`filter.${f}`)} <span className={`font-numbers text-xs ${f === filter ? "text-white/70" : "text-muted"}`}>{formatNumber(count(f), lang)}</span>
           </Link>
         ))}
+        {count("revoked") > 0 && (filter === "all" || filter === "revoked") && (
+          <span className="ms-auto"><DeleteRevokedButton id={null} count={count("revoked")} /></span>
+        )}
       </nav>
 
       {shown.length === 0 ? (
@@ -78,7 +81,10 @@ async function Codes({ lang, searchParams }: { lang: Locale; searchParams: SP })
                       </span>
                     )}
                   </td>
-                  <td className="px-4 py-3">{r.status === "unused" && <RevokeButton id={r.id} code={r.code} />}</td>
+                  <td className="px-4 py-3">
+                    {r.status === "unused" && <RevokeButton id={r.id} code={r.code} />}
+                    {r.status === "revoked" && <DeleteRevokedButton id={r.id} code={r.code} />}
+                  </td>
                 </tr>
               ))}
             </tbody>

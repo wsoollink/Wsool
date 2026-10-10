@@ -22,6 +22,8 @@ import { linkKind, type LinkKind } from "@/lib/link-kind";
 import { bundleComparison, rateName } from "@/lib/rates";
 
 type Props = { page: PublishedPage; lang: Locale };
+/** preview: the owner's dashboard preview (no visit counting). */
+type ProfileProps = Props & { preview?: boolean };
 type T = Awaited<ReturnType<typeof getTranslations<"CreatorPage">>>;
 
 /** Opaque box from the design (views, contact, logo tiles). */
@@ -54,14 +56,15 @@ const MAIL = <><rect x="3" y="5" width="18" height="14" rx="2" /><path d="M3 7l9
  * on the start side (sticky) and the numbers, brands, work and rates in the
  * main column.
  */
-export async function CreatorProfile({ page, lang }: Props) {
+export async function CreatorProfile({ page, lang, preview = false }: ProfileProps) {
   const t = await getTranslations("CreatorPage");
   const locale = toIntlLocale(lang);
   const tr = page.translations.find((x) => x.lang === lang) ?? page.translations[0];
   const name = tr?.fullName || page.username;
   const verified = page.accounts.some((a) => a.verified);
   const totalFollowers = page.accounts.reduce((sum, a) => sum + a.followers, 0);
-  const numbersFont = page.numberFont === "wide" ? "font-numbers" : "font-sans";
+  const numbersFont = "font-numbers";
+  const circle = page.photoShape === "circle";
   const location = [tr?.city, tr?.country].filter(Boolean).join(lang === "ar" ? "، " : ", ");
   const tags = page.tags.filter((tag) => tag.lang === lang);
   const theme = pageTheme(page.template, page.accent, page.customColors);
@@ -80,7 +83,7 @@ export async function CreatorProfile({ page, lang }: Props) {
 
   return (
     <div style={themeStyle(theme)} className={`flex flex-1 flex-col text-[var(--page-text)] ${theme.glass ? "glass" : ""}`}>
-      <Tracker username={page.username} lang={lang} />
+      {!preview && <Tracker username={page.username} lang={lang} />}
 
       {/* Desktop header bar */}
       <header className="hidden border-b border-[var(--page-line)] bg-[var(--page-solid)] md:block">
@@ -96,6 +99,21 @@ export async function CreatorProfile({ page, lang }: Props) {
       <div className="mx-auto flex w-full max-w-[1160px] flex-1 flex-col md:flex-row md:items-start md:gap-7 md:px-6 md:pt-9">
         {/* Identity: hero, name, bio, location, licenses, total, icons, tags (+ contact on desktop) */}
         <aside className="flex flex-col pb-7 md:sticky md:top-6 md:w-[420px] md:shrink-0 md:overflow-hidden md:rounded-[20px] md:border md:border-[var(--page-line)] md:bg-[var(--page-solid)]">
+          {circle ? (
+            // Round photo: centred, room above it for the share / language pills on phones.
+            <div className="relative flex w-full justify-center pt-[76px] md:pt-8">
+              <div className="relative size-40 overflow-hidden rounded-full bg-[var(--page-soft)] shadow-lg ring-4 ring-[var(--page-solid)] md:size-44">
+                {page.photoUrl ? (
+                  <Image src={page.photoUrl} alt={name} fill priority unoptimized sizes="176px" className="object-cover" />
+                ) : (
+                  <div className="brand-gradient size-full" aria-hidden="true" />
+                )}
+              </div>
+              <div className="md:hidden">
+                <PageActions otherLang={otherLang} url={pageUrl} title={name} variant="photo" />
+              </div>
+            </div>
+          ) : (
           <div className="relative aspect-square w-full overflow-hidden">
             {page.photoUrl ? (
               <Image
@@ -109,8 +127,9 @@ export async function CreatorProfile({ page, lang }: Props) {
               <PageActions otherLang={otherLang} url={pageUrl} title={name} variant="photo" />
             </div>
           </div>
+          )}
 
-          <div className="relative -mt-16 flex flex-col items-center gap-1.5 px-5 text-center">
+          <div className={`relative ${circle ? "mt-4" : "-mt-16"} flex flex-col items-center gap-1.5 px-5 text-center`}>
             <h1 className="flex flex-wrap items-center justify-center gap-2 text-[30px] leading-tight font-bold">
               {name}
               {verified && (

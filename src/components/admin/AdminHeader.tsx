@@ -22,7 +22,7 @@ async function SearchBox() {
 /** Admin page header from the design: big title, subtitle, and the creator search box. */
 export function AdminHeader({ title, subtitle, search = true }: { title: string; subtitle?: string; search?: boolean }) {
   return (
-    <header className="mb-6 flex flex-wrap items-center justify-between gap-4">
+    <header className="mb-6 flex flex-wrap items-center justify-between gap-4 print:mb-2">
       <div className="flex flex-col gap-1">
         <h1 className="text-[28px] leading-tight font-black">{title}</h1>
         {subtitle && <p className="text-sm text-muted">{subtitle}</p>}

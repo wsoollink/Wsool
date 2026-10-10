@@ -1,5 +1,6 @@
 "use client";
 
+import { notifySaved } from "@/lib/saved-event";
 import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { ExternalLink } from "lucide-react";
@@ -18,6 +19,7 @@ export function PublishCard({ username, published }: { username: string; publish
     startTransition(async () => {
       const result = await setPublished(!isPublished);
       if (result.ok) {
+        notifySaved();
         setIsPublished(!isPublished);
         setError(null);
       } else setError(t(`errors.${result.error ?? "failed"}`));

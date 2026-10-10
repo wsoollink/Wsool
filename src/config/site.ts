@@ -1,4 +1,11 @@
 /**
+ * Wsool's mailboxes (aliases of the owner's Google Workspace inbox). Support is
+ * the reply-to of every email; billing is on invoices and billing emails.
+ */
+export const SUPPORT_EMAIL = "support@wsool.link";
+export const BILLING_EMAIL = "billing@wsool.link";
+
+/**
  * Site-wide settings the owner fills in. The seller details appear on every
  * invoice; the VAT number is required on Saudi tax invoices once registered.
  */
@@ -10,7 +17,7 @@ export const SELLER = {
   /** TODO(owner): commercial registration number. */
   crNumber: "",
   address: "",
-  email: "billing@wsool.link",
+  email: BILLING_EMAIL,
 };
 
 /**
@@ -23,7 +30,7 @@ export const LEGAL = {
   entityEn: "",
   /** TODO(owner): commercial registration / freelance document number. */
   registration: "",
-  email: "support@wsool.link",
+  email: SUPPORT_EMAIL,
   /** TODO(owner): Moyasar or Tap, once chosen. */
   paymentGateway: "",
   emailProvider: "Resend",

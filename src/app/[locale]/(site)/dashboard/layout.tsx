@@ -2,9 +2,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { LogOut } from "lucide-react";
+import { LifeBuoy, LogOut } from "lucide-react";
 import { SidebarNav, TabBar } from "@/components/dashboard/DashboardNav";
 import { SubmitButton } from "@/components/SubmitButton";
+import { SUPPORT_EMAIL } from "@/config/site";
 import { isLocale, toIntlLocale } from "@/i18n/config";
 import { signOut } from "../login/actions";
 
@@ -25,6 +26,10 @@ export default async function DashboardLayout({ children, params }: LayoutProps<
         <nav aria-label={t("menu")} className="flex-1 overflow-y-auto">
           <SidebarNav />
         </nav>
+        <a href={`mailto:${SUPPORT_EMAIL}`} className="flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm font-medium text-muted hover:bg-navy/5">
+          <LifeBuoy aria-hidden="true" size={18} />
+          {t("help")}
+        </a>
         <form action={signOut}>
           <SubmitButton variant="secondary" className="w-full" pendingText={t("signingOut")}>
             <LogOut aria-hidden="true" size={18} />

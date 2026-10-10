@@ -30,6 +30,10 @@ Surfaces:
 - **Supabase**: Postgres, Auth, Storage, scheduled jobs
 - **Prisma** as ORM against the Supabase Postgres
 - **Resend** for transactional email, sent from `mail.wsool.link` (never from the personal mailbox)
+- **Mailboxes**: `support@wsool.link` and `billing@wsool.link` are aliases of the owner's Google Workspace
+  inbox (`ibrahim@wsool.link`; MX on `wsool.link` = Google, don't touch). Constants `SUPPORT_EMAIL` /
+  `BILLING_EMAIL` in `src/config/site.ts`: support = reply-to of every email + "Contact support" in the
+  dashboard; billing = invoices + reply-to of billing notifications (`billing: true` in `NOTIFICATIONS`).
 - **Payments**: Saudi gateway, provider not final (Moyasar or Tap). Build behind a
   `PaymentProvider` interface so the provider can be swapped. Must support mada, Apple Pay,
   international cards, and recurring billing.

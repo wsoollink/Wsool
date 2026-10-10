@@ -167,6 +167,7 @@
     "more": "More",
     "signOut": "Sign out",
     "signingOut": "Signing out…",
+    "help": "Contact support",
     "accountsShort": "Accounts",
     "unread": "You have new notifications",
     "links": "Links & services"
@@ -1334,7 +1335,7 @@
     "deleted": "(deleted)"
   },
   "Notify": {
-    "footer": "You got this email because you have a Wsool account. Manage reminder emails under Notifications in your dashboard.",
+    "footer": "Questions? Just reply to this email. You got this email because you have a Wsool account. Manage reminder emails under Notifications in your dashboard.",
     "welcome": {
       "subject": "Welcome to Wsool 👋",
       "title": "Your page is ready to build",

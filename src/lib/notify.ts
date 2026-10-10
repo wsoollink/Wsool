@@ -5,6 +5,7 @@ import { toIntlLocale, type Locale } from "@/i18n/config";
 import { db } from "@/lib/db";
 import { renderEmail } from "@/lib/email/layout";
 import { sendEmail } from "@/lib/email/send";
+import { BILLING_EMAIL } from "@/config/site";
 import { formatPrice } from "@/lib/format";
 import { siteOrigin } from "@/lib/site-url";
 import ar from "../../messages/ar.json";
@@ -14,17 +15,18 @@ import en from "../../messages/en.json";
  * Every notification Wsool sends (in the bell and by email). Texts live in
  * messages/*.json under "Notify.<type>" (subject, title, body, cta).
  * Reminders respect the creator's email settings; the rest is always sent.
+ * Replies to billing emails go to billing@, the rest to support@.
  */
 export const NOTIFICATIONS = {
   welcome: { href: "/dashboard", reminder: false },
   trial_reminder: { href: "/dashboard/subscription", reminder: true },
   trial_ended: { href: "/dashboard/subscription", reminder: false },
-  payment_receipt: { href: "/dashboard/subscription", reminder: false },
-  renewal_receipt: { href: "/dashboard/subscription", reminder: false },
-  renewal_upcoming: { href: "/dashboard/subscription", reminder: false },
-  payment_failed: { href: "/dashboard/subscription", reminder: false },
-  subscription_ended: { href: "/dashboard/subscription", reminder: false },
-  refund_issued: { href: "/dashboard/subscription", reminder: false },
+  payment_receipt: { href: "/dashboard/subscription", reminder: false, billing: true },
+  renewal_receipt: { href: "/dashboard/subscription", reminder: false, billing: true },
+  renewal_upcoming: { href: "/dashboard/subscription", reminder: false, billing: true },
+  payment_failed: { href: "/dashboard/subscription", reminder: false, billing: true },
+  subscription_ended: { href: "/dashboard/subscription", reminder: false, billing: true },
+  refund_issued: { href: "/dashboard/subscription", reminder: false, billing: true },
   verification_approved: { href: "/dashboard/verification", reminder: false },
   verification_rejected: { href: "/dashboard/verification", reminder: false },
   verification_expiring: { href: "/dashboard/verification", reminder: true },
@@ -104,7 +106,8 @@ export async function notify(userId: string, type: NotificationType, data: Data 
     if (NOTIFICATIONS[type].reminder && user.notificationSettings?.emailReminders === false) return;
     const lang = (user.page?.primaryLang ?? "ar") as Locale;
     const footer = createTranslator({ locale: toIntlLocale(lang), messages: MESSAGES[lang], namespace: "Notify" })("footer");
-    await sendEmail({ to: user.email, ...emailFor(type, data, lang, footer) });
+    const replyTo = "billing" in NOTIFICATIONS[type] ? BILLING_EMAIL : undefined;
+    await sendEmail({ to: user.email, replyTo, ...emailFor(type, data, lang, footer) });
   } catch (err) {
     console.error("[notify] failed", type, err);
   }

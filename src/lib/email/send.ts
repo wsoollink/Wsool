@@ -1,4 +1,5 @@
 import "server-only";
+import { SUPPORT_EMAIL } from "@/config/site";
 
 export type Email = { to: string; subject: string; html: string; text: string; replyTo?: string; headers?: Record<string, string> };
 
@@ -8,7 +9,7 @@ const API = process.env.RESEND_API_BASE || "https://api.resend.com";
 
 const payload = (email: Email) => ({
   from: FROM, to: [email.to], subject: email.subject, html: email.html, text: email.text,
-  reply_to: email.replyTo ?? "support@wsool.link", ...(email.headers && { headers: email.headers }),
+  reply_to: email.replyTo ?? SUPPORT_EMAIL, ...(email.headers && { headers: email.headers }),
 });
 
 /**

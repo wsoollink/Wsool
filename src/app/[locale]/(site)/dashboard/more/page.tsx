@@ -2,11 +2,12 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { LogOut } from "lucide-react";
+import { LifeBuoy, LogOut } from "lucide-react";
 import { SectionIcon } from "@/components/dashboard/SectionIcon";
 import { SubmitButton } from "@/components/SubmitButton";
 import { Card } from "@/components/ui/Card";
 import { MORE_SECTIONS } from "@/config/dashboard";
+import { SUPPORT_EMAIL } from "@/config/site";
 import { isLocale, toIntlLocale } from "@/i18n/config";
 import { requireCreator } from "@/lib/creator";
 import { signOut } from "../../login/actions";
@@ -40,6 +41,12 @@ export default async function MorePage({ params }: PageProps<"/[locale]/dashboar
               </Link>
             </li>
           ))}
+          <li>
+            <a href={`mailto:${SUPPORT_EMAIL}`} className="flex min-h-12 items-center gap-3 rounded-xl px-3 text-sm font-medium hover:bg-navy/5">
+              <LifeBuoy aria-hidden="true" size={20} className="text-blue" />
+              {t("help")}
+            </a>
+          </li>
         </ul>
       </Card>
       <form action={signOut}>

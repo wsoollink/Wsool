@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ShieldAlert } from "lucide-react";
 import { SubmitButton } from "@/components/SubmitButton";
 import { Card } from "@/components/ui/Card";
+import { SUPPORT_EMAIL } from "@/config/site";
 import { isLocale, toIntlLocale } from "@/i18n/config";
 import { signOut } from "../login/actions";
 
@@ -19,7 +20,7 @@ export default async function SuspendedPage({ params }: PageProps<"/[locale]/sus
         <ShieldAlert aria-hidden="true" size={32} className="text-bad" />
         <h1 className="text-2xl font-bold">{t("title")}</h1>
         <p className="text-sm text-muted">{t("body")}</p>
-        <a href="mailto:support@wsool.link" className="text-sm font-medium text-blue underline">support@wsool.link</a>
+        <a href={`mailto:${SUPPORT_EMAIL}`} dir="ltr" className="text-sm font-medium text-blue underline">{SUPPORT_EMAIL}</a>
         <form action={signOut}>
           <SubmitButton variant="secondary" pendingText={t("signingOut")}>{t("signOut")}</SubmitButton>
         </form>

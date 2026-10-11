@@ -499,11 +499,17 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
 - Bell dot: `UnreadDot` (server, in Suspense in each page header); notifications are marked read
   per item or with "mark all as read" (`markRead` / `markAllRead`), not on opening the page. All dashboard sections are built (no placeholder route).
 - **PDF media kit**: `/<username>/pdf` (route handler, Pro pages only, `?lang=` one of the page's
-  languages, `&download` for attachment) → `buildMediaKit()` (`src/lib/pdf/media-kit.ts`, pdf-lib,
-  A4, template colors, identity, totals, platforms, logos, rates if `showInPdf`, contact + QR
-  code). Text is drawn as outlines with `textPaths()` (`src/lib/og-text.ts`); characters missing
-  from the Arabic subset font (".", ":") fall back to the Latin font per run, and ❤ is drawn as a
-  path. WebP logos are converted with sharp when available, else the brand name is shown.
+  languages, `&download` for attachment) → `buildMediaKit()` (`src/lib/pdf/media-kit.ts`, pdf-lib). Matches the
+  owner's design (dashboard design artifact, board "ملف PDF", Oct 2026): A4 pages laid out in the design's CSS px
+  (794 × 1123, ×0.75 → pt): cover (photo fading into the page, or a circle; creator logo in place of the "Wsool" pill;
+  floating brand logos; total followers; link card), about (bio, tags, licenses, city, content language), numbers,
+  one page per platform (audience bars + its rates; skipped when it has neither), bundle, services, brands, selected
+  work (thumbnail + link to the video), contact (WhatsApp, email, dark "full page" card with a QR code). Empty
+  sections are left out; header/footer with page numbers; "made with Wsool" follows `showBranding`; every card is a
+  clickable link annotation. Colors come from `pageTheme()` (incl. its `grid`/`glow`). Texts: `MediaKit` messages.
+  Text is drawn as outlines with `textPaths()` (`src/lib/og-text.ts`). The photo fade uses ~40 overlapping layers with
+  computed opacities (hundreds of faint layers get rounded away by PDF renderers). Images are clipped with PDF clip
+  paths (`withClip`). Local preview without the app: render from a script with `getPreviewPage()` + `buildMediaKit()`.
   Dashboard home has the download buttons.
 - **Finance** (`admin/finance/`, permission `revenue.view`): `financeReport(months)`
   (`src/lib/finance.ts`) — revenue from paid invoices without VAT, in SAR (USD × 3.75), expenses

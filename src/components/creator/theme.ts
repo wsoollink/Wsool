@@ -32,9 +32,12 @@ export type PageTheme = {
   /** Translucent cards over a dark background. */
   glass?: boolean;
   dark: boolean;
+  /** Soft glow and grid-line colors behind the page (the PDF draws them itself). */
+  glow: string;
+  grid: string;
 };
 
-type Base = Omit<PageTheme, "onAccent" | "dark" | "bgImage"> & { glow: string; grid: string };
+type Base = Omit<PageTheme, "onAccent" | "dark" | "bgImage">;
 
 const LIGHT_PILL = "rgba(255, 255, 255, 0.92)";
 const DARK_PILL = "rgba(7, 9, 14, 0.55)";
@@ -140,6 +143,8 @@ export function pageTheme(template: Template, accent: string | null, customColor
   const finalAccent = ensureContrast(accentColor, base.bg, 4.5);
   return {
     ...base,
+    glow,
+    grid,
     bgImage: background(glow, grid),
     text: ensureContrast(base.text, base.bg, 7),
     muted: ensureContrast(base.muted, base.solid, 4.5),

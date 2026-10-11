@@ -383,6 +383,14 @@
       "failed": "We couldn't read the screenshot; try a clearer one or fill it in manually.",
       "readingMany": "AI is reading image {n} of {total}…",
       "checkAges": "⚠️ The age percentages read from the screenshot don't add up to 100%. Check each age group against the number written beside it in the app."
+    },
+    "members": "Members",
+    "profileLink": "Profile link",
+    "linkError": "Paste your {platform} profile link (from the app's share button).",
+    "linkHint": {
+      "spotify": "Open your Spotify page (podcast or artist), tap Share → Copy link.",
+      "discord": "Your server invite link, like discord.gg/… (preferably one that never expires). Followers here = server members.",
+      "jaco": "Open your Jaco profile, tap Share → Copy link."
     }
   },
   "WorkPage": {

@@ -12,6 +12,8 @@ export const accountsSchema = z
       platform: z.enum(PLATFORMS as [string, ...string[]]),
       handle: z.string().transform(normalizeHandle).pipe(z.string().regex(HANDLE_PATTERN)),
       followers: z.number().int().min(0).max(MAX_FOLLOWERS),
+      /** Pasted profile link, only for LINK_PLATFORMS (checked by linkProfileUrl). */
+      link: z.string().max(300).optional(),
     }),
   )
   .max(MAX_ACCOUNTS);

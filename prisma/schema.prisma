@@ -202,6 +202,11 @@ enum Platform {
   telegram
   facebook
   linkedin
+  pinterest
+  twitch
+  jaco
+  discord
+  spotify
 }
 
 /// "expiring soon" is derived from verifiedUntil, not stored.

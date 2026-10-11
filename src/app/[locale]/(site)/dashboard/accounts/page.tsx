@@ -37,7 +37,7 @@ async function Editor({ lang }: { lang: Locale }) {
   return (
     <div className="flex flex-col gap-4">
       <AccountsCard
-        initial={accounts.map((a) => ({ id: a.id, platform: a.platform, handle: a.handle, followers: a.followers, verificationStatus: a.verificationStatus }))}
+        initial={accounts.map((a) => ({ id: a.id, platform: a.platform, handle: a.handle, followers: a.followers, verificationStatus: a.verificationStatus, link: a.url }))}
       />
       <ViewsCard
         // Remount when the list changes so the rows match the saved accounts.

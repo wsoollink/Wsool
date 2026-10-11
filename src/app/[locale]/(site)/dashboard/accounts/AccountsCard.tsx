@@ -8,25 +8,35 @@ import { ArrowDown, ArrowUp, BadgeCheck, ChevronDown, Plus, Trash2, Users } from
 import { buttonClasses } from "@/components/ui/Button";
 import { PlatformIcon } from "@/components/creator/PlatformIcon";
 import { Card } from "@/components/ui/Card";
-import { HANDLE_PATTERN, normalizeHandle, PLATFORM_NAMES, PLATFORMS } from "@/config/platforms";
+import { HANDLE_PATTERN, linkProfileUrl, needsLink, normalizeHandle, PLATFORM_NAMES, PLATFORMS } from "@/config/platforms";
 import type { Platform, VerificationStatus } from "@/generated/prisma/enums";
 import type { Locale } from "@/i18n/config";
 import { digitsOnly, formatNumber } from "@/lib/format";
 import { MAX_ACCOUNTS, MAX_FOLLOWERS } from "@/lib/validation/accounts";
 import { saveAccounts } from "./actions";
 
-export type AccountRow = { id: string | null; platform: Platform; handle: string; followers: number; verificationStatus: VerificationStatus };
+export type AccountRow = {
+  id: string | null; platform: Platform; handle: string; followers: number; verificationStatus: VerificationStatus;
+  /** Pasted profile link (only used for the link platforms: Spotify, Discord, Jaco). */
+  link: string;
+};
 type Row = Omit<AccountRow, "followers"> & { key: string; followers: string; original?: AccountRow; error?: boolean };
 
 const newKey = () => Math.random().toString(36).slice(2);
 const iconButton = "inline-flex size-11 items-center justify-center rounded-[10px] bg-navy/5 text-navy disabled:opacity-30";
 const control = "h-12 w-full rounded-xl border border-navy/16 bg-white px-3 text-[15px] aria-[invalid=true]:border-bad";
 
+const LINK_PLACEHOLDERS: Partial<Record<Platform, string>> = {
+  spotify: "https://open.spotify.com/show/…",
+  discord: "https://discord.gg/…",
+  jaco: "https://jaco.live/…",
+};
+
 const toRow = (a: AccountRow): Row => ({ ...a, key: a.id ?? newKey(), followers: String(a.followers), original: a });
 
 function isChanged(row: Row) {
   const o = row.original;
-  return !!o && (o.platform !== row.platform || o.handle !== normalizeHandle(row.handle) || String(o.followers) !== row.followers);
+  return !!o && (o.platform !== row.platform || o.handle !== normalizeHandle(row.handle) || String(o.followers) !== row.followers || (needsLink(row.platform) && o.link !== row.link.trim()));
 }
 
 /** Social accounts: platform, handle, followers; reorder, add, delete. */
@@ -55,14 +65,18 @@ export function AccountsCard({ initial }: { initial: AccountRow[] }) {
     const checked = rows.map((r) => {
       const handle = normalizeHandle(r.handle);
       const followers = Number(r.followers);
-      const valid = HANDLE_PATTERN.test(handle) && r.followers !== "" && followers <= MAX_FOLLOWERS;
+      const linkOk = !needsLink(r.platform) || !!linkProfileUrl(r.platform, r.link);
+      const valid = HANDLE_PATTERN.test(handle) && r.followers !== "" && followers <= MAX_FOLLOWERS && linkOk;
       return { ...r, handle, error: !valid };
     });
     setRows(checked);
     if (checked.some((r) => r.error)) return setStatus("incomplete");
 
     startTransition(async () => {
-      const res = await saveAccounts(checked.map((r) => ({ id: r.id, platform: r.platform, handle: r.handle, followers: Number(r.followers) })));
+      const res = await saveAccounts(checked.map((r) => ({
+        id: r.id, platform: r.platform, handle: r.handle, followers: Number(r.followers),
+        ...(needsLink(r.platform) && { link: r.link.trim() }),
+      })));
       if (!res.ok || !res.accounts) return setStatus("failed");
       const saved = res.accounts;
       setResetNote(saved.some((a) => a.verificationReset));
@@ -74,6 +88,7 @@ export function AccountsCard({ initial }: { initial: AccountRow[] }) {
             handle: saved[i].handle,
             followers: Number(r.followers),
             verificationStatus: saved[i].verificationReset ? "none" : r.verificationStatus,
+            link: needsLink(r.platform) ? linkProfileUrl(r.platform, r.link) ?? r.link : "",
           }),
         ),
       );
@@ -88,7 +103,7 @@ export function AccountsCard({ initial }: { initial: AccountRow[] }) {
   const [picker, setPicker] = useState(false);
   const addPlatform = (platform: Platform) => {
     const key = newKey();
-    setRows([...rows, { key, id: null, platform, handle: "", followers: "", verificationStatus: "none" }]);
+    setRows([...rows, { key, id: null, platform, handle: "", followers: "", verificationStatus: "none", link: "" }]);
     setOpenKey(key);
     setPicker(false);
     setStatus("");
@@ -148,7 +163,7 @@ export function AccountsCard({ initial }: { initial: AccountRow[] }) {
                           />
                         </div>
                         <div className="flex flex-col gap-1.5">
-                          <label htmlFor={`followers-${row.key}`} className="text-[13px] font-medium">{t("followers")}</label>
+                          <label htmlFor={`followers-${row.key}`} className="text-[13px] font-medium">{row.platform === "discord" ? t("members") : t("followers")}</label>
                           <input
                             id={`followers-${row.key}`} dir="ltr" inputMode="numeric" value={row.followers} placeholder="0" autoComplete="off"
                             aria-invalid={row.error && (row.followers === "" || Number(row.followers) > MAX_FOLLOWERS)}
@@ -157,7 +172,20 @@ export function AccountsCard({ initial }: { initial: AccountRow[] }) {
                           />
                         </div>
                       </div>
-                      {row.error && <p className="text-sm text-bad">{t("rowError")}</p>}
+                      {needsLink(row.platform) && (
+                        <div className="flex flex-col gap-1.5">
+                          <label htmlFor={`link-${row.key}`} className="text-[13px] font-medium">{t("profileLink")}</label>
+                          <input
+                            id={`link-${row.key}`} dir="ltr" type="url" inputMode="url" value={row.link} placeholder={LINK_PLACEHOLDERS[row.platform]} autoComplete="off" spellCheck={false}
+                            aria-invalid={row.error && !linkProfileUrl(row.platform, row.link)}
+                            aria-describedby={`link-hint-${row.key}`}
+                            onChange={(ev) => update(row.key, { link: ev.target.value })}
+                            className={control}
+                          />
+                          <p id={`link-hint-${row.key}`} className="text-xs text-muted">{t(`linkHint.${row.platform as "spotify" | "discord" | "jaco"}`)}</p>
+                        </div>
+                      )}
+                      {row.error && <p className="text-sm text-bad">{needsLink(row.platform) && !linkProfileUrl(row.platform, row.link) ? t("linkError", { platform: name }) : t("rowError")}</p>}
                       {verifiedish && isChanged(row) && <p className="text-sm text-warn">{t("verificationWarning")}</p>}
                       {row.id && (
                         <a href="#audience" className="flex min-h-12 items-center gap-3 rounded-xl bg-navy/5 px-3 text-[13px] font-bold">

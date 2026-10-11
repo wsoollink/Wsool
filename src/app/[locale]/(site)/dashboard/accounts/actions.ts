@@ -2,7 +2,7 @@
 
 import { updateTag } from "next/cache";
 import type { Platform } from "@/generated/prisma/enums";
-import { profileUrl } from "@/config/platforms";
+import { linkProfileUrl, profileUrl } from "@/config/platforms";
 import { requireCreator } from "@/lib/creator";
 import { db } from "@/lib/db";
 import { pageCacheTag } from "@/lib/public-page";
@@ -33,6 +33,10 @@ export async function saveAccounts(items: AccountInput[]): Promise<AccountsResul
   const ids = parsed.data.map((a) => a.id).filter(Boolean);
   if (new Set(ids).size !== ids.length) return { error: "failed" };
 
+  // Profile links are built on the server, or (link platforms) checked against the platform's domain.
+  const urls = parsed.data.map((a) => profileUrl(a.platform as Platform, a.handle) ?? linkProfileUrl(a.platform as Platform, a.link ?? ""));
+  if (urls.some((u) => !u)) return { error: "failed" };
+
   const now = new Date();
   const resets = new Set<string>();
   const kept = new Set(ids);
@@ -42,14 +46,14 @@ export async function saveAccounts(items: AccountInput[]): Promise<AccountsResul
     const saved = [];
     for (const [sort, item] of parsed.data.entries()) {
       const platform = item.platform as Platform;
-      const data = { platform, handle: item.handle, url: profileUrl(platform, item.handle), followers: item.followers, sort };
+      const data = { platform, handle: item.handle, url: urls[sort]!, followers: item.followers, sort };
       const old = item.id ? byId.get(item.id) : undefined;
       if (!old) {
         saved.push(await tx.socialAccount.create({ data: { ...data, pageId: page.id, followersUpdatedAt: now } }));
         continue;
       }
       const followersChanged = old.followers !== item.followers;
-      const changed = followersChanged || old.platform !== platform || old.handle !== item.handle;
+      const changed = followersChanged || old.platform !== platform || old.handle !== item.handle || old.url !== data.url;
       const reset = changed && old.verificationStatus !== "none" && old.verificationStatus !== "rejected";
       if (reset) resets.add(old.id);
       // The screenshot under review no longer matches the account.

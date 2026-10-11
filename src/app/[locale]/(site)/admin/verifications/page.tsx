@@ -97,7 +97,7 @@ async function Queue({ lang, tab, id, ai }: { lang: Locale; tab: Tab; id: string
       orderBy: { createdAt: "asc" },
       // Enough to sort by the AI result; the list shows PAGE_SIZE.
       take: 200,
-      include: { account: { select: { verificationStatus: true, verifiedUntil: true, page: { select: { username: true } } } } },
+      include: { account: { select: { verificationStatus: true, verifiedUntil: true, url: true, page: { select: { username: true } } } } },
     }),
     db.verificationRequest.count({ where: { status: "pending" } }),
     db.verificationRequest.count({ where: { status: "pending", createdAt: { lt: new Date(now - REVIEW_HOURS * 3_600_000) } } }),
@@ -164,7 +164,7 @@ async function Queue({ lang, tab, id, ai }: { lang: Locale; tab: Tab; id: string
     platform: current.platform,
     handle: current.handle,
     followers: formatNumber(current.followers, lang),
-    profileUrl: profileUrl(current.platform, current.handle),
+    profileUrl: profileUrl(current.platform, current.handle) ?? current.account.url,
     username: current.account.page.username,
     // Only the open request gets a (10-minute) signed screenshot URL.
     screenshotUrl: await signedVerificationUrl(current.screenshotPath),

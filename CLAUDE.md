@@ -60,7 +60,8 @@ Surfaces:
 
 - Arabic is the primary language, RTL. English is LTR.
 - **All numbers everywhere use Western digits 0–9**, also in Arabic (no ٠١٢٣).
-- Platform names always in English (TikTok, Instagram, X, YouTube, Snapchat, Threads, Telegram, Facebook, LinkedIn).
+- Platform names always in English (TikTok, Instagram, X, YouTube, Snapchat, Threads, Telegram, Facebook, LinkedIn,
+  Pinterest, Twitch, Jaco, Discord, Spotify).
 - Creator page opens in the visitor's device language if the creator enabled it; otherwise the creator's primary language.
 - Creators write their own English content. **No auto-translation.**
 - Currency: Arabic site prices in SAR, English site in USD. The dashboard shows the currency the creator subscribed in.
@@ -391,7 +392,10 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
 - **Accounts & numbers** (`dashboard/accounts/`): `saveAccounts` updates accounts in place by id
   (rates/audience stay attached), creates new ones, deletes missing ones. Profile URLs are built
   on the server from platform + handle (`profileUrl()`, no free-form links); pasted links/`@` are
-  cleaned by `normalizeHandle()`. Changing platform, handle or followers of a verified/in-review
+  cleaned by `normalizeHandle()`. Exception, `LINK_PLATFORMS` (Spotify, Discord, Jaco: no URL can be built from a
+  username): the creator pastes the profile link, `linkProfileUrl()` accepts only that platform's domain and cleans it
+  (Spotify artist/show/user, Discord invite = server, followers labelled "members"; Jaco keeps its query). Icons:
+  simple-icons + hand-made LinkedIn/Jaco paths, all run through `spacedPath()` (pdf-lib misreads packed arc flags). Changing platform, handle or followers of a verified/in-review
   account resets it to `none`. Monthly views: the creator picks the month once, then types views per account;
   `saveMonthlyViews` keeps one row (first day of the month, UTC) with the total (`views`, what the page shows) and
   `by_account` ({accountId: views}); all empty hides the box, deleting an account drops its share (`dropDeletedViews`). Audience = gender, fixed age groups, top 5 countries (ISO codes) and cities, each group

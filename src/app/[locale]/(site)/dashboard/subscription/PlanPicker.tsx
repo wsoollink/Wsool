@@ -1,13 +1,14 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { Card } from "@/components/ui/Card";
 import { FREE_LIMITS, PRICES } from "@/config/plans";
 import { fromIntlLocale } from "@/i18n/config";
 import { formatPrice } from "@/lib/format";
-import { applyDiscount, checkout } from "./actions";
-import { Tag, X } from "lucide-react";
+import { applyDiscount, checkout, redeemFree } from "./actions";
+import { Gift, Tag, X } from "lucide-react";
 
 /**
  * Plan comparison from the design (Free vs Paid, monthly/yearly switch) with
@@ -23,11 +24,21 @@ export function PlanPicker({ defaultCurrency, canPay, renew, showTrial }: { defa
   const [codeOpen, setCodeOpen] = useState(false);
   const [codeInput, setCodeInput] = useState("");
   const [codeError, setCodeError] = useState("");
-  const [discount, setDiscount] = useState<{ code: string; percent: number } | null>(null);
+  const [discount, setDiscount] = useState<{ code: string; percent: number; freeCycle: "monthly" | "yearly" | null } | null>(null);
+  const free = discount?.freeCycle ? discount : null;
+  const router = useRouter();
+  const [redeeming, startRedeem] = useTransition();
+  const redeem = () =>
+    startRedeem(async () => {
+      setError("");
+      const res = await redeemFree(free!.code);
+      if (res.ok) router.refresh();
+      else setError(t(`errors.${res.error ?? "failed"}`));
+    });
   const [applying, startApply] = useTransition();
   const prices = PRICES[currency];
   // First payment only; the server recomputes it at checkout.
-  const pay1 = (v: number) => (discount ? Math.round(v * (100 - discount.percent)) / 100 : v);
+  const pay1 = (v: number) => (discount && !free ? Math.round(v * (100 - discount.percent)) / 100 : v);
   const monthsFree = Math.round(12 - prices.yearly / prices.monthly);
   const yes = "✓", no = "—";
 
@@ -72,7 +83,7 @@ export function PlanPicker({ defaultCurrency, canPay, renew, showTrial }: { defa
             <th scope="col" className="w-[84px] rounded-t-[10px] bg-navy/5 pt-2 pb-2 text-center text-[12.5px] font-bold text-blue">
               {t("paidPlan")}
               <span dir="ltr" className="block text-xs font-medium text-muted">
-                {discount && <s className="me-1 opacity-70">{formatPrice(prices[cycle], currency, lang)}</s>}
+                {discount && !free && <s className="me-1 opacity-70">{formatPrice(prices[cycle], currency, lang)}</s>}
                 {formatPrice(pay1(prices[cycle]), currency, lang)}
               </span>
             </th>
@@ -106,7 +117,23 @@ export function PlanPicker({ defaultCurrency, canPay, renew, showTrial }: { defa
       )}
       <p className="text-xs text-muted">{t("vatNote")}</p>
 
-      {canPay && (discount ? (
+      {free ? (
+        <div className="flex flex-col gap-3 rounded-2xl bg-good/8 p-4">
+          <div className="flex items-start gap-3">
+            <Gift aria-hidden="true" size={22} className="mt-0.5 shrink-0 text-good" />
+            <p className="flex-1 text-[14px] font-bold">
+              {t("freeApplied", { cycle: t(`freeCycle.${free.freeCycle}`) })}
+              <span className="mt-0.5 block text-xs font-normal text-muted"><b dir="ltr">{free.code}</b> · {t("freeNote")}</span>
+            </p>
+            <button type="button" onClick={() => { setDiscount(null); setCodeInput(""); }} aria-label={t("removeCode")} className="inline-flex size-11 shrink-0 items-center justify-center rounded-full text-muted hover:bg-navy/5">
+              <X aria-hidden="true" size={16} />
+            </button>
+          </div>
+          <button type="button" onClick={redeem} disabled={redeeming} aria-busy={redeeming} className="inline-flex h-12 items-center justify-center rounded-full bg-good text-[15px] font-bold text-white disabled:opacity-70">
+            {redeeming ? t("activating") : t("activate")}
+          </button>
+        </div>
+      ) : (discount ? (
         <div className="flex items-center gap-3 rounded-xl bg-good/8 p-3">
           <Tag aria-hidden="true" size={18} className="shrink-0 text-good" />
           <p className="flex-1 text-[13px]">
@@ -150,7 +177,7 @@ export function PlanPicker({ defaultCurrency, canPay, renew, showTrial }: { defa
         </button>
       ))}
 
-      {canPay ? (
+      {free ? null : canPay ? (
         <button type="button" onClick={pay} disabled={pending} aria-busy={pending} className="inline-flex h-12 items-center justify-center rounded-full bg-blue text-[15px] font-bold text-white disabled:opacity-70">
           {pending ? t("redirecting") : t("pay", { price: formatPrice(pay1(prices[cycle]), currency, lang) })}
         </button>

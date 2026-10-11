@@ -1291,10 +1291,10 @@
         "revoked": "Revoked"
       },
       "createTitle": "Create discount codes",
-      "createHint": "Each code works once, on the first payment (monthly or yearly), and is valid for {days} days.",
+      "createHint": "Each code works once and is valid for {days} days: a discount on the first payment (monthly or yearly), or a free subscription when you pick 100%.",
       "percent": "Discount",
       "other": "Other",
-      "percentHint": "From {min}% to {max}%. For free time, use “Extend trial” on the user's page.",
+      "percentHint": "{min}% to {max}% off the first payment, or “100% free” for a free subscription (a month or a year) with no payment.",
       "people": "Who are they for? (one code per row)",
       "noteN": "Name or note {n}",
       "emailN": "Email {n}",
@@ -1317,7 +1317,15 @@
       "delete": "Delete",
       "deleteAllRevoked": "Delete all revoked ({n})",
       "confirmDelete": "Delete code {code} for good?",
-      "confirmDeleteAll": "Delete {n} revoked codes for good? This can't be undone."
+      "confirmDeleteAll": "Delete {n} revoked codes for good? This can't be undone.",
+      "freePreset": "100% free",
+      "freeCycle": "Free subscription length",
+      "cycle": {
+        "monthly": "1 month",
+        "yearly": "1 year"
+      },
+      "freeHint": "The creator redeems it on the Subscription page, no card needed. It doesn't renew; they get a reminder a week before it ends.",
+      "freeLabel": "Free · {cycle}"
     },
     "insights": {
       "none": "Not set",
@@ -1402,7 +1410,8 @@
       "renewsOn": "Renews automatically on {date}.",
       "endsOn": "Auto-renew is off. Pro until {date}.",
       "pastDue": "We couldn't renew your payment. We'll retry on {date}, or pay again.",
-      "free": "Free plan. Subscribe to get Pro back; all your data is kept."
+      "free": "Free plan. Subscribe to get Pro back; all your data is kept.",
+      "freeUntil": "🎁 Free plan until {date}. It doesn't renew automatically."
     },
     "manage": "Manage subscription",
     "autoRenewOn": "Auto-renew is on.",
@@ -1430,12 +1439,13 @@
     },
     "errors": {
       "disabled": "Payments aren't available yet.",
-      "already_active": "Your plan is already active.",
+      "already_active": "Your paid plan is active and renews automatically, so you don't need the code.",
       "failed": "Something went wrong. Try again.",
       "invalid": "That code isn't valid.",
       "expired": "That code has expired.",
       "used": "That code was already used.",
-      "not_yours": "This code belongs to another account."
+      "not_yours": "This code belongs to another account.",
+      "not_free": "This code is a payment discount, not a free subscription."
     },
     "delete": {
       "title": "Delete account",
@@ -1537,7 +1547,15 @@
       "expired": "That code has expired.",
       "used": "That code was already used.",
       "not_yours": "This code belongs to another account."
-    }
+    },
+    "freeApplied": "🎁 Free Pro subscription for {cycle}",
+    "freeCycle": {
+      "monthly": "1 month",
+      "yearly": "1 year"
+    },
+    "freeNote": "No card needed, and it doesn't renew automatically.",
+    "activate": "Activate subscription",
+    "activating": "Activating…"
   },
   "Analytics": {
     "range": "Period",
@@ -1684,6 +1702,18 @@
       "title": "License verification rejected",
       "body": "We reviewed your {license} file and couldn't verify it: {reason}\nUpdate the file in Edit page and send it again.",
       "cta": "Update the file"
+    },
+    "free_activated": {
+      "subject": "Your free subscription is active 🎁",
+      "title": "Your Pro plan is active",
+      "body": "Pro is yours for free until {endDate}.\nEnjoy every template, the verified badge, analytics and the PDF media kit.",
+      "cta": "View your plan"
+    },
+    "free_ending": {
+      "subject": "Your free subscription ends soon",
+      "title": "Your free Pro is ending",
+      "body": "Your free Pro plan ends on {endDate}.\nSubscribe to keep the templates, verified badge and analytics. If you don't, your page goes back to the Free plan and none of your data is deleted.",
+      "cta": "Subscribe to Pro"
     }
   },
   "Notifications": {

@@ -40,6 +40,8 @@ export async function startCheckout(user: { id: string; email: string }, cycle: 
   // A discount code (first payment only) is checked again here, whatever the browser showed.
   const discount = discountCode ? await checkDiscountCode(discountCode, user) : null;
   if (discount && "error" in discount) return { error: discount.error };
+  // A free (100%) code is redeemed without checkout (redeemFreeCode).
+  if (discount && discount.percent >= 100) return { error: "failed" };
   const full = PRICES[currency][cycle];
   const amount = discount ? discountedPrice(full, discount.percent) : full;
   const invoice = await db.invoice.create({
@@ -60,6 +62,37 @@ export async function startCheckout(user: { id: string; email: string }, cycle: 
     await db.invoice.update({ where: { id: invoice.id }, data: { status: "failed", failureReason: "Could not start checkout" } });
     return { error: "failed" };
   }
+}
+
+export type RedeemError = CodeError | "not_free" | "already_active" | "failed";
+
+/**
+ * Redeems a 100% code: Pro for the code's period (one month or one year) with
+ * no payment. Starts after any trial or paid time left. Never renews (no card):
+ * when it ends the page drops to Free like a cancelled plan, nothing is deleted.
+ */
+export async function redeemFreeCode(user: { id: string; email: string }, input: string): Promise<{ until: Date } | { error: RedeemError }> {
+  const code = await checkDiscountCode(input, user);
+  if ("error" in code) return code;
+  if (code.percent < 100 || !code.freeCycle) return { error: "not_free" };
+  const sub = await db.subscription.findUnique({ where: { userId: user.id } });
+  if (!sub) return { error: "failed" };
+  // Already paying with auto-renew: a free code would only overlap a paid plan.
+  if (sub.status === "active" && !sub.cancelAtPeriodEnd) return { error: "already_active" };
+  const now = new Date();
+  const end = addCycle(periodStart(sub, now), code.freeCycle);
+  const ok = await db.$transaction(async (tx) => {
+    const { count } = await tx.discountCode.updateMany({ where: { id: code.id, usedAt: null, revokedAt: null }, data: { usedAt: now, usedBy: user.id } });
+    if (count !== 1) return false;
+    await tx.subscription.update({
+      where: { id: sub.id },
+      data: { plan: "pro", status: "active", cycle: code.freeCycle, currentPeriodEnd: end, cancelAtPeriodEnd: true, failedAttempts: 0, nextRetryAt: null },
+    });
+    return true;
+  });
+  if (!ok) return { error: "used" };
+  await notify(user.id, "free_activated", { endDate: end.toISOString() });
+  return { until: end };
 }
 
 /**

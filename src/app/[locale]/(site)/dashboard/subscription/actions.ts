@@ -5,7 +5,7 @@ import { updateTag } from "next/cache";
 import { z } from "zod";
 import { CANCEL_REASONS } from "@/config/plans";
 import { getAdmin } from "@/lib/admin";
-import { setAutoRenew, setNextCycle, startCheckout, type CheckoutError } from "@/lib/billing";
+import { redeemFreeCode, setAutoRenew, setNextCycle, startCheckout, type CheckoutError, type RedeemError } from "@/lib/billing";
 import { requireCreator } from "@/lib/creator";
 import { db } from "@/lib/db";
 import { checkDiscountCode, type CodeError } from "@/lib/discounts";
@@ -30,10 +30,21 @@ export async function checkout(cycleInput: string, currencyInput: string, discou
 }
 
 /** "Have a discount code?": checks it for this account and returns its percent (the price is recomputed at checkout). */
-export async function applyDiscount(input: string): Promise<{ code: string; percent: number } | { error: CodeError }> {
+export async function applyDiscount(input: string): Promise<{ code: string; percent: number; freeCycle: "monthly" | "yearly" | null } | { error: CodeError }> {
   const { user } = await requireCreator();
   const res = await checkDiscountCode(String(input ?? "").slice(0, 30), user);
-  return "error" in res ? res : { code: res.code, percent: res.percent };
+  return "error" in res ? res : { code: res.code, percent: res.percent, freeCycle: res.freeCycle };
+}
+
+/** Redeems a 100% code: free Pro for its period, no payment (works while payments are off). */
+export async function redeemFree(code: string): Promise<{ ok?: boolean; error?: RedeemError }> {
+  const { user, page } = await requireCreator();
+  if (page.deletedAt) return { error: "failed" };
+  const res = await redeemFreeCode(user, String(code ?? "").slice(0, 30));
+  if ("error" in res) return res;
+  // Pro features (templates, badge, PDF) show on the public page right away.
+  updateTag(pageCacheTag(page.username));
+  return { ok: true };
 }
 
 const feedbackSchema = z.object({ reason: z.enum(CANCEL_REASONS), note: z.string().trim().max(300).default("") });

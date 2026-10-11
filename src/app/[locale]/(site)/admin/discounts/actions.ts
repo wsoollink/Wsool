@@ -3,17 +3,19 @@
 import { z } from "zod";
 import { audit, requireAdmin } from "@/lib/admin";
 import { db } from "@/lib/db";
-import { DISCOUNT_BATCH_MAX, DISCOUNT_DAYS, DISCOUNT_MAX, DISCOUNT_MIN, generateCode } from "@/lib/discounts";
+import { DISCOUNT_BATCH_MAX, DISCOUNT_DAYS, DISCOUNT_FREE, DISCOUNT_MAX, DISCOUNT_MIN, generateCode } from "@/lib/discounts";
 
 const createSchema = z.object({
-  percent: z.coerce.number().int().min(DISCOUNT_MIN).max(DISCOUNT_MAX),
+  // 5-90 off the first payment, or 100 = a free Pro period of `freeCycle`.
+  percent: z.coerce.number().int().refine((n) => (n >= DISCOUNT_MIN && n <= DISCOUNT_MAX) || n === DISCOUNT_FREE),
+  freeCycle: z.enum(["monthly", "yearly"]).optional(),
   rows: z
     .array(z.object({
       note: z.string().trim().max(120).default(""),
       email: z.string().trim().toLowerCase().max(254).pipe(z.union([z.literal(""), z.email()])).default(""),
     }))
     .min(1).max(DISCOUNT_BATCH_MAX),
-});
+}).refine((v) => (v.percent === DISCOUNT_FREE) === !!v.freeCycle);
 
 export type CreateResult = { codes?: { code: string; note: string; email: string }[]; error?: "invalid" | "failed" };
 
@@ -23,6 +25,7 @@ export async function createCodes(input: z.input<typeof createSchema>): Promise<
   const parsed = createSchema.safeParse(input);
   if (!parsed.success) return { error: "invalid" };
   const { percent, rows } = parsed.data;
+  const freeCycle = percent === DISCOUNT_FREE ? parsed.data.freeCycle! : null;
   const expiresAt = new Date(Date.now() + DISCOUNT_DAYS * 86_400_000);
 
   // Fresh codes that don't exist yet (collisions are rare; checked anyway).
@@ -32,11 +35,11 @@ export async function createCodes(input: z.input<typeof createSchema>): Promise<
   for (const c of taken) { codes.delete(c); let next; do next = generateCode(); while (codes.has(next)); codes.add(next); }
 
   const list = [...codes];
-  const data = rows.map((r, i) => ({ code: list[i], percent, note: r.note, email: r.email || null, createdBy: admin.userId, expiresAt }));
+  const data = rows.map((r, i) => ({ code: list[i], percent, freeCycle, note: r.note, email: r.email || null, createdBy: admin.userId, expiresAt }));
   try {
     await db.$transaction(async (tx) => {
       await tx.discountCode.createMany({ data });
-      await audit(admin, "discount.create", undefined, { count: data.length, percent }, tx);
+      await audit(admin, "discount.create", undefined, { count: data.length, percent, free: freeCycle ?? "" }, tx);
     });
   } catch {
     return { error: "failed" };

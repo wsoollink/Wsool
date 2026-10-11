@@ -11,13 +11,15 @@ import { createCodes, deleteRevoked, revokeCode, type CreateResult } from "./act
 type Row = { key: string; note: string; email: string };
 const newKey = () => Math.random().toString(36).slice(2);
 const control = "h-12 w-full min-w-0 rounded-xl border border-navy/16 bg-white px-3 text-[15px]";
-const PRESETS = [10, 20, 30, 50];
+const PRESETS = [10, 20, 30, 50, 100];
 
 /** Form: percent + one row per person (name/note, optional email lock); then the new codes with copy buttons. */
 export function CreateCodes({ limits }: { limits: { min: number; max: number; batch: number; days: number } }) {
   const t = useTranslations("Admin.discounts");
   const router = useRouter();
   const [percent, setPercent] = useState("20");
+  const [freeCycle, setFreeCycle] = useState<"monthly" | "yearly">("yearly");
+  const free = percent === "100";
   const [rows, setRows] = useState<Row[]>([{ key: newKey(), note: "", email: "" }]);
   const [result, setResult] = useState<CreateResult["codes"] | null>(null);
   const [error, setError] = useState("");
@@ -37,7 +39,7 @@ export function CreateCodes({ limits }: { limits: { min: number; max: number; ba
     e.preventDefault();
     setError("");
     startTransition(async () => {
-      const res = await createCodes({ percent: Number(percent), rows: rows.map(({ note, email }) => ({ note, email })) });
+      const res = await createCodes({ percent: Number(percent), ...(free && { freeCycle }), rows: rows.map(({ note, email }) => ({ note, email })) });
       if (res.codes) {
         setResult(res.codes);
         setRows([{ key: newKey(), note: "", email: "" }]);
@@ -58,14 +60,14 @@ export function CreateCodes({ limits }: { limits: { min: number; max: number; ba
           <div className="flex flex-wrap items-center gap-2">
             {PRESETS.map((p) => (
               <button key={p} type="button" aria-pressed={percent === String(p)} onClick={() => setPercent(String(p))} className={`inline-flex min-h-11 items-center rounded-full px-4 text-sm font-bold ${percent === String(p) ? "bg-navy text-white" : "bg-navy/5"}`}>
-                {p}%
+                {p === 100 ? t("freePreset") : `${p}%`}
               </button>
             ))}
             <label className="flex items-center gap-2 text-sm">
               <span className="text-muted">{t("other")}</span>
               <input
                 type="text" inputMode="numeric" dir="ltr" value={percent} aria-label={t("percent")}
-                onChange={(e) => setPercent(e.target.value.replace(/[٠-٩]/g, (d) => String(d.charCodeAt(0) - 1632)).replace(/\D/g, "").slice(0, 2))}
+                onChange={(e) => setPercent(e.target.value.replace(/[٠-٩]/g, (d) => String(d.charCodeAt(0) - 1632)).replace(/\D/g, "").slice(0, 3))}
                 className="h-11 w-20 rounded-xl border border-navy/16 bg-white px-3 text-center text-[15px]"
               />
               <span>%</span>
@@ -73,6 +75,21 @@ export function CreateCodes({ limits }: { limits: { min: number; max: number; ba
           </div>
           <p className="text-xs text-muted">{t("percentHint", { min: limits.min, max: limits.max })}</p>
         </fieldset>
+
+        {free && (
+          <fieldset className="flex flex-col gap-2 rounded-2xl bg-good/8 p-3">
+            <legend className="sr-only">{t("freeCycle")}</legend>
+            <p className="text-[13px] font-bold">{t("freeCycle")}</p>
+            <div className="flex flex-wrap gap-2">
+              {(["monthly", "yearly"] as const).map((c) => (
+                <button key={c} type="button" aria-pressed={freeCycle === c} onClick={() => setFreeCycle(c)} className={`inline-flex min-h-11 items-center rounded-full px-4 text-sm font-bold ${freeCycle === c ? "bg-navy text-white" : "bg-white"}`}>
+                  {t(`cycle.${c}`)}
+                </button>
+              ))}
+            </div>
+            <p className="text-xs text-muted">{t("freeHint")}</p>
+          </fieldset>
+        )}
 
         <div className="flex flex-col gap-2">
           <p className="text-[13px] font-medium">{t("people")}</p>

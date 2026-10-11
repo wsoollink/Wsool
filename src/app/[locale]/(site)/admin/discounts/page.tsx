@@ -66,7 +66,7 @@ async function Codes({ lang, searchParams }: { lang: Locale; searchParams: SP })
               {shown.map((r) => (
                 <tr key={r.id} className="border-b border-navy/6 last:border-0">
                   <td className="px-4 py-3"><code dir="ltr" className="font-bold">{r.code}</code></td>
-                  <td className="px-4 py-3 font-bold">{r.percent}%</td>
+                  <td className="px-4 py-3 font-bold">{r.freeCycle ? t("freeLabel", { cycle: t(`cycle.${r.freeCycle}`) }) : `${r.percent}%`}</td>
                   <td className="px-4 py-3">
                     <span className="block">{r.note || "—"}</span>
                     {r.email && <span dir="ltr" className="block text-xs text-muted rtl:text-end">{r.email}</span>}

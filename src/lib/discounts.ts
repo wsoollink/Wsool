@@ -4,9 +4,11 @@ import { db } from "@/lib/db";
 
 /** A code is valid this many days after it's made (owner decision). */
 export const DISCOUNT_DAYS = 30;
-/** Percent range staff can give; a free first payment isn't possible (the card must be charged once). */
+/** Percent range off the first payment (the card is charged once). */
 export const DISCOUNT_MIN = 5;
 export const DISCOUNT_MAX = 90;
+/** A 100% code is a free Pro period (one month or one year), redeemed without any payment. */
+export const DISCOUNT_FREE = 100;
 /** Codes made in one go. */
 export const DISCOUNT_BATCH_MAX = 50;
 
@@ -36,7 +38,7 @@ export type CodeError = "invalid" | "expired" | "used" | "not_yours";
  * Checks a code for this account before checkout. Same answer ("invalid")
  * for unknown and revoked codes, so codes can't be probed.
  */
-export async function checkDiscountCode(input: string, user: { email: string }): Promise<{ id: string; code: string; percent: number } | { error: CodeError }> {
+export async function checkDiscountCode(input: string, user: { email: string }): Promise<{ id: string; code: string; percent: number; freeCycle: "monthly" | "yearly" | null } | { error: CodeError }> {
   const code = normalizeCode(input);
   if (!/^WSL-[A-Z0-9]{6}$/.test(code)) return { error: "invalid" };
   const row = await db.discountCode.findUnique({ where: { code } });
@@ -45,5 +47,5 @@ export async function checkDiscountCode(input: string, user: { email: string }):
   const status = codeStatus(row);
   if (status === "used") return { error: "used" };
   if (status === "expired") return { error: "expired" };
-  return { id: row.id, code: row.code, percent: row.percent };
+  return { id: row.id, code: row.code, percent: row.percent, freeCycle: row.freeCycle };
 }

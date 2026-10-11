@@ -607,6 +607,12 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
   `startCheckout` re-checks it and charges `discountedPrice()` on the **first payment only** (renewals use
   `PRICES`); the invoice stores `discount_code_id` / `discount_amount`, and `settleCheckout` marks the code
   used inside the paid transaction. Invoices show the discount line before VAT. Logic: `src/lib/discounts.ts`.
+  **100% codes** (owner, Oct 2026): `DISCOUNT_FREE` = 100 with `discount_codes.free_cycle` (monthly | yearly) = a free Pro
+  period, no payment (works while payments are off; the code box shows even without a provider). The creator applies it,
+  then "Activate" → `redeemFree` → `redeemFreeCode()` (`src/lib/billing.ts`): marks the code used, sets the subscription
+  active for the period after any trial/paid time left, `cancelAtPeriodEnd` = true (no card, never renews; the hourly job
+  drops it to Free at the end), notifies `free_activated`; `free_ending` reminder 7 days before. No invoice, no revenue.
+  Refused when a paid plan is active with auto-renew. Checkout never accepts a 100% code.
 - **Creator categories & insights** (owner, Oct 2026): table `categories` (name ar/en, sort; seeded with 14, owner
   edits the list at `admin/categories`, owner only, `saveCategoryList` replaces the whole list, audited
   `category.update`) and `page_categories` (creator picks up to `MAX_PAGE_CATEGORIES` = 2 in Edit page,

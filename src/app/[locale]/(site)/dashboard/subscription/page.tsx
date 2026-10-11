@@ -38,7 +38,10 @@ async function Subscription({ lang, searchParams }: { lang: Locale; searchParams
 
   let status: string;
   if (sub?.status === "past_due") status = t("status.pastDue", { date: sub.nextRetryAt ? date.format(sub.nextRetryAt) : "" });
-  else if (active && sub?.currentPeriodEnd) status = sub.cancelAtPeriodEnd ? t("status.endsOn", { date: date.format(sub.currentPeriodEnd) }) : t("status.renewsOn", { date: date.format(sub.currentPeriodEnd) });
+  else if (active && sub?.currentPeriodEnd) status = !sub.cancelAtPeriodEnd ? t("status.renewsOn", { date: date.format(sub.currentPeriodEnd) })
+      // No card on file = a free plan from a 100% code.
+      : !sub.paymentToken ? t("status.freeUntil", { date: date.format(sub.currentPeriodEnd) })
+      : t("status.endsOn", { date: date.format(sub.currentPeriodEnd) });
   else if (pro && sub?.trialEndsAt) status = t("status.trial", { days: trialDaysLeft(sub.trialEndsAt), date: date.format(sub.trialEndsAt) });
   else status = t("status.free");
 
@@ -57,7 +60,8 @@ async function Subscription({ lang, searchParams }: { lang: Locale; searchParams
             <h2 className="text-xl font-bold">{pro ? t("paidPlan") : t("freePlan")}</h2>
             <p className={`text-[13px] ${sub?.status === "past_due" ? "text-bad" : "text-muted"}`}>{status}</p>
           </div>
-          {active && sub?.cycle && sub.currency && (
+          {/* The price shows for paid plans only (a free code has no card and no price). */}
+          {active && sub?.cycle && sub.currency && sub.paymentToken && (
             <div className="flex shrink-0 flex-col items-end">
               <span dir="ltr" className="font-numbers text-3xl font-black">{formatNumber(PRICES[sub.currency][sub.cycle], lang)}</span>
               <span className="text-xs text-muted">{t(sub.cycle === "yearly" ? "unitYear" : "unitMonth", { currency: sub.currency })}</span>

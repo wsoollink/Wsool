@@ -27,6 +27,8 @@ export const NOTIFICATIONS = {
   payment_failed: { href: "/dashboard/subscription", reminder: false, billing: true },
   subscription_ended: { href: "/dashboard/subscription", reminder: false, billing: true },
   refund_issued: { href: "/dashboard/subscription", reminder: false, billing: true },
+  free_activated: { href: "/dashboard/subscription", reminder: false },
+  free_ending: { href: "/dashboard/subscription", reminder: true },
   verification_approved: { href: "/dashboard/verification", reminder: false },
   verification_rejected: { href: "/dashboard/verification", reminder: false },
   verification_expiring: { href: "/dashboard/verification", reminder: true },

@@ -40,6 +40,16 @@ export async function runReminders(now = new Date()) {
     sent++;
   }
 
+  // Free Pro from a 100% code (no card): a heads-up 7 days before it ends.
+  const free = await db.subscription.findMany({
+    where: { status: "active", cancelAtPeriodEnd: true, paymentToken: null, currentPeriodEnd: { gt: now, lte: new Date(now.getTime() + 7 * DAY) } },
+    select: { userId: true, currentPeriodEnd: true },
+  });
+  for (const s of free) {
+    await notify(s.userId, "free_ending", { endDate: s.currentPeriodEnd!.toISOString() }, { dedupeKey: `free_end_${dateKey(s.currentPeriodEnd!)}` });
+    sent++;
+  }
+
   const verified = await db.socialAccount.findMany({
     where: { verificationStatus: "verified", verifiedUntil: { lte: new Date(now.getTime() + EXPIRY_WARNING_DAYS * DAY) } },
     select: { id: true, platform: true, handle: true, verifiedUntil: true, page: { select: { userId: true, username: true } } },

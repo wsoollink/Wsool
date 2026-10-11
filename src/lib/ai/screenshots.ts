@@ -33,14 +33,14 @@ Numbers: convert to whole numbers ("248K" = 248000, "1.2M" = 1200000, "12.5 أل
 type Image = { data: string; mediaType: "image/jpeg" | "image/png" | "image/webp" };
 
 /** One structured read of an image. Null when the model declines or the output can't be parsed. */
-async function read<T extends z.ZodType>(image: Image, schema: T, task: string): Promise<z.infer<T> | null> {
+async function read<T extends z.ZodType>(image: Image, schema: T, task: string, effort: "low" | "medium" = "low"): Promise<z.infer<T> | null> {
   const res = await anthropic().beta.messages.parse({
     model: AI_MODEL,
     max_tokens: 8000,
     // A refused request is retried server-side on a suitable model (refusal fallback).
     betas: ["server-side-fallback-2026-07-01"],
     fallbacks: "default",
-    output_config: { effort: "low", format: betaZodOutputFormat(schema) },
+    output_config: { effort, format: betaZodOutputFormat(schema) },
     system: SYSTEM,
     messages: [{
       role: "user",
@@ -78,13 +78,23 @@ const AudienceSchema = z.object({
   platform: platformEnum,
   female_percent: z.number().nullable(),
   male_percent: z.number().nullable(),
-  age_groups: z.array(z.object({ range: z.string().describe("Age range as shown, e.g. 18-24 or 55+"), percent: z.number() })),
+  age_groups: z.array(z.object({
+    range: z.string().describe("Age range label exactly as shown, e.g. 18-24 or 65+"),
+    percent: z.number().describe("The percentage written on the SAME row as this label (not estimated from the bar length)"),
+  })).describe("Every age row shown, top to bottom; the written percentages should add up to about 100."),
   countries: z.array(share).describe("Top countries as shown (name + percent), largest first."),
   cities: z.array(share).describe("Top cities as shown (name + percent), largest first."),
 });
 export type AudienceRead = z.infer<typeof AudienceSchema>;
 
+// Age charts (Instagram, TikTok) are rows of "label - bar - percent"; in Arabic layouts the
+// label and the percent swap sides. The model must pair each label with the number on its row.
+const AUDIENCE_TASK = `This should be a screenshot of the audience / follower insights of a social media account. Read every percentage shown.
+Age range charts list one row per age group: the label (e.g. 18-24), a bar, and the percentage written beside it. In Arabic (right-to-left) apps the label is on the right and the percentage on the left. For each row, take the percentage printed on that same row; never estimate from the bar length, never shift values between rows.
+If the chart has tabs (All / Men / Women), read the selected tab only. Check that the age percentages add up to about 100; if not, re-read each row.
+Gender: female and male percentages as written. Countries and cities: the name and percentage on each row, largest first.`;
+
 /** Reads gender, age groups, top countries and cities from an audience stats screenshot. */
 export async function readAudienceScreenshot(image: Image): Promise<AudienceRead | null> {
-  return read(image, AudienceSchema, "This should be a screenshot of the audience / follower insights of a social media account. Read every percentage shown.");
+  return read(image, AudienceSchema, AUDIENCE_TASK, "medium");
 }

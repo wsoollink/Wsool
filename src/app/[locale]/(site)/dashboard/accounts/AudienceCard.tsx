@@ -90,6 +90,7 @@ function AudienceForm({ account }: { account: AudienceAccount }) {
   // Which groups the screenshots filled (shown in the message) and how far a multi-image read got.
   const [filled, setFilled] = useState<("gender" | "ages" | "countries" | "cities")[]>([]);
   const [progress, setProgress] = useState<{ done: number; total: number } | null>(null);
+  const [agesUncertain, setAgesUncertain] = useState(false);
   // Codes the AI found outside the short picker list still show by name.
   const countryOptions = [...COUNTRIES, ...countries.map((r) => r.label).filter((c) => c && !COUNTRIES.includes(c))];
 
@@ -117,7 +118,7 @@ function AudienceForm({ account }: { account: AudienceAccount }) {
       }
       const a = res.audience;
       if (a.gender.length) { setGender(fixed(["female", "male"], a.gender)); got.add("gender"); }
-      if (a.ages.length) { setAges(fixed(AGE_GROUPS, a.ages)); got.add("ages"); }
+      if (a.ages.length) { setAges(fixed(AGE_GROUPS, a.ages)); setAgesUncertain(a.agesUncertain); got.add("ages"); }
       if (a.countries.length) { setCountries(toRows(a.countries)); got.add("countries"); }
       if (a.cities.length) { setCities(toRows(a.cities)); got.add("cities"); }
     }
@@ -170,6 +171,7 @@ function AudienceForm({ account }: { account: AudienceAccount }) {
         <p role="status" aria-live="polite" className={`text-xs ${ai === "filled" ? "font-bold text-blue" : ai && ai !== "reading" ? "text-bad" : "text-muted"}`}>
           {ai === "" || ai === "reading" ? t("ai.hint", { max: MAX_SHOTS }) : ai === "filled" ? t("ai.filled", { groups: filled.map((g) => t(g)).join("، ") }) : t(`ai.${ai}`)}
         </p>
+        {ai === "filled" && agesUncertain && <p role="alert" className="text-xs font-bold text-warn">{t("ai.checkAges")}</p>}
       </div>
 
       <fieldset className="flex min-w-0 flex-col gap-2">

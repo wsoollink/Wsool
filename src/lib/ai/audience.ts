@@ -2,7 +2,11 @@ import { countryCode } from "@/lib/places";
 import { AGE_GROUPS, MAX_AUDIENCE_ROWS } from "@/lib/validation/accounts";
 
 type Share = { label: string; percent: number };
-export type AudienceFill = { gender: Share[]; ages: Share[]; countries: Share[]; cities: Share[] };
+export type AudienceFill = {
+  gender: Share[]; ages: Share[]; countries: Share[]; cities: Share[];
+  /** The read ages don't add up to about 100%: the creator should check them. */
+  agesUncertain: boolean;
+};
 
 type Read = {
   female_percent: number | null;
@@ -44,6 +48,7 @@ export function audienceFromRead(read: Read): AudienceFill {
     ...(read.female_percent !== null ? [{ label: "female", percent: read.female_percent }] : []),
     ...(read.male_percent !== null ? [{ label: "male", percent: read.male_percent }] : []),
   ]);
+  const agesTotal = read.age_groups.reduce((sum, a) => sum + (Number.isFinite(a.percent) ? a.percent : 0), 0);
   const ages = new Map<string, number>();
   for (const a of read.age_groups) {
     const lower = lowerBound(a.range);
@@ -67,5 +72,6 @@ export function audienceFromRead(read: Read): AudienceFill {
     ages: whole(AGE_GROUPS.filter((g) => ages.has(g)).map((g) => ({ label: g, percent: ages.get(g)! }))),
     countries: whole(top(countries)),
     cities: whole(top(cities)),
+    agesUncertain: read.age_groups.length > 0 && Math.abs(agesTotal - 100) > 3,
   };
 }

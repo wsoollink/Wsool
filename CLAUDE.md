@@ -623,4 +623,6 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
   → `readAudienceShot` → `audienceFromRead()` (`src/lib/ai/audience.ts`: ages into `AGE_GROUPS`, names → ISO codes,
   whole percents ≤ 100); fills the form only (creator saves); the image is deleted right after reading.
   Up to 4 screenshots at once, read one by one; each fills only the groups it shows (others keep their values).
+  Audience reads use effort `medium` and `AUDIENCE_TASK` (pair each age label with the percent on its row, RTL apps
+  swap sides, never estimate from bar length); ages not adding up to 100 ±3 show a "check the ages" warning (`agesUncertain`).
 

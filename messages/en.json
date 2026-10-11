@@ -380,7 +380,8 @@
       "limit": "You've reached today's smart reading limit; try again tomorrow.",
       "not_stats": "This screenshot has no audience stats. Upload the stats page (gender, ages, countries).",
       "failed": "We couldn't read the screenshot; try a clearer one or fill it in manually.",
-      "readingMany": "AI is reading image {n} of {total}…"
+      "readingMany": "AI is reading image {n} of {total}…",
+      "checkAges": "⚠️ The age percentages read from the screenshot don't add up to 100%. Check each age group against the number written beside it in the app."
     }
   },
   "WorkPage": {

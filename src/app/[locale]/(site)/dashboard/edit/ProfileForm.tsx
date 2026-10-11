@@ -35,7 +35,11 @@ export function ProfileForm({ primaryLang: initialPrimary, enEnabled: initialEn,
   const [counts, setCounts] = useState<Record<string, number>>(() =>
     Object.fromEntries((["ar", "en"] as const).flatMap((l) => [[`${l}.specialty`, texts[l].specialty.length], [`${l}.bio`, texts[l].bio.length]])),
   );
-  const count = (key: string) => (e: { currentTarget: { value: string } }) => setCounts((c) => ({ ...c, [key]: e.currentTarget.value.length }));
+  // Read the length now: React clears currentTarget before the state updater runs.
+  const count = (key: string) => (e: { currentTarget: { value: string } }) => {
+    const length = e.currentTarget.value.length;
+    setCounts((c) => ({ ...c, [key]: length }));
+  };
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-4" noValidate>

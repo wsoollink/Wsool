@@ -18,7 +18,13 @@ export const accountsSchema = z
 
 export type AccountInput = z.input<typeof accountsSchema>[number];
 
-export const monthlyViewsSchema = z.number().int().min(0).max(1e12).nullable();
+/** Monthly views: the month (this one or one of the two before) + views per account; the page shows the sum. */
+export const MAX_ACCOUNT_VIEWS = 1e11;
+export const monthlyViewsSchema = z.object({
+  monthsAgo: z.union([z.literal(0), z.literal(1), z.literal(2)]),
+  byAccount: z.array(z.object({ accountId: z.uuid(), views: z.number().int().min(0).max(MAX_ACCOUNT_VIEWS).nullable() })).max(MAX_ACCOUNTS),
+});
+export type MonthlyViewsInput = z.input<typeof monthlyViewsSchema>;
 
 /** Audience shares: fixed groups, whole percents, each group adds up to 100 or less. */
 export const AGE_GROUPS = ["13-17", "18-24", "25-34", "35-44", "45+"] as const;

@@ -10,7 +10,7 @@ import { audienceFromRead, type AudienceFill } from "@/lib/ai/audience";
 import { aiEnabled, readAudienceScreenshot, underDailyLimit } from "@/lib/ai/screenshots";
 import { isOwnUploadedFile, readPrivateImage, removeVerificationFiles } from "@/lib/storage";
 import type { Prisma } from "@/generated/prisma/client";
-import { accountsSchema, audienceSchema, monthlyViewsSchema, type AccountInput, type AudienceInput } from "@/lib/validation/accounts";
+import { accountsSchema, audienceSchema, monthlyViewsSchema, type AccountInput, type AudienceInput, type MonthlyViewsInput } from "@/lib/validation/accounts";
 
 export type AccountsResult = { ok?: boolean; error?: "failed"; accounts?: { id: string; handle: string; verificationReset: boolean }[] };
 
@@ -38,6 +38,7 @@ export async function saveAccounts(items: AccountInput[]): Promise<AccountsResul
   const kept = new Set(ids);
   const result = await db.$transaction(async (tx) => {
     await tx.socialAccount.deleteMany({ where: { pageId: page.id, id: { notIn: [...kept] as string[] } } });
+    await dropDeletedViews(tx, page.id, kept as Set<string>);
     const saved = [];
     for (const [sort, item] of parsed.data.entries()) {
       const platform = item.platform as Platform;
@@ -72,30 +73,47 @@ export async function saveAccounts(items: AccountInput[]): Promise<AccountsResul
   return { ok: true, accounts: result.map((a) => ({ id: a.id, handle: a.handle, verificationReset: resets.has(a.id) })) };
 }
 
+/** A deleted account's monthly views leave the total (the box hides when none are left). */
+async function dropDeletedViews(tx: Prisma.TransactionClient, pageId: string, kept: Set<string>) {
+  const row = await tx.monthlyView.findFirst({ where: { pageId }, orderBy: { month: "desc" } });
+  const byAccount = row?.byAccount as Record<string, number> | null | undefined;
+  if (!row || !byAccount || Object.keys(byAccount).every((id) => kept.has(id))) return;
+  const left = Object.entries(byAccount).filter(([id]) => kept.has(id));
+  if (left.length === 0) {
+    await tx.monthlyView.delete({ where: { id: row.id } });
+    return;
+  }
+  const views = left.reduce((sum, [, v]) => sum + BigInt(v), BigInt(0));
+  await tx.monthlyView.update({ where: { id: row.id }, data: { views, byAccount: Object.fromEntries(left) } });
+}
+
 /** First day of the current month (UTC), the key for monthly views. */
 function currentMonth() {
   const now = new Date();
   return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
 }
 
-/** Sets this month's total views, or clears them (null) to hide the box. */
-export async function saveMonthlyViews(views: number | null, monthsAgo = 0): Promise<{ ok?: boolean; error?: "failed" }> {
+/**
+ * Saves monthly views per account for one month (this month or one of the two
+ * before). The page keeps a single month: its total (what the public box
+ * shows) and the per-account numbers. All empty = the box is hidden.
+ */
+export async function saveMonthlyViews(input: MonthlyViewsInput): Promise<{ ok?: boolean; error?: "failed" }> {
   const { page } = await requireCreator();
-  const parsed = monthlyViewsSchema.safeParse(views);
-  // The design lets the creator pick this month or one of the two before.
-  if (!parsed.success || ![0, 1, 2].includes(monthsAgo)) return { error: "failed" };
+  const parsed = monthlyViewsSchema.safeParse(input);
+  if (!parsed.success) return { error: "failed" };
+  // Ownership check: only the creator's own accounts count.
+  const own = new Set((await db.socialAccount.findMany({ where: { pageId: page.id }, select: { id: true } })).map((a) => a.id));
+  const filled = parsed.data.byAccount.filter((r) => r.views !== null && own.has(r.accountId));
   const now = currentMonth();
-  const month = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - monthsAgo, 1));
-  if (parsed.data === null) {
-    await db.monthlyView.deleteMany({ where: { pageId: page.id } });
-  } else {
-    const value = BigInt(parsed.data);
-    await db.monthlyView.upsert({
-      where: { pageId_month: { pageId: page.id, month } },
-      create: { pageId: page.id, month, views: value },
-      update: { views: value },
-    });
-  }
+  const month = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - parsed.data.monthsAgo, 1));
+  await db.$transaction(async (tx) => {
+    await tx.monthlyView.deleteMany({ where: { pageId: page.id } });
+    if (filled.length === 0) return;
+    const views = filled.reduce((sum, r) => sum + BigInt(r.views!), BigInt(0));
+    const byAccount = Object.fromEntries(filled.map((r) => [r.accountId, r.views!]));
+    await tx.monthlyView.create({ data: { pageId: page.id, month, views, byAccount } });
+  });
   updateTag(pageCacheTag(page.username));
   return { ok: true };
 }

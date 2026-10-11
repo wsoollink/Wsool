@@ -392,8 +392,9 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
   (rates/audience stay attached), creates new ones, deletes missing ones. Profile URLs are built
   on the server from platform + handle (`profileUrl()`, no free-form links); pasted links/`@` are
   cleaned by `normalizeHandle()`. Changing platform, handle or followers of a verified/in-review
-  account resets it to `none`. Monthly views = one row per month (first day, UTC); empty hides
-  the box. Audience = gender, fixed age groups, top 5 countries (ISO codes) and cities, each group
+  account resets it to `none`. Monthly views: the creator picks the month once, then types views per account;
+  `saveMonthlyViews` keeps one row (first day of the month, UTC) with the total (`views`, what the page shows) and
+  `by_account` ({accountId: views}); all empty hides the box, deleting an account drops its share (`dropDeletedViews`). Audience = gender, fixed age groups, top 5 countries (ISO codes) and cities, each group
   <= 100%. Number inputs go through `digitsOnly()` (turns ٠-٩ into 0-9).
 - **Brands & work** (`dashboard/work/`): `saveBrands` / `saveWorks` replace whole lists. Files use
   `{ path, url }` refs: a fresh upload in the creator's own folder, or a URL their rows already had;

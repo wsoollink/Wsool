@@ -22,6 +22,8 @@ async function Editor({ lang }: { lang: Locale }) {
     db.socialAccount.findMany({ where: { pageId: page.id }, orderBy: { sort: "asc" }, include: { audience: true } }),
     db.monthlyView.findFirst({ where: { pageId: page.id }, orderBy: { month: "desc" } }),
   ]);
+  const byAccount = (views?.byAccount ?? {}) as Record<string, number>;
+  const viewsOf = (id: string) => (typeof byAccount[id] === "number" ? byAccount[id] : null);
   const audienceOf = (a: (typeof accounts)[number]): AudienceValue | null =>
     a.audience
       ? {
@@ -38,7 +40,9 @@ async function Editor({ lang }: { lang: Locale }) {
         initial={accounts.map((a) => ({ id: a.id, platform: a.platform, handle: a.handle, followers: a.followers, verificationStatus: a.verificationStatus }))}
       />
       <ViewsCard
-        initial={views ? Number(views.views) : null}
+        // Remount when the list changes so the rows match the saved accounts.
+        key={`views-${accounts.map((a) => a.id).join()}`}
+        accounts={accounts.map((a) => ({ id: a.id, platform: a.platform, handle: a.handle, views: viewsOf(a.id) }))}
         initialMonthsAgo={views ? monthsBetween(views.month) : 0}
         monthLabels={[0, 1, 2].map((ago) => {
           const now = new Date();

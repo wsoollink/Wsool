@@ -79,10 +79,10 @@ model User {
   subscription         Subscription?
   notifications        Notification[]
   notificationSettings NotificationSettings?
-
-  @@map("users")
   cancellationFeedback CancellationFeedback[]
   aiReads              AiRead[]
+
+  @@map("users")
 }
 
 /// The creator's public page at wsool.link/<username>.
@@ -228,13 +228,13 @@ model Tag {
 
 /// Free-form licenses, e.g. "رخصة موثوق" + number + optional file.
 model License {
-  id      String  @id @default(uuid()) @db.Uuid
-  pageId  String  @map("page_id") @db.Uuid
-  name    String  @db.VarChar(60)
-  nameEn  String? @map("name_en") @db.VarChar(60)
-  number  String  @db.VarChar(60)
-  fileUrl String? @map("file_url")
-  sort    Int     @default(0)
+  id                 String             @id @default(uuid()) @db.Uuid
+  pageId             String             @map("page_id") @db.Uuid
+  name               String             @db.VarChar(60)
+  nameEn             String?            @map("name_en") @db.VarChar(60)
+  number             String             @db.VarChar(60)
+  fileUrl            String?            @map("file_url")
+  sort               Int                @default(0)
   /// Staff check of the license file (owner decision, Oct 2026). Editing the license resets it.
   verificationStatus VerificationStatus @default(none) @map("verification_status")
   rejectReason       String?            @map("reject_reason") @db.VarChar(40)
@@ -288,11 +288,14 @@ model AudienceData {
 }
 
 model MonthlyView {
-  id     String   @id @default(uuid()) @db.Uuid
-  pageId String   @map("page_id") @db.Uuid
+  id        String   @id @default(uuid()) @db.Uuid
+  pageId    String   @map("page_id") @db.Uuid
   /// First day of the month.
-  month  DateTime @db.Date
-  views  BigInt
+  month     DateTime @db.Date
+  /// Total across platforms (what the public page shows).
+  views     BigInt
+  /// Views per account: { "<socialAccountId>": number }. Null for totals typed before the per-platform form.
+  byAccount Json?    @map("by_account")
 
   page Page @relation(fields: [pageId], references: [id], onDelete: Cascade)
 
@@ -343,9 +346,9 @@ model PortfolioItemTranslation {
 }
 
 model RateSettings {
-  pageId      String   @id @map("page_id") @db.Uuid
-  showOnPage  Boolean  @default(true) @map("show_on_page")
-  showInPdf   Boolean  @default(true) @map("show_in_pdf")
+  pageId      String       @id @map("page_id") @db.Uuid
+  showOnPage  Boolean      @default(true) @map("show_on_page")
+  showInPdf   Boolean      @default(true) @map("show_in_pdf")
   currency    RateCurrency @default(SAR)
   vatIncluded Boolean      @default(true) @map("vat_included")
 

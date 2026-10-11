@@ -39,7 +39,11 @@ Surfaces:
   international cards, and recurring billing.
 - **Hosting**: Netlify (switched from Vercel: its phone verification never reached Saudi
   numbers, and its free plan is non-commercial). Config in `netlify.toml`. Domain `wsool.link`
-  is on Cloudflare.
+  is on Cloudflare: `@` and `www` are CNAMEs to `graceful-fox-a6c2f5.netlify.app`, **DNS only** (grey cloud, so
+  Netlify issues the certificate); `wsool.link` is the primary domain in Netlify, so its `URL` env var (used by
+  `siteOrigin()`) is `https://wsool.link` and `NEXT_PUBLIC_SITE_URL` is not set. DMARC via Cloudflare DMARC
+  Management (`p=none`, monitoring) since Oct 2026. Netlify env: Supabase keys, DB URLs, `OWNER_EMAIL`,
+  `RESEND_API_KEY`, `CRON_SECRET`, `ANTHROPIC_API_KEY` (secrets marked secret; `NEXT_PUBLIC_*` must never be).
 - **i18n**: `next-intl` (or equivalent) with `ar` (default, RTL) and `en` (LTR).
 
 ### Non-negotiable engineering rules

@@ -622,4 +622,5 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
   (audited `verification.ai_read`). Audience: "Fill from a stats screenshot" (upload kind `audienceShot`, private bucket)
   → `readAudienceShot` → `audienceFromRead()` (`src/lib/ai/audience.ts`: ages into `AGE_GROUPS`, names → ISO codes,
   whole percents ≤ 100); fills the form only (creator saves); the image is deleted right after reading.
+  Up to 4 screenshots at once, read one by one; each fills only the groups it shows (others keep their values).
 

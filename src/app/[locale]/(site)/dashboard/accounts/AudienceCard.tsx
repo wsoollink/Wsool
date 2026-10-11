@@ -24,6 +24,9 @@ const COUNTRIES = [
   "US", "GB", "CA", "DE", "FR", "TR",
 ];
 
+/** Screenshots read in one go (each one is an AI read). */
+const MAX_SHOTS = 4;
+
 const iconButton = "inline-flex size-11 shrink-0 items-center justify-center rounded-full text-muted hover:bg-navy/5";
 const control = "min-h-11 rounded-xl border border-line bg-card px-3 text-base";
 
@@ -84,24 +87,44 @@ function AudienceForm({ account }: { account: AudienceAccount }) {
   const [pending, startTransition] = useTransition();
   const shotId = useId();
   const [ai, setAi] = useState<"" | "reading" | "filled" | "off" | "limit" | "not_stats" | "failed">("");
+  // Which groups the screenshots filled (shown in the message) and how far a multi-image read got.
+  const [filled, setFilled] = useState<("gender" | "ages" | "countries" | "cities")[]>([]);
+  const [progress, setProgress] = useState<{ done: number; total: number } | null>(null);
   // Codes the AI found outside the short picker list still show by name.
   const countryOptions = [...COUNTRIES, ...countries.map((r) => r.label).filter((c) => c && !COUNTRIES.includes(c))];
 
-  /** Upload an audience stats screenshot; the AI fills the form, the creator reviews and saves. */
-  async function fillFromShot(file: File | undefined) {
-    if (!file) return;
+  /**
+   * Upload one or more audience stats screenshots (gender on one, ages on
+   * another...). Each image only fills the groups it shows, so nothing typed
+   * or read earlier disappears. The creator reviews and saves.
+   */
+  async function fillFromShots(list: FileList | null) {
+    const files = [...(list ?? [])].slice(0, MAX_SHOTS);
+    if (!files.length) return;
     setAi("reading");
     setStatus("");
-    const uploaded = await uploadFile("audienceShot", await shrinkImage(file, 1800, 0.9));
-    if ("error" in uploaded) return setAi("failed");
-    const res = await readAudienceShot(account.id, uploaded.path).catch(() => ({ error: "failed" as const }));
-    if (!("audience" in res)) return setAi(res.error);
-    const a = res.audience;
-    setGender(fixed(["female", "male"], a.gender));
-    setAges(fixed(AGE_GROUPS, a.ages));
-    setCountries(toRows(a.countries));
-    setCities(toRows(a.cities));
-    setAi("filled");
+    const got = new Set(filled);
+    let lastError: "off" | "limit" | "not_stats" | "failed" | null = null;
+    for (const [i, file] of files.entries()) {
+      setProgress({ done: i, total: files.length });
+      const uploaded = await uploadFile("audienceShot", await shrinkImage(file, 1800, 0.9));
+      if ("error" in uploaded) { lastError = "failed"; continue; }
+      const res = await readAudienceShot(account.id, uploaded.path).catch(() => ({ error: "failed" as const }));
+      if (!("audience" in res)) {
+        lastError = res.error;
+        if (res.error === "off" || res.error === "limit") break;
+        continue;
+      }
+      const a = res.audience;
+      if (a.gender.length) { setGender(fixed(["female", "male"], a.gender)); got.add("gender"); }
+      if (a.ages.length) { setAges(fixed(AGE_GROUPS, a.ages)); got.add("ages"); }
+      if (a.countries.length) { setCountries(toRows(a.countries)); got.add("countries"); }
+      if (a.cities.length) { setCities(toRows(a.cities)); got.add("cities"); }
+    }
+    setProgress(null);
+    setFilled([...got]);
+    // Anything filled so far is shown; otherwise the last problem.
+    setAi(got.size ? "filled" : lastError ?? "not_stats");
   }
 
   const touch = <T,>(setter: (v: T) => void) => (v: T) => { setter(v); setStatus(""); };
@@ -141,11 +164,11 @@ function AudienceForm({ account }: { account: AudienceAccount }) {
     <div className="flex flex-col gap-5">
       <div className="flex flex-col gap-2 rounded-[14px] bg-blue/5 p-3">
         <label htmlFor={shotId} className={`inline-flex min-h-11 cursor-pointer items-center gap-2 self-start rounded-full bg-white px-4 text-[13.5px] font-bold text-blue ring-1 ring-blue/20 ${ai === "reading" ? "pointer-events-none opacity-60" : ""}`}>
-          <Sparkles aria-hidden="true" size={16} className={ai === "reading" ? "motion-safe:animate-pulse" : ""} /> {ai === "reading" ? t("ai.reading") : t("ai.fill")}
+          <Sparkles aria-hidden="true" size={16} className={ai === "reading" ? "motion-safe:animate-pulse" : ""} /> {ai === "reading" ? (progress && progress.total > 1 ? t("ai.readingMany", { n: progress.done + 1, total: progress.total }) : t("ai.reading")) : t("ai.fill")}
         </label>
-        <input id={shotId} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" disabled={ai === "reading"} onChange={(ev) => { fillFromShot(ev.target.files?.[0]); ev.target.value = ""; }} />
+        <input id={shotId} type="file" multiple accept="image/jpeg,image/png,image/webp" className="sr-only" disabled={ai === "reading"} onChange={(ev) => { fillFromShots(ev.target.files); ev.target.value = ""; }} />
         <p role="status" aria-live="polite" className={`text-xs ${ai === "filled" ? "font-bold text-blue" : ai && ai !== "reading" ? "text-bad" : "text-muted"}`}>
-          {ai === "" || ai === "reading" ? t("ai.hint") : t(`ai.${ai}`)}
+          {ai === "" || ai === "reading" ? t("ai.hint", { max: MAX_SHOTS }) : ai === "filled" ? t("ai.filled", { groups: filled.map((g) => t(g)).join("، ") }) : t(`ai.${ai}`)}
         </p>
       </div>
 

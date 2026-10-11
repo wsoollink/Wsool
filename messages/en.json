@@ -374,12 +374,13 @@
     "ai": {
       "fill": "Fill from a stats screenshot",
       "reading": "AI is reading your stats…",
-      "hint": "Upload a screenshot of your audience stats page from the app and we'll fill these in for you.",
-      "filled": "✨ Filled from your screenshot. Check the numbers, then save.",
+      "hint": "Upload screenshots of your audience stats from the app (up to {max} at once: gender, ages, countries...). Each image only fills what it shows.",
+      "filled": "✨ Filled: {groups}. You can upload another screenshot for the rest, then review and save.",
       "off": "Smart reading isn't available right now; fill it in manually.",
       "limit": "You've reached today's smart reading limit; try again tomorrow.",
       "not_stats": "This screenshot has no audience stats. Upload the stats page (gender, ages, countries).",
-      "failed": "We couldn't read the screenshot; try a clearer one or fill it in manually."
+      "failed": "We couldn't read the screenshot; try a clearer one or fill it in manually.",
+      "readingMany": "AI is reading image {n} of {total}…"
     }
   },
   "WorkPage": {

@@ -14,11 +14,13 @@ import { PagePreview } from "./PagePreview";
 import { PhotoCard } from "./PhotoCard";
 import { PublishCard } from "./PublishCard";
 import { TagsCard } from "./TagsCard";
+import { UsernameCard } from "./UsernameCard";
+import { nextUsernameChange } from "@/lib/username";
 import { PageHeader } from "@/components/dashboard/PageHeader";
 
 const empty = { fullName: "", specialty: "", bio: "", city: "", country: "" };
 
-async function Editor() {
+async function Editor({ lang }: { lang: Locale }) {
   const { page } = await requireCreator();
   // Scoped to the creator's own page from the verified session.
   const [translations, tags, licenses, categories, picked] = await Promise.all([
@@ -28,6 +30,8 @@ async function Editor() {
     listCategories(),
     db.pageCategory.findMany({ where: { pageId: page.id }, select: { categoryId: true } }),
   ]);
+  const next = nextUsernameChange(page.usernameChangedAt);
+  const nextChange = next ? new Intl.DateTimeFormat(toIntlLocale(lang), { day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Riyadh" }).format(next) : null;
   const langs = pageLanguages(page.primaryLang as Locale, page.enEnabled);
   const texts = Object.fromEntries(
     (["ar", "en"] as Locale[]).map((lang) => {
@@ -42,6 +46,7 @@ async function Editor() {
       <PagePreview username={page.username} langs={langs} />
     <div className="flex flex-col gap-4 lg:col-start-1 lg:row-start-1">
       <PublishCard username={page.username} published={page.isPublished} />
+      <UsernameCard key={page.username} username={page.username} nextChange={nextChange} />
       <PhotoCard photoUrl={page.photoUrl} shape={page.photoShape} />
       <LogoCard logoUrl={page.logoUrl} />
       <ProfileForm primaryLang={page.primaryLang as Locale} enEnabled={page.enEnabled} texts={texts} />
@@ -69,7 +74,7 @@ export default async function EditPage({ params }: PageProps<"/[locale]/dashboar
     <div className="flex flex-col gap-4">
       <PageHeader title={t("edit")} section="edit" />
       <Suspense fallback={null}>
-        <Editor />
+        <Editor lang={locale} />
       </Suspense>
     </div>
   );

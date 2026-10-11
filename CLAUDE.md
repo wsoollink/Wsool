@@ -311,7 +311,10 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
   then `claimUsername` creates the page). `/dashboard` sends users without a page there.
 - Changing the name later: `nextUsernameChange()` enforces 30 days between changes. The first
   claim does not start the cooldown, so a creator can fix a typo once right away. The change
-  form itself comes with the dashboard settings.
+  form is `UsernameCard` at the top of Edit page (`changeUsername`, live check via `checkUsername`). The old name goes
+  to `username_redirects` (server only): for `USERNAME_REDIRECT_DAYS` = 30 it redirects (307, `getUsernameRedirect`
+  in `loadCreatorPage`) and `usernameError()` reports it taken for everyone else; taking back your own old name
+  ends its redirect. Both old and new cache tags are updated.
 
 ### Dashboard shell (Phase 1, step 7)
 - Sections and tab bar are defined once in `src/config/dashboard.ts`. Layout:

@@ -48,6 +48,18 @@ type PageRow = Prisma.PageGetPayload<{ select: typeof PAGE_SELECT }>;
  * Everything the public creator page shows, read on the server. Cached per
  * username and refreshed with revalidateTag(pageCacheTag(username)) after edits.
  */
+/** The current username of a page that used to be `name` (redirect for 30 days after a change), or null. */
+export async function getUsernameRedirect(name: string) {
+  "use cache";
+  cacheTag(pageCacheTag(name));
+  cacheLife("hours");
+  const row = await db.usernameRedirect.findFirst({
+    where: { name, releasedAt: { gt: new Date() }, page: { deletedAt: null } },
+    select: { page: { select: { username: true } } },
+  });
+  return row?.page.username ?? null;
+}
+
 export async function getPublicPage(username: string) {
   "use cache";
   cacheTag(pageCacheTag(username));

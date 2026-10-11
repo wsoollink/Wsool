@@ -3,7 +3,7 @@ import { cache } from "react";
 import { defaultLocale, isLocale, type Locale } from "@/i18n/config";
 import { normalizeUsername, usernameFormatError } from "@/config/usernames";
 import { resolvePageLang } from "@/lib/page-language";
-import { getPublicPage } from "@/lib/public-page";
+import { getPublicPage, getUsernameRedirect } from "@/lib/public-page";
 
 /**
  * Shared by the creator layout, page and metadata: the page data and the
@@ -16,6 +16,8 @@ export const loadCreatorPage = cache(async (localeParam: string, usernameParam: 
   // Reserved names can't be claimed, but staff-made pages (e.g. /demo) still show.
   const formatError = usernameFormatError(username);
   const data = formatError && formatError !== "reserved" ? null : await getPublicPage(username);
+  // A creator who changed their username: the old link keeps working for 30 days.
+  const movedTo = !data && !formatError ? await getUsernameRedirect(username) : null;
   const lang = data?.status === "published" ? resolvePageLang(visitor, data.primaryLang, data.enEnabled) : visitor;
-  return { raw, username, data, lang };
+  return { raw, username, data, lang, movedTo };
 });

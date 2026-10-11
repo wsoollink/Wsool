@@ -8,6 +8,9 @@ import { pageCacheTag } from "@/lib/public-page";
 import { pageLanguages } from "@/lib/page-language";
 import { MAX_PAGE_CATEGORIES } from "@/config/categories";
 import { z } from "zod";
+import { Prisma } from "@/generated/prisma/client";
+import { normalizeUsername } from "@/config/usernames";
+import { nextUsernameChange, USERNAME_REDIRECT_DAYS, usernameError, type UsernameError } from "@/lib/username";
 import { licensesSchema, profileSchema, tagsSchema, TRANSLATION_FIELDS } from "@/lib/validation/profile";
 
 export type SaveState = { ok?: boolean; errors?: Record<string, string>; error?: "failed" | "needs_name" };
@@ -175,4 +178,44 @@ export async function saveLicenses(items: LicenseInput[]): Promise<SaveState> {
   await removeFiles([...currentUrls].filter((u) => !kept.has(u)).map((u) => pathFromPublicUrl(u))).catch(() => {});
   updateTag(pageCacheTag(page.username));
   return { ok: true };
+}
+
+export type UsernameChangeResult = { ok?: boolean; username?: string; error?: UsernameError | "same" | "cooldown" | "failed"; nextChange?: string };
+
+/**
+ * Changes the creator's username (once every 30 days; the first change after
+ * claiming is free). The old name redirects to the page for 30 days and
+ * nobody else can claim it meanwhile (`username_redirects`).
+ */
+export async function changeUsername(raw: string): Promise<UsernameChangeResult> {
+  const { user, page } = await requireCreator();
+  const name = normalizeUsername(String(raw).slice(0, 40));
+  if (name === page.username) return { error: "same" };
+  const next = nextUsernameChange(page.usernameChangedAt);
+  if (next) return { error: "cooldown", nextChange: next.toISOString() };
+  const error = await usernameError(name, user.id);
+  if (error) return { error };
+
+  const now = new Date();
+  try {
+    await db.$transaction(async (tx) => {
+      // Taking back one of their own recent names ends its redirect.
+      await tx.usernameRedirect.deleteMany({ where: { name, pageId: page.id } });
+      await tx.usernameRedirect.upsert({
+        where: { name: page.username },
+        create: { name: page.username, pageId: page.id, releasedAt: new Date(now.getTime() + USERNAME_REDIRECT_DAYS * 86_400_000) },
+        update: { pageId: page.id, releasedAt: new Date(now.getTime() + USERNAME_REDIRECT_DAYS * 86_400_000), createdAt: now },
+      });
+      // `where username` guards against a change racing with another one.
+      const res = await tx.page.updateMany({ where: { id: page.id, username: page.username }, data: { username: name, usernameChangedAt: now } });
+      if (res.count !== 1) throw new Error("changed meanwhile");
+    });
+  } catch (e) {
+    // Someone claimed the name between the check and the update.
+    if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") return { error: "taken" };
+    return { error: "failed" };
+  }
+  updateTag(pageCacheTag(page.username));
+  updateTag(pageCacheTag(name));
+  return { ok: true, username: name };
 }

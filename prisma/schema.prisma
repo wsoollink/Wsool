@@ -116,7 +116,7 @@ model Page {
   createdAt         DateTime   @default(now()) @map("created_at") @db.Timestamptz
   updatedAt         DateTime   @updatedAt @map("updated_at") @db.Timestamptz
 
-  user           User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user           User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   translations   PageTranslation[]
   tags           Tag[]
   licenses       License[]
@@ -129,6 +129,7 @@ model Page {
   links          PageLink[]
   services       Service[]
   categories     PageCategory[]
+  oldUsernames   UsernameRedirect[]
   pageViews      PageView[]
   contactClicks  ContactClick[]
 
@@ -878,4 +879,20 @@ model AiRead {
 
   @@index([userId, createdAt])
   @@map("ai_reads")
+}
+
+/// A username the creator changed away from: for 30 days it redirects to their page and nobody else
+/// can claim it (stops impersonation through links already shared with brands). Server only.
+model UsernameRedirect {
+  /// The old username (lowercase).
+  name       String   @id
+  pageId     String   @map("page_id") @db.Uuid
+  /// After this the name is free again and stops redirecting.
+  releasedAt DateTime @map("released_at") @db.Timestamptz
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  page Page @relation(fields: [pageId], references: [id], onDelete: Cascade)
+
+  @@index([pageId])
+  @@map("username_redirects")
 }

@@ -149,6 +149,22 @@
       "failed": "Something went wrong. Please try again."
     }
   },
+  "UsernameCard": {
+    "title": "Your page link",
+    "change": "Change link",
+    "newLabel": "New link",
+    "same": "This is your current link.",
+    "warnTitle": "Before you change it:",
+    "warnRedirect": "Your old link wsool.link/{old} redirects to the new one for 30 days only, then anyone can take it.",
+    "warnUpdate": "Update the link in your bio and download your PDF again: files you already sent carry the old link.",
+    "warnCooldown": "You can't change it again for 30 days.",
+    "confirm": "Confirm change",
+    "saving": "Changing…",
+    "cancel": "Cancel",
+    "changed": "✓ Your link was changed.",
+    "cooldown": "You can change your link again on {date}.",
+    "cooldownNow": "You changed your link less than 30 days ago. Try again later."
+  },
   "DashboardNav": {
     "brand": "Wsool",
     "menu": "Dashboard menu",

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { notFound, permanentRedirect } from "next/navigation";
+import { notFound, permanentRedirect, redirect } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
 import { HiddenPage } from "@/components/marketing/Pages";
 import { toIntlLocale } from "@/i18n/config";
@@ -27,7 +27,9 @@ export async function generateMetadata({ params }: PageProps<"/[locale]/[usernam
 
 export default async function CreatorPage({ params }: PageProps<"/[locale]/[username]">) {
   const { locale, username } = await params;
-  const { raw, username: name, data, lang } = await loadCreatorPage(locale, username);
+  const { raw, username: name, data, lang, movedTo } = await loadCreatorPage(locale, username);
+  // Temporary (307): the old name is released after 30 days.
+  if (!data && movedTo) redirect(`/${movedTo}`);
   if (!data) notFound();
   // Usernames are case-insensitive: send /Ali to the canonical /ali.
   if (raw !== name) permanentRedirect(`/${name}`);

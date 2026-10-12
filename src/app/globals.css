@@ -44,6 +44,28 @@
     outline: 2px solid var(--color-blue);
     outline-offset: 2px;
   }
+
+  /* Tailwind v4 leaves the arrow cursor on buttons: show the hand on everything
+     clickable (incl. labels wrapping radios/checkboxes; upload labels set cursor-pointer themselves), and
+     the arrow again when disabled. */
+  button,
+  [role="button"],
+  [role="switch"],
+  [role="tab"],
+  select,
+  summary,
+  label:has(> input[type="radio"]),
+  label:has(> input[type="checkbox"]),
+  input[type="radio"],
+  input[type="checkbox"],
+  input[type="file"] {
+    cursor: pointer;
+  }
+  :disabled,
+  [aria-disabled="true"],
+  label:has(> input:disabled) {
+    cursor: not-allowed;
+  }
 }
 
 @utility brand-gradient {

@@ -96,3 +96,11 @@
   header :is(.mk-home-4, .mk-pricing-4, .mk-notfound-4, .mk-hidden-4, .mk-servererror-4) ~ a[href="/login"] { order: 2; }
   header :is(.mk-home-4, .mk-pricing-4, .mk-notfound-4, .mk-hidden-4, .mk-servererror-4) ~ a[href="#"] { width: 44px !important; height: 44px !important; }
 }
+
+/* Phones: make room for the theme toggle in the header (all buttons stay 44px). */
+@media (max-width: 767px) {
+  :is(.mk-home-1, .mk-pricing-1, .mk-notfound-1, .mk-hidden-1, .mk-servererror-1) { padding-inline: 12px !important; gap: 8px !important; }
+  :is(.mk-home-1, .mk-pricing-1, .mk-notfound-1, .mk-hidden-1, .mk-servererror-1) > div:last-child > a:last-child { white-space: nowrap; flex-shrink: 0; padding-inline: 14px !important; }
+  :is(.mk-home-1, .mk-pricing-1, .mk-notfound-1, .mk-hidden-1, .mk-servererror-1) > div:last-child { gap: 6px !important; }
+  :is(.mk-home-1, .mk-pricing-1, .mk-notfound-1, .mk-hidden-1, .mk-servererror-1) :is(.mk-logo-light, .mk-logo-dark) { height: 30px !important; }
+}

@@ -417,7 +417,7 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
   A work can instead be a **post link** (owner, Oct 2026): TikTok / Instagram / YouTube only, parsed by
   `parseWorkLink()` (`src/lib/work-link.ts`, pure: canonical URL, embed URL, portrait or 16:9). `checkWorkLink` follows
   TikTok share links (`resolveWorkLink`, stays on tiktok.com) and stores a cover in the creator's folder
-  (`workLinkCover`: YouTube thumbnail, TikTok oEmbed; Instagram has none, the creator uploads one) via `storeServerFile`.
+  (`workLinkCover`: YouTube thumbnail, TikTok oEmbed with one retry, failures logged as `[work-link]`; Instagram has none, the creator uploads one) via `storeServerFile`. A link work without a cover shows "Get the cover from the platform" (calls `checkWorkLink` again).
   `portfolio_items.link_url` (then `video_url` is null; DB check: one of them is set). Public pop-up = the platform's
   iframe player (loaded only when opened) + "Open in {platform}"; the PDF links to the post.
   `hasPro()` in `src/config/plans.ts` is the one place that decides Pro vs Free.

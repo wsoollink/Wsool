@@ -501,7 +501,9 @@
     "linkInvalid": "الرابط غير صحيح. الصق رابط فيديو من TikTok أو Instagram أو YouTube.",
     "checking": "جاري التحقق…",
     "add": "أضف",
-    "instagramCover": "Instagram ما يعطينا غلاف، أضف غلاف عشان يطلع العمل أحلى."
+    "instagramCover": "Instagram ما يعطينا غلاف، أضف غلاف عشان يطلع العمل أحلى.",
+    "fetchCover": "جيب الغلاف من المنصة",
+    "coverFailed": "ما قدرنا نجيب الغلاف الحين. جرّب بعد شوي، أو ارفع غلاف بنفسك."
   },
   "RatesPage": {
     "settings": "إعدادات العرض",

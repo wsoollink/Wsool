@@ -12,7 +12,7 @@ const TIMEOUT = 8000;
 const MAX_BYTES = 4 * 1024 * 1024;
 const IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
 /** Hosts TikTok serves oEmbed thumbnails from. */
-const TIKTOK_IMAGE_HOSTS = [".tiktokcdn.com", ".tiktokcdn-us.com", ".tiktokcdn-eu.com", ".ibytedtos.com", ".byteimg.com"];
+const TIKTOK_IMAGE_HOSTS = [".tiktokcdn.com", ".tiktokcdn-us.com", ".tiktokcdn-eu.com", ".tiktokv.com", ".tiktokv.us", ".tiktokv.eu", ".ibytedtos.com", ".byteimg.com", ".muscdn.com"];
 
 export async function resolveWorkLink(input: string): Promise<WorkLink | null> {
   const direct = parseWorkLink(input);
@@ -37,12 +37,41 @@ export async function resolveWorkLink(input: string): Promise<WorkLink | null> {
 
 async function image(url: string): Promise<{ bytes: Buffer; type: string } | null> {
   try {
-    const res = await fetch(url, { signal: AbortSignal.timeout(TIMEOUT) });
+    const res = await fetch(url, { signal: AbortSignal.timeout(TIMEOUT), headers: { "user-agent": "Mozilla/5.0" } });
     const type = (res.headers.get("content-type") ?? "").split(";")[0].trim();
-    if (!res.ok || !IMAGE_TYPES.includes(type)) return null;
+    if (!res.ok || !IMAGE_TYPES.includes(type)) {
+      console.warn("[work-link] cover image refused", res.status, type, new URL(url).hostname);
+      return null;
+    }
     const bytes = Buffer.from(await res.arrayBuffer());
     return bytes.length > 0 && bytes.length <= MAX_BYTES ? { bytes, type } : null;
-  } catch {
+  } catch (err) {
+    console.warn("[work-link] cover image failed", new URL(url).hostname, String(err));
+    return null;
+  }
+}
+
+/** TikTok's cover for a video (the oEmbed thumbnail), or null. */
+async function tiktokCover(link: WorkLink): Promise<{ bytes: Buffer; type: string } | null> {
+  try {
+    const res = await fetch(`https://www.tiktok.com/oembed?url=${encodeURIComponent(link.url)}`, { signal: AbortSignal.timeout(TIMEOUT), headers: { "user-agent": "Mozilla/5.0" } });
+    if (!res.ok) {
+      console.warn("[work-link] tiktok oembed", res.status, link.id);
+      return null;
+    }
+    const thumb = ((await res.json()) as { thumbnail_url?: unknown }).thumbnail_url;
+    if (typeof thumb !== "string" || !thumb.startsWith("https://")) {
+      console.warn("[work-link] tiktok oembed without thumbnail", link.id);
+      return null;
+    }
+    const host = new URL(thumb).hostname.toLowerCase();
+    if (!TIKTOK_IMAGE_HOSTS.some((h) => host.endsWith(h))) {
+      console.warn("[work-link] tiktok thumbnail host not allowed", host);
+      return null;
+    }
+    return image(thumb);
+  } catch (err) {
+    console.warn("[work-link] tiktok oembed failed", link.id, String(err));
     return null;
   }
 }
@@ -54,17 +83,11 @@ export async function workLinkCover(link: WorkLink): Promise<{ bytes: Buffer; ty
     return (link.portrait && (await image(`https://i.ytimg.com/vi/${link.id}/oar2.jpg`))) || image(`https://i.ytimg.com/vi/${link.id}/hqdefault.jpg`);
   }
   if (link.platform === "tiktok") {
-    try {
-      const res = await fetch(`https://www.tiktok.com/oembed?url=${encodeURIComponent(link.url)}`, { signal: AbortSignal.timeout(TIMEOUT) });
-      if (!res.ok) return null;
-      const thumb = ((await res.json()) as { thumbnail_url?: unknown }).thumbnail_url;
-      if (typeof thumb !== "string") return null;
-      const host = new URL(thumb).hostname.toLowerCase();
-      if (!thumb.startsWith("https://") || !TIKTOK_IMAGE_HOSTS.some((h) => host.endsWith(h))) return null;
-      return image(thumb);
-    } catch {
-      return null;
-    }
+    // TikTok sometimes refuses a request (rate limit): one more try after a short pause.
+    const first = await tiktokCover(link);
+    if (first) return first;
+    await new Promise((done) => setTimeout(done, 1200));
+    return tiktokCover(link);
   }
   return null;
 }

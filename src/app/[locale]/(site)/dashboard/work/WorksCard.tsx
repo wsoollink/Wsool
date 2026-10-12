@@ -2,7 +2,7 @@
 
 import { useId, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
-import { ArrowDown, ArrowUp, ChevronDown, ExternalLink, Film, ImageIcon, Link2, Play, Trash2 } from "lucide-react";
+import { ArrowDown, ArrowUp, ChevronDown, ExternalLink, Film, ImageIcon, Link2, Play, RefreshCw, Trash2 } from "lucide-react";
 import { buttonClasses } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { PLATFORM_NAMES, PLATFORMS } from "@/config/platforms";
@@ -119,6 +119,16 @@ export function WorksCard({ initial, langs, freeLimit }: { initial: WorkRow[]; l
       setStatus("");
     });
 
+  /** Asks the platform again for the cover of a link work that has none (TikTok / YouTube). */
+  const fetchCover = (row: Row) =>
+    startCheck(async () => {
+      if (!row.link) return;
+      setUploadError("");
+      const res = await checkWorkLink(row.link);
+      if (res.cover) update(row.key, { thumb: { path: res.cover.path, url: null }, cover: res.cover.url });
+      else setUploadError(t("coverFailed"));
+    });
+
   const save = () =>
     startTransition(async () => {
       const res = await saveWorks(rows.map((r) => ({ platform: r.platform, link: r.link, video: r.video, thumb: r.thumb, ar: r.ar, en: r.en })));
@@ -178,6 +188,11 @@ export function WorksCard({ initial, langs, freeLimit }: { initial: WorkRow[]; l
                   <FileButton label={row.cover ? t("replaceCover") : t("addCover")} icon={<ImageIcon aria-hidden="true" size={16} />} accept={UPLOAD_KINDS.thumb.types.join(",")} disabled={!!row.uploading} onFile={(f) => f && uploadCover(row.key, f)} />
                   {row.video.path && row.video.url === null && !row.uploading && <p className="text-xs text-good">{t("videoReady")}</p>}
                   {row.link && row.platform === "instagram" && !row.cover && <p className="text-xs text-muted">{t("instagramCover")}</p>}
+                  {row.link && row.platform !== "instagram" && !row.cover && (
+                    <button type="button" onClick={() => fetchCover(row)} disabled={checking || !!row.uploading} aria-busy={checking} className={buttonClasses("secondary", "justify-start px-4 text-sm")}>
+                      <RefreshCw aria-hidden="true" size={16} /> {checking ? t("checking") : t("fetchCover")}
+                    </button>
+                  )}
                 </div>
               </div>
 

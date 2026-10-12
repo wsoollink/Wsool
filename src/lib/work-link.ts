@@ -60,7 +60,7 @@ export function parseWorkLink(input: string): WorkLink | null {
     // tiktok.com/@user/video/<id>
     const [user, kind, id] = parts;
     if (!user || !TT_USER.test(user) || kind !== "video" || !id || !TT_ID.test(id)) return null;
-    return { platform: "tiktok", id, portrait: true, url: `https://www.tiktok.com/${user}/video/${id}`, embed: `https://www.tiktok.com/embed/v2/${id}` };
+    return { platform: "tiktok", id, portrait: true, url: `https://www.tiktok.com/${user}/video/${id}`, embed: `https://www.tiktok.com/player/v1/${id}?autoplay=1&rel=0&music_info=0&description=0` };
   }
 
   if (host === "instagram.com") {

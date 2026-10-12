@@ -2,7 +2,6 @@ import { Suspense, type ReactNode } from "react";
 import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
 import { ExternalLink, LifeBuoy, LogOut } from "lucide-react";
-import { SubmitButton } from "@/components/SubmitButton";
 import { SUPPORT_EMAIL } from "@/config/site";
 import { fromIntlLocale } from "@/i18n/config";
 import { requireCreator } from "@/lib/creator";
@@ -41,10 +40,10 @@ export async function PageHeader({ title, section, subtitle, leading }: Props) {
                 {t("help")}
               </a>
               <form action={signOut}>
-                <SubmitButton variant="secondary" className="w-full" pendingText={t("signingOut")}>
+                <button type="submit" className={`${menuLink} w-full`}>
                   <LogOut aria-hidden="true" size={18} />
                   {t("signOut")}
-                </SubmitButton>
+                </button>
               </form>
             </>
           }

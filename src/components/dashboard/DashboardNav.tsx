@@ -19,11 +19,11 @@ function isActive(pathname: string, href: string) {
 }
 
 /** List of every section: desktop sidebar and the phone menu (which closes on tap). */
-export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
+export function SidebarNav({ onNavigate, compact }: { onNavigate?: () => void; compact?: boolean }) {
   const t = useTranslations("DashboardNav");
   const pathname = usePublicPathname();
   return (
-    <ul className="flex flex-col gap-1">
+    <ul className={`flex flex-col ${compact ? "" : "gap-1"}`}>
       {DASHBOARD_SECTIONS.map((s) => {
         const active = isActive(pathname, s.href);
         return (

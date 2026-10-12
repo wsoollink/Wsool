@@ -28,7 +28,11 @@ export function MobileMenu({ footer }: { footer: ReactNode }) {
   useEffect(() => {
     const dialog = ref.current;
     if (!dialog) return;
-    if (open && !dialog.open) dialog.showModal();
+    if (open && !dialog.open) {
+      dialog.showModal();
+      // The drawer itself takes focus, not its first link (the logo would show a focus ring).
+      dialog.focus();
+    }
     if (!open && dialog.open) dialog.close();
   }, [open]);
 
@@ -41,12 +45,12 @@ export function MobileMenu({ footer }: { footer: ReactNode }) {
         <Menu aria-hidden="true" size={20} />
       </button>
       <dialog
-        ref={ref} aria-label={t("menu")}
+        ref={ref} aria-label={t("menu")} tabIndex={-1}
         onClose={() => setOpen(false)}
         onClick={(ev) => { if (ev.target === ev.currentTarget) setOpen(false); }}
-        className="fixed inset-y-0 start-0 m-0 h-dvh max-h-none w-[min(320px,86vw)] max-w-none bg-white p-0 text-navy shadow-xl backdrop:bg-navy/40 md:hidden"
+        className="fixed inset-y-0 start-0 m-0 h-dvh max-h-none w-[min(320px,86vw)] max-w-none bg-white p-0 text-navy shadow-xl outline-none backdrop:bg-navy/40 md:hidden"
       >
-        <div className="flex h-full flex-col gap-4 px-4 pt-[max(1.25rem,env(safe-area-inset-top))] pb-[max(1.25rem,env(safe-area-inset-bottom))]">
+        <div className="flex h-full flex-col gap-2 px-3 pt-[max(0.75rem,env(safe-area-inset-top))] pb-[max(0.75rem,env(safe-area-inset-bottom))]">
           <div className="flex items-center justify-between gap-3">
             <Link href="/dashboard" className="inline-flex min-h-11 items-center px-3" aria-label={t("brand")}>
               <Image src={lang === "en" ? "/brand/logo-en.png" : "/brand/logo-ar.png"} alt={t("brand")} width={96} height={32} className="h-8 w-auto" />
@@ -56,9 +60,9 @@ export function MobileMenu({ footer }: { footer: ReactNode }) {
             </button>
           </div>
           <nav aria-label={t("menu")} className="min-h-0 flex-1 overflow-y-auto">
-            <SidebarNav onNavigate={() => setOpen(false)} />
+            <SidebarNav compact onNavigate={() => setOpen(false)} />
           </nav>
-          <div className="flex flex-col gap-2 border-t border-navy/8 pt-3">{footer}</div>
+          <div className="flex flex-col border-t border-navy/8 pt-2">{footer}</div>
         </div>
       </dialog>
     </>

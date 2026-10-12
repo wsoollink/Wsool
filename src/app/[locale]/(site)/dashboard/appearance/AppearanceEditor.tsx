@@ -38,7 +38,7 @@ export function AppearanceEditor({ initial, isPro, freeTemplates, preview }: { i
   };
 
   return (
-    <div className="grid gap-4 pb-20 md:pb-0 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
+    <div className="grid grid-cols-1 gap-4 pb-20 md:pb-0 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
       <div className="flex min-w-0 flex-col gap-4">
         <Card className="flex flex-col gap-3">
           <div>

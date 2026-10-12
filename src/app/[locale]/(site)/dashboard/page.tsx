@@ -104,7 +104,7 @@ async function Home({ lang }: { lang: Locale }) {
         <Link href="/dashboard/subscription" className="rounded-[18px] bg-bad/10 px-4 py-3 text-sm text-bad underline">{t("deletionScheduled")}</Link>
       )}
 
-      <div className="grid gap-3 md:grid-cols-[repeat(auto-fit,minmax(320px,1fr))]">
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-[repeat(auto-fit,minmax(320px,1fr))]">
         <LinkCard
           username={page.username} url={pageUrl} published={page.isPublished}
           pdfLangs={pdfLangs} pdfNote={page.isPublished ? t("pdfPro") : t("pdfPublishFirst")}
@@ -146,7 +146,7 @@ async function Home({ lang }: { lang: Locale }) {
         {!report && stale && <UpdateNudge t={t} month={month.format(now)} last={lastNumbers ? month.format(new Date(lastNumbers)) : null} />}
       </section>
 
-      <div className="grid gap-3 md:grid-cols-[repeat(auto-fit,minmax(340px,1fr))]">
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-[repeat(auto-fit,minmax(340px,1fr))]">
         {report && (
           <Card className="flex flex-col gap-3">
             <div className={sectionTitle}>

@@ -63,7 +63,7 @@ export function LegalPage({ lang, kind }: { lang: Locale; kind: LegalKind }) {
 
         <nav aria-label={ui.contents} className="mt-6 rounded-[20px] border border-line bg-white p-5">
           <p className="mb-2 text-sm font-bold">{ui.contents}</p>
-          <ol className="grid gap-1 text-sm sm:grid-cols-2">
+          <ol className="grid grid-cols-1 gap-1 text-sm sm:grid-cols-2">
             {headings.map((h) => (
               <li key={h.id}><a href={`#${h.id}`} className="inline-block py-1 text-muted hover:text-blue focus-visible:text-blue">{h.text}</a></li>
             ))}

@@ -78,7 +78,7 @@ export async function FinanceView({ report, growth, sections, lang }: Props) {
       {sections.includes("pnl") && (
         <section className="flex flex-col gap-3">
           <h2 className="font-bold">{t("pnl")}</h2>
-          <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
             <Card className="flex flex-col gap-3">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <h3 className="text-sm font-bold">{t("revenueVsExpenses")}</h3>

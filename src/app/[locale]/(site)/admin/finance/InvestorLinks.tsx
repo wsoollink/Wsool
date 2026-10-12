@@ -41,7 +41,7 @@ export function InvestorLinks({ links }: { links: LinkRow[] }) {
         <p className="text-xs text-muted">{t("investorHint")}</p>
       </div>
       <form onSubmit={create} className="flex flex-col gap-3">
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div className="flex flex-col gap-1"><label htmlFor="inv-label" className="text-xs font-medium">{t("linkLabel")}</label><input id="inv-label" value={label} maxLength={80} onChange={(e) => setLabel(e.target.value)} required placeholder={t("linkLabelPlaceholder")} className={control} /></div>
           <div className="flex flex-col gap-1"><label htmlFor="inv-pass" className="text-xs font-medium">{t("password")}</label><input id="inv-pass" type="text" dir="ltr" autoComplete="off" value={password} maxLength={100} onChange={(e) => setPassword(e.target.value)} className={control} /></div>
           <div className="flex flex-col gap-1"><label htmlFor="inv-months" className="text-xs font-medium">{t("period")}</label>

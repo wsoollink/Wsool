@@ -121,7 +121,7 @@ async function Report({ lang, searchParams }: { lang: Locale; searchParams: SP }
             ))}
           </div>
           <Card><DailyChart series={r.series} /></Card>
-          <div className="grid gap-3 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
             <ShareList title={t("countries")} rows={r.countries} total={r.views} label={(k) => regions.of(k) ?? k} lang={lang} empty={t("noData")} />
             <ShareList title={t("referrers")} hint={t("referrersHint")} rows={r.referrers} total={r.views} label={(k) => k} lang={lang} empty={t("direct")} />
             <Card className="flex flex-col gap-3">

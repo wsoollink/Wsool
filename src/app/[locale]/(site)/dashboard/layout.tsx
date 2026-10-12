@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { LifeBuoy, LogOut } from "lucide-react";
-import { SidebarNav, TabBar } from "@/components/dashboard/DashboardNav";
+import { SidebarNav } from "@/components/dashboard/DashboardNav";
 import { SubmitButton } from "@/components/SubmitButton";
 import { SUPPORT_EMAIL } from "@/config/site";
 import { isLocale, toIntlLocale } from "@/i18n/config";
@@ -39,15 +39,8 @@ export default async function DashboardLayout({ children, params }: LayoutProps<
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <main className="mx-auto w-full max-w-[1160px] flex-1 px-4 pt-5 pb-28 md:px-8 md:pt-7 md:pb-10">{children}</main>
+        <main className="mx-auto w-full max-w-[1160px] flex-1 px-4 pt-5 pb-10 md:px-8 md:pt-7 md:pb-10">{children}</main>
       </div>
-
-      <nav
-        aria-label={t("menu")}
-        className="fixed inset-x-0 bottom-0 z-10 border-t border-navy/8 bg-white/82 pb-[env(safe-area-inset-bottom)] backdrop-blur-[14px] md:hidden"
-      >
-        <TabBar />
-      </nav>
     </div>
   );
 }

@@ -35,7 +35,7 @@ export function ExpensesCard({ rows, today }: { rows: ExpenseRow[]; today: strin
   return (
     <Card className="flex flex-col gap-4">
       <h2 className="font-bold">{t("expensesTitle")}</h2>
-      <form onSubmit={add} className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <form onSubmit={add} className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <div className="flex flex-col gap-1"><label htmlFor="exp-date" className="text-xs font-medium">{t("date")}</label><input id="exp-date" type="date" value={form.date} onChange={(e) => set({ date: e.target.value })} required className={control} /></div>
         <div className="flex flex-col gap-1"><label htmlFor="exp-amount" className="text-xs font-medium">{t("amount")}</label>
           <div className="flex gap-2">

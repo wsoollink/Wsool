@@ -1,5 +1,5 @@
 import {
-  Activity, BadgeCheck, Bell, Briefcase, ChartColumn, CreditCard, Ellipsis, House,
+  Activity, BadgeCheck, Bell, Briefcase, ChartColumn, CreditCard, House,
   Link2, MessageCircle, Palette, Pencil, Tag, type LucideProps,
 } from "lucide-react";
 import type { SectionKey } from "@/config/dashboard";
@@ -17,7 +17,6 @@ const ICONS: Record<SectionKey, React.ComponentType<LucideProps>> = {
   analytics: Activity,
   subscription: CreditCard,
   notifications: Bell,
-  more: Ellipsis,
 };
 
 export function SectionIcon({ section, ...props }: { section: SectionKey } & LucideProps) {

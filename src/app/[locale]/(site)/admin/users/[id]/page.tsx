@@ -52,7 +52,7 @@ async function Details({ params, lang }: { params: Promise<{ id: string }>; lang
     <div className="flex flex-col gap-4">
       <h1 className="text-2xl font-bold">{name || user.page?.username || user.email}</h1>
       <Card>
-        <dl className="grid gap-3 sm:grid-cols-2">
+        <dl className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           {rows.map(([label, value]) => (
             <div key={label}><dt className="text-xs text-muted">{label}</dt><dd className="font-medium">{value}</dd></div>
           ))}

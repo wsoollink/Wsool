@@ -95,7 +95,7 @@ async function Insights({ lang, searchParams }: { lang: Locale; searchParams: SP
       {total === 0 ? (
         <Card><p className="text-sm text-muted">{t("empty")}</p></Card>
       ) : (
-        <div className="grid gap-4 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           <Breakdown title={t("dim.cat")} options={options.cat} total={total} lang={lang} link={link("cat")} />
           <Breakdown title={t("dim.country")} options={options.country} total={total} lang={lang} link={link("country")} />
           <Breakdown title={t("dim.city")} options={options.city} total={total} lang={lang} link={link("city")} limit={CITY_LIMIT} />

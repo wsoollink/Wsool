@@ -104,7 +104,7 @@ async function Overview({ lang }: { lang: Locale }) {
         <Tile label={t("conversion")} value={trialsEnded ? `${Math.round((converted / trialsEnded) * 100)}%` : "—"} note={t("conversionHint", { n: formatNumber(trialsEnded, lang) })} />
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_340px]">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_340px]">
         <Card className="flex flex-col gap-4">
           <div className="flex items-baseline justify-between gap-3">
             <h2 className="font-bold">{t("signups")}</h2>
@@ -140,7 +140,7 @@ async function Overview({ lang }: { lang: Locale }) {
         )}
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card className="flex flex-col gap-3">
           <h2 className="font-bold">{t("funnelTitle")}</h2>
           <ol className="flex flex-col gap-2.5">

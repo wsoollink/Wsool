@@ -40,7 +40,7 @@ async function Invoice({ params, lang }: { params: Promise<{ id: string }>; lang
         </div>
         <PrintButton label={t("print")} />
       </div>
-      <dl className="grid gap-4 text-sm sm:grid-cols-2">
+      <dl className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2">
         <div><dt className="text-xs text-muted">{t("seller")}</dt><dd className="font-medium">{lang === "en" ? SELLER.nameEn : SELLER.name}</dd>
           {SELLER.vatNumber && <dd className="text-muted">{t("vatNumber")}: <span dir="ltr">{SELLER.vatNumber}</span></dd>}
           {SELLER.crNumber && <dd className="text-muted">{t("crNumber")}: <span dir="ltr">{SELLER.crNumber}</span></dd>}

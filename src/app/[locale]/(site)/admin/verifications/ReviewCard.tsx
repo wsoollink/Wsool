@@ -126,7 +126,7 @@ export function ReviewCard({ item, canDecide }: { item: ReviewItem; canDecide: b
         {item.renewal && <span className="rounded-full bg-blue/10 px-2.5 py-1 text-xs font-bold text-blue">{t("renewal")}</span>}
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
         <div className="flex flex-col gap-2">
           <h3 className="text-[13px] font-bold text-muted">{t("screenshot")}</h3>
           {item.screenshotUrl ? (

@@ -204,7 +204,7 @@ export function WorksCard({ initial, langs, freeLimit }: { initial: WorkRow[]; l
               </div>}
 
               {langs.map((lang) => (
-                <div key={lang} className="grid gap-3 sm:grid-cols-2">
+                <div key={lang} className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   {(["brand", "type"] as const).map((field) => (
                     <div key={field} className="flex flex-col gap-1.5">
                       <label htmlFor={`${field}-${lang}-${row.key}`} className="text-sm font-medium">

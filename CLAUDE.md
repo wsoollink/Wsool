@@ -150,7 +150,8 @@ show in PDF, currency, VAT included or not. Hidden → show "الأسعار عن
 
 Home · Edit page · Accounts & numbers · Brands & work · **Ad rates** · **Links & services** · Contact · Verification ·
 Appearance · Analytics · Subscription · Notifications (bell with unread dot in every header).
-Mobile: bottom tab bar (Home, My page, Accounts, Analytics, More). Desktop: left sidebar.
+Mobile: ☰ menu in every page header opening a side drawer with all sections (owner, Oct 2026; replaced the
+bottom tab bar). Desktop: left sidebar.
 Subscription page also holds **self-service account deletion**: download data → type username
 to confirm → page hidden immediately → 30-day undo window → permanent deletion and link released.
 
@@ -317,9 +318,13 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
   ends its redirect. Both old and new cache tags are updated.
 
 ### Dashboard shell (Phase 1, step 7)
-- Sections and tab bar are defined once in `src/config/dashboard.ts`. Layout:
-  `src/app/[locale]/(site)/dashboard/layout.tsx` (header with bell, desktop sidebar, mobile
-  bottom tab bar). The sidebar sits on the **start** side: right in Arabic, left in English.
+- Sections are defined once in `src/config/dashboard.ts`. Layout:
+  `src/app/[locale]/(site)/dashboard/layout.tsx` (desktop sidebar). Phones: `MobileMenu`
+  (`src/components/dashboard/MobileMenu.tsx`, native `<dialog>` drawer from the start side, rendered by `PageHeader`
+  with "view my page", support and sign out; `/dashboard/more` redirects home). Sidebar and drawer sit on the
+  **start** side: right in Arabic, left in English.
+- Single-column grids need `grid-cols-1` (= `minmax(0,1fr)`) on phones: a bare `grid` sizes its column to the widest
+  content and the page grows wider than the screen.
 - Every dashboard page gets the creator through `requireCreator()` (`src/lib/creator.ts`):
   signed out → `/login`, no page yet → `/onboarding`. Call it inside `<Suspense>`.
 - Unbuilt sections render from `dashboard/[section]/page.tsx` (placeholder). Building a
@@ -587,7 +592,7 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
 - Dashboard shell (design pass): `app-backdrop` background, frosted `Card` (radius 18), blue primary
   buttons (still pills), 48px inputs, `Switch` (`src/components/ui/Switch.tsx`, role=switch), and a
   `PageHeader` per page (title + subtitle from `DashboardHeader` messages, bell, language pill).
-  Sections with one save for everything use `SaveBar` (fixed above the tab bar on phones).
+  Sections with one save for everything use `SaveBar` (fixed to the bottom of the screen on phones).
 - Ad rates: one bundle per page (`MAX_BUNDLES = 1`; the public page shows only the first), rate
   currencies SAR/USD/AED/KWD (`RateCurrency` enum, separate from the subscription `Currency`).
 - Accent color: presets only (`ACCENT_SWATCHES`, light + dark variant chosen by `pageTheme`).

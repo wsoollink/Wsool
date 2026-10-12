@@ -170,7 +170,6 @@
     "menu": "Dashboard menu",
     "home": "Home",
     "edit": "Edit page",
-    "myPage": "My page",
     "accounts": "Accounts & numbers",
     "work": "Brands & work",
     "rates": "Ad rates",
@@ -180,13 +179,14 @@
     "analytics": "Analytics",
     "subscription": "Subscription",
     "notifications": "Notifications",
-    "more": "More",
     "signOut": "Sign out",
     "signingOut": "Signing out…",
     "help": "Contact support",
-    "accountsShort": "Accounts",
     "unread": "You have new notifications",
-    "links": "Links & services"
+    "links": "Links & services",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "viewPage": "View my page"
   },
   "CreatorPage": {
     "brand": "Wsool",
@@ -1897,7 +1897,6 @@
     "analytics": "Who visits your page and from where",
     "subscription": "Your plan, invoices and payment method",
     "notifications": "Everything that happened on your page and account",
-    "more": "The rest of your dashboard",
     "home": "Here's your page today",
     "links": "Your store and course links, and services besides ads"
   },

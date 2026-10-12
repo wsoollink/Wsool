@@ -180,7 +180,7 @@ async function Queue({ lang, tab, id, ai }: { lang: Locale; tab: Tab; id: string
   return (
     <>
       {statsRow}
-      <div className="grid items-start gap-4 lg:grid-cols-[380px_minmax(0,1fr)]">
+      <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[380px_minmax(0,1fr)]">
         <Card className={`flex flex-col gap-1 p-2 ${id ? "max-lg:hidden" : ""}`}>
           {aiChips}
           <p className="px-3 pt-2 pb-1 text-xs text-muted">{t("count", { shown: requests.length, total })}</p>

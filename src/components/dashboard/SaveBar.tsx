@@ -13,14 +13,14 @@ type Props = {
 
 /**
  * One sticky "Save changes" bar for a whole section (dashboard design). On
- * phones it sits right above the bottom tab bar; on desktop at the bottom
- * of the content column.
+ * phones it is fixed to the bottom of the screen; on desktop it sticks to the
+ * bottom of the content column.
  */
 export function SaveBar({ onSave, pending, status, extra }: Props) {
   const t = useTranslations("SaveBar");
   const saved = status?.tone === "good";
   return (
-    <div className="fixed inset-x-0 bottom-[calc(56px+env(safe-area-inset-bottom))] z-10 border-t border-navy/8 bg-white/82 px-4 py-3 backdrop-blur-[14px] md:sticky md:inset-x-auto md:bottom-4 md:rounded-[18px] md:border md:shadow-card">
+    <div className="fixed inset-x-0 bottom-0 z-10 border-t border-navy/8 bg-white/82 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur-[14px] md:sticky md:inset-x-auto md:bottom-4 md:rounded-[18px] md:border md:shadow-card">
       <p role="status" aria-live="polite" className={`mb-2 text-center text-sm empty:hidden ${status?.tone === "bad" ? "text-bad" : "text-good"}`}>
         {status && !saved ? status.text : ""}
       </p>

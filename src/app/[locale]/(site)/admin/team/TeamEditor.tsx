@@ -72,7 +72,7 @@ export function TeamEditor({ owners, members }: { owners: string[]; members: Mem
   const row = (active: boolean) => `flex min-h-[60px] w-full items-center gap-3 rounded-[14px] px-3 py-2 text-start ${active ? "bg-navy/[0.06] ring-1 ring-navy/10" : "hover:bg-navy/[0.03]"}`;
 
   return (
-    <div className="grid items-start gap-4 lg:grid-cols-[340px_minmax(0,1fr)]">
+    <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[340px_minmax(0,1fr)]">
       <Card className="flex flex-col gap-1 p-2">
         <button type="button" onClick={() => setSelected({ kind: "invite" })} className={buttonClasses("primary", "m-1 mb-2")}>
           <UserPlus aria-hidden="true" size={18} /> {t("inviteTitle")}

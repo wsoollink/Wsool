@@ -497,13 +497,14 @@
     "addLogo": "إضافة شعار",
     "noDetails": "أضف البراند ونوع العمل",
     "addLink": "أو الصق رابط العمل من حسابك",
-    "linkHint": "رابط فيديو من TikTok أو Instagram أو YouTube. نجيب الغلاف تلقائياً من TikTok و YouTube، وفي Instagram تقدر ترفع غلاف.",
+    "linkHint": "رابط فيديو من TikTok أو Instagram أو YouTube. نجيب الغلاف من المنصة تلقائياً، وتقدر تغيّره.",
     "linkInvalid": "الرابط غير صحيح. الصق رابط فيديو من TikTok أو Instagram أو YouTube.",
     "checking": "جاري التحقق…",
     "add": "أضف",
-    "instagramCover": "Instagram ما يعطينا غلاف، أضف غلاف عشان يطلع العمل أحلى.",
     "fetchCover": "جيب الغلاف من المنصة",
-    "coverFailed": "ما قدرنا نجيب الغلاف الحين. جرّب بعد شوي، أو ارفع غلاف بنفسك."
+    "coverFailed": "ما قدرنا نجيب الغلاف الحين. جرّب بعد شوي، أو ارفع غلاف بنفسك.",
+    "moveEarlier": "قدّم {item}",
+    "moveLater": "أخّر {item}"
   },
   "RatesPage": {
     "settings": "إعدادات العرض",

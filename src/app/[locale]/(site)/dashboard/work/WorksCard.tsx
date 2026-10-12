@@ -187,8 +187,7 @@ export function WorksCard({ initial, langs, freeLimit }: { initial: WorkRow[]; l
                   )}
                   <FileButton label={row.cover ? t("replaceCover") : t("addCover")} icon={<ImageIcon aria-hidden="true" size={16} />} accept={UPLOAD_KINDS.thumb.types.join(",")} disabled={!!row.uploading} onFile={(f) => f && uploadCover(row.key, f)} />
                   {row.video.path && row.video.url === null && !row.uploading && <p className="text-xs text-good">{t("videoReady")}</p>}
-                  {row.link && row.platform === "instagram" && !row.cover && <p className="text-xs text-muted">{t("instagramCover")}</p>}
-                  {row.link && row.platform !== "instagram" && !row.cover && (
+                  {row.link && !row.cover && (
                     <button type="button" onClick={() => fetchCover(row)} disabled={checking || !!row.uploading} aria-busy={checking} className={buttonClasses("secondary", "justify-start px-4 text-sm")}>
                       <RefreshCw aria-hidden="true" size={16} /> {checking ? t("checking") : t("fetchCover")}
                     </button>

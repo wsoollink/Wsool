@@ -497,13 +497,14 @@
     "addLogo": "Add logo",
     "noDetails": "Add the brand and type",
     "addLink": "Or paste a link from your account",
-    "linkHint": "A video link from TikTok, Instagram or YouTube. We fetch the cover from TikTok and YouTube; for Instagram you can upload one.",
+    "linkHint": "A video link from TikTok, Instagram or YouTube. We get the cover from the platform; you can change it.",
     "linkInvalid": "That link doesn't work. Paste a video link from TikTok, Instagram or YouTube.",
     "checking": "Checking…",
     "add": "Add",
-    "instagramCover": "Instagram doesn't share a cover. Add one so the work looks better.",
     "fetchCover": "Get the cover from the platform",
-    "coverFailed": "We couldn't get the cover right now. Try again shortly, or upload one yourself."
+    "coverFailed": "We couldn't get the cover right now. Try again shortly, or upload one yourself.",
+    "moveEarlier": "Move {item} earlier",
+    "moveLater": "Move {item} later"
   },
   "RatesPage": {
     "settings": "Display settings",

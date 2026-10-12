@@ -2,7 +2,7 @@
 
 import { useId, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
-import { ImagePlus, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, ImagePlus, X } from "lucide-react";
 import { buttonClasses } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { UPLOAD_KINDS } from "@/config/uploads";
@@ -12,6 +12,7 @@ import { saveBrands } from "./actions";
 
 type Row = { key: string; name: string; path: string | null; url: string | null; preview: string | null; uploading?: boolean; error?: boolean };
 const newKey = () => Math.random().toString(36).slice(2);
+const moveButton = "inline-flex size-11 items-center justify-center rounded-full text-muted hover:bg-navy/5 disabled:opacity-30";
 
 /** Brand logos: upload, name (used as the image's text alternative), reorder, delete. */
 export function BrandsCard({ initial }: { initial: { name: string; url: string }[] }) {
@@ -25,6 +26,14 @@ export function BrandsCard({ initial }: { initial: { name: string; url: string }
 
   const update = (key: string, patch: Partial<Row>) => {
     setRows((all) => all.map((r) => (r.key === key ? { ...r, ...patch } : r)));
+    setStatus("");
+  };
+
+  /** Moves a logo one place earlier (-1) or later (+1); the page shows them in this order. */
+  const move = (i: number, by: number) => {
+    const next = [...rows];
+    [next[i], next[i + by]] = [next[i + by], next[i]];
+    setRows(next);
     setStatus("");
   };
 
@@ -84,6 +93,16 @@ export function BrandsCard({ initial }: { initial: { name: string; url: string }
               onChange={(ev) => update(row.key, { name: ev.target.value, error: false })}
               className="h-9 min-w-0 rounded-lg border border-transparent bg-transparent px-1 text-center text-xs hover:border-navy/12 focus:border-navy/16 aria-[invalid=true]:border-bad"
             />
+            {rows.length > 1 && (
+              <div className="flex justify-center">
+                <button type="button" onClick={() => move(i, -1)} disabled={i === 0} aria-label={t("moveEarlier", { item: row.name || t("logoN", { n: i + 1 }) })} className={moveButton}>
+                  <ChevronRight aria-hidden="true" size={18} className="ltr:rotate-180" />
+                </button>
+                <button type="button" onClick={() => move(i, 1)} disabled={i === rows.length - 1} aria-label={t("moveLater", { item: row.name || t("logoN", { n: i + 1 }) })} className={moveButton}>
+                  <ChevronLeft aria-hidden="true" size={18} className="ltr:rotate-180" />
+                </button>
+              </div>
+            )}
           </li>
         ))}
         {rows.length < MAX_BRANDS && (

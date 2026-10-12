@@ -4,13 +4,16 @@ import { isTikTokShortLink, parseWorkLink, type WorkLink } from "@/lib/work-link
 /**
  * Network side of work links: TikTok share links are followed to the video
  * URL, and a cover image is fetched for YouTube (thumbnail) and TikTok
- * (oEmbed). Instagram gives no cover without a Facebook app token: the creator
- * uploads one. Only these platforms' own hosts are ever fetched.
+ * (oEmbed) and Instagram (the image on the post's public embed page; its
+ * oEmbed needs a Facebook app token). Only these platforms' own hosts are
+ * ever fetched.
  */
 
 const TIMEOUT = 8000;
 const MAX_BYTES = 4 * 1024 * 1024;
 const IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
+/** Hosts Instagram serves post images from. */
+const INSTAGRAM_IMAGE_HOSTS = [".cdninstagram.com", ".fbcdn.net"];
 /** Hosts TikTok serves oEmbed thumbnails from. */
 const TIKTOK_IMAGE_HOSTS = [".tiktokcdn.com", ".tiktokcdn-us.com", ".tiktokcdn-eu.com", ".tiktokv.com", ".tiktokv.us", ".tiktokv.eu", ".ibytedtos.com", ".byteimg.com", ".muscdn.com"];
 
@@ -76,7 +79,37 @@ async function tiktokCover(link: WorkLink): Promise<{ bytes: Buffer; type: strin
   }
 }
 
-/** Cover image for a work link, or null (Instagram, or the platform didn't answer). */
+const decodeHtml = (v: string) => v.replace(/&amp;/g, "&").replace(/\\u0026/g, "&").replace(/\\\//g, "/");
+
+/** Instagram's image for a post or reel, read from its public embed page, or null. */
+async function instagramCover(link: WorkLink): Promise<{ bytes: Buffer; type: string } | null> {
+  try {
+    const res = await fetch(link.embed.replace(/\/embed$/, "/embed/"), { signal: AbortSignal.timeout(TIMEOUT), headers: { "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1" } });
+    if (!res.ok) {
+      console.warn("[work-link] instagram embed", res.status, link.id);
+      return null;
+    }
+    const html = (await res.text()).slice(0, 2_000_000);
+    const img = html.match(/<img[^>]*class="[^"]*EmbeddedMediaImage[^"]*"[^>]*>/)?.[0];
+    const found = img?.match(/\ssrc="([^"]+)"/)?.[1] ?? html.match(/"display_url":"([^"]+)"/)?.[1] ?? html.match(/<meta[^>]*property="og:image"[^>]*content="([^"]+)"/)?.[1];
+    if (!found) {
+      console.warn("[work-link] instagram embed without image", link.id);
+      return null;
+    }
+    const url = decodeHtml(found);
+    const host = new URL(url).hostname.toLowerCase();
+    if (!url.startsWith("https://") || !INSTAGRAM_IMAGE_HOSTS.some((h) => host.endsWith(h))) {
+      console.warn("[work-link] instagram image host not allowed", host);
+      return null;
+    }
+    return image(url);
+  } catch (err) {
+    console.warn("[work-link] instagram embed failed", link.id, String(err));
+    return null;
+  }
+}
+
+/** Cover image for a work link, or null (the platform didn't answer). */
 export async function workLinkCover(link: WorkLink): Promise<{ bytes: Buffer; type: string } | null> {
   if (link.platform === "youtube") {
     // Shorts have a portrait frame ("oar2"); every video has hqdefault.
@@ -89,5 +122,5 @@ export async function workLinkCover(link: WorkLink): Promise<{ bytes: Buffer; ty
     await new Promise((done) => setTimeout(done, 1200));
     return tiktokCover(link);
   }
-  return null;
+  return instagramCover(link);
 }

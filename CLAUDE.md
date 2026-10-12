@@ -354,8 +354,8 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
 - Template previews (local only): `npx tsx scripts/seed-demo.ts t.sand sand`, or
   `... t.custom custom "#e63946,#1d3557:light"`, or add `free` as the last argument.
 - Interactions (client components in `src/components/creator/`): `CountUp` (server renders the
-  final number; animates once in view), `Marquee` (CSS, duplicated track, pauses on hover/focus,
-  RTL-aware), `Modal` (native `<dialog>`), `PlatformCard` (audience pop-up), `WorkItem` (portrait
+  final number; animates once in view), `Marquee` (scrollable row moved per frame, swipeable by hand, pauses
+  on touch/hover/focus/scroll and resumes after 2.5s; moves and duplicates its items only when they overflow; RTL-aware), `Modal` (native `<dialog>`), `PlatformCard` (audience pop-up), `WorkItem` (portrait
   video pop-up), `LicenseFile` (PDF/image pop-up). All respect `prefers-reduced-motion`.
 - Videos: store MP4 (H.264) for Safari/iOS. The sandbox's test Chromium can't decode H.264, so
   video playback can only be checked there with a WebM copy.
@@ -417,7 +417,7 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
   A work can instead be a **post link** (owner, Oct 2026): TikTok / Instagram / YouTube only, parsed by
   `parseWorkLink()` (`src/lib/work-link.ts`, pure: canonical URL, embed URL, portrait or 16:9). `checkWorkLink` follows
   TikTok share links (`resolveWorkLink`, stays on tiktok.com) and stores a cover in the creator's folder
-  (`workLinkCover`: YouTube thumbnail, TikTok oEmbed with one retry, failures logged as `[work-link]`; Instagram has none, the creator uploads one) via `storeServerFile`. A link work without a cover shows "Get the cover from the platform" (calls `checkWorkLink` again).
+  (`workLinkCover`: YouTube thumbnail, TikTok oEmbed with one retry, Instagram = the image on the post's public embed page; failures logged as `[work-link]`) via `storeServerFile`. A link work without a cover shows "Get the cover from the platform" (calls `checkWorkLink` again).
   `portfolio_items.link_url` (then `video_url` is null; DB check: one of them is set). Public pop-up = the platform's
   iframe player (loaded only when opened) + "Open in {platform}"; the PDF links to the post.
   `hasPro()` in `src/config/plans.ts` is the one place that decides Pro vs Free.

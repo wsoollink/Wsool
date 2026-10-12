@@ -364,7 +364,9 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
 - Link preview (OG) image: route handler `src/app/[locale]/(creator)/[username]/og/route.tsx`,
   public URL `/<username>/og` (not the `opengraph-image` file convention, whose URL would carry
   the internal `/<locale>` prefix). Metadata sets `og:image`/`twitter:image` and `metadataBase`
-  from `siteOrigin()` (`NEXT_PUBLIC_SITE_URL`, else Netlify's `URL`). CDN-cached for a day.
+  from `siteOrigin()` (`NEXT_PUBLIC_SITE_URL`, else Netlify's `URL`). CDN-cached for a day, so the metadata
+  links `/<username>/og?lang=&v=<fingerprint>`: `v` hashes what the image shows (name, specialty, photo, colors,
+  followers per account), so any change gets a fresh image URL. The route honours `?lang=` (crawlers send no language).
 - **Arabic in OG images**: next/og (Satori) mis-measures Arabic, breaking word spacing. Text is
   shaped with fontkit and drawn as SVG outlines (`src/lib/og-text.ts`, right-to-left with line
   wrapping). Fonts live in `assets/fonts/` (OFL) and are listed in `outputFileTracingIncludes`.

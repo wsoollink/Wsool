@@ -37,9 +37,11 @@ async function imageDataUrl(src: string | null): Promise<string | null> {
   }
 }
 
-export async function GET(_request: NextRequest, { params }: RouteContext<"/[locale]/[username]/og">) {
+export async function GET(request: NextRequest, { params }: RouteContext<"/[locale]/[username]/og">) {
   const { locale, username } = await params;
-  const { data, lang } = await loadCreatorPage(locale, username);
+  // ?lang= from the page's metadata (crawlers send no language); falls back to the page's own rule.
+  const asked = request.nextUrl.searchParams.get("lang");
+  const { data, lang } = await loadCreatorPage(asked === "ar" || asked === "en" ? asked : locale, username);
   if (data?.status !== "published") return new Response("Not found", { status: 404 });
 
   const [kufi400, kufi700, kufiBlack] = await fontsPromise;

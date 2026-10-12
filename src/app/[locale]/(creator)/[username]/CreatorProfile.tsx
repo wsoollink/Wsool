@@ -130,7 +130,7 @@ export async function CreatorProfile({ page, lang, preview = false }: ProfilePro
           )}
 
           <div className={`relative ${circle ? "mt-4" : "-mt-16"} flex flex-col items-center gap-1.5 px-5 text-center`}>
-            <h1 className="flex flex-wrap items-center justify-center gap-2 text-[30px] leading-tight font-bold">
+            <h1 className="flex flex-wrap items-center justify-center gap-2 text-[28px] leading-tight font-bold md:text-[30px]">
               {name}
               {verified && (
                 <span role="img" aria-label={t("verified")} className="inline-flex size-6 shrink-0 items-center justify-center rounded-full bg-[var(--page-accent)] text-[var(--page-on-accent)]">
@@ -142,7 +142,7 @@ export async function CreatorProfile({ page, lang, preview = false }: ProfilePro
           </div>
 
           <div className="flex flex-col gap-4 px-5 pt-4 md:px-6">
-            {tr?.bio && <p className="text-center leading-[1.75]">{tr.bio}</p>}
+            {tr?.bio && <p className="text-center text-[15px] leading-[1.75] md:text-base">{tr.bio}</p>}
             {location && (
               <p className="flex items-center justify-center gap-1.5 text-sm text-[var(--page-muted)]">
                 <Icon d={PIN} /> {location}
@@ -245,7 +245,7 @@ export async function CreatorProfile({ page, lang, preview = false }: ProfilePro
             <Section title={t("brands")}>
               <Marquee ariaLabel={t("brands")} seconds={Math.max(20, page.brandLogos.length * 4)}>
                 {page.brandLogos.map((logo) => (
-                  <li key={logo.id} className={`${solidBox} relative h-[72px] w-[120px] shrink-0 overflow-hidden rounded-[14px] md:h-[84px] md:w-[150px]`}>
+                  <li key={logo.id} className="relative h-[72px] w-[120px] shrink-0 overflow-hidden rounded-[14px] border border-[var(--page-line)] bg-white md:h-[84px] md:w-[150px]">
                     <Image src={logo.logoUrl} alt={logo.name} fill unoptimized sizes="150px" className="object-contain px-5 py-[18px]" />
                   </li>
                 ))}

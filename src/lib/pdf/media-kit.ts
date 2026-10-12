@@ -794,7 +794,7 @@ export async function buildMediaKit(page: PublishedPage, lang: Locale): Promise<
       box(pillX, y + ch - 18 - 36, pw, 36, { fill: P.inverseBg, r: 18 });
       text(label, rtl ? pillX + pw - 14 - lm.width : pillX + 14, y + ch - 18 - 27, { size: 13, weight: 700, color: P.inverseText, width: lm.width + 1 });
       stroke(ICONS.external, rtl ? pillX + 12 : pillX + pw - 26, y + ch - 18 - 25, 14, P.inverseText, 2.2);
-      link(x, y, cw, ch, w.videoUrl ? new URL(w.videoUrl, origin).toString() : pageUrl);
+      link(x, y, cw, ch, w.linkUrl ?? (w.videoUrl ? new URL(w.videoUrl, origin).toString() : pageUrl));
     });
   }
 

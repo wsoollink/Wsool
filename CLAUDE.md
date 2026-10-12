@@ -414,6 +414,12 @@ Before starting each phase: write a short plan in Arabic and wait for the owner'
   unused files are deleted. Logos are shrunk to WebP (keeps transparency); a new video gets a cover
   grabbed from its first second in the browser (`videoCover()`), replaceable by the creator. The
   dashboard keeps all works; Free pages show the first `FREE_LIMITS.portfolioItems` (warned in the UI).
+  A work can instead be a **post link** (owner, Oct 2026): TikTok / Instagram / YouTube only, parsed by
+  `parseWorkLink()` (`src/lib/work-link.ts`, pure: canonical URL, embed URL, portrait or 16:9). `checkWorkLink` follows
+  TikTok share links (`resolveWorkLink`, stays on tiktok.com) and stores a cover in the creator's folder
+  (`workLinkCover`: YouTube thumbnail, TikTok oEmbed; Instagram has none, the creator uploads one) via `storeServerFile`.
+  `portfolio_items.link_url` (then `video_url` is null; DB check: one of them is set). Public pop-up = the platform's
+  iframe player (loaded only when opened) + "Open in {platform}"; the PDF links to the post.
   `hasPro()` in `src/config/plans.ts` is the one place that decides Pro vs Free.
 - **Ad rates** (`dashboard/rates/`): `saveRateSettings` (upsert), `saveRates(accountId, rates)` per
   account (ownership checked), `saveBundles` (whole list; every account id must be the creator's,

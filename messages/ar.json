@@ -247,7 +247,8 @@
     "requestService": "اطلب الخدمة",
     "serviceMessage": "مرحباً، شفت خدمة «{service}» في صفحتك على وصول وحاب أعرف التفاصيل: {link}",
     "serviceSubject": "طلب خدمة: {service}",
-    "opensNewTab": "(يفتح في نافذة جديدة)"
+    "opensNewTab": "(يفتح في نافذة جديدة)",
+    "openOn": "افتحه في {platform}"
   },
   "MediaKit": {
     "wsool": "وصول",
@@ -473,7 +474,7 @@
     "logoHint": "PNG بخلفية شفافة أفضل، أو JPG/WebP، حتى 4 ميجا. تقدر تختار أكثر من شعار مرة وحدة.",
     "brandNameRequired": "اكتب اسم كل براند قبل الحفظ.",
     "works": "أعمالك السابقة",
-    "worksHint": "فيديوهات طولية من إعلاناتك السابقة، حتى {max} عمل. الزائر يضغط على العمل ويشوف الفيديو.",
+    "worksHint": "فيديوهات من إعلاناتك السابقة (رفع أو رابط)، حتى {max} عمل. الزائر يضغط على العمل ويشوف الفيديو.",
     "noWorks": "ما أضفت أعمال للحين.",
     "freeLimit": "في الخطة المجانية تظهر أول {n} أعمال بس في صفحتك. رتّب أهمها فوق.",
     "workN": "العمل {n}",
@@ -491,10 +492,16 @@
     "brandPlaceholderEn": "e.g. Almarai",
     "typePlaceholderAr": "مثل: إعلان منتج",
     "typePlaceholderEn": "e.g. Product ad",
-    "addWork": "أضف عمل (فيديو)",
+    "addWork": "ارفع فيديو",
     "videoHint": "MP4 أو MOV حتى 50 ميجا. نأخذ الغلاف من أول الفيديو، وتقدر تغيّره.",
     "addLogo": "إضافة شعار",
-    "noDetails": "أضف البراند ونوع العمل"
+    "noDetails": "أضف البراند ونوع العمل",
+    "addLink": "أو الصق رابط العمل من حسابك",
+    "linkHint": "رابط فيديو من TikTok أو Instagram أو YouTube. نجيب الغلاف تلقائياً من TikTok و YouTube، وفي Instagram تقدر ترفع غلاف.",
+    "linkInvalid": "الرابط غير صحيح. الصق رابط فيديو من TikTok أو Instagram أو YouTube.",
+    "checking": "جاري التحقق…",
+    "add": "أضف",
+    "instagramCover": "Instagram ما يعطينا غلاف، أضف غلاف عشان يطلع العمل أحلى."
   },
   "RatesPage": {
     "settings": "إعدادات العرض",

@@ -2,7 +2,7 @@
 
 import { useId, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
-import { ArrowDown, ArrowUp, ChevronDown, Film, ImageIcon, Play, Trash2 } from "lucide-react";
+import { ArrowDown, ArrowUp, ChevronDown, ExternalLink, Film, ImageIcon, Link2, Play, Trash2 } from "lucide-react";
 import { buttonClasses } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { PLATFORM_NAMES, PLATFORMS } from "@/config/platforms";
@@ -11,13 +11,15 @@ import type { Platform } from "@/generated/prisma/enums";
 import type { Locale } from "@/i18n/config";
 import { shrinkImage, uploadFile, videoCover } from "@/lib/upload-client";
 import { MAX_WORKS, type FileRef } from "@/lib/validation/work";
-import { saveWorks } from "./actions";
+import { checkWorkLink, saveWorks } from "./actions";
 
 type Text = { brand: string; type: string };
-export type WorkRow = { platform: Platform | null; videoUrl: string; thumbUrl: string | null; ar: Text; en: Text };
+export type WorkRow = { platform: Platform | null; videoUrl: string | null; linkUrl: string | null; thumbUrl: string | null; ar: Text; en: Text };
 type Row = {
   key: string;
   platform: Platform | null;
+  /** TikTok / Instagram / YouTube post link (then there is no video). */
+  link: string | null;
   video: FileRef;
   thumb: FileRef;
   /** What the dashboard shows: storage URL or a local preview. */
@@ -32,14 +34,14 @@ const iconButton = "inline-flex size-11 shrink-0 items-center justify-center rou
 const control = "h-12 w-full rounded-xl border border-navy/16 bg-white px-3 text-[15px]";
 const emptyText = { brand: "", type: "" };
 
-/** Past works: portrait video, optional cover, platform, brand and type per language. */
+/** Past works: portrait video or a post link, optional cover, platform, brand and type per language. */
 export function WorksCard({ initial, langs, freeLimit }: { initial: WorkRow[]; langs: Locale[]; freeLimit: number | null }) {
   const t = useTranslations("WorkPage");
   const e = useTranslations("EditPage");
   const fileId = useId();
   const [rows, setRows] = useState<Row[]>(
     initial.map((w) => ({
-      key: newKey(), platform: w.platform, video: { path: null, url: w.videoUrl }, thumb: { path: null, url: w.thumbUrl },
+      key: newKey(), platform: w.platform, link: w.linkUrl, video: { path: null, url: w.videoUrl }, thumb: { path: null, url: w.thumbUrl },
       cover: w.thumbUrl, ar: w.ar, en: w.en,
     })),
   );
@@ -47,6 +49,9 @@ export function WorksCard({ initial, langs, freeLimit }: { initial: WorkRow[]; l
   const [uploadError, setUploadError] = useState("");
   const [pending, startTransition] = useTransition();
   const [openKey, setOpenKey] = useState<string | null>(null);
+  const [linkInput, setLinkInput] = useState("");
+  const [linkError, setLinkError] = useState(false);
+  const [checking, startCheck] = useTransition();
 
   const update = (key: string, patch: Partial<Row>) => {
     setRows((all) => all.map((r) => (r.key === key ? { ...r, ...patch } : r)));
@@ -77,7 +82,7 @@ export function WorksCard({ initial, langs, freeLimit }: { initial: WorkRow[]; l
     const key = existingKey ?? newKey();
     if (existingKey) update(key, { uploading: "video" });
     else {
-      setRows((all) => [...all, { key, platform: null, video: { path: null, url: null }, thumb: { path: null, url: null }, cover: null, ar: emptyText, en: emptyText, uploading: "video" }]);
+      setRows((all) => [...all, { key, platform: null, link: null, video: { path: null, url: null }, thumb: { path: null, url: null }, cover: null, ar: emptyText, en: emptyText, uploading: "video" }]);
       setOpenKey(key);
     }
 
@@ -97,9 +102,26 @@ export function WorksCard({ initial, langs, freeLimit }: { initial: WorkRow[]; l
     }
   }
 
+  /** New work from a pasted post link: the server cleans it and fetches a cover when it can. */
+  const addLink = () =>
+    startCheck(async () => {
+      setLinkError(false);
+      const res = await checkWorkLink(linkInput);
+      if (!res.link || !res.platform) return setLinkError(true);
+      const key = newKey();
+      const platform = res.platform as Platform;
+      setRows((all) => [...all, {
+        key, platform, link: res.link!, video: { path: null, url: null },
+        thumb: { path: res.cover?.path ?? null, url: null }, cover: res.cover?.url ?? null, ar: emptyText, en: emptyText,
+      }]);
+      setOpenKey(key);
+      setLinkInput("");
+      setStatus("");
+    });
+
   const save = () =>
     startTransition(async () => {
-      const res = await saveWorks(rows.map((r) => ({ platform: r.platform, video: r.video, thumb: r.thumb, ar: r.ar, en: r.en })));
+      const res = await saveWorks(rows.map((r) => ({ platform: r.platform, link: r.link, video: r.video, thumb: r.thumb, ar: r.ar, en: r.en })));
       setStatus(res.ok ? "saved" : "failed");
     });
 
@@ -146,19 +168,26 @@ export function WorksCard({ initial, langs, freeLimit }: { initial: WorkRow[]; l
                   {row.uploading && <span className="absolute inset-x-0 bottom-0 bg-black/60 py-1 text-center text-[11px] text-white">{e("uploading")}</span>}
                 </span>
                 <div className="flex min-w-0 flex-1 flex-col gap-2">
+                  {row.link ? (
+                    <a href={row.link} target="_blank" rel="noopener noreferrer" dir="ltr" className="inline-flex min-h-11 items-center gap-2 truncate text-sm font-medium text-blue underline-offset-2 hover:underline">
+                      <ExternalLink aria-hidden="true" size={16} className="shrink-0" /> <span className="truncate">{row.link.replace(/^https:\/\/(www\.)?/, "")}</span>
+                    </a>
+                  ) : (
                   <FileButton label={t("replaceVideo")} icon={<Film aria-hidden="true" size={16} />} accept={UPLOAD_KINDS.video.types.join(",")} disabled={!!row.uploading} onFile={(f) => uploadVideo(f, row.key)} />
+                  )}
                   <FileButton label={row.cover ? t("replaceCover") : t("addCover")} icon={<ImageIcon aria-hidden="true" size={16} />} accept={UPLOAD_KINDS.thumb.types.join(",")} disabled={!!row.uploading} onFile={(f) => f && uploadCover(row.key, f)} />
                   {row.video.path && row.video.url === null && !row.uploading && <p className="text-xs text-good">{t("videoReady")}</p>}
+                  {row.link && row.platform === "instagram" && !row.cover && <p className="text-xs text-muted">{t("instagramCover")}</p>}
                 </div>
               </div>
 
-              <div className="flex flex-col gap-1.5">
+              {!row.link && <div className="flex flex-col gap-1.5">
                 <label htmlFor={`platform-${row.key}`} className="text-sm font-medium">{t("platform")}</label>
                 <select id={`platform-${row.key}`} value={row.platform ?? ""} onChange={(ev) => update(row.key, { platform: (ev.target.value || null) as Platform | null })} className={control}>
                   <option value="">{t("noPlatform")}</option>
                   {PLATFORMS.map((p) => <option key={p} value={p}>{PLATFORM_NAMES[p]}</option>)}
                 </select>
-              </div>
+              </div>}
 
               {langs.map((lang) => (
                 <div key={lang} className="grid gap-3 sm:grid-cols-2">
@@ -197,6 +226,24 @@ export function WorksCard({ initial, langs, freeLimit }: { initial: WorkRow[]; l
           </label>
           <input id={fileId} type="file" accept={UPLOAD_KINDS.video.types.join(",")} className="sr-only" onChange={(ev) => { uploadVideo(ev.target.files?.[0]); ev.target.value = ""; }} />
           <p className="mt-1.5 text-xs text-muted">{t("videoHint")}</p>
+          <div className="mt-4 flex flex-col gap-1.5">
+            <label htmlFor={`${fileId}-link`} className="flex items-center gap-1.5 text-sm font-bold"><Link2 aria-hidden="true" size={16} /> {t("addLink")}</label>
+            <div className="flex gap-2">
+              <input
+                id={`${fileId}-link`} dir="ltr" type="url" inputMode="url" autoComplete="off" value={linkInput} maxLength={400}
+                placeholder="https://www.tiktok.com/@…/video/…" aria-invalid={linkError} aria-describedby={`${fileId}-link-hint`}
+                onChange={(ev) => { setLinkInput(ev.target.value); setLinkError(false); }}
+                onKeyDown={(ev) => { if (ev.key === "Enter") { ev.preventDefault(); if (linkInput.trim()) addLink(); } }}
+                className={`${control} min-w-0 flex-1`}
+              />
+              <button type="button" onClick={addLink} disabled={!linkInput.trim() || checking} aria-busy={checking} className={buttonClasses("secondary", "shrink-0")}>
+                {checking ? t("checking") : t("add")}
+              </button>
+            </div>
+            <p id={`${fileId}-link-hint`} className={`text-xs ${linkError ? "text-bad" : "text-muted"}`} role={linkError ? "alert" : undefined}>
+              {linkError ? t("linkInvalid") : t("linkHint")}
+            </p>
+          </div>
         </div>
       )}
       {uploadError && <p role="alert" className="text-sm text-bad">{uploadError}</p>}

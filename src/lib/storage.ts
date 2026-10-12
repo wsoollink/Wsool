@@ -29,6 +29,15 @@ export async function createUploadTicket(
   return { path: data.path, token: data.token };
 }
 
+/** Stores bytes the server fetched itself (e.g. a work link's cover) in the user's folder; returns its path. */
+export async function storeServerFile(userId: string, kind: UploadKind, bytes: Buffer, contentType: string): Promise<string | null> {
+  const rule = UPLOAD_KINDS[kind];
+  if (!(rule.types as readonly string[]).includes(contentType) || bytes.length > rule.maxBytes) return null;
+  const path = `${userId}/${kind}/${randomUUID()}.${EXTENSIONS[contentType]}`;
+  const { error } = await createSupabaseAdmin().storage.from(rule.bucket).upload(path, bytes, { contentType });
+  return error ? null : path;
+}
+
 /** True when `path` is in this user's folder for `kind` and the file was actually uploaded. */
 export async function isOwnUploadedFile(userId: string, kind: UploadKind, path: string): Promise<boolean> {
   const prefix = `${userId}/${kind}/`;

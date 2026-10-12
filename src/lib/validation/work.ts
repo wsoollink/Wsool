@@ -17,6 +17,8 @@ export const worksSchema = z
   .array(
     z.object({
       platform: z.enum(PLATFORMS as [string, ...string[]]).nullable().default(null),
+      /** A TikTok / Instagram / YouTube post link instead of a video (checked with parseWorkLink). */
+      link: z.string().trim().max(400).nullable().default(null),
       video: z.object(file),
       thumb: z.object(file),
       ar: workText,

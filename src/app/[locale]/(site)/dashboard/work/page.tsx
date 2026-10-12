@@ -29,7 +29,7 @@ async function Editor() {
       <WorksCard
         langs={pageLanguages(page.primaryLang as Locale, page.enEnabled)}
         freeLimit={hasPro(sub) ? null : FREE_LIMITS.portfolioItems}
-        initial={works.map((w) => ({ platform: w.platform, videoUrl: w.videoUrl, thumbUrl: w.thumbUrl, ar: text(w, "ar"), en: text(w, "en") }))}
+        initial={works.map((w) => ({ platform: w.platform, videoUrl: w.videoUrl, linkUrl: w.linkUrl, thumbUrl: w.thumbUrl, ar: text(w, "ar"), en: text(w, "en") }))}
       />
     </div>
   );

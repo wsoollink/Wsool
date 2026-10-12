@@ -247,7 +247,8 @@
     "requestService": "Request",
     "serviceMessage": "Hi, I saw your “{service}” service on your Wsool page and would like the details: {link}",
     "serviceSubject": "Service request: {service}",
-    "opensNewTab": "(opens in a new tab)"
+    "opensNewTab": "(opens in a new tab)",
+    "openOn": "Open in {platform}"
   },
   "MediaKit": {
     "wsool": "Wsool",
@@ -473,7 +474,7 @@
     "logoHint": "PNG with a transparent background works best, or JPG/WebP, up to 4 MB. You can pick several at once.",
     "brandNameRequired": "Name every brand before saving.",
     "works": "Past work",
-    "worksHint": "Portrait videos of your past ads, up to {max}. Visitors tap a work to watch it.",
+    "worksHint": "Videos of your past ads (upload or link), up to {max}. Visitors tap a work to watch it.",
     "noWorks": "No work yet.",
     "freeLimit": "On the Free plan only your first {n} works show on your page. Put the best ones first.",
     "workN": "Work {n}",
@@ -491,10 +492,16 @@
     "brandPlaceholderEn": "e.g. Almarai",
     "typePlaceholderAr": "مثل: إعلان منتج",
     "typePlaceholderEn": "e.g. Product ad",
-    "addWork": "Add work (video)",
+    "addWork": "Upload a video",
     "videoHint": "MP4 or MOV up to 50 MB. The cover is taken from the start of the video; you can change it.",
     "addLogo": "Add logo",
-    "noDetails": "Add the brand and type"
+    "noDetails": "Add the brand and type",
+    "addLink": "Or paste a link from your account",
+    "linkHint": "A video link from TikTok, Instagram or YouTube. We fetch the cover from TikTok and YouTube; for Instagram you can upload one.",
+    "linkInvalid": "That link doesn't work. Paste a video link from TikTok, Instagram or YouTube.",
+    "checking": "Checking…",
+    "add": "Add",
+    "instagramCover": "Instagram doesn't share a cover. Add one so the work looks better."
   },
   "RatesPage": {
     "settings": "Display settings",

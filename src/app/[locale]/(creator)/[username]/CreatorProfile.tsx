@@ -264,6 +264,7 @@ export async function CreatorProfile({ page, lang, preview = false }: ProfilePro
                       brand={itemTr?.brand ?? ""}
                       type={itemTr?.type ?? ""}
                       videoUrl={item.videoUrl}
+                      linkUrl={item.linkUrl}
                       thumbUrl={item.thumbUrl}
                       platform={item.platform}
                     />

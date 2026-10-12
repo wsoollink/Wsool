@@ -234,6 +234,9 @@ Username rules: lowercase a–z, 0–9, dot, underscore, 3–20 chars, not reser
 
 Before starting each phase: write a short plan in Arabic and wait for the owner's "تمام".
 
+**Before the official launch**: walk the owner through `docs/launch-checklist.md` (security/2FA, Supabase Pro,
+Resend, payment gateway, seller + legal details, DMARC, final checks). Remind them whenever they mention launching.
+
 ---
 
 ## 12. Decisions added by the owner (Phase 1)

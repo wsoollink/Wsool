@@ -283,75 +283,75 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
           <div dir="ltr" style={{"flex": "1", "minWidth": "0", "overflow": "hidden", "WebkitMaskImage": "linear-gradient(to right, transparent, #000 10%, #000 90%, transparent)", "maskImage": "linear-gradient(to right, transparent, #000 10%, #000 90%, transparent)"}}>
             <div style={{"display": "flex", "width": "max-content"}} className="ws-marq">
               <span style={{"flex": "0 0 auto", "display": "inline-flex", "alignItems": "center", "gap": "10px", "marginRight": "40px", "fontSize": "16px", "fontWeight": "700", "color": "var(--mk-text)", "opacity": "0.75"}}>
-                <img src="/marketing/551e04e928d68f549e3f79f0634c235b.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} />
+                <img src="/marketing/551e04e928d68f549e3f79f0634c235b.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                 {t(48)}
               </span>
               <span style={{"flex": "0 0 auto", "display": "inline-flex", "alignItems": "center", "gap": "10px", "marginRight": "40px", "fontSize": "16px", "fontWeight": "700", "color": "var(--mk-text)", "opacity": "0.75"}}>
-                <img src="/marketing/1df8b82db5b11403f9af5f4c69f985de.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} />
+                <img src="/marketing/1df8b82db5b11403f9af5f4c69f985de.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                 {t(49)}
               </span>
               <span style={{"flex": "0 0 auto", "display": "inline-flex", "alignItems": "center", "gap": "10px", "marginRight": "40px", "fontSize": "16px", "fontWeight": "700", "color": "var(--mk-text)", "opacity": "0.75"}}>
-                <img src="/marketing/e5586d94fe91cd757b5b299bc2987bc9.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} />
+                <img src="/marketing/e5586d94fe91cd757b5b299bc2987bc9.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                 {t(50)}
               </span>
               <span style={{"flex": "0 0 auto", "display": "inline-flex", "alignItems": "center", "gap": "10px", "marginRight": "40px", "fontSize": "16px", "fontWeight": "700", "color": "var(--mk-text)", "opacity": "0.75"}}>
-                <img src="/marketing/6e04570b6d158aff8d0bb786cab9467d.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} />
+                <img src="/marketing/6e04570b6d158aff8d0bb786cab9467d.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                 {t(51)}
               </span>
               <span style={{"flex": "0 0 auto", "display": "inline-flex", "alignItems": "center", "gap": "10px", "marginRight": "40px", "fontSize": "16px", "fontWeight": "700", "color": "var(--mk-text)", "opacity": "0.75"}}>
-                <img src="/marketing/6acf843784273799121efacbee2c5eab.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} />
+                <img src="/marketing/6acf843784273799121efacbee2c5eab.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                 {t(52)}
               </span>
               <span style={{"flex": "0 0 auto", "display": "inline-flex", "alignItems": "center", "gap": "10px", "marginRight": "40px", "fontSize": "16px", "fontWeight": "700", "color": "var(--mk-text)", "opacity": "0.75"}}>
-                <img src="/marketing/18a6d2d10238b2687911d702e2367069.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} />
+                <img src="/marketing/18a6d2d10238b2687911d702e2367069.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                 {t(53)}
               </span>
               <span style={{"flex": "0 0 auto", "display": "inline-flex", "alignItems": "center", "gap": "10px", "marginRight": "40px", "fontSize": "16px", "fontWeight": "700", "color": "var(--mk-text)", "opacity": "0.75"}}>
-                <img src="/marketing/94f072271263d65724e19992fa15f043.svg" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} />
+                <img src="/marketing/94f072271263d65724e19992fa15f043.svg" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                 {t(54)}
               </span>
               <span style={{"flex": "0 0 auto", "display": "inline-flex", "alignItems": "center", "gap": "10px", "marginRight": "40px", "fontSize": "16px", "fontWeight": "700", "color": "var(--mk-text)", "opacity": "0.75"}}>
-                <img src="/marketing/0e8c40e233948def3c2f1f6d96693876.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} />
+                <img src="/marketing/0e8c40e233948def3c2f1f6d96693876.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                 {t(55)}
               </span>
               <span style={{"flex": "0 0 auto", "display": "inline-flex", "alignItems": "center", "gap": "10px", "marginRight": "40px", "fontSize": "16px", "fontWeight": "700", "color": "var(--mk-text)", "opacity": "0.75"}}>
-                <img src="/marketing/6ce5be0f4f135b376b27d79a10ace0b6.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} />
+                <img src="/marketing/6ce5be0f4f135b376b27d79a10ace0b6.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                 {t(56)}
               </span>
               <span aria-hidden="true" style={{"flex": "0 0 auto", "display": "inline-flex", "alignItems": "center", "gap": "10px", "marginRight": "40px", "fontSize": "16px", "fontWeight": "700", "color": "var(--mk-text)", "opacity": "0.75"}}>
-                <img src="/marketing/551e04e928d68f549e3f79f0634c235b.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} />
+                <img src="/marketing/551e04e928d68f549e3f79f0634c235b.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                 {t(57)}
               </span>
               <span aria-hidden="true" style={{"flex": "0 0 auto", "display": "inline-flex", "alignItems": "center", "gap": "10px", "marginRight": "40px", "fontSize": "16px", "fontWeight": "700", "color": "var(--mk-text)", "opacity": "0.75"}}>
-                <img src="/marketing/1df8b82db5b11403f9af5f4c69f985de.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} />
+                <img src="/marketing/1df8b82db5b11403f9af5f4c69f985de.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                 {t(58)}
               </span>
               <span aria-hidden="true" style={{"flex": "0 0 auto", "display": "inline-flex", "alignItems": "center", "gap": "10px", "marginRight": "40px", "fontSize": "16px", "fontWeight": "700", "color": "var(--mk-text)", "opacity": "0.75"}}>
-                <img src="/marketing/e5586d94fe91cd757b5b299bc2987bc9.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} />
+                <img src="/marketing/e5586d94fe91cd757b5b299bc2987bc9.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                 {t(59)}
               </span>
               <span aria-hidden="true" style={{"flex": "0 0 auto", "display": "inline-flex", "alignItems": "center", "gap": "10px", "marginRight": "40px", "fontSize": "16px", "fontWeight": "700", "color": "var(--mk-text)", "opacity": "0.75"}}>
-                <img src="/marketing/6e04570b6d158aff8d0bb786cab9467d.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} />
+                <img src="/marketing/6e04570b6d158aff8d0bb786cab9467d.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                 {t(60)}
               </span>
               <span aria-hidden="true" style={{"flex": "0 0 auto", "display": "inline-flex", "alignItems": "center", "gap": "10px", "marginRight": "40px", "fontSize": "16px", "fontWeight": "700", "color": "var(--mk-text)", "opacity": "0.75"}}>
-                <img src="/marketing/6acf843784273799121efacbee2c5eab.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} />
+                <img src="/marketing/6acf843784273799121efacbee2c5eab.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                 {t(61)}
               </span>
               <span aria-hidden="true" style={{"flex": "0 0 auto", "display": "inline-flex", "alignItems": "center", "gap": "10px", "marginRight": "40px", "fontSize": "16px", "fontWeight": "700", "color": "var(--mk-text)", "opacity": "0.75"}}>
-                <img src="/marketing/18a6d2d10238b2687911d702e2367069.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} />
+                <img src="/marketing/18a6d2d10238b2687911d702e2367069.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                 {t(62)}
               </span>
               <span aria-hidden="true" style={{"flex": "0 0 auto", "display": "inline-flex", "alignItems": "center", "gap": "10px", "marginRight": "40px", "fontSize": "16px", "fontWeight": "700", "color": "var(--mk-text)", "opacity": "0.75"}}>
-                <img src="/marketing/94f072271263d65724e19992fa15f043.svg" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} />
+                <img src="/marketing/94f072271263d65724e19992fa15f043.svg" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                 {t(63)}
               </span>
               <span aria-hidden="true" style={{"flex": "0 0 auto", "display": "inline-flex", "alignItems": "center", "gap": "10px", "marginRight": "40px", "fontSize": "16px", "fontWeight": "700", "color": "var(--mk-text)", "opacity": "0.75"}}>
-                <img src="/marketing/0e8c40e233948def3c2f1f6d96693876.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} />
+                <img src="/marketing/0e8c40e233948def3c2f1f6d96693876.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                 {t(64)}
               </span>
               <span aria-hidden="true" style={{"flex": "0 0 auto", "display": "inline-flex", "alignItems": "center", "gap": "10px", "marginRight": "40px", "fontSize": "16px", "fontWeight": "700", "color": "var(--mk-text)", "opacity": "0.75"}}>
-                <img src="/marketing/6ce5be0f4f135b376b27d79a10ace0b6.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} />
+                <img src="/marketing/6ce5be0f4f135b376b27d79a10ace0b6.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                 {t(65)}
               </span>
             </div>
@@ -407,25 +407,25 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
                 </div>
                 <div style={{"padding": "0 18px 14px", "display": "grid", "gridTemplateColumns": "repeat(4, minmax(0, 1fr))", "gap": "8px"}}>
                   <div style={{"background": "var(--mk-card)", "border": "1px solid rgba(var(--mk-ink),0.09)", "borderRadius": "12px", "padding": "10px", "display": "flex", "flexDirection": "column", "alignItems": "center", "gap": "2px"}}>
-                    <img src="/marketing/551e04e928d68f549e3f79f0634c235b.png" alt="" style={{"width": "14px", "height": "14px", "objectFit": "contain", "display": "block"}} />
+                    <img src="/marketing/551e04e928d68f549e3f79f0634c235b.png" alt="" style={{"width": "14px", "height": "14px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                     <span dir="ltr" style={{"fontFamily": "var(--font-numbers)", "fontWeight": "900", "fontSize": "15px", "color": "var(--mk-text)"}}>
                       {t(75)}
                     </span>
                   </div>
                   <div style={{"background": "var(--mk-card)", "border": "1px solid rgba(var(--mk-ink),0.09)", "borderRadius": "12px", "padding": "10px", "display": "flex", "flexDirection": "column", "alignItems": "center", "gap": "2px"}}>
-                    <img src="/marketing/1df8b82db5b11403f9af5f4c69f985de.png" alt="" style={{"width": "14px", "height": "14px", "objectFit": "contain", "display": "block"}} />
+                    <img src="/marketing/1df8b82db5b11403f9af5f4c69f985de.png" alt="" style={{"width": "14px", "height": "14px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                     <span dir="ltr" style={{"fontFamily": "var(--font-numbers)", "fontWeight": "900", "fontSize": "15px", "color": "var(--mk-text)"}}>
                       {t(76)}
                     </span>
                   </div>
                   <div style={{"background": "var(--mk-card)", "border": "1px solid rgba(var(--mk-ink),0.09)", "borderRadius": "12px", "padding": "10px", "display": "flex", "flexDirection": "column", "alignItems": "center", "gap": "2px"}}>
-                    <img src="/marketing/e5586d94fe91cd757b5b299bc2987bc9.png" alt="" style={{"width": "14px", "height": "14px", "objectFit": "contain", "display": "block"}} />
+                    <img src="/marketing/e5586d94fe91cd757b5b299bc2987bc9.png" alt="" style={{"width": "14px", "height": "14px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                     <span dir="ltr" style={{"fontFamily": "var(--font-numbers)", "fontWeight": "900", "fontSize": "15px", "color": "var(--mk-text)"}}>
                       {t(77)}
                     </span>
                   </div>
                   <div style={{"background": "var(--mk-card)", "border": "1px solid rgba(var(--mk-ink),0.09)", "borderRadius": "12px", "padding": "10px", "display": "flex", "flexDirection": "column", "alignItems": "center", "gap": "2px"}}>
-                    <img src="/marketing/6e04570b6d158aff8d0bb786cab9467d.png" alt="" style={{"width": "14px", "height": "14px", "objectFit": "contain", "display": "block"}} />
+                    <img src="/marketing/6e04570b6d158aff8d0bb786cab9467d.png" alt="" style={{"width": "14px", "height": "14px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                     <span dir="ltr" style={{"fontFamily": "var(--font-numbers)", "fontWeight": "900", "fontSize": "15px", "color": "var(--mk-text)"}}>
                       {t(78)}
                     </span>
@@ -481,7 +481,7 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
             <div style={{"flex": "1", "display": "flex", "alignItems": "flex-end", "justifyContent": "center", "position": "relative"}}>
               <div style={{"width": "100%", "display": "flex", "flexDirection": "column", "gap": "8px"}}>
                 <div style={{"display": "flex", "alignItems": "center", "gap": "10px", "padding": "10px 12px", "borderRadius": "14px", "background": "var(--mk-soft)"}}>
-                  <img src="/marketing/551e04e928d68f549e3f79f0634c235b.png" alt="" style={{"width": "18px", "height": "18px", "objectFit": "contain", "display": "block"}} />
+                  <img src="/marketing/551e04e928d68f549e3f79f0634c235b.png" alt="" style={{"width": "18px", "height": "18px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                   <span style={{"flex": "1", "fontSize": "13.5px", "fontWeight": "700", "color": "var(--mk-text)"}}>
                     {t(84)}
                   </span>
@@ -493,7 +493,7 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
                   </span>
                 </div>
                 <div style={{"display": "flex", "alignItems": "center", "gap": "10px", "padding": "10px 12px", "borderRadius": "14px", "background": "var(--mk-soft)"}}>
-                  <img src="/marketing/1df8b82db5b11403f9af5f4c69f985de.png" alt="" style={{"width": "18px", "height": "18px", "objectFit": "contain", "display": "block"}} />
+                  <img src="/marketing/1df8b82db5b11403f9af5f4c69f985de.png" alt="" style={{"width": "18px", "height": "18px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                   <span style={{"flex": "1", "fontSize": "13.5px", "fontWeight": "700", "color": "var(--mk-text)"}}>
                     {t(86)}
                   </span>
@@ -505,7 +505,7 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
                   </span>
                 </div>
                 <div style={{"display": "flex", "alignItems": "center", "gap": "10px", "padding": "10px 12px", "borderRadius": "14px", "background": "var(--mk-soft)"}}>
-                  <img src="/marketing/e5586d94fe91cd757b5b299bc2987bc9.png" alt="" style={{"width": "18px", "height": "18px", "objectFit": "contain", "display": "block"}} />
+                  <img src="/marketing/e5586d94fe91cd757b5b299bc2987bc9.png" alt="" style={{"width": "18px", "height": "18px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                   <span style={{"flex": "1", "fontSize": "13.5px", "fontWeight": "700", "color": "var(--mk-text)"}}>
                     {t(88)}
                   </span>

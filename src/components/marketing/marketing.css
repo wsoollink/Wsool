@@ -20,6 +20,8 @@
 .mk-logo-dark{display:none!important}
 [data-theme="dark"] .mk-logo-light{display:none!important}
 [data-theme="dark"] .mk-logo-dark{display:block!important}
+/* Small one-colour dark icons (platform logos, glyphs) turn white in dark mode, as in the design (iconFilter). */
+[data-theme="dark"] .mk-icon{filter:invert(1)}
 
 @keyframes wsFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
 @keyframes wsFloat2{0%,100%{transform:translateY(0) rotate(-1.5deg)}50%{transform:translateY(-9px) rotate(1.5deg)}}

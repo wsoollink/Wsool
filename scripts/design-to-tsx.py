@@ -32,6 +32,7 @@ DESIGN = os.path.join(ROOT, "design", "marketing")
 OUT = os.path.join(ROOT, "src", "components", "marketing", "generated")
 ASSETS = os.path.join(DESIGN, "assets")
 PUBLIC_PREFIX = "/marketing/"
+ROOT_PUBLIC = os.path.join(ROOT, "public")
 
 PAGES = {
     # name: (ar desktop, en desktop, ar mobile, en mobile)
@@ -146,6 +147,30 @@ def fix_value(v):
 TEXT_VARS = {"#021941": "--mk-text", "#56607A": "--mk-muted", "#0A6CFF": "--mk-logo-blue-text", "#0060E6": "--mk-blue-text",
              "#12805C": "--mk-good", "#C0362C": "--mk-bad"}
 BG_VARS = {"#FFFFFF": "--mk-card", "#F6F8FC": "--mk-bg", "#EEF3FB": "--mk-soft"}
+
+
+_dark_icons = {}
+
+
+def is_dark_icon(url):
+    """A small one-colour dark icon (platform logos, UI glyphs) that dark mode turns white (.mk-icon)."""
+    if url not in _dark_icons:
+        path = os.path.join(ROOT_PUBLIC, url.lstrip("/"))
+        dark = False
+        try:
+            if url.endswith(".svg"):
+                svg = open(path, encoding="utf-8").read()
+                dark = "#12151A" in svg or "#021941" in svg
+            elif url.endswith(".png"):
+                from PIL import Image
+                im = Image.open(path).convert("RGBA")
+                if max(im.size) <= 160:
+                    px = [p for p in (im.get_flattened_data() if hasattr(im, "get_flattened_data") else im.getdata()) if p[3] > 128]
+                    dark = bool(px) and max(sum(p[i] for p in px) / len(px) for i in range(3)) < 60
+        except OSError:
+            pass
+        _dark_icons[url] = dark
+    return _dark_icons[url]
 
 
 def on_dark_card(node):
@@ -280,6 +305,8 @@ class Gen:
         cls = [c for c in (node.attrs.get("class") or "").split() if c]
         cls += extra_cls
         en_attrs = en_node.attrs if en_node is not None else node.attrs
+        if node.tag == "img" and is_dark_icon(fix_value(node.attrs.get("src") or "")) and not on_dark_card(node):
+            cls.append("mk-icon")
         # SVG fill/stroke attributes can't use var(): move themed colours into the style.
         if node.tag in SVG_TAGS:
             for attrs in {id(node.attrs): node.attrs, id(en_attrs): en_attrs}.values():

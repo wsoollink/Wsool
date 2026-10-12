@@ -105,7 +105,7 @@ from `localStorage["wsool-theme"]`, else the device setting. Rules: use `bg-card
 `text-on-blue` / `text-on-navy` for text on solid colours, `BrandLogo` for the logo (white-word `logo-*-dark.png`),
 `dark:` variant when needed. Toggle: dashboard header (desktop) + phone menu, admin sidebar + phone header,
 marketing header (desktop and phones; on phones `marketing.css` shrinks the logo and gaps to make room). Marketing: `scripts/design-to-tsx.py` (`theme_value`) maps the design's inline colours to
-`--mk-*` variables (`marketing.css`) by property; navy gradient cards keep their colours in both modes.
+`--mk-*` variables (`marketing.css`) by property; navy gradient cards keep their colours in both modes; small one-colour dark icon images get `.mk-icon` (`is_dark_icon`) and turn white in dark (`filter: invert(1)`).
 
 ---
 

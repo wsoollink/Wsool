@@ -97,6 +97,16 @@ class asks for (`NotoKufiArabic-Black.woff2` / `.ttf`). Both sit behind the CSS 
 
 Dashboard style: light, white cards (radius 18–24px), soft borders, pill-shaped primary buttons.
 
+**Dark mode** (owner, Oct 2026) for the marketing site, dashboard, admin, login and legal pages (never creator pages:
+they follow the creator's template). Colours are CSS variables (`@theme`, not `inline`, in `globals.css`) with a
+`[data-theme="dark"]` set taken from the dashboard design's dark theme (bg `#07090E`, text `#F2F4F8`, accent `#7DD3FC`).
+`THEME_SCRIPT` (`src/components/ThemeToggle.tsx`, in the site root layout's `<head>`) sets `data-theme` before paint
+from `localStorage["wsool-theme"]`, else the device setting. Rules: use `bg-card` (never `bg-white`) for surfaces,
+`text-on-blue` / `text-on-navy` for text on solid colours, `BrandLogo` for the logo (white-word `logo-*-dark.png`),
+`dark:` variant when needed. Toggle: dashboard header (desktop) + phone menu, admin sidebar + phone header,
+marketing header (desktop). Marketing: `scripts/design-to-tsx.py` (`theme_value`) maps the design's inline colours to
+`--mk-*` variables (`marketing.css`) by property; navy gradient cards keep their colours in both modes.
+
 ---
 
 ## 5. Creator page (public)

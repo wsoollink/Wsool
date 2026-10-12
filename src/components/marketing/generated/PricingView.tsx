@@ -2,6 +2,7 @@
 // Do not edit: change the design or the script, then run `python3 scripts/design-to-tsx.py`.
 /* eslint-disable @typescript-eslint/no-explicit-any, @next/next/no-img-element */
 import Link from "next/link";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { Fragment } from "react";
 import "./pricing.css";
 
@@ -9,48 +10,49 @@ export function PricingView({ v, t }: { v: any; t: (i: number) => string }) {
   void Fragment;
   void Link;
   return (
-    <div dir={v.en ? "ltr" : "rtl"} style={{"background": "#F6F8FC", "color": "#021941", "fontFamily": "var(--font-text)", "minHeight": "100%", "boxSizing": "border-box", "overflowX": "hidden"}}>
-      <header style={{"position": "sticky", "top": "0", "zIndex": "30", "backdropFilter": "blur(18px) saturate(160%)", "WebkitBackdropFilter": "blur(18px) saturate(160%)", "background": "rgba(246,248,252,0.72)", "borderBottom": "1px solid rgba(2,25,65,0.05)"}}>
+    <div dir={v.en ? "ltr" : "rtl"} style={{"background": "var(--mk-bg)", "color": "var(--mk-text)", "fontFamily": "var(--font-text)", "minHeight": "100%", "boxSizing": "border-box", "overflowX": "hidden"}}>
+      <header style={{"position": "sticky", "top": "0", "zIndex": "30", "backdropFilter": "blur(18px) saturate(160%)", "WebkitBackdropFilter": "blur(18px) saturate(160%)", "background": "rgba(var(--mk-bg-rgb),0.72)", "borderBottom": "1px solid rgba(var(--mk-ink),0.05)"}}>
         <div style={{"maxWidth": "1200px", "margin": "0 auto", "padding": "14px 32px", "display": "flex", "alignItems": "center", "justifyContent": "space-between", "gap": "20px"}} className="mk-pricing-1">
           <Link href="/" aria-label={t(0)} style={{"display": "flex"}}>
-            <img src={v.en ? "/marketing/a841426bbb5bd28188577aa5bd4b74da.png" : "/marketing/84a13f503b73bc5552ed2fb6c15e33e3.png"} alt={t(1)} style={{"height": "36px", "width": "auto", "display": "block"}} className="mk-pricing-2" />
+            <img src={v.en ? "/marketing/a841426bbb5bd28188577aa5bd4b74da.png" : "/marketing/84a13f503b73bc5552ed2fb6c15e33e3.png"} alt={t(1)} style={{"height": "36px", "width": "auto", "display": "block"}} className="mk-pricing-2 mk-logo-light" /><img src={v.en ? "/brand/logo-en-dark.png" : "/brand/logo-ar-dark.png"} alt={t(1)} style={{"height": "36px", "width": "auto", "display": "block"}} className="mk-pricing-2 mk-logo-dark" />
           </Link>
-          <nav aria-label={t(2)} style={{"display": "flex", "gap": "6px", "padding": "6px", "borderRadius": "999px", "background": "rgba(255,255,255,0.7)", "border": "1px solid rgba(2,25,65,0.09)"}} className="mk-pricing-3">
-            <a href={v.en ? "#features" : "/#features"} style={{"height": "36px", "padding": "0 16px", "borderRadius": "999px", "display": "flex", "alignItems": "center", "color": "#021941", "fontSize": "14px", "fontWeight": "500", "textDecoration": "none"}}>
+          <nav aria-label={t(2)} style={{"display": "flex", "gap": "6px", "padding": "6px", "borderRadius": "999px", "background": "rgba(var(--mk-card-rgb),0.7)", "border": "1px solid rgba(var(--mk-ink),0.09)"}} className="mk-pricing-3">
+            <a href={v.en ? "#features" : "/#features"} style={{"height": "36px", "padding": "0 16px", "borderRadius": "999px", "display": "flex", "alignItems": "center", "color": "var(--mk-text)", "fontSize": "14px", "fontWeight": "500", "textDecoration": "none"}}>
               {t(3)}
             </a>
-            <a href={v.en ? "#templates" : "/#templates"} style={{"height": "36px", "padding": "0 16px", "borderRadius": "999px", "display": "flex", "alignItems": "center", "color": "#021941", "fontSize": "14px", "fontWeight": "500", "textDecoration": "none"}}>
+            <a href={v.en ? "#templates" : "/#templates"} style={{"height": "36px", "padding": "0 16px", "borderRadius": "999px", "display": "flex", "alignItems": "center", "color": "var(--mk-text)", "fontSize": "14px", "fontWeight": "500", "textDecoration": "none"}}>
               {t(4)}
             </a>
-            <a href={v.en ? "#pricing" : "/#pricing"} style={{"height": "36px", "padding": "0 16px", "borderRadius": "999px", "display": "flex", "alignItems": "center", "color": "#021941", "fontSize": "14px", "fontWeight": "500", "textDecoration": "none"}}>
+            <a href={v.en ? "#pricing" : "/#pricing"} style={{"height": "36px", "padding": "0 16px", "borderRadius": "999px", "display": "flex", "alignItems": "center", "color": "var(--mk-text)", "fontSize": "14px", "fontWeight": "500", "textDecoration": "none"}}>
               {t(5)}
             </a>
-            <a href={v.en ? "#faq" : "/#faq"} style={{"height": "36px", "padding": "0 16px", "borderRadius": "999px", "display": "flex", "alignItems": "center", "color": "#021941", "fontSize": "14px", "fontWeight": "500", "textDecoration": "none"}}>
+            <a href={v.en ? "#faq" : "/#faq"} style={{"height": "36px", "padding": "0 16px", "borderRadius": "999px", "display": "flex", "alignItems": "center", "color": "var(--mk-text)", "fontSize": "14px", "fontWeight": "500", "textDecoration": "none"}}>
               {t(6)}
             </a>
           </nav>
           <div style={{"display": "flex", "alignItems": "center", "gap": "10px"}}>
-            <Link href="/login" style={{"fontSize": "14px", "fontWeight": "500", "color": "#021941", "textDecoration": "none", "padding": "0 6px"}} className="mk-pricing-4">
+            <Link href="/login" style={{"fontSize": "14px", "fontWeight": "500", "color": "var(--mk-text)", "textDecoration": "none", "padding": "0 6px"}} className="mk-pricing-4">
               {t(7)}
             </Link>
-            <a href="#" onClick={v.switchLang} hrefLang={v.en ? "ar" : "en"} lang={v.en ? "ar" : "en"} aria-label={t(8)} style={{"width": "40px", "height": "40px", "borderRadius": "50%", "border": "1px solid rgba(2,25,65,0.09)", "background": "#FFFFFF", "display": "flex", "alignItems": "center", "justifyContent": "center"}}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#021941" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <ThemeToggle className="hidden md:inline-flex" />
+            <a href="#" onClick={v.switchLang} hrefLang={v.en ? "ar" : "en"} lang={v.en ? "ar" : "en"} aria-label={t(8)} style={{"width": "40px", "height": "40px", "borderRadius": "50%", "border": "1px solid rgba(var(--mk-ink),0.09)", "background": "var(--mk-card)", "display": "flex", "alignItems": "center", "justifyContent": "center"}}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{"stroke": "var(--mk-text)"}}>
                 <circle cx="12" cy="12" r="9" />
                 <path d="M3 12h18" />
                 <path d="M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z" />
               </svg>
             </a>
-            <Link href="/login" style={{"height": "42px", "padding": "0 18px", "borderRadius": "999px", "border": "none", "background": "#021941", "color": "#FFFFFF", "fontFamily": "inherit", "fontSize": "14px", "fontWeight": "700", "display": "inline-flex", "alignItems": "center", "justifyContent": "center", "gap": "10px", "cursor": "pointer", "textDecoration": "none", "boxShadow": "0 10px 24px rgba(2,25,65,0.18)"}}>
+            <Link href="/login" style={{"height": "42px", "padding": "0 18px", "borderRadius": "999px", "border": "none", "background": "var(--mk-solid)", "color": "var(--mk-on-solid)", "fontFamily": "inherit", "fontSize": "14px", "fontWeight": "700", "display": "inline-flex", "alignItems": "center", "justifyContent": "center", "gap": "10px", "cursor": "pointer", "textDecoration": "none", "boxShadow": "0 10px 24px rgba(var(--mk-shadow),0.18)"}}>
               {t(9)}
             </Link>
           </div>
         </div>
       </header>
       <section style={{"position": "relative", "overflow": "hidden"}}>
-        <div aria-hidden="true" style={{"position": "absolute", "inset": "0", "backgroundImage": "linear-gradient(rgba(2,25,65,0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(2,25,65,0.045) 1px, transparent 1px)", "backgroundSize": "40px 40px", "WebkitMaskImage": "radial-gradient(ellipse at 50% 20%, #000 25%, transparent 70%)", "maskImage": "radial-gradient(ellipse at 50% 20%, #000 25%, transparent 70%)"}}></div>
+        <div aria-hidden="true" style={{"position": "absolute", "inset": "0", "backgroundImage": "linear-gradient(rgba(var(--mk-ink),0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--mk-ink),0.045) 1px, transparent 1px)", "backgroundSize": "40px 40px", "WebkitMaskImage": "radial-gradient(ellipse at 50% 20%, #000 25%, transparent 70%)", "maskImage": "radial-gradient(ellipse at 50% 20%, #000 25%, transparent 70%)"}}></div>
         <div style={{"position": "relative", "maxWidth": "1200px", "margin": "0 auto", "padding": "96px 32px 0", "display": "flex", "flexDirection": "column", "gap": "40px"}} className="mk-pricing-5">
           <div style={{"display": "flex", "flexDirection": "column", "alignItems": "center", "gap": "16px", "textAlign": "center"}} className="ws-rise">
-            <span style={{"display": "inline-flex", "alignItems": "center", "gap": "8px", "fontSize": "13.5px", "fontWeight": "700", "color": "#0A6CFF"}}>
+            <span style={{"display": "inline-flex", "alignItems": "center", "gap": "8px", "fontSize": "13.5px", "fontWeight": "700", "color": "var(--mk-logo-blue-text)"}}>
               <span style={{"width": "18px", "height": "2px", "background": "#0A6CFF", "borderRadius": "2px"}}></span>
               {t(10)}
             </span>
@@ -61,83 +63,83 @@ export function PricingView({ v, t }: { v: any; t: (i: number) => string }) {
                 {t(12)}
               </span>
             </h1>
-            <p style={{"margin": "0", "fontSize": "18px", "lineHeight": "1.8", "color": "#56607A", "maxWidth": "560px"}} className="mk-pricing-7">
+            <p style={{"margin": "0", "fontSize": "18px", "lineHeight": "1.8", "color": "var(--mk-muted)", "maxWidth": "560px"}} className="mk-pricing-7">
               {t(13)}
             </p>
           </div>
           <div style={{"display": "flex", "flexDirection": "column", "gap": "32px"}}>
-            <div role="group" aria-label={t(14)} style={{"alignSelf": "center", "display": "flex", "padding": "5px", "gap": "4px", "borderRadius": "999px", "background": "#FFFFFF", "border": "1px solid rgba(2,25,65,0.09)"}}>
+            <div role="group" aria-label={t(14)} style={{"alignSelf": "center", "display": "flex", "padding": "5px", "gap": "4px", "borderRadius": "999px", "background": "var(--mk-card)", "border": "1px solid rgba(var(--mk-ink),0.09)"}}>
               <button type="button" onClick={v.pickM} aria-pressed={v.mP} style={{"height": "42px", "padding": "0 22px", "borderRadius": "999px", "border": "none", "cursor": "pointer", "fontFamily": "inherit", "fontSize": "14px", "fontWeight": "700", "background": v.mBg, "color": v.mC}}>
                 {t(15)}
               </button>
               <button type="button" onClick={v.pickY} aria-pressed={v.yP} style={{"height": "42px", "padding": "0 22px", "borderRadius": "999px", "border": "none", "cursor": "pointer", "fontFamily": "inherit", "fontSize": "14px", "fontWeight": "700", "background": v.yBg, "color": v.yC, "display": "flex", "alignItems": "center", "gap": "8px"}}>
                 {t(16)}
-                <span style={{"padding": "2px 8px", "borderRadius": "999px", "background": "rgba(18,128,92,0.12)", "color": "#12805C", "fontSize": "11px"}}>
+                <span style={{"padding": "2px 8px", "borderRadius": "999px", "background": "rgba(18,128,92,0.12)", "color": "var(--mk-good)", "fontSize": "11px"}}>
                   {t(17)}
                 </span>
               </button>
             </div>
             <div style={{"display": "flex", "flexWrap": "wrap", "gap": "20px", "justifyContent": "center"}}>
-              <div style={{"flex": "1 1 340px", "maxWidth": "480px", "background": "#FFFFFF", "border": "1px solid rgba(2,25,65,0.09)", "borderRadius": "28px", "boxShadow": "0 1px 2px rgba(2,25,65,0.04)", "padding": "32px", "display": "flex", "flexDirection": "column", "gap": "22px"}} className="ws-reveal">
+              <div style={{"flex": "1 1 340px", "maxWidth": "480px", "background": "var(--mk-card)", "border": "1px solid rgba(var(--mk-ink),0.09)", "borderRadius": "28px", "boxShadow": "0 1px 2px rgba(var(--mk-shadow),0.04)", "padding": "32px", "display": "flex", "flexDirection": "column", "gap": "22px"}} className="ws-reveal">
                 <div style={{"display": "flex", "flexDirection": "column", "gap": "8px"}}>
-                  <span style={{"fontSize": "18px", "fontWeight": "900", "color": "#021941"}}>
+                  <span style={{"fontSize": "18px", "fontWeight": "900", "color": "var(--mk-text)"}}>
                     {t(18)}
                   </span>
                   <span style={{"display": "flex", "alignItems": "baseline", "gap": "8px"}}>
-                    <span dir="ltr" style={{"fontFamily": "var(--font-numbers)", "fontWeight": "900", "fontSize": "52px", "color": "#021941"}}>
+                    <span dir="ltr" style={{"fontFamily": "var(--font-numbers)", "fontWeight": "900", "fontSize": "52px", "color": "var(--mk-text)"}}>
                       {t(19)}
                     </span>
-                    <span style={{"fontSize": "14px", "color": "#56607A"}}>
+                    <span style={{"fontSize": "14px", "color": "var(--mk-muted)"}}>
                       {t(20)}
                     </span>
                   </span>
-                  <span style={{"fontSize": "14.5px", "color": "#56607A"}}>
+                  <span style={{"fontSize": "14.5px", "color": "var(--mk-muted)"}}>
                     {t(21)}
                   </span>
                 </div>
-                <Link href="/login" style={{"height": "52px", "padding": "0 24px", "borderRadius": "999px", "border": "1px solid rgba(2,25,65,0.09)", "background": "#FFFFFF", "color": "#021941", "fontFamily": "inherit", "fontSize": "15px", "fontWeight": "500", "display": "inline-flex", "alignItems": "center", "justifyContent": "center", "gap": "8px", "cursor": "pointer", "textDecoration": "none"}}>
+                <Link href="/login" style={{"height": "52px", "padding": "0 24px", "borderRadius": "999px", "border": "1px solid rgba(var(--mk-ink),0.09)", "background": "var(--mk-card)", "color": "var(--mk-text)", "fontFamily": "inherit", "fontSize": "15px", "fontWeight": "500", "display": "inline-flex", "alignItems": "center", "justifyContent": "center", "gap": "8px", "cursor": "pointer", "textDecoration": "none"}}>
                   {t(22)}
                 </Link>
-                <ul style={{"margin": "0", "padding": "0", "listStyle": "none", "color": "#021941"}}>
+                <ul style={{"margin": "0", "padding": "0", "listStyle": "none", "color": "var(--mk-text)"}}>
                   <li style={{"display": "flex", "alignItems": "center", "gap": "10px", "minHeight": "38px", "fontSize": "14.5px"}}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#56607A" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{"stroke": "var(--mk-muted)"}}>
                       <path d="M5 12l5 5 9-10" />
                     </svg>
                     {t(23)}
                   </li>
                   <li style={{"display": "flex", "alignItems": "center", "gap": "10px", "minHeight": "38px", "fontSize": "14.5px"}}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#56607A" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{"stroke": "var(--mk-muted)"}}>
                       <path d="M5 12l5 5 9-10" />
                     </svg>
                     {t(24)}
                   </li>
                   <li style={{"display": "flex", "alignItems": "center", "gap": "10px", "minHeight": "38px", "fontSize": "14.5px"}}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#56607A" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{"stroke": "var(--mk-muted)"}}>
                       <path d="M5 12l5 5 9-10" />
                     </svg>
                     {t(25)}
                   </li>
                   <li style={{"display": "flex", "alignItems": "center", "gap": "10px", "minHeight": "38px", "fontSize": "14.5px"}}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#56607A" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{"stroke": "var(--mk-muted)"}}>
                       <path d="M5 12l5 5 9-10" />
                     </svg>
                     {t(26)}
                   </li>
                   <li style={{"display": "flex", "alignItems": "center", "gap": "10px", "minHeight": "38px", "fontSize": "14.5px"}}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#56607A" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{"stroke": "var(--mk-muted)"}}>
                       <path d="M5 12l5 5 9-10" />
                     </svg>
                     {t(27)}
                   </li>
                   <li style={{"display": "flex", "alignItems": "center", "gap": "10px", "minHeight": "38px", "fontSize": "14.5px"}}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#56607A" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{"stroke": "var(--mk-muted)"}}>
                       <path d="M5 12l5 5 9-10" />
                     </svg>
                     {t(28)}
                   </li>
                 </ul>
               </div>
-              <div style={{"flex": "1 1 340px", "maxWidth": "480px", "borderRadius": "28px", "padding": "32px", "display": "flex", "flexDirection": "column", "gap": "22px", "position": "relative", "overflow": "hidden", "background": "linear-gradient(160deg, #0B2F6E, #021941)", "color": "#FFFFFF", "boxShadow": "0 30px 70px rgba(2,25,65,0.30)"}} className="ws-reveal">
+              <div style={{"flex": "1 1 340px", "maxWidth": "480px", "borderRadius": "28px", "padding": "32px", "display": "flex", "flexDirection": "column", "gap": "22px", "position": "relative", "overflow": "hidden", "background": "linear-gradient(160deg, #0B2F6E, #021941)", "color": "#FFFFFF", "boxShadow": "0 30px 70px rgba(var(--mk-shadow),0.30)"}} className="ws-reveal">
                 <div aria-hidden="true" style={{"position": "absolute", "top": "-120px", "left": v.en ? undefined : "-80px", "width": "320px", "height": "320px", "borderRadius": "50%", "background": "radial-gradient(closest-side, rgba(34,184,240,0.45), transparent)", "right": v.en ? "-80px" : undefined}}></div>
                 <div style={{"position": "relative", "display": "flex", "flexDirection": "column", "gap": "8px"}}>
                   <span style={{"display": "flex", "alignItems": "center", "justifyContent": "space-between"}}>
@@ -214,138 +216,138 @@ export function PricingView({ v, t }: { v: any; t: (i: number) => string }) {
       </section>
       <section id="compare" style={{"maxWidth": "1200px", "margin": "0 auto", "padding": "120px 32px 0", "display": "flex", "flexDirection": "column", "gap": "56px"}} className="mk-pricing-8">
         <div style={{"display": "flex", "flexDirection": "column", "gap": "14px", "alignItems": "center", "textAlign": "center", "maxWidth": "760px", "margin": "0 auto"}} className="ws-reveal">
-          <span style={{"display": "inline-flex", "alignItems": "center", "gap": "8px", "fontSize": "13.5px", "fontWeight": "700", "color": "#0A6CFF"}}>
+          <span style={{"display": "inline-flex", "alignItems": "center", "gap": "8px", "fontSize": "13.5px", "fontWeight": "700", "color": "var(--mk-logo-blue-text)"}}>
             <span style={{"width": "18px", "height": "2px", "background": "#0A6CFF", "borderRadius": "2px"}}></span>
             {t(40)}
           </span>
-          <h2 style={{"margin": "0", "fontSize": "48px", "lineHeight": "1.2", "fontWeight": "900", "letterSpacing": "-0.015em", "color": "#021941"}} className="mk-pricing-9">
+          <h2 style={{"margin": "0", "fontSize": "48px", "lineHeight": "1.2", "fontWeight": "900", "letterSpacing": "-0.015em", "color": "var(--mk-text)"}} className="mk-pricing-9">
             {t(41)}
           </h2>
         </div>
         <div style={{"maxWidth": "900px", "width": "100%", "margin": "0 auto"}}>
-          <div style={{"background": "#FFFFFF", "border": "1px solid rgba(2,25,65,0.09)", "borderRadius": "28px", "boxShadow": "0 1px 2px rgba(2,25,65,0.04)", "overflowX": "auto"}} className="ws-reveal">
-            <table style={{"width": "100%", "minWidth": "360px", "borderCollapse": "collapse", "color": "#021941"}}>
+          <div style={{"background": "var(--mk-card)", "border": "1px solid rgba(var(--mk-ink),0.09)", "borderRadius": "28px", "boxShadow": "0 1px 2px rgba(var(--mk-shadow),0.04)", "overflowX": "auto"}} className="ws-reveal">
+            <table style={{"width": "100%", "minWidth": "360px", "borderCollapse": "collapse", "color": "var(--mk-text)"}}>
               <thead>
                 <tr>
-                  <th scope="col" style={{"padding": "20px", "textAlign": v.en ? "left" : "right", "fontSize": "13px", "color": "#56607A"}}>
+                  <th scope="col" style={{"padding": "20px", "textAlign": v.en ? "left" : "right", "fontSize": "13px", "color": "var(--mk-muted)"}}>
                     {t(42)}
                   </th>
                   <th scope="col" style={{"padding": "20px 10px", "fontSize": "15px"}}>
                     {t(43)}
                   </th>
-                  <th scope="col" style={{"padding": "20px 10px", "fontSize": "15px", "color": "#0A6CFF"}}>
+                  <th scope="col" style={{"padding": "20px 10px", "fontSize": "15px", "color": "var(--mk-logo-blue-text)"}}>
                     {t(44)}
                   </th>
                 </tr>
               </thead>
               <tbody>
-                <tr style={{"borderTop": "1px solid rgba(2,25,65,0.09)"}}>
+                <tr style={{"borderTop": "1px solid rgba(var(--mk-ink),0.09)"}}>
                   <th scope="row" style={{"padding": "16px 20px", "textAlign": v.en ? "left" : "right", "fontWeight": "500", "fontSize": "15px"}}>
                     {t(45)}
                   </th>
-                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "color": "#021941"}}>
+                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "color": "var(--mk-text)"}}>
                     {t(46)}
                   </td>
-                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "#12805C"}}>
+                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "var(--mk-good)"}}>
                     {t(47)}
                   </td>
                 </tr>
-                <tr style={{"borderTop": "1px solid rgba(2,25,65,0.09)"}}>
+                <tr style={{"borderTop": "1px solid rgba(var(--mk-ink),0.09)"}}>
                   <th scope="row" style={{"padding": "16px 20px", "textAlign": v.en ? "left" : "right", "fontWeight": "500", "fontSize": "15px"}}>
                     {t(48)}
                   </th>
-                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "color": "#021941"}}>
+                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "color": "var(--mk-text)"}}>
                     {t(49)}
                   </td>
-                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "#12805C"}}>
+                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "var(--mk-good)"}}>
                     {t(50)}
                   </td>
                 </tr>
-                <tr style={{"borderTop": "1px solid rgba(2,25,65,0.09)"}}>
+                <tr style={{"borderTop": "1px solid rgba(var(--mk-ink),0.09)"}}>
                   <th scope="row" style={{"padding": "16px 20px", "textAlign": v.en ? "left" : "right", "fontWeight": "500", "fontSize": "15px"}}>
                     {t(51)}
                   </th>
-                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "color": "#021941"}}>
+                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "color": "var(--mk-text)"}}>
                     {t(52)}
                   </td>
-                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "#12805C"}}>
+                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "var(--mk-good)"}}>
                     {t(53)}
                   </td>
                 </tr>
-                <tr style={{"borderTop": "1px solid rgba(2,25,65,0.09)"}}>
+                <tr style={{"borderTop": "1px solid rgba(var(--mk-ink),0.09)"}}>
                   <th scope="row" style={{"padding": "16px 20px", "textAlign": v.en ? "left" : "right", "fontWeight": "500", "fontSize": "15px"}}>
                     {t(54)}
                   </th>
-                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "color": "#021941"}}>
+                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "color": "var(--mk-text)"}}>
                     {t(55)}
                   </td>
-                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "#12805C"}}>
+                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "var(--mk-good)"}}>
                     {t(56)}
                   </td>
                 </tr>
-                <tr style={{"borderTop": "1px solid rgba(2,25,65,0.09)"}}>
+                <tr style={{"borderTop": "1px solid rgba(var(--mk-ink),0.09)"}}>
                   <th scope="row" style={{"padding": "16px 20px", "textAlign": v.en ? "left" : "right", "fontWeight": "500", "fontSize": "15px"}}>
                     {t(57)}
                   </th>
-                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "color": "#021941"}}>
+                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "color": "var(--mk-text)"}}>
                     {t(58)}
                   </td>
-                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "#0A6CFF"}}>
+                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "var(--mk-logo-blue-text)"}}>
                     {t(59)}
                   </td>
                 </tr>
-                <tr style={{"borderTop": "1px solid rgba(2,25,65,0.09)"}}>
+                <tr style={{"borderTop": "1px solid rgba(var(--mk-ink),0.09)"}}>
                   <th scope="row" style={{"padding": "16px 20px", "textAlign": v.en ? "left" : "right", "fontWeight": "500", "fontSize": "15px"}}>
                     {t(60)}
                   </th>
-                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "color": "#021941"}}>
+                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "color": "var(--mk-text)"}}>
                     {t(61)}
                   </td>
-                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "#0A6CFF"}}>
+                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "var(--mk-logo-blue-text)"}}>
                     {t(62)}
                   </td>
                 </tr>
-                <tr style={{"borderTop": "1px solid rgba(2,25,65,0.09)"}}>
+                <tr style={{"borderTop": "1px solid rgba(var(--mk-ink),0.09)"}}>
                   <th scope="row" style={{"padding": "16px 20px", "textAlign": v.en ? "left" : "right", "fontWeight": "500", "fontSize": "15px"}}>
                     {t(63)}
                   </th>
-                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "color": "#56607A"}}>
+                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "color": "var(--mk-muted)"}}>
                     {t(64)}
                   </td>
-                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "#12805C"}}>
+                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "var(--mk-good)"}}>
                     {t(65)}
                   </td>
                 </tr>
-                <tr style={{"borderTop": "1px solid rgba(2,25,65,0.09)"}}>
+                <tr style={{"borderTop": "1px solid rgba(var(--mk-ink),0.09)"}}>
                   <th scope="row" style={{"padding": "16px 20px", "textAlign": v.en ? "left" : "right", "fontWeight": "500", "fontSize": "15px"}}>
                     {t(66)}
                   </th>
-                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "color": "#56607A"}}>
+                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "color": "var(--mk-muted)"}}>
                     {t(67)}
                   </td>
-                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "#12805C"}}>
+                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "var(--mk-good)"}}>
                     {t(68)}
                   </td>
                 </tr>
-                <tr style={{"borderTop": "1px solid rgba(2,25,65,0.09)"}}>
+                <tr style={{"borderTop": "1px solid rgba(var(--mk-ink),0.09)"}}>
                   <th scope="row" style={{"padding": "16px 20px", "textAlign": v.en ? "left" : "right", "fontWeight": "500", "fontSize": "15px"}}>
                     {t(69)}
                   </th>
-                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "color": "#56607A"}}>
+                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "color": "var(--mk-muted)"}}>
                     {t(70)}
                   </td>
-                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "#12805C"}}>
+                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "var(--mk-good)"}}>
                     {t(71)}
                   </td>
                 </tr>
-                <tr style={{"borderTop": "1px solid rgba(2,25,65,0.09)"}}>
+                <tr style={{"borderTop": "1px solid rgba(var(--mk-ink),0.09)"}}>
                   <th scope="row" style={{"padding": "16px 20px", "textAlign": v.en ? "left" : "right", "fontWeight": "500", "fontSize": "15px"}}>
                     {t(72)}
                   </th>
-                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "color": "#56607A"}}>
+                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "color": "var(--mk-muted)"}}>
                     {t(73)}
                   </td>
-                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "#12805C"}}>
+                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "var(--mk-good)"}}>
                     {t(74)}
                   </td>
                 </tr>
@@ -357,38 +359,38 @@ export function PricingView({ v, t }: { v: any; t: (i: number) => string }) {
       <section id="billing" style={{"maxWidth": "1200px", "margin": "0 auto", "padding": "120px 32px 0", "display": "flex", "flexWrap": "wrap", "gap": "64px", "alignItems": "flex-start"}} className="mk-pricing-10">
         <div style={{"flex": "0 1 360px", "display": "flex", "flexDirection": "column", "gap": "14px"}}>
           <div style={{"display": "flex", "flexDirection": "column", "gap": "14px", "alignItems": "flex-start", "textAlign": v.en ? "left" : "right", "maxWidth": "760px"}} className="ws-reveal mk-pricing-11">
-            <span style={{"display": "inline-flex", "alignItems": "center", "gap": "8px", "fontSize": "13.5px", "fontWeight": "700", "color": "#0A6CFF"}}>
+            <span style={{"display": "inline-flex", "alignItems": "center", "gap": "8px", "fontSize": "13.5px", "fontWeight": "700", "color": "var(--mk-logo-blue-text)"}}>
               <span style={{"width": "18px", "height": "2px", "background": "#0A6CFF", "borderRadius": "2px"}}></span>
               {t(75)}
             </span>
-            <h2 style={{"margin": "0", "fontSize": "48px", "lineHeight": "1.2", "fontWeight": "900", "letterSpacing": "-0.015em", "color": "#021941"}} className="mk-pricing-12">
+            <h2 style={{"margin": "0", "fontSize": "48px", "lineHeight": "1.2", "fontWeight": "900", "letterSpacing": "-0.015em", "color": "var(--mk-text)"}} className="mk-pricing-12">
               {t(76)}
             </h2>
-            <p style={{"margin": "0", "fontSize": "18px", "lineHeight": "1.8", "color": "#56607A"}} className="mk-pricing-13">
+            <p style={{"margin": "0", "fontSize": "18px", "lineHeight": "1.8", "color": "var(--mk-muted)"}} className="mk-pricing-13">
               {t(77)}
             </p>
           </div>
-          <a href="mailto:support@wsool.link" style={{"height": "52px", "padding": "0 24px", "borderRadius": "999px", "border": "1px solid rgba(2,25,65,0.09)", "background": "#FFFFFF", "color": "#021941", "fontFamily": "inherit", "fontSize": "15px", "fontWeight": "500", "display": "inline-flex", "alignItems": "center", "justifyContent": "center", "gap": "8px", "cursor": "pointer", "textDecoration": "none", "alignSelf": "flex-start"}} className="mk-pricing-14">
+          <a href="mailto:support@wsool.link" style={{"height": "52px", "padding": "0 24px", "borderRadius": "999px", "border": "1px solid rgba(var(--mk-ink),0.09)", "background": "var(--mk-card)", "color": "var(--mk-text)", "fontFamily": "inherit", "fontSize": "15px", "fontWeight": "500", "display": "inline-flex", "alignItems": "center", "justifyContent": "center", "gap": "8px", "cursor": "pointer", "textDecoration": "none", "alignSelf": "flex-start"}} className="mk-pricing-14">
             {t(78)}
           </a>
         </div>
         <div style={{"display": "flex", "flexDirection": "column", "gap": "10px", "flex": "1 1 480px", "minWidth": "0"}}>
           {(v.faq2 as any[]).map((q: any, qIndex: number) => (
             <Fragment key={qIndex}>
-              <div style={{"background": "#FFFFFF", "border": "1px solid rgba(2,25,65,0.09)", "borderRadius": "18px", "boxShadow": "0 1px 2px rgba(2,25,65,0.04)", "overflow": "hidden"}}>
-                <button type="button" onClick={q.toggle} aria-expanded={q.exp} style={{"width": "100%", "minHeight": "64px", "padding": "16px 22px", "border": "none", "background": "transparent", "color": "#021941", "fontFamily": "inherit", "fontSize": "16px", "fontWeight": "700", "display": "flex", "alignItems": "center", "justifyContent": "space-between", "gap": "12px", "cursor": "pointer", "textAlign": v.en ? "left" : "right"}}>
+              <div style={{"background": "var(--mk-card)", "border": "1px solid rgba(var(--mk-ink),0.09)", "borderRadius": "18px", "boxShadow": "0 1px 2px rgba(var(--mk-shadow),0.04)", "overflow": "hidden"}}>
+                <button type="button" onClick={q.toggle} aria-expanded={q.exp} style={{"width": "100%", "minHeight": "64px", "padding": "16px 22px", "border": "none", "background": "transparent", "color": "var(--mk-text)", "fontFamily": "inherit", "fontSize": "16px", "fontWeight": "700", "display": "flex", "alignItems": "center", "justifyContent": "space-between", "gap": "12px", "cursor": "pointer", "textAlign": v.en ? "left" : "right"}}>
                   <span>
                     {q.q}
                   </span>
-                  <span style={{"flexShrink": "0", "width": "32px", "height": "32px", "borderRadius": "50%", "background": "#EEF3FB", "display": "flex", "alignItems": "center", "justifyContent": "center", "transform": `rotate(${q.rot}deg)`, "transition": "transform .3s"}}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#021941" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <span style={{"flexShrink": "0", "width": "32px", "height": "32px", "borderRadius": "50%", "background": "var(--mk-soft)", "display": "flex", "alignItems": "center", "justifyContent": "center", "transform": `rotate(${q.rot}deg)`, "transition": "transform .3s"}}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{"stroke": "var(--mk-text)"}}>
                       <path d="M6 9l6 6 6-6" />
                     </svg>
                   </span>
                 </button>
                 {q.open && (
                   <>
-                    <p style={{"margin": "0", "padding": "0 22px 20px", "fontSize": "15px", "lineHeight": "1.85", "color": "#56607A"}}>
+                    <p style={{"margin": "0", "padding": "0 22px 20px", "fontSize": "15px", "lineHeight": "1.85", "color": "var(--mk-muted)"}}>
                       {q.a}
                     </p>
                   </>
@@ -399,7 +401,7 @@ export function PricingView({ v, t }: { v: any; t: (i: number) => string }) {
         </div>
       </section>
       <section style={{"maxWidth": "1200px", "margin": "0 auto", "padding": "120px 32px 0"}} className="mk-pricing-15">
-        <div style={{"position": "relative", "overflow": "hidden", "borderRadius": "36px", "background": "linear-gradient(160deg, #0B2F6E, #021941)", "color": "#FFFFFF", "padding": "80px 64px", "display": "flex", "flexDirection": "column", "alignItems": "center", "gap": "22px", "textAlign": "center", "boxShadow": "0 30px 70px rgba(2,25,65,0.30)"}} className="ws-reveal mk-pricing-16">
+        <div style={{"position": "relative", "overflow": "hidden", "borderRadius": "36px", "background": "linear-gradient(160deg, #0B2F6E, #021941)", "color": "#FFFFFF", "padding": "80px 64px", "display": "flex", "flexDirection": "column", "alignItems": "center", "gap": "22px", "textAlign": "center", "boxShadow": "0 30px 70px rgba(var(--mk-shadow),0.30)"}} className="ws-reveal mk-pricing-16">
           <div aria-hidden="true" style={{"position": "absolute", "top": "-160px", "left": "-120px", "width": "460px", "height": "460px", "borderRadius": "50%", "background": "radial-gradient(closest-side, rgba(34,184,240,0.45), transparent)"}}></div>
           <div aria-hidden="true" style={{"position": "absolute", "bottom": "-200px", "right": "-140px", "width": "480px", "height": "480px", "borderRadius": "50%", "background": "radial-gradient(closest-side, rgba(10,108,255,0.40), transparent)"}}></div>
           <h2 style={{"position": "relative", "margin": "0", "fontSize": "56px", "lineHeight": "1.15", "fontWeight": "900", "letterSpacing": "-0.02em"}} className="mk-pricing-17">
@@ -432,51 +434,51 @@ export function PricingView({ v, t }: { v: any; t: (i: number) => string }) {
       <footer style={{"maxWidth": "1200px", "margin": "0 auto", "padding": "96px 32px 40px", "display": "flex", "flexDirection": "column", "gap": "36px"}} className="mk-pricing-22">
         <div style={{"display": "flex", "flexWrap": "wrap", "justifyContent": "space-between", "gap": "36px"}}>
           <div style={{"display": "flex", "flexDirection": "column", "gap": "14px", "maxWidth": "320px"}}>
-            <img src={v.en ? "/marketing/a841426bbb5bd28188577aa5bd4b74da.png" : "/marketing/84a13f503b73bc5552ed2fb6c15e33e3.png"} alt={t(85)} style={{"height": "38px", "width": "auto", "display": "block", "alignSelf": "flex-start"}} />
-            <p style={{"margin": "0", "fontSize": "14px", "lineHeight": "1.8", "color": "#56607A"}}>
+            <img className="mk-logo-light" src={v.en ? "/marketing/a841426bbb5bd28188577aa5bd4b74da.png" : "/marketing/84a13f503b73bc5552ed2fb6c15e33e3.png"} alt={t(85)} style={{"height": "38px", "width": "auto", "display": "block", "alignSelf": "flex-start"}} /><img className="mk-logo-dark" src={v.en ? "/brand/logo-en-dark.png" : "/brand/logo-ar-dark.png"} alt={t(85)} style={{"height": "38px", "width": "auto", "display": "block", "alignSelf": "flex-start"}} />
+            <p style={{"margin": "0", "fontSize": "14px", "lineHeight": "1.8", "color": "var(--mk-muted)"}}>
               {t(86)}
             </p>
           </div>
           <div style={{"display": "flex", "flexWrap": "wrap", "gap": "72px"}} className="mk-pricing-23">
             <div style={{"display": "flex", "flexDirection": "column", "gap": "12px"}}>
-              <span style={{"fontSize": "13px", "fontWeight": "700", "color": "#021941"}}>
+              <span style={{"fontSize": "13px", "fontWeight": "700", "color": "var(--mk-text)"}}>
                 {t(87)}
               </span>
-              <Link href="/#features" style={{"fontSize": "14px", "color": "#56607A", "textDecoration": "none"}}>
+              <Link href="/#features" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
                 {t(88)}
               </Link>
-              <Link href="/#templates" style={{"fontSize": "14px", "color": "#56607A", "textDecoration": "none"}}>
+              <Link href="/#templates" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
                 {t(89)}
               </Link>
-              <Link href="/pricing" style={{"fontSize": "14px", "color": "#56607A", "textDecoration": "none"}}>
+              <Link href="/pricing" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
                 {t(90)}
               </Link>
             </div>
             <div style={{"display": "flex", "flexDirection": "column", "gap": "12px"}}>
-              <span style={{"fontSize": "13px", "fontWeight": "700", "color": "#021941"}}>
+              <span style={{"fontSize": "13px", "fontWeight": "700", "color": "var(--mk-text)"}}>
                 {t(91)}
               </span>
-              <Link href="/#faq" style={{"fontSize": "14px", "color": "#56607A", "textDecoration": "none"}}>
+              <Link href="/#faq" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
                 {t(92)}
               </Link>
-              <a href="mailto:support@wsool.link" style={{"fontSize": "14px", "color": "#56607A", "textDecoration": "none"}}>
+              <a href="mailto:support@wsool.link" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
                 {t(93)}
               </a>
             </div>
             <div style={{"display": "flex", "flexDirection": "column", "gap": "12px"}}>
-              <span style={{"fontSize": "13px", "fontWeight": "700", "color": "#021941"}}>
+              <span style={{"fontSize": "13px", "fontWeight": "700", "color": "var(--mk-text)"}}>
                 {t(94)}
               </span>
-              <Link href="/terms" style={{"fontSize": "14px", "color": "#56607A", "textDecoration": "none"}}>
+              <Link href="/terms" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
                 {t(95)}
               </Link>
-              <Link href="/privacy" style={{"fontSize": "14px", "color": "#56607A", "textDecoration": "none"}}>
+              <Link href="/privacy" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
                 {t(96)}
               </Link>
             </div>
           </div>
         </div>
-        <div style={{"display": "flex", "flexWrap": "wrap", "justifyContent": "space-between", "gap": "12px", "paddingTop": "24px", "borderTop": "1px solid rgba(2,25,65,0.09)", "fontSize": "13px", "color": "#56607A"}}>
+        <div style={{"display": "flex", "flexWrap": "wrap", "justifyContent": "space-between", "gap": "12px", "paddingTop": "24px", "borderTop": "1px solid rgba(var(--mk-ink),0.09)", "fontSize": "13px", "color": "var(--mk-muted)"}}>
           <span dir="ltr">
             {t(97)}
           </span>

@@ -139,6 +139,49 @@ def fix_value(v):
     return re.sub(r"/_blob/([0-9a-f]{32})", lambda m: asset_url(m.group(1)), v)
 
 
+# Dark mode: the design's fixed colours become CSS variables (defined in
+# src/components/marketing/marketing.css for light and [data-theme="dark"]),
+# chosen by the property they are used in. White text stays white (it sits on
+# blue buttons and dark cards) except on navy buttons, which turn light in dark.
+TEXT_VARS = {"#021941": "--mk-text", "#56607A": "--mk-muted", "#0A6CFF": "--mk-logo-blue-text", "#0060E6": "--mk-blue-text",
+             "#12805C": "--mk-good", "#C0362C": "--mk-bad"}
+BG_VARS = {"#FFFFFF": "--mk-card", "#F6F8FC": "--mk-bg", "#EEF3FB": "--mk-soft"}
+
+
+def on_dark_card(node):
+    """Inside one of the design's navy cards (same look in light and dark): keep its colours."""
+    n = node.parent if node is not None else None
+    while n is not None:
+        if "#021941" in parse_style(n.attrs.get("style")).get("background", "") and "gradient" in parse_style(n.attrs.get("style")).get("background", ""):
+            return True
+        n = n.parent
+    return False
+
+
+def theme_value(prop, v, props, keep=False):
+    if keep:
+        return v
+    if prop == "box-shadow":
+        v = v.replace("rgba(2,25,65,", "rgba(var(--mk-shadow),")
+    else:
+        v = v.replace("rgba(2,25,65,", "rgba(var(--mk-ink),")
+    if prop in ("background", "background-color", "background-image"):
+        v = v.replace("rgba(246,248,252,", "rgba(var(--mk-bg-rgb),")
+        v = re.sub(r"rgba\(255,255,255,(0?\.[5-9]\d*|1)\)", r"rgba(var(--mk-card-rgb),\1)", v)
+        for hex_, var in BG_VARS.items():
+            v = re.sub(re.escape(hex_) + r"(?![0-9A-Fa-f])", f"var({var})", v)
+        if v.strip() == "#021941":
+            v = "var(--mk-solid)"
+    elif prop in ("color", "-webkit-text-fill-color", "fill", "stroke"):
+        if v.strip() == "#FFFFFF" and (props.get("background") or "").strip() == "#021941":
+            v = "var(--mk-on-solid)"
+        for hex_, var in TEXT_VARS.items():
+            v = re.sub(re.escape(hex_) + r"(?![0-9A-Fa-f])", f"var({var})", v)
+    elif prop.startswith("border") or prop.startswith("outline"):
+        v = re.sub(r"#021941(?![0-9A-Fa-f])", "var(--mk-text)", v)
+    return v
+
+
 def js_expr(hole, scope):
     """{{d.name}} -> d.name inside a loop over `d`, else v.name."""
     root = hole.split(".")[0].strip()
@@ -229,7 +272,7 @@ class Gen:
             if d.get(k) != m.get(k):
                 if "{{" in (m.get(k) or "") or "{{" in (d.get(k) or ""):
                     continue
-                diff.append(f"{k}:{fix_value(m[k]) if k in m else 'unset'}!important")
+                diff.append(f"{k}:{theme_value(k, fix_value(m[k]), m, on_dark_card(node)) if k in m else 'unset'}!important")
         return ";".join(diff)
 
     def attrs_jsx(self, node, en_node, scope, extra_cls):
@@ -237,6 +280,13 @@ class Gen:
         cls = [c for c in (node.attrs.get("class") or "").split() if c]
         cls += extra_cls
         en_attrs = en_node.attrs if en_node is not None else node.attrs
+        # SVG fill/stroke attributes can't use var(): move themed colours into the style.
+        if node.tag in SVG_TAGS:
+            for attrs in {id(node.attrs): node.attrs, id(en_attrs): en_attrs}.values():
+                for k in ("fill", "stroke"):
+                    if (attrs.get(k) or "").strip() in TEXT_VARS:
+                        attrs["style"] = ((attrs.get("style") or "").rstrip(";") + f";{k}:{attrs[k].strip()}").lstrip(";")
+                        del attrs[k]
         if node.tag == "a" and node.attrs.get("href") == "#":
             social = next((c[5:] for c in cls if c.startswith("wsoc-")), None)
             if node.attrs.get("hreflang"):
@@ -275,14 +325,15 @@ class Gen:
             name = ATTR_NAMES.get(k, k)
             if k == "style":
                 props, en_props = parse_style(v), parse_style(en_attrs.get("style"))
+                keep = on_dark_card(node)
                 items = []
                 for p in list(props) + [p for p in en_props if p not in props]:
                     a, b = props.get(p), en_props.get(p)
                     if a == b or "{{" in (a or "") + (b or ""):
-                        items.append(f"{json.dumps(camel(p))}: {value_jsx(fix_value(a if a is not None else b), scope)}")
+                        items.append(f"{json.dumps(camel(p))}: {value_jsx(theme_value(p, fix_value(a if a is not None else b), props, keep), scope)}")
                     else:
-                        ja = json.dumps(fix_value(a)) if a is not None else "undefined"
-                        jb = json.dumps(fix_value(b)) if b is not None else "undefined"
+                        ja = json.dumps(theme_value(p, fix_value(a), props, keep)) if a is not None else "undefined"
+                        jb = json.dumps(theme_value(p, fix_value(b), en_props, keep)) if b is not None else "undefined"
                         items.append(f"{json.dumps(camel(p))}: v.en ? {jb} : {ja}")
                 out.append("style={{" + ", ".join(items) + "}}")
                 continue
@@ -422,6 +473,27 @@ def link_text(node):
     return " ".join(x for x in out if x).strip()
 
 
+# The design's logo images are the brand files; dark mode shows the white-word
+# versions (public/brand/logo-*-dark.png). Both are rendered, CSS shows one
+# (.mk-logo-light / .mk-logo-dark in marketing.css).
+LOGO_LIGHT = {"/marketing/a841426bbb5bd28188577aa5bd4b74da.png": "/brand/logo-en-dark.png",
+              "/marketing/84a13f503b73bc5552ed2fb6c15e33e3.png": "/brand/logo-ar-dark.png"}
+
+
+def dark_logos(tsx):
+    def rep(m):
+        tag = m.group(0)
+        if not any(k in tag for k in LOGO_LIGHT):
+            return tag
+        dark = tag
+        for k, d in LOGO_LIGHT.items():
+            dark = dark.replace(k, d)
+        add = lambda t, c: re.sub(r'className="([^"]*)"', lambda n: f'className="{n.group(1)} {c}"', t) if 'className="' in t else t.replace("<img ", f'<img className="{c}" ', 1)
+        # Same alt on both: the hidden one (display:none) is skipped by screen readers.
+        return add(tag, "mk-logo-light") + add(dark, "mk-logo-dark")
+    return re.sub(r"<img [^>]*?/>", rep, tsx)
+
+
 def run():
     os.makedirs(OUT, exist_ok=True)
     shared_css = ["/* AUTO-GENERATED by scripts/design-to-tsx.py from design/marketing. */",
@@ -453,6 +525,12 @@ export function {page}View({{ v, t }}: {{ v: any; t: (i: number) => string }}) {
   );
 }}
 '''
+        tsx = dark_logos(tsx)
+        # Light/dark toggle next to the language button (desktop; phones follow the device setting).
+        lang_btn = '<a href="#" onClick={v.switchLang}'
+        if lang_btn in tsx:
+            tsx = tsx.replace(lang_btn, '<ThemeToggle className="hidden md:inline-flex" />\n' + " " * (len(tsx.split(lang_btn)[0].split("\n")[-1])) + lang_btn, 1)
+            tsx = tsx.replace('import Link from "next/link";', 'import Link from "next/link";\nimport { ThemeToggle } from "@/components/ThemeToggle";', 1)
         open(os.path.join(OUT, f"{page}View.tsx"), "w", encoding="utf-8").write(tsx)
         texts = "// AUTO-GENERATED by scripts/design-to-tsx.py. Texts in design order.\n" \
                 f"export const {page.upper()}_TEXT = {json.dumps({'ar': g.texts_ar, 'en': g.texts_en}, ensure_ascii=False, indent=1)} as const;\n"

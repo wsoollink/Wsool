@@ -2,6 +2,7 @@
 // Do not edit: change the design or the script, then run `python3 scripts/design-to-tsx.py`.
 /* eslint-disable @typescript-eslint/no-explicit-any, @next/next/no-img-element */
 import Link from "next/link";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { Fragment } from "react";
 import "./notfound.css";
 
@@ -9,45 +10,46 @@ export function NotFoundView({ v, t }: { v: any; t: (i: number) => string }) {
   void Fragment;
   void Link;
   return (
-    <div dir={v.en ? "ltr" : "rtl"} style={{"minHeight": "820px", "boxSizing": "border-box", "background": "#F6F8FC", "color": "#021941", "fontFamily": "var(--font-text)", "display": "flex", "flexDirection": "column", "overflow": "hidden"}}>
-      <header style={{"position": "sticky", "top": "0", "zIndex": "30", "backdropFilter": "blur(18px) saturate(160%)", "WebkitBackdropFilter": "blur(18px) saturate(160%)", "background": "rgba(246,248,252,0.72)", "borderBottom": "1px solid rgba(2,25,65,0.05)"}}>
+    <div dir={v.en ? "ltr" : "rtl"} style={{"minHeight": "820px", "boxSizing": "border-box", "background": "var(--mk-bg)", "color": "var(--mk-text)", "fontFamily": "var(--font-text)", "display": "flex", "flexDirection": "column", "overflow": "hidden"}}>
+      <header style={{"position": "sticky", "top": "0", "zIndex": "30", "backdropFilter": "blur(18px) saturate(160%)", "WebkitBackdropFilter": "blur(18px) saturate(160%)", "background": "rgba(var(--mk-bg-rgb),0.72)", "borderBottom": "1px solid rgba(var(--mk-ink),0.05)"}}>
         <div style={{"maxWidth": "1200px", "margin": "0 auto", "padding": "14px 32px", "display": "flex", "alignItems": "center", "justifyContent": "space-between", "gap": "20px"}} className="mk-notfound-1">
           <Link href="/" aria-label={t(0)} style={{"display": "flex"}}>
-            <img src={v.en ? "/marketing/a841426bbb5bd28188577aa5bd4b74da.png" : "/marketing/84a13f503b73bc5552ed2fb6c15e33e3.png"} alt={t(1)} style={{"height": "36px", "width": "auto", "display": "block"}} className="mk-notfound-2" />
+            <img src={v.en ? "/marketing/a841426bbb5bd28188577aa5bd4b74da.png" : "/marketing/84a13f503b73bc5552ed2fb6c15e33e3.png"} alt={t(1)} style={{"height": "36px", "width": "auto", "display": "block"}} className="mk-notfound-2 mk-logo-light" /><img src={v.en ? "/brand/logo-en-dark.png" : "/brand/logo-ar-dark.png"} alt={t(1)} style={{"height": "36px", "width": "auto", "display": "block"}} className="mk-notfound-2 mk-logo-dark" />
           </Link>
-          <nav aria-label={t(2)} style={{"display": "flex", "gap": "6px", "padding": "6px", "borderRadius": "999px", "background": "rgba(255,255,255,0.7)", "border": "1px solid rgba(2,25,65,0.09)"}} className="mk-notfound-3">
-            <a href={v.en ? "#features" : "/#features"} style={{"height": "36px", "padding": "0 16px", "borderRadius": "999px", "display": "flex", "alignItems": "center", "color": "#021941", "fontSize": "14px", "fontWeight": "500", "textDecoration": "none"}}>
+          <nav aria-label={t(2)} style={{"display": "flex", "gap": "6px", "padding": "6px", "borderRadius": "999px", "background": "rgba(var(--mk-card-rgb),0.7)", "border": "1px solid rgba(var(--mk-ink),0.09)"}} className="mk-notfound-3">
+            <a href={v.en ? "#features" : "/#features"} style={{"height": "36px", "padding": "0 16px", "borderRadius": "999px", "display": "flex", "alignItems": "center", "color": "var(--mk-text)", "fontSize": "14px", "fontWeight": "500", "textDecoration": "none"}}>
               {t(3)}
             </a>
-            <a href={v.en ? "#templates" : "/#templates"} style={{"height": "36px", "padding": "0 16px", "borderRadius": "999px", "display": "flex", "alignItems": "center", "color": "#021941", "fontSize": "14px", "fontWeight": "500", "textDecoration": "none"}}>
+            <a href={v.en ? "#templates" : "/#templates"} style={{"height": "36px", "padding": "0 16px", "borderRadius": "999px", "display": "flex", "alignItems": "center", "color": "var(--mk-text)", "fontSize": "14px", "fontWeight": "500", "textDecoration": "none"}}>
               {t(4)}
             </a>
-            <a href={v.en ? "#pricing" : "/#pricing"} style={{"height": "36px", "padding": "0 16px", "borderRadius": "999px", "display": "flex", "alignItems": "center", "color": "#021941", "fontSize": "14px", "fontWeight": "500", "textDecoration": "none"}}>
+            <a href={v.en ? "#pricing" : "/#pricing"} style={{"height": "36px", "padding": "0 16px", "borderRadius": "999px", "display": "flex", "alignItems": "center", "color": "var(--mk-text)", "fontSize": "14px", "fontWeight": "500", "textDecoration": "none"}}>
               {t(5)}
             </a>
-            <a href={v.en ? "#faq" : "/#faq"} style={{"height": "36px", "padding": "0 16px", "borderRadius": "999px", "display": "flex", "alignItems": "center", "color": "#021941", "fontSize": "14px", "fontWeight": "500", "textDecoration": "none"}}>
+            <a href={v.en ? "#faq" : "/#faq"} style={{"height": "36px", "padding": "0 16px", "borderRadius": "999px", "display": "flex", "alignItems": "center", "color": "var(--mk-text)", "fontSize": "14px", "fontWeight": "500", "textDecoration": "none"}}>
               {t(6)}
             </a>
           </nav>
           <div style={{"display": "flex", "alignItems": "center", "gap": "10px"}}>
-            <Link href="/login" style={{"fontSize": "14px", "fontWeight": "500", "color": "#021941", "textDecoration": "none", "padding": "0 6px"}} className="mk-notfound-4">
+            <Link href="/login" style={{"fontSize": "14px", "fontWeight": "500", "color": "var(--mk-text)", "textDecoration": "none", "padding": "0 6px"}} className="mk-notfound-4">
               {t(7)}
             </Link>
-            <a href="#" onClick={v.switchLang} hrefLang={v.en ? "ar" : "en"} lang={v.en ? "ar" : "en"} aria-label={t(8)} style={{"width": "40px", "height": "40px", "borderRadius": "50%", "border": "1px solid rgba(2,25,65,0.09)", "background": "#FFFFFF", "display": "flex", "alignItems": "center", "justifyContent": "center"}}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#021941" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <ThemeToggle className="hidden md:inline-flex" />
+            <a href="#" onClick={v.switchLang} hrefLang={v.en ? "ar" : "en"} lang={v.en ? "ar" : "en"} aria-label={t(8)} style={{"width": "40px", "height": "40px", "borderRadius": "50%", "border": "1px solid rgba(var(--mk-ink),0.09)", "background": "var(--mk-card)", "display": "flex", "alignItems": "center", "justifyContent": "center"}}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{"stroke": "var(--mk-text)"}}>
                 <circle cx="12" cy="12" r="9" />
                 <path d="M3 12h18" />
                 <path d="M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z" />
               </svg>
             </a>
-            <Link href="/login" style={{"height": "42px", "padding": "0 18px", "borderRadius": "999px", "border": "none", "background": "#021941", "color": "#FFFFFF", "fontFamily": "inherit", "fontSize": "14px", "fontWeight": "700", "display": "inline-flex", "alignItems": "center", "justifyContent": "center", "gap": "10px", "cursor": "pointer", "textDecoration": "none", "boxShadow": "0 10px 24px rgba(2,25,65,0.18)"}}>
+            <Link href="/login" style={{"height": "42px", "padding": "0 18px", "borderRadius": "999px", "border": "none", "background": "var(--mk-solid)", "color": "var(--mk-on-solid)", "fontFamily": "inherit", "fontSize": "14px", "fontWeight": "700", "display": "inline-flex", "alignItems": "center", "justifyContent": "center", "gap": "10px", "cursor": "pointer", "textDecoration": "none", "boxShadow": "0 10px 24px rgba(var(--mk-shadow),0.18)"}}>
               {t(9)}
             </Link>
           </div>
         </div>
       </header>
       <main style={{"position": "relative", "flex": "1", "display": "flex", "alignItems": "center", "justifyContent": "center", "padding": "72px 32px"}} className="mk-notfound-5">
-        <div aria-hidden="true" style={{"position": "absolute", "inset": "0", "backgroundImage": "linear-gradient(rgba(2,25,65,0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(2,25,65,0.045) 1px, transparent 1px)", "backgroundSize": "40px 40px", "WebkitMaskImage": "radial-gradient(ellipse at 50% 40%, #000 25%, transparent 70%)", "maskImage": "radial-gradient(ellipse at 50% 40%, #000 25%, transparent 70%)"}}></div>
+        <div aria-hidden="true" style={{"position": "absolute", "inset": "0", "backgroundImage": "linear-gradient(rgba(var(--mk-ink),0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--mk-ink),0.045) 1px, transparent 1px)", "backgroundSize": "40px 40px", "WebkitMaskImage": "radial-gradient(ellipse at 50% 40%, #000 25%, transparent 70%)", "maskImage": "radial-gradient(ellipse at 50% 40%, #000 25%, transparent 70%)"}}></div>
         <div aria-hidden="true" style={{"position": "absolute", "top": "10%", "left": "50%", "width": "720px", "height": "720px", "marginLeft": "-360px", "background": "radial-gradient(closest-side, rgba(10,108,255,0.18), transparent 70%)"}} className="ws-glow mk-notfound-6"></div>
         <div style={{"position": "relative", "width": "100%", "maxWidth": "560px", "display": "flex", "flexDirection": "column", "alignItems": "center", "gap": "20px", "textAlign": "center"}} className="ws-rise">
           <span dir="ltr" style={{"fontFamily": "var(--font-numbers)", "fontWeight": "900", "fontSize": "140px", "lineHeight": "1", "backgroundImage": "linear-gradient(90deg, #0A6CFF, #22B8F0)", "WebkitBackgroundClip": "text", "backgroundClip": "text", "WebkitTextFillColor": "transparent"}} className="mk-notfound-7">
@@ -56,16 +58,16 @@ export function NotFoundView({ v, t }: { v: any; t: (i: number) => string }) {
           <h1 style={{"margin": "0", "fontSize": "40px", "lineHeight": "1.25", "fontWeight": "900", "letterSpacing": "-0.015em"}} className="mk-notfound-8">
             {t(11)}
           </h1>
-          <p style={{"margin": "0", "fontSize": "17px", "lineHeight": "1.85", "color": "#56607A", "maxWidth": "480px"}} className="mk-notfound-9">
+          <p style={{"margin": "0", "fontSize": "17px", "lineHeight": "1.85", "color": "var(--mk-muted)", "maxWidth": "480px"}} className="mk-notfound-9">
             {t(12)}{" "}
-            <b dir="ltr" style={{"color": "#021941"}}>
+            <b dir="ltr" style={{"color": "var(--mk-text)"}}>
               {t(13)}
             </b>
             {" "}{t(14)}
           </p>
-          <div style={{"width": "100%", "padding": "20px", "borderRadius": "24px", "background": "#FFFFFF", "border": "1px solid rgba(2,25,65,0.09)", "boxShadow": "0 18px 40px rgba(2,25,65,0.08)", "display": "flex", "flexDirection": "column", "alignItems": "center", "gap": "12px"}}>
-            <span style={{"display": "inline-flex", "alignItems": "center", "gap": "8px", "fontSize": "14px", "fontWeight": "700", "color": "#12805C"}}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#12805C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <div style={{"width": "100%", "padding": "20px", "borderRadius": "24px", "background": "var(--mk-card)", "border": "1px solid rgba(var(--mk-ink),0.09)", "boxShadow": "0 18px 40px rgba(var(--mk-shadow),0.08)", "display": "flex", "flexDirection": "column", "alignItems": "center", "gap": "12px"}}>
+            <span style={{"display": "inline-flex", "alignItems": "center", "gap": "8px", "fontSize": "14px", "fontWeight": "700", "color": "var(--mk-good)"}}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{"stroke": "var(--mk-good)"}}>
                 <path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8" />
               </svg>
               {t(15)}
@@ -74,11 +76,11 @@ export function NotFoundView({ v, t }: { v: any; t: (i: number) => string }) {
               <label htmlFor="claim" style={{"position": "absolute", "width": "1px", "height": "1px", "overflow": "hidden", "clip": "rect(0 0 0 0)"}}>
                 {t(16)}
               </label>
-              <div dir="ltr" style={{"display": "flex", "alignItems": "center", "gap": "6px", "padding": "7px", "borderRadius": "999px", "background": "#FFFFFF", "border": `1.5px solid ${v.claimBorder}`, "boxShadow": "0 18px 40px rgba(2,25,65,0.10)"}}>
-                <span style={{"paddingLeft": "16px", "fontSize": "17px", "fontWeight": "500", "color": "#56607A"}} className="mk-notfound-10">
+              <div dir="ltr" style={{"display": "flex", "alignItems": "center", "gap": "6px", "padding": "7px", "borderRadius": "999px", "background": "var(--mk-card)", "border": `1.5px solid ${v.claimBorder}`, "boxShadow": "0 18px 40px rgba(var(--mk-shadow),0.10)"}}>
+                <span style={{"paddingLeft": "16px", "fontSize": "17px", "fontWeight": "500", "color": "var(--mk-muted)"}} className="mk-notfound-10">
                   {t(17)}
                 </span>
-                <input id="claim" type="text" autoComplete="off" spellCheck="false" placeholder="yourname" value={v.claimV} onChange={v.onClaim} style={{"flex": "1", "minWidth": "0", "height": "48px", "border": "none", "background": "transparent", "fontFamily": "inherit", "fontSize": "17px", "fontWeight": "700", "color": "#021941", "outline": "none"}} className="mk-notfound-11" />
+                <input id="claim" type="text" autoComplete="off" spellCheck="false" placeholder="yourname" value={v.claimV} onChange={v.onClaim} style={{"flex": "1", "minWidth": "0", "height": "48px", "border": "none", "background": "transparent", "fontFamily": "inherit", "fontSize": "17px", "fontWeight": "700", "color": "var(--mk-text)", "outline": "none"}} className="mk-notfound-11" />
                 <button type="button" onClick={v.claimGo} style={{"height": "48px", "padding": "0 22px", "borderRadius": "999px", "border": "none", "background": "#0A6CFF", "color": "#FFFFFF", "fontFamily": "inherit", "fontSize": "14.5px", "fontWeight": "700", "display": "inline-flex", "alignItems": "center", "justifyContent": "center", "gap": "10px", "cursor": "pointer", "textDecoration": "none", "boxShadow": "none", "flexShrink": "0"}} className="mk-notfound-12">
                   <span className="mk-dsk">{t(18)}</span><span className="mk-mob">{t(19)}</span>
                 </button>
@@ -88,12 +90,12 @@ export function NotFoundView({ v, t }: { v: any; t: (i: number) => string }) {
               </span>
             </div>
           </div>
-          <Link href="/" style={{"height": "52px", "padding": "0 24px", "borderRadius": "999px", "border": "1px solid rgba(2,25,65,0.09)", "background": "#FFFFFF", "color": "#021941", "fontFamily": "inherit", "fontSize": "15px", "fontWeight": "500", "display": "inline-flex", "alignItems": "center", "justifyContent": "center", "gap": "8px", "cursor": "pointer", "textDecoration": "none"}}>
+          <Link href="/" style={{"height": "52px", "padding": "0 24px", "borderRadius": "999px", "border": "1px solid rgba(var(--mk-ink),0.09)", "background": "var(--mk-card)", "color": "var(--mk-text)", "fontFamily": "inherit", "fontSize": "15px", "fontWeight": "500", "display": "inline-flex", "alignItems": "center", "justifyContent": "center", "gap": "8px", "cursor": "pointer", "textDecoration": "none"}}>
             {t(20)}
           </Link>
         </div>
       </main>
-      <footer style={{"maxWidth": "1200px", "margin": "0 auto", "padding": "24px 32px", "display": "flex", "justifyContent": "space-between", "flexWrap": "wrap", "gap": "10px", "fontSize": "13px", "color": "#56607A"}} className="mk-notfound-13">
+      <footer style={{"maxWidth": "1200px", "margin": "0 auto", "padding": "24px 32px", "display": "flex", "justifyContent": "space-between", "flexWrap": "wrap", "gap": "10px", "fontSize": "13px", "color": "var(--mk-muted)"}} className="mk-notfound-13">
         <span dir="ltr">
           {t(21)}
         </span>

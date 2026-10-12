@@ -1,5 +1,5 @@
-import Image from "next/image";
 import Link from "next/link";
+import { BrandLogo } from "@/components/BrandLogo";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { LifeBuoy, LogOut } from "lucide-react";
@@ -19,9 +19,9 @@ export default async function DashboardLayout({ children, params }: LayoutProps<
 
   return (
     <div className="app-backdrop flex min-h-dvh flex-1">
-      <aside className="sticky top-0 hidden h-dvh w-[260px] shrink-0 flex-col gap-6 border-e border-navy/8 bg-white/82 px-4 py-6 backdrop-blur-[14px] md:flex">
+      <aside className="sticky top-0 hidden h-dvh w-[260px] shrink-0 flex-col gap-6 border-e border-navy/8 bg-card/82 px-4 py-6 backdrop-blur-[14px] md:flex">
         <Link href="/dashboard" className="inline-flex min-h-11 items-center px-3" aria-label={t("brand")}>
-          <Image src={locale === "en" ? "/brand/logo-en.png" : "/brand/logo-ar.png"} alt={t("brand")} width={96} height={32} className="h-8 w-auto" priority />
+          <BrandLogo lang={locale === "en" ? "en" : "ar"} alt={t("brand")} className="h-8 w-auto" priority />
         </Link>
         <nav aria-label={t("menu")} className="flex-1 overflow-y-auto">
           <SidebarNav />

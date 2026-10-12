@@ -9,7 +9,20 @@
   --font-numbers: var(--font-numbers-fallback), var(--font-text);
 }
 
+/* Dark mode (site, dashboard, admin; never creator pages, which have their own
+   templates): <html data-theme="dark">, set before paint by THEME_SCRIPT
+   (src/components/ThemeToggle.tsx). `dark:` utilities follow it too. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* Fonts stay `inline` (--font-numbers would reference itself otherwise). */
 @theme inline {
+  --font-sans: var(--font-text);
+  --font-numbers: var(--font-numbers);
+}
+
+/* Not `inline`: utilities read these through var(), so [data-theme="dark"]
+   below can swap them at runtime. */
+@theme {
   --color-navy: #021941;
   --color-blue: #0060e6; /* interactive accent */
   --color-logo-blue: #0a6cff; /* decorative only */
@@ -18,18 +31,43 @@
   --color-bg: #f4f6fa; /* app */
   --color-bg-marketing: #f6f8fc;
   --color-line: rgba(2, 25, 65, 0.09);
-  --color-card: #ffffff;
+  --color-card: #ffffff; /* cards, inputs, menus (use instead of bg-white) */
+  --color-on-blue: #ffffff; /* text on bg-blue */
+  --color-on-navy: #ffffff; /* text on bg-navy */
   --color-good: #12805c;
   --color-warn: #b45309;
   --color-bad: #c0362c;
-
-  --font-sans: var(--font-text);
-  --font-numbers: var(--font-numbers);
 
   --radius-card: 18px;
   --radius-card-lg: 24px;
 
   --shadow-card: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 1px 2px rgba(2, 25, 65, 0.04);
+}
+
+:root {
+  /* app-backdrop glows and grid */
+  --backdrop-glow: rgba(2, 25, 65, 0.06);
+  --backdrop-grid: rgba(2, 25, 65, 0.045);
+}
+
+/* Dark palette from the owner's dashboard design ("لوحة التحكم — جوال", dark theme). */
+[data-theme="dark"] {
+  color-scheme: dark;
+  --color-navy: #f2f4f8; /* main text (and light "dark" buttons) */
+  --color-blue: #7dd3fc;
+  --color-muted: #9aa3b2;
+  --color-bg: #07090e;
+  --color-bg-marketing: #07090e;
+  --color-line: rgba(255, 255, 255, 0.12);
+  --color-card: #12161e;
+  --color-on-blue: #07090e;
+  --color-on-navy: #07090e;
+  --color-good: #4ade80;
+  --color-warn: #fbbf24;
+  --color-bad: #f87171;
+  --shadow-card: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  --backdrop-glow: rgba(255, 255, 255, 0.06);
+  --backdrop-grid: rgba(255, 255, 255, 0.035);
 }
 
 @layer base {
@@ -86,10 +124,10 @@
 @utility app-backdrop {
   background-color: var(--color-bg);
   background-image:
-    radial-gradient(520px 420px at 100% 0px, rgba(2, 25, 65, 0.06), transparent 70%),
-    radial-gradient(520px 520px at 0% 800px, rgba(2, 25, 65, 0.05), transparent 70%),
-    linear-gradient(rgba(2, 25, 65, 0.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(2, 25, 65, 0.045) 1px, transparent 1px);
+    radial-gradient(520px 420px at 100% 0px, var(--backdrop-glow), transparent 70%),
+    radial-gradient(520px 520px at 0% 800px, var(--backdrop-glow), transparent 70%),
+    linear-gradient(var(--backdrop-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--backdrop-grid) 1px, transparent 1px);
   background-size: auto, auto, 32px 32px, 32px 32px;
   background-repeat: no-repeat, no-repeat, repeat, repeat;
 }

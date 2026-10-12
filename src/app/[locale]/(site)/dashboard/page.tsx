@@ -250,7 +250,7 @@ async function PlanCard({ lang, sub, pro, pageId }: { lang: Locale; sub: Sub; pr
   const currency = sub?.currency ?? (lang === "en" ? "USD" : "SAR");
   const monthly = PRICES[currency].monthly;
   const priceText = t("perMonth", { price: formatNumber(monthly, lang), currency });
-  const cta = "inline-flex h-11 items-center justify-center rounded-full bg-blue px-5 text-sm font-bold text-white";
+  const cta = "inline-flex h-11 items-center justify-center rounded-full bg-blue px-5 text-sm font-bold text-on-blue";
 
   if (sub?.status === "trialing" && pro) {
     const left = trialDaysLeft(sub.trialEndsAt);

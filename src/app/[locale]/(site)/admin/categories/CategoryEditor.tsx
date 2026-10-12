@@ -10,7 +10,7 @@ import { saveCategoryList } from "./actions";
 
 type Row = { key: string; id: string | null; nameAr: string; nameEn: string; uses: number };
 const newKey = () => Math.random().toString(36).slice(2);
-const control = "h-12 w-full min-w-0 rounded-xl border border-navy/16 bg-white px-3 text-[15px]";
+const control = "h-12 w-full min-w-0 rounded-xl border border-navy/16 bg-card px-3 text-[15px]";
 const iconButton = "inline-flex size-11 shrink-0 items-center justify-center rounded-xl bg-navy/5 text-muted hover:text-navy disabled:opacity-30";
 
 /** Owner's category list: rename (Arabic + English), reorder, add, delete; one save for all. */

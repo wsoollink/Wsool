@@ -24,7 +24,7 @@ type Row = Omit<AccountRow, "followers"> & { key: string; followers: string; ori
 
 const newKey = () => Math.random().toString(36).slice(2);
 const iconButton = "inline-flex size-11 items-center justify-center rounded-[10px] bg-navy/5 text-navy disabled:opacity-30";
-const control = "h-12 w-full rounded-xl border border-navy/16 bg-white px-3 text-[15px] aria-[invalid=true]:border-bad";
+const control = "h-12 w-full rounded-xl border border-navy/16 bg-card px-3 text-[15px] aria-[invalid=true]:border-bad";
 
 const LINK_PLACEHOLDERS: Partial<Record<Platform, string>> = {
   spotify: "https://open.spotify.com/show/…",

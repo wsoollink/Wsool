@@ -37,7 +37,7 @@ export function CategoriesCard({ categories, initial }: { categories: CategoryIt
             <li key={c.id}>
               <button
                 type="button" aria-pressed={on} disabled={!on && full} onClick={() => toggle(c.id)}
-                className={`inline-flex min-h-11 items-center gap-1.5 rounded-full px-4 text-[13.5px] font-bold transition-colors disabled:opacity-40 ${on ? "bg-blue text-white" : "bg-navy/5 text-navy hover:bg-navy/10"}`}
+                className={`inline-flex min-h-11 items-center gap-1.5 rounded-full px-4 text-[13.5px] font-bold transition-colors disabled:opacity-40 ${on ? "bg-blue text-on-blue" : "bg-navy/5 text-navy hover:bg-navy/10"}`}
               >
                 {on && <Check aria-hidden="true" size={16} />}
                 {categoryName(c, lang)}

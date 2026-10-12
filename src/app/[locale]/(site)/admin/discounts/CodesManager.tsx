@@ -10,7 +10,7 @@ import { createCodes, deleteRevoked, revokeCode, type CreateResult } from "./act
 
 type Row = { key: string; note: string; email: string };
 const newKey = () => Math.random().toString(36).slice(2);
-const control = "h-12 w-full min-w-0 rounded-xl border border-navy/16 bg-white px-3 text-[15px]";
+const control = "h-12 w-full min-w-0 rounded-xl border border-navy/16 bg-card px-3 text-[15px]";
 const PRESETS = [10, 20, 30, 50, 100];
 
 /** Form: percent + one row per person (name/note, optional email lock); then the new codes with copy buttons. */
@@ -59,7 +59,7 @@ export function CreateCodes({ limits }: { limits: { min: number; max: number; ba
           <legend className="mb-1.5 text-[13px] font-medium">{t("percent")}</legend>
           <div className="flex flex-wrap items-center gap-2">
             {PRESETS.map((p) => (
-              <button key={p} type="button" aria-pressed={percent === String(p)} onClick={() => setPercent(String(p))} className={`inline-flex min-h-11 items-center rounded-full px-4 text-sm font-bold ${percent === String(p) ? "bg-navy text-white" : "bg-navy/5"}`}>
+              <button key={p} type="button" aria-pressed={percent === String(p)} onClick={() => setPercent(String(p))} className={`inline-flex min-h-11 items-center rounded-full px-4 text-sm font-bold ${percent === String(p) ? "bg-navy text-on-navy" : "bg-navy/5"}`}>
                 {p === 100 ? t("freePreset") : `${p}%`}
               </button>
             ))}
@@ -68,7 +68,7 @@ export function CreateCodes({ limits }: { limits: { min: number; max: number; ba
               <input
                 type="text" inputMode="numeric" dir="ltr" value={percent} aria-label={t("percent")}
                 onChange={(e) => setPercent(e.target.value.replace(/[٠-٩]/g, (d) => String(d.charCodeAt(0) - 1632)).replace(/\D/g, "").slice(0, 3))}
-                className="h-11 w-20 rounded-xl border border-navy/16 bg-white px-3 text-center text-[15px]"
+                className="h-11 w-20 rounded-xl border border-navy/16 bg-card px-3 text-center text-[15px]"
               />
               <span>%</span>
             </label>
@@ -82,7 +82,7 @@ export function CreateCodes({ limits }: { limits: { min: number; max: number; ba
             <p className="text-[13px] font-bold">{t("freeCycle")}</p>
             <div className="flex flex-wrap gap-2">
               {(["monthly", "yearly"] as const).map((c) => (
-                <button key={c} type="button" aria-pressed={freeCycle === c} onClick={() => setFreeCycle(c)} className={`inline-flex min-h-11 items-center rounded-full px-4 text-sm font-bold ${freeCycle === c ? "bg-navy text-white" : "bg-white"}`}>
+                <button key={c} type="button" aria-pressed={freeCycle === c} onClick={() => setFreeCycle(c)} className={`inline-flex min-h-11 items-center rounded-full px-4 text-sm font-bold ${freeCycle === c ? "bg-navy text-on-navy" : "bg-card"}`}>
                   {t(`cycle.${c}`)}
                 </button>
               ))}
@@ -127,7 +127,7 @@ export function CreateCodes({ limits }: { limits: { min: number; max: number; ba
         <div className="flex flex-col gap-2 rounded-2xl bg-good/8 p-4" role="status">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <p className="text-sm font-bold text-good">{t("created", { n: result.length })}</p>
-            <button type="button" onClick={() => copy(result.map((c) => [c.code, c.note, c.email].filter(Boolean).join(" — ")).join("\n"), "all")} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-4 text-[13px] font-bold">
+            <button type="button" onClick={() => copy(result.map((c) => [c.code, c.note, c.email].filter(Boolean).join(" — ")).join("\n"), "all")} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-card px-4 text-[13px] font-bold">
               {copied === "all" ? <Check aria-hidden="true" size={16} /> : <Copy aria-hidden="true" size={16} />} {t("copyAll")}
             </button>
           </div>
@@ -136,7 +136,7 @@ export function CreateCodes({ limits }: { limits: { min: number; max: number; ba
               <li key={c.code} className="flex items-center gap-3 py-1.5">
                 <code dir="ltr" className="text-[15px] font-bold">{c.code}</code>
                 <span className="min-w-0 flex-1 truncate text-xs text-muted">{[c.note, c.email].filter(Boolean).join(" · ")}</span>
-                <button type="button" onClick={() => copy(c.code, c.code)} aria-label={t("copyCode", { code: c.code })} className="inline-flex size-11 items-center justify-center rounded-full hover:bg-white">
+                <button type="button" onClick={() => copy(c.code, c.code)} aria-label={t("copyCode", { code: c.code })} className="inline-flex size-11 items-center justify-center rounded-full hover:bg-card">
                   {copied === c.code ? <Check aria-hidden="true" size={16} className="text-good" /> : <Copy aria-hidden="true" size={16} />}
                 </button>
               </li>

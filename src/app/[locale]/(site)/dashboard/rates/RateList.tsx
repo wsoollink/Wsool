@@ -14,7 +14,7 @@ export const rateValid = (r: RateRow) => !!r.name.trim() && r.price !== "" && r.
 export const toInput = (r: RateRow) => ({ name: r.name, nameEn: r.nameEn, price: Number(r.price) });
 
 const iconButton = "inline-flex size-11 shrink-0 items-center justify-center rounded-xl text-muted hover:bg-navy/5 disabled:opacity-30";
-const control = "h-12 w-full min-w-0 rounded-xl border border-navy/16 bg-white px-3 text-[15px] aria-[invalid=true]:border-bad";
+const control = "h-12 w-full min-w-0 rounded-xl border border-navy/16 bg-card px-3 text-[15px] aria-[invalid=true]:border-bad";
 
 type Props = {
   id: string;

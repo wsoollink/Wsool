@@ -45,12 +45,12 @@ export function LicenseReviewCard({ item, canDecide }: { item: LicenseItem; canD
             {t("licenseCheck")}
           </label>
           <div className="flex flex-wrap items-end gap-2">
-            <button type="button" disabled={!checked || pending} onClick={() => decide(true)} className="inline-flex h-12 flex-1 items-center justify-center rounded-full bg-good px-5 text-sm font-bold text-white disabled:opacity-40">
+            <button type="button" disabled={!checked || pending} onClick={() => decide(true)} className="inline-flex h-12 flex-1 items-center justify-center rounded-full bg-good px-5 text-sm font-bold text-on-blue disabled:opacity-40">
               {t("approveLicense")}
             </button>
             <div className="flex flex-1 flex-col gap-1">
               <label htmlFor={`lr-${item.id}`} className="text-xs text-muted">{t("rejectReason")}</label>
-              <select id={`lr-${item.id}`} value={reason} onChange={(e) => setReason(e.target.value)} className="h-12 rounded-xl border border-navy/16 bg-white px-3 text-sm">
+              <select id={`lr-${item.id}`} value={reason} onChange={(e) => setReason(e.target.value)} className="h-12 rounded-xl border border-navy/16 bg-card px-3 text-sm">
                 <option value="">—</option>
                 {LICENSE_REJECT_REASONS.map((r) => <option key={r} value={r}>{t(`reasons.${r}`)}</option>)}
               </select>

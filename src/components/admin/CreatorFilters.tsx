@@ -44,7 +44,7 @@ export function withParams(path: string, params: Record<string, string | undefin
   return qs.size ? `${path}?${qs}` : path;
 }
 
-const select = "h-11 min-w-0 rounded-xl border border-navy/16 bg-white px-3 text-sm";
+const select = "h-11 min-w-0 rounded-xl border border-navy/16 bg-card px-3 text-sm";
 
 /** GET form with one select per dimension (keeps the search text and plan filter). */
 export async function CreatorFilterForm({ action, options, filters, keep }: { action: string; options: Record<Dimension, Option[]>; filters: CreatorFilters; keep: Record<string, string | undefined> }) {
@@ -61,7 +61,7 @@ export async function CreatorFilterForm({ action, options, filters, keep }: { ac
           </select>
         </label>
       ))}
-      <button type="submit" className="inline-flex h-11 items-center rounded-full bg-navy px-5 text-sm font-bold text-white">{t("apply")}</button>
+      <button type="submit" className="inline-flex h-11 items-center rounded-full bg-navy px-5 text-sm font-bold text-on-navy">{t("apply")}</button>
     </form>
   );
 }

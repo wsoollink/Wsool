@@ -35,7 +35,7 @@ export function PagePreview({ username, langs }: { username: string; langs: Loca
     <div className="flex items-center gap-1">
       {langs.length > 1 && langs.map((l) => (
         <button key={l} type="button" aria-pressed={lang === l} onClick={() => setLang(l)}
-          className={`inline-flex min-h-11 min-w-11 items-center justify-center rounded-full px-3 text-xs font-bold ${lang === l ? "bg-navy text-white" : "bg-navy/5"}`}>
+          className={`inline-flex min-h-11 min-w-11 items-center justify-center rounded-full px-3 text-xs font-bold ${lang === l ? "bg-navy text-on-navy" : "bg-navy/5"}`}>
           {l === "ar" ? "ع" : "EN"}
         </button>
       ))}
@@ -45,7 +45,7 @@ export function PagePreview({ username, langs }: { username: string; langs: Loca
     </div>
   );
   const frame = (className: string) => (
-    <iframe key={src} src={src} title={t("previewTitle")} className={`w-full border-0 bg-white ${className}`} />
+    <iframe key={src} src={src} title={t("previewTitle")} className={`w-full border-0 bg-card ${className}`} />
   );
 
   return (
@@ -65,7 +65,7 @@ export function PagePreview({ username, langs }: { username: string; langs: Loca
         <Eye aria-hidden="true" size={18} /> {t("previewOpen")}
       </button>
       {open && (
-        <div role="dialog" aria-modal="true" aria-label={t("previewTitle")} className="fixed inset-0 z-50 flex flex-col bg-white lg:hidden">
+        <div role="dialog" aria-modal="true" aria-label={t("previewTitle")} className="fixed inset-0 z-50 flex flex-col bg-card lg:hidden">
           <div className="flex items-center justify-between gap-2 border-b border-navy/8 px-3 py-1.5">
             <button type="button" autoFocus onClick={() => setOpen(false)} aria-label={t("previewClose")} className="inline-flex size-11 items-center justify-center rounded-full hover:bg-navy/5">
               <X aria-hidden="true" size={20} />

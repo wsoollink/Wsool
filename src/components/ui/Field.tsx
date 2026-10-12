@@ -1,7 +1,7 @@
 import type { InputHTMLAttributes, ReactNode, TextareaHTMLAttributes } from "react";
 
 const control =
-  "w-full rounded-xl border border-navy/16 bg-white px-4 text-base text-navy placeholder:text-muted/70 aria-[invalid=true]:border-bad";
+  "w-full rounded-xl border border-navy/16 bg-card px-4 text-base text-navy placeholder:text-muted/70 aria-[invalid=true]:border-bad";
 
 type Base = { id: string; label: string; error?: string; hint?: ReactNode; /** e.g. "12/80", shown at the end of the label row. */ counter?: string };
 

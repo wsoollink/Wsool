@@ -198,7 +198,7 @@ function AccountRow({ account: a }: { account: VerifyAccount }) {
 
         {open && (
           <div className="flex flex-col gap-2">
-            <label htmlFor={fileId} className={`flex cursor-pointer flex-col items-center gap-1 rounded-[14px] border-2 border-dashed px-4 py-5 text-center ${file ? "border-blue bg-blue/5" : "border-navy/12 bg-white/60"}`}>
+            <label htmlFor={fileId} className={`flex cursor-pointer flex-col items-center gap-1 rounded-[14px] border-2 border-dashed px-4 py-5 text-center ${file ? "border-blue bg-blue/5" : "border-navy/12 bg-card/60"}`}>
               <ImageUp aria-hidden="true" size={22} className="text-blue" />
               <span className="text-[13.5px] font-bold">{file ? file.name : t("dropTitle")}</span>
               <span className="text-xs text-muted">{file ? t("dropChange") : t("dropHint")}</span>
@@ -212,7 +212,7 @@ function AccountRow({ account: a }: { account: VerifyAccount }) {
             {check && !check.skipped && (
               <AiResult account={{ ...a, followers }} check={check} lang={lang} fixing={busy === "fix"} onFix={fixFollowers} />
             )}
-            <button type="button" onClick={send} disabled={!path || !!busy} className="inline-flex h-12 items-center justify-center rounded-full bg-blue text-sm font-bold text-white disabled:bg-navy/10 disabled:text-muted">
+            <button type="button" onClick={send} disabled={!path || !!busy} className="inline-flex h-12 items-center justify-center rounded-full bg-blue text-sm font-bold text-on-blue disabled:bg-navy/10 disabled:text-muted">
               {busy === "upload" ? e("uploading") : busy === "send" ? e("saving") : check && !check.skipped && check.comparison.overall !== "match" ? t("ai.sendAnyway") : t("submit")}
             </button>
           </div>
@@ -253,7 +253,7 @@ function AiResult({ account: a, check, lang, fixing, onFix }: { account: VerifyA
         <div className="flex flex-col gap-2">
           <p>{t("followersDiff", { seen: shown, entered: formatNumber(a.followers, lang) })}</p>
           {c.username !== "mismatch" && (
-            <button type="button" onClick={onFix} disabled={fixing} className="inline-flex min-h-11 items-center gap-2 self-start rounded-full bg-white px-4 text-[13px] font-bold text-navy ring-1 ring-warn/30">
+            <button type="button" onClick={onFix} disabled={fixing} className="inline-flex min-h-11 items-center gap-2 self-start rounded-full bg-card px-4 text-[13px] font-bold text-navy ring-1 ring-warn/30">
               <Sparkles aria-hidden="true" size={16} className="text-blue" /> {t("useFollowers", { n: formatNumber(read.followers, lang) })}
             </button>
           )}

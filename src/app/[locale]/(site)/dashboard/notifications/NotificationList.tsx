@@ -35,9 +35,9 @@ export function NotificationList({ items }: { items: NotificationItem[] }) {
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div role="group" aria-label={t("filter")} className="grid grid-cols-2 gap-1 rounded-[14px] bg-navy/5 p-1">
           {(["all", "unread"] as const).map((f) => (
-            <button key={f} type="button" aria-pressed={filter === f} onClick={() => setFilter(f)} className={`inline-flex h-11 items-center justify-center gap-1.5 rounded-[10px] px-4 text-[13.5px] font-bold ${filter === f ? "bg-white text-navy shadow-card" : "text-muted"}`}>
+            <button key={f} type="button" aria-pressed={filter === f} onClick={() => setFilter(f)} className={`inline-flex h-11 items-center justify-center gap-1.5 rounded-[10px] px-4 text-[13.5px] font-bold ${filter === f ? "bg-card text-navy shadow-card" : "text-muted"}`}>
               {t(f)}
-              {f === "unread" && unread > 0 && <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-blue px-1.5 text-[11.5px] text-white">{unread}</span>}
+              {f === "unread" && unread > 0 && <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-blue px-1.5 text-[11.5px] text-on-blue">{unread}</span>}
             </button>
           ))}
         </div>

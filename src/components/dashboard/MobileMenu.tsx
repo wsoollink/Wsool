@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
+import { BrandLogo } from "@/components/BrandLogo";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
@@ -40,7 +40,7 @@ export function MobileMenu({ footer }: { footer: ReactNode }) {
     <>
       <button
         type="button" onClick={() => setOpen(true)} aria-label={t("openMenu")} aria-haspopup="dialog" aria-expanded={open}
-        className="inline-flex size-11 shrink-0 items-center justify-center rounded-full border border-navy/8 bg-white/72 shadow-card backdrop-blur-[14px] md:hidden"
+        className="inline-flex size-11 shrink-0 items-center justify-center rounded-full border border-navy/8 bg-card/72 shadow-card backdrop-blur-[14px] md:hidden"
       >
         <Menu aria-hidden="true" size={20} />
       </button>
@@ -48,12 +48,12 @@ export function MobileMenu({ footer }: { footer: ReactNode }) {
         ref={ref} aria-label={t("menu")} tabIndex={-1}
         onClose={() => setOpen(false)}
         onClick={(ev) => { if (ev.target === ev.currentTarget) setOpen(false); }}
-        className="fixed inset-y-0 start-0 m-0 h-dvh max-h-none w-[min(320px,86vw)] max-w-none bg-white p-0 text-navy shadow-xl outline-none backdrop:bg-navy/40 md:hidden"
+        className="fixed inset-y-0 start-0 m-0 h-dvh max-h-none w-[min(320px,86vw)] max-w-none bg-card p-0 text-navy shadow-xl outline-none backdrop:bg-navy/40 md:hidden"
       >
         <div className="flex h-full flex-col gap-2 px-3 pt-[max(0.75rem,env(safe-area-inset-top))] pb-[max(0.75rem,env(safe-area-inset-bottom))]">
           <div className="flex items-center justify-between gap-3">
             <Link href="/dashboard" className="inline-flex min-h-11 items-center px-3" aria-label={t("brand")}>
-              <Image src={lang === "en" ? "/brand/logo-en.png" : "/brand/logo-ar.png"} alt={t("brand")} width={96} height={32} className="h-8 w-auto" />
+              <BrandLogo lang={lang === "en" ? "en" : "ar"} alt={t("brand")} className="h-8 w-auto" />
             </Link>
             <button type="button" onClick={() => setOpen(false)} aria-label={t("closeMenu")} className="inline-flex size-11 items-center justify-center rounded-full text-muted hover:bg-navy/5">
               <X aria-hidden="true" size={20} />

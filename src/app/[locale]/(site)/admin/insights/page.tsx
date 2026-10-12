@@ -82,11 +82,11 @@ async function Insights({ lang, searchParams }: { lang: Locale; searchParams: SP
       </div>
 
       <div className="flex flex-wrap gap-2">
-        <a href={withParams("/api/admin/users", { ...filters })} download className="inline-flex min-h-11 items-center gap-2 rounded-full bg-navy px-4 text-[13.5px] font-bold text-white">
+        <a href={withParams("/api/admin/users", { ...filters })} download className="inline-flex min-h-11 items-center gap-2 rounded-full bg-navy px-4 text-[13.5px] font-bold text-on-navy">
           <Download aria-hidden="true" size={16} /> {t("export", { n: total })}
         </a>
         {can(admin, "owner") && (
-          <Link href="/admin/categories" className="inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-4 text-[13.5px] font-bold ring-1 ring-navy/10">
+          <Link href="/admin/categories" className="inline-flex min-h-11 items-center gap-2 rounded-full bg-card px-4 text-[13.5px] font-bold ring-1 ring-navy/10">
             <Settings2 aria-hidden="true" size={16} /> {t("manageCategories")}
           </Link>
         )}

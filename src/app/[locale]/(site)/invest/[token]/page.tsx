@@ -1,7 +1,7 @@
+import { BrandLogo } from "@/components/BrandLogo";
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
-import Image from "next/image";
 import { Eye } from "lucide-react";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -62,7 +62,7 @@ export default async function InvestorPage({ params }: PageProps<"/[locale]/inve
   return (
     <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-6 px-4 py-8">
       <header className="flex items-center justify-between gap-3 border-b border-navy/8 pb-4">
-        <Image src={locale === "en" ? "/brand/logo-en.png" : "/brand/logo-ar.png"} alt={t("brand")} width={90} height={30} className="h-[30px] w-auto" priority />
+        <BrandLogo lang={locale === "en" ? "en" : "ar"} alt={t("brand")} className="h-[30px] w-auto" priority />
         <span className="inline-flex h-8 items-center gap-1.5 rounded-full bg-navy/5 px-3 text-xs font-bold text-muted"><Eye aria-hidden="true" size={14} /> {t("readOnly")}</span>
       </header>
       <Suspense fallback={null}><Report params={params as Promise<{ token: string }>} lang={locale} /></Suspense>

@@ -42,9 +42,9 @@ async function Codes({ lang, searchParams }: { lang: Locale; searchParams: SP })
         {FILTERS.map((f) => (
           <Link
             key={f} href={f === "all" ? "/admin/discounts" : `/admin/discounts?s=${f}`} aria-current={f === filter ? "page" : undefined}
-            className={`inline-flex min-h-11 items-center gap-2 rounded-full px-4 text-[13.5px] font-bold ${f === filter ? "bg-navy text-white" : "bg-white ring-1 ring-navy/10"}`}
+            className={`inline-flex min-h-11 items-center gap-2 rounded-full px-4 text-[13.5px] font-bold ${f === filter ? "bg-navy text-on-navy" : "bg-card ring-1 ring-navy/10"}`}
           >
-            {t(`filter.${f}`)} <span className={`font-numbers text-xs ${f === filter ? "text-white/70" : "text-muted"}`}>{formatNumber(count(f), lang)}</span>
+            {t(`filter.${f}`)} <span className={`font-numbers text-xs ${f === filter ? "text-on-navy/70" : "text-muted"}`}>{formatNumber(count(f), lang)}</span>
           </Link>
         ))}
         {count("revoked") > 0 && (filter === "all" || filter === "revoked") && (

@@ -47,7 +47,7 @@ function AiCard({ item }: { item: ReviewItem }) {
     return (
       <div className="flex flex-col gap-2 rounded-2xl bg-blue/5 p-3">
         <button type="button" disabled={pending} onClick={() => startTransition(async () => { const r = await readRequestWithAi(item.id); setFailed(!r.ok); if (r.ok) router.refresh(); })}
-          className="inline-flex min-h-11 items-center gap-2 self-start rounded-full bg-white px-4 text-[13px] font-bold text-blue ring-1 ring-blue/20">
+          className="inline-flex min-h-11 items-center gap-2 self-start rounded-full bg-card px-4 text-[13px] font-bold text-blue ring-1 ring-blue/20">
           <Sparkles aria-hidden="true" size={16} /> {pending ? t("reading") : t("readNow")}
         </button>
         {failed && <p role="alert" className="text-xs text-bad">{t("readFailed")}</p>}
@@ -182,13 +182,13 @@ export function ReviewCard({ item, canDecide }: { item: ReviewItem; canDecide: b
               {rejecting ? (
                 <div className="flex flex-col gap-2 rounded-2xl border border-bad/30 p-3">
                   <label htmlFor={`reason-${item.id}`} className="text-sm font-bold">{t("rejectReason")}</label>
-                  <select id={`reason-${item.id}`} value={reason} onChange={(ev) => setReason(ev.target.value)} className="h-12 rounded-xl border border-navy/16 bg-white px-3 text-[15px]">
+                  <select id={`reason-${item.id}`} value={reason} onChange={(ev) => setReason(ev.target.value)} className="h-12 rounded-xl border border-navy/16 bg-card px-3 text-[15px]">
                     <option value="">{t("chooseReason")}</option>
                     {REJECT_REASONS.map((r) => <option key={r} value={r}>{t(`reasons.${r}`)}</option>)}
                   </select>
                   <p className="text-xs text-muted">{t("reasonSent")}</p>
                   <div className="flex gap-2">
-                    <button type="button" disabled={!reason || pending} onClick={() => decide(() => rejectVerification(item.id, reason))} className="inline-flex h-12 flex-1 items-center justify-center rounded-full bg-bad px-5 text-sm font-bold text-white disabled:opacity-40">
+                    <button type="button" disabled={!reason || pending} onClick={() => decide(() => rejectVerification(item.id, reason))} className="inline-flex h-12 flex-1 items-center justify-center rounded-full bg-bad px-5 text-sm font-bold text-on-blue disabled:opacity-40">
                       {t("confirmReject")}
                     </button>
                     <button type="button" onClick={() => { setRejecting(false); setReason(""); }} className="inline-flex h-12 items-center justify-center rounded-full bg-navy/5 px-5 text-sm font-bold">
@@ -198,7 +198,7 @@ export function ReviewCard({ item, canDecide }: { item: ReviewItem; canDecide: b
                 </div>
               ) : (
                 <div className="flex gap-2">
-                  <button type="button" disabled={!allChecked || pending} onClick={() => decide(() => approveVerification(item.id, checks))} className="inline-flex h-12 flex-1 items-center justify-center rounded-full bg-good px-5 text-sm font-bold text-white disabled:opacity-40">
+                  <button type="button" disabled={!allChecked || pending} onClick={() => decide(() => approveVerification(item.id, checks))} className="inline-flex h-12 flex-1 items-center justify-center rounded-full bg-good px-5 text-sm font-bold text-on-blue disabled:opacity-40">
                     {t("approve")}
                   </button>
                   <button type="button" disabled={pending} onClick={() => setRejecting(true)} className="inline-flex h-12 flex-1 items-center justify-center rounded-full border-[1.5px] border-bad px-5 text-sm font-bold text-bad disabled:opacity-40">

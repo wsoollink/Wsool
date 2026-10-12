@@ -1,5 +1,5 @@
-import Image from "next/image";
 import Link from "next/link";
+import { BrandLogo } from "@/components/BrandLogo";
 import { Fragment } from "react";
 import { LEGAL } from "@/config/site";
 import { LEGAL_TEXT, type LegalKind } from "@/content/legal";
@@ -45,11 +45,11 @@ export function LegalPage({ lang, kind }: { lang: Locale; kind: LegalKind }) {
   const headings = doc.blocks.flatMap((b, i) => ("h" in b ? [{ id: `s${i}`, text: b.h }] : []));
 
   return (
-    <div className="flex flex-1 flex-col bg-[#F6F8FC]">
-      <header className="border-b border-line bg-white/80">
+    <div className="flex flex-1 flex-col bg-bg-marketing">
+      <header className="border-b border-line bg-card/80">
         <div className="mx-auto flex max-w-3xl items-center justify-between gap-4 px-4 py-3">
           <Link href="/" className="flex min-h-11 items-center" aria-label={ui.home}>
-            <Image src={lang === "en" ? "/brand/logo-en.png" : "/brand/logo-ar.png"} alt={lang === "en" ? "Wsool" : "وصول"} width={96} height={32} priority />
+            <BrandLogo lang={lang === "en" ? "en" : "ar"} alt={lang === "en" ? "Wsool" : "وصول"} priority />
           </Link>
           <Link href={kind === "terms" ? "/privacy" : "/terms"} className="min-h-11 content-center text-sm font-semibold text-blue">
             {ui.other[kind]}
@@ -61,7 +61,7 @@ export function LegalPage({ lang, kind }: { lang: Locale; kind: LegalKind }) {
         <p className="mt-2 text-sm text-muted">{ui.effective} {effectiveDate(lang)}</p>
         <p className="mt-6 leading-8">{fill(doc.intro, lang)}</p>
 
-        <nav aria-label={ui.contents} className="mt-6 rounded-[20px] border border-line bg-white p-5">
+        <nav aria-label={ui.contents} className="mt-6 rounded-[20px] border border-line bg-card p-5">
           <p className="mb-2 text-sm font-bold">{ui.contents}</p>
           <ol className="grid grid-cols-1 gap-1 text-sm sm:grid-cols-2">
             {headings.map((h) => (
@@ -83,9 +83,9 @@ export function LegalPage({ lang, kind }: { lang: Locale; kind: LegalKind }) {
             }
             const [head, ...rows] = b.table;
             return (
-              <div key={i} className="overflow-x-auto rounded-[20px] border border-line bg-white">
+              <div key={i} className="overflow-x-auto rounded-[20px] border border-line bg-card">
                 <table className="w-full min-w-[520px] text-start text-sm leading-6">
-                  <thead className="bg-[#F4F6FA]">
+                  <thead className="bg-navy/5">
                     <tr>{head.map((c) => <th key={c} scope="col" className="p-3 text-start font-bold">{c}</th>)}</tr>
                   </thead>
                   <tbody>

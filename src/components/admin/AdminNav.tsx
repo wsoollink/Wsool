@@ -40,13 +40,13 @@ export function AdminNav({ allowed, variant, pending }: { allowed: AdminSectionK
               href={s.href}
               aria-current={active ? "page" : undefined}
               className={`flex min-h-[46px] items-center gap-3 rounded-[14px] px-3 text-[14.5px] whitespace-nowrap transition-colors ${
-                active ? "bg-navy font-bold text-white" : "font-medium text-muted hover:bg-navy/5 hover:text-navy"
+                active ? "bg-navy font-bold text-on-navy" : "font-medium text-muted hover:bg-navy/5 hover:text-navy"
               }`}
             >
               <Icon aria-hidden="true" size={18} />
               <span className="flex-1">{t(s.key)}</span>
               {s.key === "verifications" && pending > 0 && (
-                <span className="inline-flex h-[22px] min-w-[22px] items-center justify-center rounded-full bg-blue px-1.5 text-xs font-bold text-white">
+                <span className="inline-flex h-[22px] min-w-[22px] items-center justify-center rounded-full bg-blue px-1.5 text-xs font-bold text-on-blue">
                   {pending}<span className="sr-only"> {t("pendingBadge")}</span>
                 </span>
               )}

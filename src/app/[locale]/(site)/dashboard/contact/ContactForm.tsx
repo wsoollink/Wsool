@@ -19,7 +19,7 @@ function split(digits: string) {
   return cc ? { code: cc.code, local: digits.slice(cc.code.length) } : { code: "966", local: digits };
 }
 
-const input = "h-12 w-full min-w-0 rounded-xl border border-navy/16 bg-white px-3 text-[15px] aria-[invalid=true]:border-bad";
+const input = "h-12 w-full min-w-0 rounded-xl border border-navy/16 bg-card px-3 text-[15px] aria-[invalid=true]:border-bad";
 const soft = "inline-flex h-10 items-center gap-2 rounded-xl bg-navy/5 px-3 text-[13px] font-medium";
 
 /** WhatsApp + email cards from the dashboard design: show/hide switch, value, monthly taps, test link. */
@@ -72,7 +72,7 @@ export function ContactForm({ initial, accountEmail, taps }: { initial: Initial;
           <label htmlFor="wa-num" className="text-[13px] font-medium">{t("whatsappNumber")}</label>
           <div dir="ltr" className="flex gap-2">
             <label htmlFor="wa-cc" className="sr-only">{t("countryCode")}</label>
-            <select id="wa-cc" value={code} onChange={(e) => { setCode(e.target.value); dirty(); }} className="h-12 w-[112px] shrink-0 rounded-xl border border-navy/16 bg-white px-2 text-[15px]">
+            <select id="wa-cc" value={code} onChange={(e) => { setCode(e.target.value); dirty(); }} className="h-12 w-[112px] shrink-0 rounded-xl border border-navy/16 bg-card px-2 text-[15px]">
               {COUNTRY_CODES.map((c) => <option key={c.code} value={c.code}>{c.flag} +{c.code}</option>)}
             </select>
             <input

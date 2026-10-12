@@ -58,7 +58,7 @@ const href = (f: Record<string, string | undefined>) => {
   const qs = new URLSearchParams(Object.entries(f).filter((e): e is [string, string] => !!e[1]));
   return qs.size ? `/admin/audit?${qs}` : "/admin/audit";
 };
-const field = "h-11 min-w-0 rounded-xl border border-navy/16 bg-white px-3 text-sm";
+const field = "h-11 min-w-0 rounded-xl border border-navy/16 bg-card px-3 text-sm";
 
 /** Owner only: admin actions as readable sentences, grouped by day, filtered by who / kind / period. Append-only. */
 async function Log({ lang, searchParams }: { lang: Locale; searchParams: SP }) {
@@ -78,7 +78,7 @@ async function Log({ lang, searchParams }: { lang: Locale; searchParams: SP }) {
           const on = f.p === p && (p || (!f.from && !f.to));
           return (
             <Link key={p ?? "all"} href={href({ who: f.who, type: f.type, p })} aria-current={on ? "page" : undefined}
-              className={`inline-flex min-h-11 items-center rounded-full px-4 text-[13.5px] font-bold ${on ? "bg-navy text-white" : "bg-white ring-1 ring-navy/10"}`}>
+              className={`inline-flex min-h-11 items-center rounded-full px-4 text-[13.5px] font-bold ${on ? "bg-navy text-on-navy" : "bg-card ring-1 ring-navy/10"}`}>
               {t(`periods.${p ?? "all"}`)}
             </Link>
           );
@@ -107,7 +107,7 @@ async function Log({ lang, searchParams }: { lang: Locale; searchParams: SP }) {
           {t("to")}
           <input type="date" name="to" defaultValue={f.to ?? ""} dir="ltr" className={field} />
         </label>
-        <button type="submit" className="inline-flex h-11 items-center rounded-full bg-navy px-5 text-sm font-bold text-white">{t("apply")}</button>
+        <button type="submit" className="inline-flex h-11 items-center rounded-full bg-navy px-5 text-sm font-bold text-on-navy">{t("apply")}</button>
         {filtered && <Link href="/admin/audit" className="inline-flex h-11 items-center px-2 text-sm font-bold text-muted underline">{t("clear")}</Link>}
       </form>
     </Card>

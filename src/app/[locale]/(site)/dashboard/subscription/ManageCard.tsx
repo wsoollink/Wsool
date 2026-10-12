@@ -48,9 +48,9 @@ export function ManageCard({ autoRenew, cycle, hasCard, endDate }: { autoRenew: 
             ))}
           </fieldset>
           <label htmlFor="cx-note" className="sr-only">{t("cancelNote")}</label>
-          <textarea id="cx-note" value={note} maxLength={300} onChange={(e) => setNote(e.target.value)} placeholder={t("cancelNote")} className="min-h-20 rounded-xl border border-navy/16 bg-white p-3 text-[15px]" />
+          <textarea id="cx-note" value={note} maxLength={300} onChange={(e) => setNote(e.target.value)} placeholder={t("cancelNote")} className="min-h-20 rounded-xl border border-navy/16 bg-card p-3 text-[15px]" />
           <div className="grid grid-cols-2 gap-2">
-            <button type="button" onClick={() => setAsking(false)} className="inline-flex h-11 items-center justify-center rounded-full bg-blue text-[13.5px] font-bold text-white">{t("keepPlan")}</button>
+            <button type="button" onClick={() => setAsking(false)} className="inline-flex h-11 items-center justify-center rounded-full bg-blue text-[13.5px] font-bold text-on-blue">{t("keepPlan")}</button>
             <button
               type="button" disabled={pending}
               onClick={() => run(() => toggleAutoRenew(false, reason ? { reason, note } : undefined))}

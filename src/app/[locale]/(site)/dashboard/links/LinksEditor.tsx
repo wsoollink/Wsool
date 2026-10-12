@@ -25,7 +25,7 @@ type Props = {
 };
 
 const newKey = () => Math.random().toString(36).slice(2);
-const control = "h-12 w-full min-w-0 rounded-xl border border-navy/16 bg-white px-3 text-[15px] aria-[invalid=true]:border-bad";
+const control = "h-12 w-full min-w-0 rounded-xl border border-navy/16 bg-card px-3 text-[15px] aria-[invalid=true]:border-bad";
 const iconButton = "inline-flex size-11 shrink-0 items-center justify-center rounded-full text-muted hover:bg-navy/5 disabled:opacity-30";
 
 const KIND_ICONS: Record<LinkKind, typeof Link2> = { map: MapPin, store: ShoppingBag, video: Play, link: Link2 };
@@ -120,7 +120,7 @@ export function LinksEditor({ initialLinks, initialServices, currency, lang, fre
             const id = `${fileBase}-l${l.key}`;
             const label = l.title || t("linkN", { n: i + 1 });
             return (
-              <li key={l.key} className="flex flex-col gap-3 rounded-[16px] border border-navy/8 bg-white/70 p-3">
+              <li key={l.key} className="flex flex-col gap-3 rounded-[16px] border border-navy/8 bg-card/70 p-3">
                 <div className="flex items-start gap-3">
                   <div className="flex shrink-0 flex-col items-center gap-1">
                     <label htmlFor={`${id}-img`} className="relative flex size-[72px] cursor-pointer items-center justify-center overflow-hidden rounded-[14px] border border-navy/10 bg-navy/[0.03]">
@@ -130,7 +130,7 @@ export function LinksEditor({ initialLinks, initialServices, currency, lang, fre
                       ) : (
                         <Icon aria-hidden="true" size={26} className="text-muted" />
                       )}
-                      <span className="absolute inset-x-0 bottom-0 bg-navy/55 py-0.5 text-center text-[10px] text-white">{l.uploading ? e("uploading") : l.preview ? t("changeImage") : t("addImage")}</span>
+                      <span className="absolute inset-x-0 bottom-0 bg-black/55 py-0.5 text-center text-[10px] text-white">{l.uploading ? e("uploading") : l.preview ? t("changeImage") : t("addImage")}</span>
                       <span className="sr-only">{t("imageFor", { item: label })}</span>
                     </label>
                     <input id={`${id}-img`} type="file" accept={UPLOAD_KINDS.linkImage.types.join(",")} className="sr-only" onChange={(ev) => { pickImage(l.key, ev.target.files?.[0]); ev.target.value = ""; }} />
@@ -187,7 +187,7 @@ export function LinksEditor({ initialLinks, initialServices, currency, lang, fre
             const id = `${fileBase}-s${s.key}`;
             const label = s.name || t("serviceN", { n: i + 1 });
             return (
-              <li key={s.key} className="flex flex-col gap-3 rounded-[16px] border border-navy/8 bg-white/70 p-3">
+              <li key={s.key} className="flex flex-col gap-3 rounded-[16px] border border-navy/8 bg-card/70 p-3">
                 <Field id={`${id}-n`} label={t("serviceName")}>
                   <input id={`${id}-n`} value={s.name} maxLength={60} dir={dirPrimary} lang={lang.primary} placeholder={t("serviceNamePh")} aria-invalid={!!s.error} onChange={(ev) => setService(s.key, { name: ev.target.value, error: false })} className={control} />
                 </Field>

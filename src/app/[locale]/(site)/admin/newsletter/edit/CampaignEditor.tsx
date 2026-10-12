@@ -23,7 +23,7 @@ type Props = {
   adminEmail: string;
 };
 
-const input = "h-12 w-full rounded-xl border border-navy/16 bg-white px-3 text-[15px] disabled:bg-navy/[0.03]";
+const input = "h-12 w-full rounded-xl border border-navy/16 bg-card px-3 text-[15px] disabled:bg-navy/[0.03]";
 
 /**
  * Newsletter editor (admin): both language versions, optional button, live
@@ -127,7 +127,7 @@ export function CampaignEditor({ id, status, initial, audience, progress, sentOn
               {(["ar", "en"] as const).map((l) => (
                 <button
                   key={l} type="button" role="tab" aria-selected={tab === l} onClick={() => { setTab(l); setPreviewLang(l); }}
-                  className={`min-h-10 rounded-full px-4 text-[13.5px] font-bold ${tab === l ? "bg-white shadow-sm" : "text-muted"}`}
+                  className={`min-h-10 rounded-full px-4 text-[13.5px] font-bold ${tab === l ? "bg-card shadow-sm" : "text-muted"}`}
                 >
                   {t(l === "ar" ? "arabic" : "english")}
                 </button>
@@ -210,7 +210,7 @@ export function CampaignEditor({ id, status, initial, audience, progress, sentOn
           <h2 className="font-bold">{t("preview")}</h2>
           <div className="inline-flex rounded-full bg-navy/5 p-1" role="group" aria-label={t("preview")}>
             {(["ar", "en"] as const).map((l) => (
-              <button key={l} type="button" aria-pressed={previewLang === l} onClick={() => setPreviewLang(l)} className={`min-h-9 rounded-full px-3 text-xs font-bold ${previewLang === l ? "bg-white shadow-sm" : "text-muted"}`}>
+              <button key={l} type="button" aria-pressed={previewLang === l} onClick={() => setPreviewLang(l)} className={`min-h-9 rounded-full px-3 text-xs font-bold ${previewLang === l ? "bg-card shadow-sm" : "text-muted"}`}>
                 {t(l === "ar" ? "arabic" : "english")}
               </button>
             ))}

@@ -44,7 +44,7 @@ export function DangerZone({ username, deletedAt, purgeDate }: { username: strin
 
       {open && (
         <div role="dialog" aria-modal="true" aria-labelledby="del-title" className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(10,12,16,0.5)] p-4" onClick={(e) => e.target === e.currentTarget && setOpen(false)} onKeyDown={(e) => e.key === "Escape" && setOpen(false)}>
-          <div className="flex w-[min(440px,100%)] flex-col gap-4 rounded-[22px] bg-white p-5 shadow-[0_24px_60px_rgba(10,12,16,0.25)]">
+          <div className="flex w-[min(440px,100%)] flex-col gap-4 rounded-[22px] bg-card p-5 shadow-[0_24px_60px_rgba(10,12,16,0.25)]">
             <h2 id="del-title" className="text-lg font-bold">{t("modalTitle")}</h2>
             <ul className="flex list-disc flex-col gap-1.5 ps-5 text-[13.5px] text-muted">
               <li>{t.rich("b1", { link: () => <bdi dir="ltr">wsool.link/{username}</bdi> })}</li>
@@ -54,7 +54,7 @@ export function DangerZone({ username, deletedAt, purgeDate }: { username: strin
             </ul>
             <div className="flex flex-col gap-1.5">
               <label htmlFor="confirm-username" className="text-[13px] font-medium">{t.rich("typeUsername2", { u: () => <b dir="ltr">{username}</b> })}</label>
-              <input id="confirm-username" autoFocus dir="ltr" autoComplete="off" value={confirm} onChange={(ev) => { setConfirm(ev.target.value); setError(""); }} className="h-12 rounded-xl border border-navy/16 bg-white px-3 text-[15px]" />
+              <input id="confirm-username" autoFocus dir="ltr" autoComplete="off" value={confirm} onChange={(ev) => { setConfirm(ev.target.value); setError(""); }} className="h-12 rounded-xl border border-navy/16 bg-card px-3 text-[15px]" />
             </div>
             {error && <p role="alert" className="text-sm text-bad">{error}</p>}
             <div className="grid grid-cols-2 gap-2">
@@ -62,7 +62,7 @@ export function DangerZone({ username, deletedAt, purgeDate }: { username: strin
               <button
                 type="button" disabled={pending || confirm.trim().toLowerCase() !== username}
                 onClick={() => startTransition(async () => { const res = await requestDeletion(confirm); if (!res.ok) setError(t("mismatch")); else setOpen(false); router.refresh(); })}
-                className="inline-flex h-12 items-center justify-center rounded-full bg-bad text-sm font-bold text-white disabled:opacity-40"
+                className="inline-flex h-12 items-center justify-center rounded-full bg-bad text-sm font-bold text-on-blue disabled:opacity-40"
               >
                 {t("deleteButton")}
               </button>

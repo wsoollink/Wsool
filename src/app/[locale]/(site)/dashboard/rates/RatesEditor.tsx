@@ -25,7 +25,7 @@ type Lang = { primary: "ar" | "en"; showEnglish: boolean };
 
 const toRows = (rates: SavedRate[]): RateRow[] =>
   rates.map((r) => ({ key: newKey(), name: r.name, nameEn: r.nameEn ?? "", price: String(r.price) }));
-const select = "h-12 w-full rounded-xl border border-navy/16 bg-white px-3 text-[15px]";
+const select = "h-12 w-full rounded-xl border border-navy/16 bg-card px-3 text-[15px]";
 
 type PlatformState = { on: boolean; rows: RateRow[] };
 type BundleState = { on: boolean; name: string; nameEn: string; accountIds: string[]; rows: RateRow[]; error?: boolean };
@@ -174,7 +174,7 @@ export function RatesEditor({ settings, accounts, bundle, lang }: { settings: Ra
                         <button
                           key={a.id} type="button" role="checkbox" aria-checked={checked}
                           onClick={() => { setB({ ...b, accountIds: checked ? b.accountIds.filter((id) => id !== a.id) : [...b.accountIds, a.id] }); dirty(); }}
-                          className={`inline-flex min-h-11 items-center gap-2 rounded-xl border px-3 text-[13px] font-medium ${checked ? "border-blue bg-blue/8" : "border-navy/10 bg-white"}`}
+                          className={`inline-flex min-h-11 items-center gap-2 rounded-xl border px-3 text-[13px] font-medium ${checked ? "border-blue bg-blue/8" : "border-navy/10 bg-card"}`}
                         >
                           <PlatformIcon platform={a.platform} size={16} /> {PLATFORM_NAMES[a.platform]}
                         </button>

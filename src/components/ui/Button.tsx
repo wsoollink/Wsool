@@ -4,8 +4,8 @@ type Variant = "primary" | "accent" | "secondary";
 
 const variants: Record<Variant, string> = {
   // Design: primary actions are blue; secondary ones a soft navy fill without a border.
-  primary: "bg-blue text-white hover:bg-blue/90",
-  accent: "bg-blue text-white hover:bg-blue/90",
+  primary: "bg-blue text-on-blue hover:bg-blue/90",
+  accent: "bg-blue text-on-blue hover:bg-blue/90",
   secondary: "bg-navy/5 text-navy hover:bg-navy/10",
 };
 

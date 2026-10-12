@@ -130,7 +130,7 @@ async function Queue({ lang, tab, id, ai }: { lang: Locale; tab: Tab; id: string
     <nav aria-label={t("ai.filter")} className="flex flex-wrap gap-2 px-2 pt-1">
       {(["", "match", "check"] as const).map((k) => (
         <Link key={k || "all"} href={k ? `/admin/verifications?ai=${k}` : "/admin/verifications"} aria-current={ai === k ? "page" : undefined}
-          className={`inline-flex min-h-9 items-center gap-1.5 rounded-full px-3 text-xs font-bold ${ai === k ? "bg-navy text-white" : "bg-navy/5"}`}>
+          className={`inline-flex min-h-9 items-center gap-1.5 rounded-full px-3 text-xs font-bold ${ai === k ? "bg-navy text-on-navy" : "bg-navy/5"}`}>
           {t(`ai.filters.${k || "all"}`)}{k && <span className="font-numbers opacity-70">{aiCounts[k]}</span>}
         </Link>
       ))}
@@ -194,7 +194,7 @@ async function Queue({ lang, tab, id, ai }: { lang: Locale; tab: Tab; id: string
                     href={`/admin/verifications?${new URLSearchParams({ ...(ai && { ai }), id: r.id })}`} aria-current={selected ? "true" : undefined}
                     className={`flex min-h-[60px] items-center gap-3 rounded-[14px] px-3 py-2 ${selected ? "bg-navy/[0.06] ring-1 ring-navy/10" : "hover:bg-navy/[0.03]"}`}
                   >
-                    <span className="inline-flex size-10 shrink-0 items-center justify-center rounded-xl bg-white ring-1 ring-navy/8"><PlatformIcon platform={r.platform} size={18} /></span>
+                    <span className="inline-flex size-10 shrink-0 items-center justify-center rounded-xl bg-card ring-1 ring-navy/8"><PlatformIcon platform={r.platform} size={18} /></span>
                     <span className="flex min-w-0 flex-1 flex-col">
                       <bdi dir="ltr" className="truncate text-sm font-bold rtl:text-end">@{r.handle}</bdi>
                       <span className="truncate text-xs text-muted">{PLATFORM_NAMES[r.platform]} · <span className="font-numbers">{formatCompact(r.followers, lang)}</span></span>
@@ -256,7 +256,7 @@ async function Tabs({ searchParams, labels }: { searchParams: Promise<Record<str
       {(["pending", "licenses", "decided"] as const).map((k) => (
         <Link
           key={k} role="tab" aria-selected={tab === k} href={k === "pending" ? "/admin/verifications" : `/admin/verifications?tab=${k}`}
-          className={`inline-flex min-h-11 items-center rounded-full px-4 text-[13.5px] font-bold ${tab === k ? "bg-navy text-white" : "bg-white ring-1 ring-navy/10"}`}
+          className={`inline-flex min-h-11 items-center rounded-full px-4 text-[13.5px] font-bold ${tab === k ? "bg-navy text-on-navy" : "bg-card ring-1 ring-navy/10"}`}
         >
           {labels[k]}
         </Link>

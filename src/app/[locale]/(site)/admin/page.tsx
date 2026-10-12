@@ -122,7 +122,7 @@ async function Overview({ lang }: { lang: Locale }) {
         </Card>
 
         {can(admin, "verifications.view") && (
-          <div className="flex flex-col justify-between gap-4 rounded-card bg-navy p-5 text-white">
+          <div className="flex flex-col justify-between gap-4 rounded-card bg-[#021941] p-5 text-white ring-1 ring-white/10">
             <div className="flex flex-col gap-1">
               <span className="text-[13px] text-white/70">{t("queueTitle")}</span>
               <span className="font-numbers text-[44px] leading-none font-black">{formatNumber(waiting, lang)}</span>
@@ -133,7 +133,7 @@ async function Overview({ lang }: { lang: Locale }) {
                 <Clock aria-hidden="true" size={16} /> {t("oldestLate", { h: oldestHours, hours: REVIEW_HOURS })}
               </p>
             )}
-            <Link href="/admin/verifications" className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-white text-sm font-bold text-navy">
+            <Link href="/admin/verifications" className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-white text-sm font-bold text-[#021941]">
               {t("startReview")} <Arrow aria-hidden="true" size={16} />
             </Link>
           </div>

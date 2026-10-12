@@ -69,7 +69,7 @@ async function Results({ lang, searchParams }: { lang: Locale; searchParams: SP 
 
   return (
     <>
-      <details className="rounded-2xl bg-white/70 p-3 ring-1 ring-navy/8" open={hasFilters(insight)}>
+      <details className="rounded-2xl bg-card/70 p-3 ring-1 ring-navy/8" open={hasFilters(insight)}>
         <summary className="min-h-9 cursor-pointer text-sm font-bold">{t("moreFilters")}</summary>
         <div className="mt-3"><CreatorFilterForm action="/admin/users" options={options} filters={insight} keep={keep} /></div>
       </details>
@@ -78,12 +78,12 @@ async function Results({ lang, searchParams }: { lang: Locale; searchParams: SP 
         {FILTERS.map((f, i) => (
           <Link
             key={f} href={href(f)} aria-current={f === filter ? "page" : undefined}
-            className={`inline-flex min-h-11 items-center gap-2 rounded-full px-4 text-[13.5px] font-bold ${f === filter ? "bg-navy text-white" : "bg-white text-navy ring-1 ring-navy/10"}`}
+            className={`inline-flex min-h-11 items-center gap-2 rounded-full px-4 text-[13.5px] font-bold ${f === filter ? "bg-navy text-on-navy" : "bg-card text-navy ring-1 ring-navy/10"}`}
           >
-            {t(`filter.${f}`)} <span className={`font-numbers text-xs ${f === filter ? "text-white/70" : "text-muted"}`}>{formatNumber(counts[i], lang)}</span>
+            {t(`filter.${f}`)} <span className={`font-numbers text-xs ${f === filter ? "text-on-navy/70" : "text-muted"}`}>{formatNumber(counts[i], lang)}</span>
           </Link>
         ))}
-        <a href={withParams("/api/admin/users", { ...insight, ...keep })} download className="ms-auto inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-4 text-[13.5px] font-bold text-navy ring-1 ring-navy/10">
+        <a href={withParams("/api/admin/users", { ...insight, ...keep })} download className="ms-auto inline-flex min-h-11 items-center gap-2 rounded-full bg-card px-4 text-[13.5px] font-bold text-navy ring-1 ring-navy/10">
           <Download aria-hidden="true" size={16} /> {t("export", { n: counts[FILTERS.indexOf(filter)] })}
         </a>
       </nav>
@@ -156,7 +156,7 @@ async function SearchBox({ searchParams, label }: { searchParams: SP; label: str
     <form role="search" className="relative w-full sm:max-w-md">
       {(["f", ...FILTER_KEYS] as const).map((k) => typeof sp[k] === "string" && <input key={k} type="hidden" name={k} value={sp[k]} />)}
       <Search aria-hidden="true" size={18} className="pointer-events-none absolute start-4 top-1/2 -translate-y-1/2 text-muted" />
-      <input name="q" type="search" aria-label={label} defaultValue={String(sp.q ?? "")} placeholder={label} className="h-[46px] w-full rounded-full border border-navy/10 bg-white ps-11 pe-4 text-sm" />
+      <input name="q" type="search" aria-label={label} defaultValue={String(sp.q ?? "")} placeholder={label} className="h-[46px] w-full rounded-full border border-navy/10 bg-card ps-11 pe-4 text-sm" />
     </form>
   );
 }

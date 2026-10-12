@@ -37,7 +37,7 @@ async function Finance({ lang, searchParams }: { lang: Locale; searchParams: SP 
       <nav aria-label={t("period")} className="flex flex-wrap items-center gap-2 print:hidden">
         {FINANCE_PERIODS.map((m) => (
           <Link key={m} href={`/admin/finance?months=${m}`} aria-current={m === months ? "page" : undefined}
-            className={`inline-flex min-h-11 items-center rounded-full px-4 text-[13.5px] font-bold ${m === months ? "bg-navy text-white" : "bg-white ring-1 ring-navy/10"}`}>
+            className={`inline-flex min-h-11 items-center rounded-full px-4 text-[13.5px] font-bold ${m === months ? "bg-navy text-on-navy" : "bg-card ring-1 ring-navy/10"}`}>
             {t("lastMonths", { n: m })}
           </Link>
         ))}

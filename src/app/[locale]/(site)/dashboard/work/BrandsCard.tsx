@@ -74,7 +74,7 @@ export function BrandsCard({ initial }: { initial: { name: string; url: string }
       <ul className="grid grid-cols-3 gap-2.5">
         {rows.map((row, i) => (
           <li key={row.key} className="flex min-w-0 flex-col gap-1">
-            <span className="relative flex h-[72px] items-center justify-center overflow-hidden rounded-[14px] border border-navy/8 bg-white">
+            <span className="relative flex h-[72px] items-center justify-center overflow-hidden rounded-[14px] border border-navy/8 bg-card">
               {/* eslint-disable-next-line @next/next/no-img-element -- local preview or storage URL */}
               {row.preview && <img src={row.preview} alt="" className={`max-h-full max-w-full object-contain px-3 py-2.5 ${row.uploading ? "opacity-40" : ""}`} />}
               {row.uploading && <span className="absolute inset-x-0 bottom-0 bg-black/55 py-0.5 text-center text-[10px] text-white">{e("uploading")}</span>}

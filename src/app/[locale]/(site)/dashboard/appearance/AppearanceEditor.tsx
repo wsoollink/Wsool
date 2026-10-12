@@ -52,7 +52,7 @@ export function AppearanceEditor({ initial, isPro, freeTemplates, preview }: { i
               return (
                 <button
                   key={tpl} type="button" role="radio" aria-checked={checked} onClick={() => set({ template: tpl })}
-                  className={`flex flex-col gap-2 rounded-2xl border bg-white/72 p-2 text-start ${checked ? "border-blue ring-2 ring-blue/25" : "border-navy/8"}`}
+                  className={`flex flex-col gap-2 rounded-2xl border bg-card/72 p-2 text-start ${checked ? "border-blue ring-2 ring-blue/25" : "border-navy/8"}`}
                 >
                   <span aria-hidden="true" className="relative flex h-[120px] flex-col items-center justify-center gap-1.5 overflow-hidden rounded-[10px] px-3" style={{ backgroundColor: theme.bg, backgroundImage: theme.bgImage, backgroundSize: "auto, auto, auto, auto, 14px 14px, 14px 14px" }}>
                     <span className="size-10 rounded-full" style={{ backgroundColor: theme.soft, border: `1px solid ${theme.line}` }} />
@@ -104,7 +104,7 @@ export function AppearanceEditor({ initial, isPro, freeTemplates, preview }: { i
             )}
             <div role="group" aria-label={t("mode")} className="grid grid-cols-2 gap-1 rounded-[14px] bg-navy/5 p-1">
               {(["light", "dark"] as const).map((m) => (
-                <button key={m} type="button" aria-pressed={custom.mode === m} onClick={() => set({ customColors: { ...custom, mode: m } })} className={`h-11 rounded-[10px] text-[13.5px] font-bold ${custom.mode === m ? "bg-white text-navy shadow-card" : "text-muted"}`}>
+                <button key={m} type="button" aria-pressed={custom.mode === m} onClick={() => set({ customColors: { ...custom, mode: m } })} className={`h-11 rounded-[10px] text-[13.5px] font-bold ${custom.mode === m ? "bg-card text-navy shadow-card" : "text-muted"}`}>
                   {t(m)}
                 </button>
               ))}
@@ -150,7 +150,7 @@ export function AppearanceEditor({ initial, isPro, freeTemplates, preview }: { i
         <div role="dialog" aria-modal="true" aria-label={t("preview")} className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(10,12,16,0.5)] p-4 lg:hidden" onClick={(e) => e.target === e.currentTarget && setShowPreview(false)}>
           <div className="flex w-[min(360px,100%)] flex-col gap-3">
             <Preview value={value} data={preview} />
-            <button type="button" autoFocus onClick={() => setShowPreview(false)} className={buttonClasses("secondary", "bg-white")}>{t("closePreview")}</button>
+            <button type="button" autoFocus onClick={() => setShowPreview(false)} className={buttonClasses("secondary", "bg-card")}>{t("closePreview")}</button>
           </div>
         </div>
       )}
@@ -175,7 +175,7 @@ function ColorField({ id, label, value, onChange }: { id: string; label: string;
     <div className="flex flex-col gap-1.5">
       <label htmlFor={`${id}-hex`} className="text-sm font-medium">{label}</label>
       <div className="flex items-center gap-2">
-        <input type="color" aria-label={label} value={value} onChange={(ev) => onChange(ev.target.value)} className="size-11 shrink-0 cursor-pointer rounded-xl border border-navy/16 bg-white p-1" />
+        <input type="color" aria-label={label} value={value} onChange={(ev) => onChange(ev.target.value)} className="size-11 shrink-0 cursor-pointer rounded-xl border border-navy/16 bg-card p-1" />
         <input
           id={`${id}-hex`} dir="ltr" value={text} maxLength={7} spellCheck={false} autoComplete="off"
           onChange={(ev) => {
@@ -183,7 +183,7 @@ function ColorField({ id, label, value, onChange }: { id: string; label: string;
             setText(v);
             if (HEX.test(v)) onChange(v.toLowerCase());
           }}
-          className="h-12 w-32 rounded-xl border border-navy/16 bg-white px-3 font-mono text-base"
+          className="h-12 w-32 rounded-xl border border-navy/16 bg-card px-3 font-mono text-base"
         />
       </div>
     </div>

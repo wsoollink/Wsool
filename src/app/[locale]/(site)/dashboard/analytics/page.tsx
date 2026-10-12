@@ -96,7 +96,7 @@ async function Report({ lang, searchParams }: { lang: Locale; searchParams: SP }
         {RANGES.map((d) => (
           <Link
             key={d} href={`/dashboard/analytics?range=${d}`} aria-current={d === range ? "page" : undefined}
-            className={`inline-flex min-h-11 items-center justify-center rounded-[10px] text-[13.5px] font-bold ${d === range ? "bg-white text-navy shadow-card" : "text-muted"}`}
+            className={`inline-flex min-h-11 items-center justify-center rounded-[10px] text-[13.5px] font-bold ${d === range ? "bg-card text-navy shadow-card" : "text-muted"}`}
           >
             {t("lastDays", { n: d })}
           </Link>

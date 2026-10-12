@@ -1938,5 +1938,9 @@
     "errors": {
       "url": "That link isn't valid. Use a full link like https://example.com"
     }
+  },
+  "Theme": {
+    "toDark": "Dark mode",
+    "toLight": "Light mode"
   }
 }

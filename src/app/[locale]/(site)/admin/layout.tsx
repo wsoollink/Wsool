@@ -1,6 +1,7 @@
 import { Suspense } from "react";
-import Image from "next/image";
 import Link from "next/link";
+import { BrandLogo } from "@/components/BrandLogo";
+import { ThemeMenuItem, ThemeToggle } from "@/components/ThemeToggle";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { LogOut } from "lucide-react";
@@ -31,7 +32,7 @@ async function Me() {
   const t = await getTranslations("Admin");
   return (
     <div className="flex items-center gap-3 rounded-2xl bg-bg p-3">
-      <span aria-hidden="true" className="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-navy text-sm font-bold text-white uppercase">{admin.email[0]}</span>
+      <span aria-hidden="true" className="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-navy text-sm font-bold text-on-navy uppercase">{admin.email[0]}</span>
       <span className="flex min-w-0 flex-col">
         <span dir="ltr" className="truncate text-[13px] font-bold rtl:text-end">{admin.email}</span>
         <span className="text-xs text-muted">{admin.isOwner ? t("roleOwner") : t("roleStaff")}</span>
@@ -50,16 +51,17 @@ export default async function AdminLayout({ children, params }: LayoutProps<"/[l
 
   return (
     <div className="flex min-h-dvh flex-1 bg-bg">
-      <aside className="sticky top-0 hidden print:hidden h-dvh w-[260px] shrink-0 flex-col gap-6 border-e border-navy/8 bg-white px-4 py-6 md:flex">
+      <aside className="sticky top-0 hidden print:hidden h-dvh w-[260px] shrink-0 flex-col gap-6 border-e border-navy/8 bg-card px-4 py-6 md:flex">
         <Link href="/admin" className="flex min-h-11 items-center gap-2 px-2" aria-label={`${nav("brand")} ${t("panel")}`}>
-          <Image src={locale === "en" ? "/brand/logo-en.png" : "/brand/logo-ar.png"} alt="" width={90} height={30} className="h-[30px] w-auto" priority />
-          <span className="inline-flex h-6 items-center rounded-full bg-[#EEF3FB] px-2.5 text-[11.5px] font-bold text-blue">{t("panel")}</span>
+          <BrandLogo lang={locale === "en" ? "en" : "ar"} alt="" className="h-[30px] w-auto" priority />
+          <span className="inline-flex h-6 items-center rounded-full bg-blue/10 px-2.5 text-[11.5px] font-bold text-blue">{t("panel")}</span>
         </Link>
         <nav aria-label={t("menu")} className="flex-1 overflow-y-auto">
           <Suspense fallback={null}><Nav variant="sidebar" /></Suspense>
         </nav>
         <div className="flex flex-col gap-2">
           <Suspense fallback={null}><Me /></Suspense>
+          <ThemeMenuItem className="flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm font-medium text-muted hover:bg-navy/5" />
           <form action={signOut}>
             <SubmitButton variant="secondary" className="w-full" pendingText={nav("signingOut")}>
               <LogOut aria-hidden="true" size={18} />
@@ -70,17 +72,20 @@ export default async function AdminLayout({ children, params }: LayoutProps<"/[l
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-10 border-b border-navy/8 bg-white/90 backdrop-blur md:hidden print:hidden">
+        <header className="sticky top-0 z-10 border-b border-navy/8 bg-card/90 backdrop-blur md:hidden print:hidden">
           <div className="flex h-14 items-center justify-between px-4">
             <Link href="/admin" className="flex items-center gap-2">
-              <Image src={locale === "en" ? "/brand/logo-en.png" : "/brand/logo-ar.png"} alt={nav("brand")} width={78} height={26} className="h-[26px] w-auto" />
-              <span className="inline-flex h-6 items-center rounded-full bg-[#EEF3FB] px-2.5 text-[11.5px] font-bold text-blue">{t("panel")}</span>
+              <BrandLogo lang={locale === "en" ? "en" : "ar"} alt={nav("brand")} className="h-[26px] w-auto" />
+              <span className="inline-flex h-6 items-center rounded-full bg-blue/10 px-2.5 text-[11.5px] font-bold text-blue">{t("panel")}</span>
             </Link>
+            <div className="flex items-center gap-1">
+            <ThemeToggle className="inline-flex border-0 bg-transparent shadow-none" />
             <form action={signOut}>
               <button type="submit" aria-label={nav("signOut")} className="inline-flex size-11 items-center justify-center rounded-full hover:bg-navy/5">
                 <LogOut aria-hidden="true" size={18} />
               </button>
             </form>
+            </div>
           </div>
           <nav aria-label={t("menu")}>
             <Suspense fallback={null}><Nav variant="row" /></Suspense>

@@ -5,6 +5,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getDirection, isLocale, locales, toIntlLocale } from "@/i18n/config";
 import { fontVariables } from "@/styles/fonts";
 import { siteOrigin } from "@/lib/site-url";
+import { THEME_SCRIPT } from "@/components/ThemeToggle";
 import "../../globals.css";
 
 export function generateStaticParams() {
@@ -36,7 +37,11 @@ export default async function SiteLayout({ children, params }: LayoutProps<"/[lo
   setRequestLocale(toIntlLocale(locale));
 
   return (
-    <html lang={locale} dir={getDirection(locale)} className={`${fontVariables} h-full antialiased`}>
+    // data-theme is set by THEME_SCRIPT before paint, so React must not complain that it differs.
+    <html lang={locale} dir={getDirection(locale)} className={`${fontVariables} h-full antialiased`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+      </head>
       <body className="min-h-full flex flex-col">
         <NextIntlClientProvider>{children}</NextIntlClientProvider>
       </body>

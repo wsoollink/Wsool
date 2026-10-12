@@ -32,7 +32,7 @@ export function ViewsCard({ accounts, initialMonthsAgo, monthLabels }: {
   const [monthsAgo, setMonthsAgo] = useState(Math.min(2, Math.max(0, initialMonthsAgo)));
   const [status, setStatus] = useState<"" | "saved" | "failed">("");
   const [pending, startTransition] = useTransition();
-  const control = "h-12 w-full rounded-xl border border-navy/16 bg-white px-3 text-[15px]";
+  const control = "h-12 w-full rounded-xl border border-navy/16 bg-card px-3 text-[15px]";
 
   const filled = accounts.filter((a) => values[a.id] !== "");
   const total = filled.reduce((sum, a) => sum + Number(values[a.id]), 0);

@@ -53,7 +53,7 @@ export function LinkCard({ username, url, published, pdfLangs, pdfNote, template
         </button>
       </div>
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
-        <button type="button" onClick={copy} className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-blue px-4 text-sm font-bold text-white">
+        <button type="button" onClick={copy} className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-blue px-4 text-sm font-bold text-on-blue">
           <Copy aria-hidden="true" size={16} /> <span aria-live="polite">{copied ? t("copied") : t("copy")}</span>
         </button>
         <a href={`/${username}`} target="_blank" rel="noopener noreferrer" className={soft}>
@@ -66,7 +66,7 @@ export function LinkCard({ username, url, published, pdfLangs, pdfNote, template
 
       {pdfOpen && (
         <div role="dialog" aria-modal="true" aria-labelledby="pdf-title" className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(10,12,16,0.5)] p-4" onClick={(e) => e.target === e.currentTarget && setPdfOpen(false)} onKeyDown={(e) => e.key === "Escape" && setPdfOpen(false)}>
-          <div className="flex w-[min(440px,100%)] flex-col gap-4 rounded-[22px] bg-white/96 p-5 shadow-[0_24px_60px_rgba(10,12,16,0.25)]">
+          <div className="flex w-[min(440px,100%)] flex-col gap-4 rounded-[22px] bg-card/96 p-5 shadow-[0_24px_60px_rgba(10,12,16,0.25)]">
             <div className="flex items-start justify-between gap-3">
               <div className="flex flex-col gap-0.5">
                 <h2 id="pdf-title" className="text-lg font-bold">{t("pdfTitle")}</h2>
@@ -83,7 +83,7 @@ export function LinkCard({ username, url, published, pdfLangs, pdfNote, template
                     <span className="text-[13px] font-medium">{t("pdfLang")}</span>
                     <div role="group" aria-label={t("pdfLang")} className="grid grid-cols-2 gap-1 rounded-[14px] bg-navy/5 p-1">
                       {pdfLangs.map((l) => (
-                        <button key={l} type="button" aria-pressed={pdfLang === l} onClick={() => setPdfLang(l)} className={`h-11 rounded-[10px] text-sm font-bold ${pdfLang === l ? "bg-white text-navy shadow-card" : "text-muted"}`}>
+                        <button key={l} type="button" aria-pressed={pdfLang === l} onClick={() => setPdfLang(l)} className={`h-11 rounded-[10px] text-sm font-bold ${pdfLang === l ? "bg-card text-navy shadow-card" : "text-muted"}`}>
                           {l === "ar" ? "العربية" : "English"}
                         </button>
                       ))}
@@ -94,7 +94,7 @@ export function LinkCard({ username, url, published, pdfLangs, pdfNote, template
                   <span className="text-muted">{t("pdfTemplate")}</span>
                   <span className="font-bold">{templateName}</span>
                 </div>
-                <a href={`/${username}/pdf?lang=${pdfLang}&download`} className="inline-flex h-[52px] items-center justify-center rounded-full bg-blue text-[15px] font-bold text-white">
+                <a href={`/${username}/pdf?lang=${pdfLang}&download`} className="inline-flex h-[52px] items-center justify-center rounded-full bg-blue text-[15px] font-bold text-on-blue">
                   {t("pdfDownload")}
                 </a>
               </>

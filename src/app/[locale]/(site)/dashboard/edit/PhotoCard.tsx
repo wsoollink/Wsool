@@ -94,7 +94,7 @@ export function PhotoCard({ photoUrl, shape: initialShape }: { photoUrl: string 
           {(["full", "circle"] as const).map((s) => (
             <button
               key={s} type="button" aria-pressed={shape === s} disabled={status.busy} onClick={() => onShape(s)}
-              className={`flex min-h-[88px] flex-col items-center justify-center gap-2 rounded-[14px] border bg-white/72 p-2 ${shape === s ? "border-blue ring-2 ring-blue/25" : "border-navy/8"}`}
+              className={`flex min-h-[88px] flex-col items-center justify-center gap-2 rounded-[14px] border bg-card/72 p-2 ${shape === s ? "border-blue ring-2 ring-blue/25" : "border-navy/8"}`}
             >
               {/* Small drawing of each layout, with the creator's own photo when there is one. */}
               <span aria-hidden="true" className="relative flex h-12 w-16 justify-center overflow-hidden rounded-lg bg-navy/5">

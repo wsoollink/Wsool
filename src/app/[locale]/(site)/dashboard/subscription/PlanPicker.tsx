@@ -66,7 +66,7 @@ export function PlanPicker({ defaultCurrency, canPay, renew, showTrial }: { defa
       <h2 className="font-bold">{renew ? t("renewTitle") : t("compare")}</h2>
       <div role="group" aria-label={t("cycle")} className="grid grid-cols-2 gap-1 rounded-[14px] bg-navy/5 p-1">
         {(["monthly", "yearly"] as const).map((c) => (
-          <button key={c} type="button" aria-pressed={cycle === c} onClick={() => setCycle(c)} className={`inline-flex h-11 items-center justify-center gap-2 rounded-[10px] text-sm font-bold ${cycle === c ? "bg-white text-navy shadow-card" : "text-muted"}`}>
+          <button key={c} type="button" aria-pressed={cycle === c} onClick={() => setCycle(c)} className={`inline-flex h-11 items-center justify-center gap-2 rounded-[10px] text-sm font-bold ${cycle === c ? "bg-card text-navy shadow-card" : "text-muted"}`}>
             {t(c)}
             {c === "yearly" && <span className="rounded-full bg-good/10 px-2 py-0.5 text-[11px] text-good">{t("monthsFree", { n: monthsFree })}</span>}
           </button>
@@ -103,7 +103,7 @@ export function PlanPicker({ defaultCurrency, canPay, renew, showTrial }: { defa
       <div className="flex flex-wrap items-center gap-2 text-sm">
         <span className="text-muted">{t("currency")}</span>
         {(["SAR", "USD"] as const).map((c) => (
-          <button key={c} type="button" aria-pressed={currency === c} onClick={() => setCurrency(c)} className={`min-h-11 rounded-full px-4 ${currency === c ? "bg-navy text-white" : "bg-navy/5"}`}>
+          <button key={c} type="button" aria-pressed={currency === c} onClick={() => setCurrency(c)} className={`min-h-11 rounded-full px-4 ${currency === c ? "bg-navy text-on-navy" : "bg-navy/5"}`}>
             {c}
           </button>
         ))}
@@ -129,7 +129,7 @@ export function PlanPicker({ defaultCurrency, canPay, renew, showTrial }: { defa
               <X aria-hidden="true" size={16} />
             </button>
           </div>
-          <button type="button" onClick={redeem} disabled={redeeming} aria-busy={redeeming} className="inline-flex h-12 items-center justify-center rounded-full bg-good text-[15px] font-bold text-white disabled:opacity-70">
+          <button type="button" onClick={redeem} disabled={redeeming} aria-busy={redeeming} className="inline-flex h-12 items-center justify-center rounded-full bg-good text-[15px] font-bold text-on-blue disabled:opacity-70">
             {redeeming ? t("activating") : t("activate")}
           </button>
         </div>
@@ -163,9 +163,9 @@ export function PlanPicker({ defaultCurrency, canPay, renew, showTrial }: { defa
               id="discount-code" value={codeInput} onChange={(e) => { setCodeInput(e.target.value); setCodeError(""); }}
               dir="ltr" autoComplete="off" autoCapitalize="characters" spellCheck={false} maxLength={30} placeholder="WSL-XXXXXX"
               aria-invalid={!!codeError} aria-describedby={codeError ? "discount-error" : undefined}
-              className="h-12 min-w-0 flex-1 rounded-xl border border-navy/16 bg-white px-3 text-[15px] uppercase aria-[invalid=true]:border-bad"
+              className="h-12 min-w-0 flex-1 rounded-xl border border-navy/16 bg-card px-3 text-[15px] uppercase aria-[invalid=true]:border-bad"
             />
-            <button type="submit" disabled={applying || !codeInput.trim()} className="inline-flex h-12 shrink-0 items-center rounded-full bg-navy px-5 text-sm font-bold text-white disabled:opacity-50">
+            <button type="submit" disabled={applying || !codeInput.trim()} className="inline-flex h-12 shrink-0 items-center rounded-full bg-navy px-5 text-sm font-bold text-on-navy disabled:opacity-50">
               {applying ? t("applying") : t("apply")}
             </button>
           </div>
@@ -178,7 +178,7 @@ export function PlanPicker({ defaultCurrency, canPay, renew, showTrial }: { defa
       ))}
 
       {free ? null : canPay ? (
-        <button type="button" onClick={pay} disabled={pending} aria-busy={pending} className="inline-flex h-12 items-center justify-center rounded-full bg-blue text-[15px] font-bold text-white disabled:opacity-70">
+        <button type="button" onClick={pay} disabled={pending} aria-busy={pending} className="inline-flex h-12 items-center justify-center rounded-full bg-blue text-[15px] font-bold text-on-blue disabled:opacity-70">
           {pending ? t("redirecting") : t("pay", { price: formatPrice(pay1(prices[cycle]), currency, lang) })}
         </button>
       ) : (

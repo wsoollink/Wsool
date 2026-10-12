@@ -13,7 +13,7 @@ async function SearchBox() {
       <Search aria-hidden="true" size={18} className="pointer-events-none absolute start-4 top-1/2 -translate-y-1/2 text-muted" />
       <input
         type="search" name="q" aria-label={t("searchLabel")} placeholder={t("searchPlaceholder")}
-        className="h-[46px] w-full rounded-full border border-navy/10 bg-white ps-11 pe-4 text-sm"
+        className="h-[46px] w-full rounded-full border border-navy/10 bg-card ps-11 pe-4 text-sm"
       />
     </form>
   );

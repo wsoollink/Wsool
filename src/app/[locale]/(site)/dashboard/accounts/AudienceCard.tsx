@@ -164,7 +164,7 @@ function AudienceForm({ account }: { account: AudienceAccount }) {
   return (
     <div className="flex flex-col gap-5">
       <div className="flex flex-col gap-2 rounded-[14px] bg-blue/5 p-3">
-        <label htmlFor={shotId} className={`inline-flex min-h-11 cursor-pointer items-center gap-2 self-start rounded-full bg-white px-4 text-[13.5px] font-bold text-blue ring-1 ring-blue/20 ${ai === "reading" ? "pointer-events-none opacity-60" : ""}`}>
+        <label htmlFor={shotId} className={`inline-flex min-h-11 cursor-pointer items-center gap-2 self-start rounded-full bg-card px-4 text-[13.5px] font-bold text-blue ring-1 ring-blue/20 ${ai === "reading" ? "pointer-events-none opacity-60" : ""}`}>
           <Sparkles aria-hidden="true" size={16} className={ai === "reading" ? "motion-safe:animate-pulse" : ""} /> {ai === "reading" ? (progress && progress.total > 1 ? t("ai.readingMany", { n: progress.done + 1, total: progress.total }) : t("ai.reading")) : t("ai.fill")}
         </label>
         <input id={shotId} type="file" multiple accept="image/jpeg,image/png,image/webp" className="sr-only" disabled={ai === "reading"} onChange={(ev) => { fillFromShots(ev.target.files); ev.target.value = ""; }} />

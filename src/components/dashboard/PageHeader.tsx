@@ -6,6 +6,7 @@ import { SUPPORT_EMAIL } from "@/config/site";
 import { fromIntlLocale } from "@/i18n/config";
 import { requireCreator } from "@/lib/creator";
 import { signOut } from "@/app/[locale]/(site)/login/actions";
+import { ThemeMenuItem, ThemeToggle } from "@/components/ThemeToggle";
 import { LangPill } from "./LangPill";
 import { MobileMenu } from "./MobileMenu";
 import { SectionIcon } from "./SectionIcon";
@@ -35,6 +36,7 @@ export async function PageHeader({ title, section, subtitle, leading }: Props) {
           footer={
             <>
               <Suspense fallback={null}><MyPageLink label={t("viewPage")} /></Suspense>
+              <ThemeMenuItem className={menuLink} />
               <a href={`mailto:${SUPPORT_EMAIL}`} className={menuLink}>
                 <LifeBuoy aria-hidden="true" size={18} />
                 {t("help")}
@@ -58,11 +60,12 @@ export async function PageHeader({ title, section, subtitle, leading }: Props) {
         <Link
           href="/dashboard/notifications"
           aria-label={t("notifications")}
-          className="relative inline-flex size-11 items-center justify-center rounded-full border border-navy/8 bg-white/72 shadow-card backdrop-blur-[14px]"
+          className="relative inline-flex size-11 items-center justify-center rounded-full border border-navy/8 bg-card/72 shadow-card backdrop-blur-[14px]"
         >
           <SectionIcon section="notifications" />
           <Suspense fallback={null}><UnreadDot label={t("unread")} /></Suspense>
         </Link>
+        <ThemeToggle className="hidden md:inline-flex" />
         <LangPill current={lang} />
       </div>
     </header>

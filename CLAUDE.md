@@ -555,6 +555,7 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   Page wrappers: `src/components/marketing/Pages.tsx`. Hand fixes go in `marketing.css`.
   Owner wording (Oct 2026): "ملفك الإعلامي" instead of "ميديا كِت", "تقنع أي شركة", paid plan badge "الاحترافية".
   On phones the header shows "Log in" as a round person icon next to "Start free" (CSS in `marketing.css`).
+  Tablets / wide foldables (768-1199px): the home hero stacks and centres (text above, phone below), CSS in `marketing.css`.
   Text changes are made in the `design/marketing/*.dc.html` files, then the script is re-run.
 - Home "claim your link": live check (`checkLink`), then cookie `wsool_claim` → `/login`;
   onboarding pre-fills that name.

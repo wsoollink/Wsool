@@ -106,3 +106,12 @@
   :is(.mk-home-1, .mk-pricing-1, .mk-notfound-1, .mk-hidden-1, .mk-servererror-1) > div:last-child { gap: 6px !important; }
   :is(.mk-home-1, .mk-pricing-1, .mk-notfound-1, .mk-hidden-1, .mk-servererror-1) :is(.mk-logo-light, .mk-logo-dark) { height: 30px !important; }
 }
+
+/* Tablets and wide foldables (768-1199px): the home hero's text (min 480px) and phone mock-up (~524px)
+   don't fit side by side, so they stack and centre as on phones instead of wrapping off-centre. */
+@media (min-width: 768px) and (max-width: 1199px) {
+  .mk-home-5 { justify-content: center !important; }
+  .mk-home-6 { flex-basis: 100% !important; align-items: center !important; text-align: center !important; max-width: 720px; margin-inline: auto; }
+  .mk-home-7 { align-self: center !important; }
+  :is(.mk-home-10, .mk-home-14) { justify-content: center !important; }
+}

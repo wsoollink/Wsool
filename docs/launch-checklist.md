@@ -8,7 +8,7 @@
 - [x] فحص تلقائي في GitHub (GitHub Actions) مع كل تعديل: الكود وقاعدة البيانات سليمين قبل النشر (`.github/workflows/ci.yml`).
 - [x] تنبيهات الثغرات في المكتبات (Dependabot) وفحص الكود (CodeQL) من GitHub (`.github/dependabot.yml`, `codeql.yml`).
 - [ ] Sentry لتنبيه الأخطاء: المالك يسجّل ويحط المفتاح في Netlify، و Claude يربطه.
-- [ ] مراقبة إن الموقع شغّال (UptimeRobot): المالك يسجّل ويضيف wsool.link.
+- [x] مراقبة إن الموقع شغّال (UptimeRobot): المالك يسجّل ويضيف wsool.link.
 
 ## 1. الأمان (الأهم)
 - [ ] تفعيل التحقق بخطوتين (2FA) في كل الحسابات: GitHub، Netlify، Supabase، Cloudflare، Google Workspace، Resend، Anthropic.

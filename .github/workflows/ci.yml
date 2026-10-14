@@ -32,7 +32,7 @@ jobs:
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/wsool
       DIRECT_URL: postgres://postgres:postgres@localhost:5432/wsool
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v4
         with:
           node-version: 22

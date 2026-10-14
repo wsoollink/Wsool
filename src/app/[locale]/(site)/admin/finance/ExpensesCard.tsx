@@ -12,7 +12,7 @@ import { addExpense, deleteExpense } from "./actions";
 
 export type ExpenseRow = { id: string; label: string; amount: string; category: string; recurrence: string; description: string };
 
-const control = "min-h-11 w-full min-w-0 rounded-xl border border-line bg-card px-3 text-base";
+const control = "min-h-11 w-full min-w-0 rounded-[10px] border border-navy/15 bg-card px-3 text-base outline-none shadow-card transition-[border-color,box-shadow] focus:border-blue focus:ring-3 focus:ring-blue/15";
 
 /** Manual expenses: add (one-off or recurring) and delete. Each change is in the audit log. */
 export function ExpensesCard({ rows, today }: { rows: ExpenseRow[]; today: string }) {
@@ -68,9 +68,9 @@ export function ExpensesCard({ rows, today }: { rows: ExpenseRow[]; today: strin
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full min-w-[600px] text-sm">
-            <thead className="text-xs text-muted">
-              <tr className="border-b border-line">
-                {["date", "category", "recurrence", "description", "amount", ""].map((h) => <th key={h} scope="col" className="p-2 text-start font-medium">{h && t(h)}</th>)}
+            <thead className="bg-bg text-[11.5px] text-muted">
+              <tr className="border-b border-line-soft">
+                {["date", "category", "recurrence", "description", "amount", ""].map((h) => <th key={h} scope="col" className="p-2 text-start font-semibold">{h && t(h)}</th>)}
               </tr>
             </thead>
             <tbody>

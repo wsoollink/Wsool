@@ -28,7 +28,7 @@ const COUNTRIES = [
 const MAX_SHOTS = 4;
 
 const iconButton = "inline-flex size-11 shrink-0 items-center justify-center rounded-full text-muted hover:bg-navy/5";
-const control = "min-h-11 rounded-xl border border-line bg-card px-3 text-base";
+const control = "min-h-11 rounded-[10px] border border-navy/15 bg-card px-3 text-base outline-none shadow-card transition-[border-color,box-shadow] focus:border-blue focus:ring-3 focus:ring-blue/15";
 
 /** Audience breakdown per account: gender, ages, top countries and cities, in %. */
 export function AudienceCard({ accounts }: { accounts: AudienceAccount[] }) {

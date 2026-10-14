@@ -94,7 +94,7 @@ async function Subscription({ lang, searchParams }: { lang: Locale; searchParams
         {invoices.length === 0 ? (
           <p className="text-sm text-muted">{t("noInvoices")}</p>
         ) : (
-          <ul className="flex flex-col divide-y divide-navy/6">
+          <ul className="flex flex-col divide-y divide-line-soft">
             {invoices.map((inv) => (
               <li key={inv.id} className="flex items-center gap-3 py-2.5">
                 <span className="flex min-w-0 flex-1 flex-col">

@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { Card } from "@/components/ui/Card";
+import { KpiStrip, type Kpi } from "@/components/ui/KpiStrip";
 import type { InvestorSection } from "@/config/finance";
 import { toIntlLocale, type Locale } from "@/i18n/config";
 import type { FinanceReport } from "@/lib/finance";
@@ -23,13 +24,7 @@ export async function FinanceView({ report, growth, sections, lang }: Props) {
   const pct = (v: number | null) => (v === null ? "—" : formatPercent(Math.round(v * 1000) / 10, lang));
   const monthShort = new Intl.DateTimeFormat(toIntlLocale(lang), { month: "short", timeZone: "UTC" });
   const month = new Intl.DateTimeFormat(toIntlLocale(lang), { month: "short", year: "numeric", timeZone: "UTC" });
-  const tile = (label: string, value: string, hint?: string, tone = "") => (
-    <Card key={label} className="flex flex-col gap-1.5">
-      <span className="text-[13px] text-muted">{label}</span>
-      <span className={`font-numbers text-[26px] leading-none font-black ${tone}`}>{value}</span>
-      {hint && <span className="text-xs text-muted">{hint}</span>}
-    </Card>
-  );
+  const tile = (label: string, value: string, hint?: string, tone?: "good" | "warn" | "bad"): Kpi => ({ label, value, note: hint, valueTone: tone });
 
   const ltvCac = report.unit.ltv !== null && report.unit.cac ? report.unit.ltv / report.unit.cac : null;
   const top = Math.max(1, ...report.months.flatMap((r) => [r.revenue, r.expenses]));
@@ -40,38 +35,38 @@ export async function FinanceView({ report, growth, sections, lang }: Props) {
       {sections.includes("revenue") && (
         <section className="flex flex-col gap-3">
           <h2 className="font-bold">{t("summary")}</h2>
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-            {tile(t("revenue"), sar(report.totals.revenue))}
-            {tile(t("expenses"), sar(report.totals.expenses))}
-            {tile(t("profit"), sar(report.totals.profit), undefined, report.totals.profit < 0 ? "text-bad" : report.totals.profit > 0 ? "text-good" : "")}
-            {tile(t("margin"), report.totals.revenue ? pct(report.totals.profit / report.totals.revenue) : "—", t("marginHint"))}
-          </div>
+          <KpiStrip columns={4} items={[
+            tile(t("revenue"), sar(report.totals.revenue)),
+            tile(t("expenses"), sar(report.totals.expenses)),
+            tile(t("profit"), sar(report.totals.profit), undefined, report.totals.profit < 0 ? "bad" : report.totals.profit > 0 ? "good" : undefined),
+            tile(t("margin"), report.totals.revenue ? pct(report.totals.profit / report.totals.revenue) : "—", t("marginHint")),
+          ]} />
         </section>
       )}
 
       {sections.includes("unit") && (
         <section className="flex flex-col gap-3">
           <h2 className="font-bold">{t("unitEconomics")}</h2>
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-            {tile(t("mrr"), sar(report.unit.mrr), report.unit.mrrGrowth === null ? undefined : t("vsLastMonth", { value: pct(report.unit.mrrGrowth) }))}
-            {tile(t("customers"), formatNumber(report.unit.customers, lang))}
-            {tile(t("arpu"), report.unit.arpu === null ? "—" : sar(report.unit.arpu), t("perMonth"))}
-            {tile(t("churn"), pct(report.unit.churn), t("monthlyAvg"))}
-            {tile(t("ltv"), report.unit.ltv === null ? "—" : sar(report.unit.ltv))}
-            {tile(t("cac"), report.unit.cac === null ? "—" : sar(report.unit.cac))}
-            {tile(t("ltvCac"), ltvCac === null ? "—" : `${formatNumber(Math.round(ltvCac * 10) / 10, lang)}x`, t("ltvCacHint"), ltvCac === null ? "" : ltvCac >= 3 ? "text-good" : "text-warn")}
-          </div>
+          <KpiStrip columns={4} items={[
+            tile(t("mrr"), sar(report.unit.mrr), report.unit.mrrGrowth === null ? undefined : t("vsLastMonth", { value: pct(report.unit.mrrGrowth) })),
+            tile(t("customers"), formatNumber(report.unit.customers, lang)),
+            tile(t("arpu"), report.unit.arpu === null ? "—" : sar(report.unit.arpu), t("perMonth")),
+            tile(t("churn"), pct(report.unit.churn), t("monthlyAvg")),
+            tile(t("ltv"), report.unit.ltv === null ? "—" : sar(report.unit.ltv)),
+            tile(t("cac"), report.unit.cac === null ? "—" : sar(report.unit.cac)),
+            tile(t("ltvCac"), ltvCac === null ? "—" : `${formatNumber(Math.round(ltvCac * 10) / 10, lang)}x`, t("ltvCacHint"), ltvCac === null ? undefined : ltvCac >= 3 ? "good" : "warn"),
+          ]} />
         </section>
       )}
 
       {sections.includes("growth") && growth && (
         <section className="flex flex-col gap-3">
           <h2 className="font-bold">{t("growth")}</h2>
-          <div className="grid grid-cols-3 gap-3">
-            {tile(t("users"), formatNumber(growth.users, lang))}
-            {tile(t("published"), formatNumber(growth.published, lang))}
-            {tile(t("verified"), formatNumber(growth.verified, lang))}
-          </div>
+          <KpiStrip columns={3} items={[
+            tile(t("users"), formatNumber(growth.users, lang)),
+            tile(t("published"), formatNumber(growth.published, lang)),
+            tile(t("verified"), formatNumber(growth.verified, lang)),
+          ]} />
         </section>
       )}
 
@@ -109,7 +104,7 @@ export async function FinanceView({ report, growth, sections, lang }: Props) {
                   {report.byCategory.map(([category, value]) => (
                     <li key={category} className="flex flex-col gap-1">
                       <span className="flex justify-between gap-2 text-[13px]"><span>{t(`categories.${category}`)}</span><b className="font-numbers">{sar(value)}</b></span>
-                      <span className="h-1.5 overflow-hidden rounded-full bg-navy/5"><span className="block h-full rounded-full bg-blue" style={{ width: `${(value / categoryTotal) * 100}%` }} /></span>
+                      <span className="h-1.5 overflow-hidden rounded-full bg-line-soft"><span className="block h-full rounded-full bg-blue" style={{ width: `${(value / categoryTotal) * 100}%` }} /></span>
                     </li>
                   ))}
                 </ul>
@@ -118,7 +113,7 @@ export async function FinanceView({ report, growth, sections, lang }: Props) {
           </div>
           <Card className="overflow-x-auto p-0">
             <table className="w-full min-w-[640px] text-sm">
-              <thead className="text-xs text-muted">
+              <thead className="bg-bg text-[11.5px] text-muted">
                 <tr className="border-b border-navy/6">
                   {["month", "revenue", "expenses", "profit", "mrr", "customers"].map((h) => (
                     <th key={h} scope="col" className={`p-3 font-medium ${h === "month" ? "text-start" : "text-end"}`}>{t(h)}</th>

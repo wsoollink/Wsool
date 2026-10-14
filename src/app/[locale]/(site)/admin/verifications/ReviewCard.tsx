@@ -130,7 +130,7 @@ export function ReviewCard({ item, canDecide }: { item: ReviewItem; canDecide: b
         <div className="flex flex-col gap-2">
           <h3 className="text-[13px] font-bold text-muted">{t("screenshot")}</h3>
           {item.screenshotUrl ? (
-            <button type="button" onClick={() => setZoom(true)} aria-label={t("zoom")} className="block w-full overflow-hidden rounded-2xl border border-navy/8 bg-navy/5">
+            <button type="button" onClick={() => setZoom(true)} aria-label={t("zoom")} className="block w-full overflow-hidden rounded-2xl border border-line bg-navy/5">
               {/* eslint-disable-next-line @next/next/no-img-element -- short-lived signed URL of a private file */}
               <img src={item.screenshotUrl} alt={t("screenshotOf", { handle: item.handle })} className="max-h-[520px] w-full object-contain" />
             </button>
@@ -182,7 +182,7 @@ export function ReviewCard({ item, canDecide }: { item: ReviewItem; canDecide: b
               {rejecting ? (
                 <div className="flex flex-col gap-2 rounded-2xl border border-bad/30 p-3">
                   <label htmlFor={`reason-${item.id}`} className="text-sm font-bold">{t("rejectReason")}</label>
-                  <select id={`reason-${item.id}`} value={reason} onChange={(ev) => setReason(ev.target.value)} className="h-12 rounded-xl border border-navy/16 bg-card px-3 text-[15px]">
+                  <select id={`reason-${item.id}`} value={reason} onChange={(ev) => setReason(ev.target.value)} className="h-11 rounded-[10px] border border-navy/15 bg-card px-3 text-[15px] outline-none shadow-card transition-[border-color,box-shadow] focus:border-blue focus:ring-3 focus:ring-blue/15">
                     <option value="">{t("chooseReason")}</option>
                     {REJECT_REASONS.map((r) => <option key={r} value={r}>{t(`reasons.${r}`)}</option>)}
                   </select>
@@ -191,7 +191,7 @@ export function ReviewCard({ item, canDecide }: { item: ReviewItem; canDecide: b
                     <button type="button" disabled={!reason || pending} onClick={() => decide(() => rejectVerification(item.id, reason))} className="inline-flex h-12 flex-1 items-center justify-center rounded-full bg-bad px-5 text-sm font-bold text-on-blue disabled:opacity-40">
                       {t("confirmReject")}
                     </button>
-                    <button type="button" onClick={() => { setRejecting(false); setReason(""); }} className="inline-flex h-12 items-center justify-center rounded-full bg-navy/5 px-5 text-sm font-bold">
+                    <button type="button" onClick={() => { setRejecting(false); setReason(""); }} className="inline-flex h-11 items-center justify-center rounded-full border border-line bg-card shadow-card hover:bg-hover px-5 text-sm font-bold">
                       {t("back")}
                     </button>
                   </div>

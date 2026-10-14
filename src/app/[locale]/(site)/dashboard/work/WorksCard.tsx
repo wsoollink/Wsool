@@ -31,7 +31,7 @@ type Row = {
 
 const newKey = () => Math.random().toString(36).slice(2);
 const iconButton = "inline-flex size-11 shrink-0 items-center justify-center rounded-full text-muted hover:bg-navy/5 disabled:opacity-30";
-const control = "h-12 w-full rounded-xl border border-navy/16 bg-card px-3 text-[15px]";
+const control = "h-11 w-full rounded-[10px] border border-navy/15 bg-card px-3 text-[15px] outline-none shadow-card transition-[border-color,box-shadow] focus:border-blue focus:ring-3 focus:ring-blue/15";
 const emptyText = { brand: "", type: "" };
 
 /** Past works: portrait video or a post link, optional cover, platform, brand and type per language. */
@@ -151,7 +151,7 @@ export function WorksCard({ initial, langs, freeLimit }: { initial: WorkRow[]; l
       <ul className="flex flex-col gap-3">
         {rows.map((row, i) => (
           <li key={row.key}>
-            <div className="flex flex-col rounded-[16px] border border-navy/8 bg-card/60">
+            <div className="flex flex-col rounded-[16px] border border-line bg-card/60">
               <button type="button" aria-expanded={openKey === row.key} onClick={() => setOpenKey(openKey === row.key ? null : row.key)} className="flex min-h-16 w-full items-center gap-3 p-3 text-start">
                 <span className="relative flex h-16 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-[linear-gradient(160deg,#1A2030,#0C0F16)]">
                   {/* eslint-disable-next-line @next/next/no-img-element -- local preview or storage URL */}

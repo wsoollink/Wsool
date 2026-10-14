@@ -18,9 +18,9 @@ type PanelProps = Omit<HTMLAttributes<HTMLElement>, "title"> & {
 export function Panel({ title, aside, flush, className = "", bodyClassName = "", children, ...props }: PanelProps) {
   return (
     <section className={`flex flex-col rounded-card border border-line bg-card shadow-card ${className}`} {...props}>
-      <div className="flex min-h-14 items-center justify-between gap-3 border-b border-line-soft px-5 py-3">
+      <div className="flex min-h-14 flex-wrap items-center justify-between gap-x-3 gap-y-1 border-b border-line-soft px-5 py-3">
         <h2 className="text-[14.5px] font-bold">{title}</h2>
-        {aside && <div className="flex shrink-0 items-center gap-2 text-[12.5px] text-muted">{aside}</div>}
+        {aside && <div className="flex min-w-0 items-center gap-2 text-[12.5px] text-muted">{aside}</div>}
       </div>
       <div className={`flex-1 ${flush ? "" : "p-5"} ${bodyClassName}`}>{children}</div>
     </section>

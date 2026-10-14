@@ -5,6 +5,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Download } from "lucide-react";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { Card } from "@/components/ui/Card";
+import { KpiStrip } from "@/components/ui/KpiStrip";
 import { isLocale, toIntlLocale, type Locale } from "@/i18n/config";
 import { can, requireAdmin } from "@/lib/admin";
 import { db } from "@/lib/db";
@@ -31,19 +32,12 @@ async function Newsletter({ lang }: { lang: Locale }) {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-        {tiles.map((tile) => (
-          <Card key={tile.label} className="flex flex-col gap-1.5">
-            <span className="text-[13px] text-muted">{tile.label}</span>
-            <span className="font-numbers text-[28px] leading-none">{formatNumber(tile.value, lang)}</span>
-          </Card>
-        ))}
-      </div>
+      <KpiStrip items={tiles.map((tile) => ({ label: tile.label, value: formatNumber(tile.value, lang) }))} />
       <div className="flex flex-wrap items-center gap-2">
         <NewCampaignButton label={t("newCampaign")} />
         {can(admin, "users.view") && (
           // A route handler download, not a page: plain <a>.
-          <a href="/api/admin/newsletter" download className="inline-flex min-h-11 items-center gap-2 rounded-full bg-navy/5 px-5 text-sm font-bold">
+          <a href="/api/admin/newsletter" download className="inline-flex min-h-11 items-center gap-2 rounded-full border border-line bg-card shadow-card hover:bg-hover px-5 text-sm font-bold">
             <Download aria-hidden="true" size={16} /> {t("exportCsv")}
           </a>
         )}

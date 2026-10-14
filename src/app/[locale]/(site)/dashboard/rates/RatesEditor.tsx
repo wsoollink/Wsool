@@ -7,7 +7,7 @@ import { Layers } from "lucide-react";
 import { PlatformIcon } from "@/components/creator/PlatformIcon";
 import { SaveBar } from "@/components/dashboard/SaveBar";
 import { buttonClasses } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
+import { Card, Panel } from "@/components/ui/Card";
 import { Switch } from "@/components/ui/Switch";
 import { PLATFORM_NAMES } from "@/config/platforms";
 import type { Platform } from "@/generated/prisma/enums";
@@ -111,19 +111,17 @@ export function RatesEditor({ settings, accounts, bundle, lang }: { settings: Ra
         </Card>
       ) : (
         <>
-          <section className="flex flex-col gap-3">
-            <div>
-              <h2 className="font-bold">{t("perPlatform")}</h2>
-              <p className="text-xs text-muted">{t("perPlatformHint")}</p>
-            </div>
+          <Panel title={t("perPlatform")} flush>
+            <p className="px-5 pt-3 text-xs text-muted">{t("perPlatformHint")}</p>
+            <ul className="flex flex-col divide-y divide-line-soft">
             {accounts.map((a) => {
               const p = platforms[a.id];
               const valid = p.rows.filter(rateValid);
               const summary = !p.on ? t("off") : valid.length ? t("ratesCount", { count: valid.length }) : t("noRates");
               return (
-                <Card key={a.id} className="flex flex-col gap-3">
+                <li key={a.id} className="flex flex-col gap-3 px-5 py-4">
                   <div className="flex items-center gap-3">
-                    <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-[10px] bg-navy/5"><PlatformIcon platform={a.platform} size={18} /></span>
+                    <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-[10px] border border-line-soft bg-card"><PlatformIcon platform={a.platform} size={18} /></span>
                     <span className="flex min-w-0 flex-1 flex-col">
                       <span className="text-sm font-bold">{PLATFORM_NAMES[a.platform]} <span dir="ltr" className="font-normal text-muted">@{a.handle}</span></span>
                       <span className="text-xs text-muted">{summary}</span>
@@ -136,10 +134,11 @@ export function RatesEditor({ settings, accounts, bundle, lang }: { settings: Ra
                       onChange={(rows) => { setPlatforms({ ...platforms, [a.id]: { ...p, rows } }); dirty(); }}
                     />
                   )}
-                </Card>
+                </li>
               );
             })}
-          </section>
+            </ul>
+          </Panel>
 
           <Card className="flex flex-col gap-3">
             <div className="flex items-center gap-3">

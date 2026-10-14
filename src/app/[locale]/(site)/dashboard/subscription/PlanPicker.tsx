@@ -103,7 +103,7 @@ export function PlanPicker({ defaultCurrency, canPay, renew, showTrial }: { defa
       <div className="flex flex-wrap items-center gap-2 text-sm">
         <span className="text-muted">{t("currency")}</span>
         {(["SAR", "USD"] as const).map((c) => (
-          <button key={c} type="button" aria-pressed={currency === c} onClick={() => setCurrency(c)} className={`min-h-11 rounded-full px-4 ${currency === c ? "bg-navy text-on-navy" : "bg-navy/5"}`}>
+          <button key={c} type="button" aria-pressed={currency === c} onClick={() => setCurrency(c)} className={`min-h-11 rounded-full px-4 ${currency === c ? "bg-blue/10 text-blue ring-1 ring-blue/30" : "bg-card text-muted shadow-card ring-1 ring-line hover:text-navy"}`}>
             {c}
           </button>
         ))}
@@ -163,9 +163,9 @@ export function PlanPicker({ defaultCurrency, canPay, renew, showTrial }: { defa
               id="discount-code" value={codeInput} onChange={(e) => { setCodeInput(e.target.value); setCodeError(""); }}
               dir="ltr" autoComplete="off" autoCapitalize="characters" spellCheck={false} maxLength={30} placeholder="WSL-XXXXXX"
               aria-invalid={!!codeError} aria-describedby={codeError ? "discount-error" : undefined}
-              className="h-12 min-w-0 flex-1 rounded-xl border border-navy/16 bg-card px-3 text-[15px] uppercase aria-[invalid=true]:border-bad"
+              className="h-11 min-w-0 flex-1 rounded-[10px] border border-navy/15 bg-card px-3 text-[15px] uppercase aria-[invalid=true]:border-bad outline-none shadow-card transition-[border-color,box-shadow] focus:border-blue focus:ring-3 focus:ring-blue/15"
             />
-            <button type="submit" disabled={applying || !codeInput.trim()} className="inline-flex h-12 shrink-0 items-center rounded-full bg-navy px-5 text-sm font-bold text-on-navy disabled:opacity-50">
+            <button type="submit" disabled={applying || !codeInput.trim()} className="inline-flex h-12 shrink-0 items-center rounded-full bg-blue px-5 text-sm font-bold text-on-blue disabled:opacity-50">
               {applying ? t("applying") : t("apply")}
             </button>
           </div>

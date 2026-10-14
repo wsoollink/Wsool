@@ -14,6 +14,7 @@ import { creatorRows, FILTER_KEYS, hasFilters, matchesFilters, readFilters } fro
 import { db } from "@/lib/db";
 import { formatCompact, formatNumber } from "@/lib/format";
 import { planLabel } from "@/config/plans";
+import { initials } from "@/lib/initials";
 
 type SP = Promise<Record<string, string | string[] | undefined>>;
 const FILTERS = ["all", "paid", "trial", "free"] as const;
@@ -78,9 +79,9 @@ async function Results({ lang, searchParams }: { lang: Locale; searchParams: SP 
         {FILTERS.map((f, i) => (
           <Link
             key={f} href={href(f)} aria-current={f === filter ? "page" : undefined}
-            className={`inline-flex min-h-11 items-center gap-2 rounded-full px-4 text-[13.5px] font-bold ${f === filter ? "bg-navy text-on-navy" : "bg-card text-navy ring-1 ring-navy/10"}`}
+            className={`inline-flex min-h-11 items-center gap-2 rounded-full px-4 text-[13.5px] font-bold ${f === filter ? "bg-blue/10 text-blue ring-1 ring-blue/30" : "bg-card text-muted shadow-card ring-1 ring-line hover:text-navy"}`}
           >
-            {t(`filter.${f}`)} <span className={`font-numbers text-xs ${f === filter ? "text-on-navy/70" : "text-muted"}`}>{formatNumber(counts[i], lang)}</span>
+            {t(`filter.${f}`)} <span className={`font-numbers text-xs ${f === filter ? "text-blue/70" : "text-faint"}`}>{formatNumber(counts[i], lang)}</span>
           </Link>
         ))}
         <a href={withParams("/api/admin/users", { ...insight, ...keep })} download className="ms-auto inline-flex min-h-11 items-center gap-2 rounded-full bg-card px-4 text-[13.5px] font-bold text-navy ring-1 ring-navy/10">
@@ -94,9 +95,9 @@ async function Results({ lang, searchParams }: { lang: Locale; searchParams: SP 
         <Card className="overflow-x-auto p-0">
           <table className="w-full min-w-[860px] text-sm">
             <caption className="sr-only">{t("tableCaption", { n: counts[FILTERS.indexOf(filter)] })}</caption>
-            <thead className="text-xs text-muted">
-              <tr className="border-b border-navy/8">
-                {["creator", "planLabel", "followers", "joined", "lastActive", "status"].map((h) => <th key={h} scope="col" className="px-4 py-3 text-start font-medium">{t(h)}</th>)}
+            <thead className="bg-bg text-[11.5px] text-muted">
+              <tr className="border-b border-line-soft">
+                {["creator", "planLabel", "followers", "joined", "lastActive", "status"].map((h) => <th key={h} scope="col" className="px-4 py-3 text-start font-semibold">{t(h)}</th>)}
               </tr>
             </thead>
             <tbody>
@@ -116,9 +117,9 @@ async function Results({ lang, searchParams }: { lang: Locale; searchParams: SP 
                       <Link href={`/admin/users/${u.id}`} className="flex min-h-11 items-center gap-3">
                         {p?.photoUrl ? (
                           // eslint-disable-next-line @next/next/no-img-element -- storage URL, small avatar
-                          <img src={p.photoUrl} alt="" className="size-10 shrink-0 rounded-full object-cover" />
+                          <img src={p.photoUrl} alt="" className="size-9 shrink-0 rounded-full object-cover" />
                         ) : (
-                          <span aria-hidden="true" className="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-navy/5 font-bold uppercase">{(name || u.email)[0]}</span>
+                          <span aria-hidden="true" className="inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-blue/10 text-xs font-bold text-blue">{initials(name || p?.username || u.email)}</span>
                         )}
                         <span className="flex min-w-0 flex-col">
                           <span className="truncate font-bold">{name || (p ? <bdi dir="ltr">@{p.username}</bdi> : t("noPage"))}</span>

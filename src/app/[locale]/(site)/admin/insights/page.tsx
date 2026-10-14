@@ -6,6 +6,7 @@ import { Download, Settings2 } from "lucide-react";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { ActiveFilters, CreatorFilterForm, dimensionOptions, withParams, type Dimension, type Option } from "@/components/admin/CreatorFilters";
 import { Card } from "@/components/ui/Card";
+import { KpiStrip } from "@/components/ui/KpiStrip";
 import { isLocale, toIntlLocale, type Locale } from "@/i18n/config";
 import { can, requireAdmin } from "@/lib/admin";
 import { listCategories } from "@/lib/categories";
@@ -67,22 +68,15 @@ async function Insights({ lang, searchParams }: { lang: Locale; searchParams: SP
         <ActiveFilters path="/admin/insights" filters={filters} options={options} keep={{}} />
       </Card>
 
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        {[
+      <KpiStrip items={[
           { label: t("tiles.creators"), value: formatNumber(total, lang) },
           { label: t("tiles.withCategory"), value: `${pctOf(rows.filter((r) => r.categories.length).length)}%` },
           { label: t("tiles.withCountry"), value: `${pctOf(rows.filter((r) => r.countryCode).length)}%` },
           { label: t("tiles.withCity"), value: `${pctOf(rows.filter((r) => r.city_).length)}%` },
-        ].map((tile) => (
-          <Card key={tile.label} className="flex flex-col gap-1">
-            <span className="text-xs text-muted">{tile.label}</span>
-            <span className="font-numbers text-2xl font-bold">{tile.value}</span>
-          </Card>
-        ))}
-      </div>
+        ]} />
 
       <div className="flex flex-wrap gap-2">
-        <a href={withParams("/api/admin/users", { ...filters })} download className="inline-flex min-h-11 items-center gap-2 rounded-full bg-navy px-4 text-[13.5px] font-bold text-on-navy">
+        <a href={withParams("/api/admin/users", { ...filters })} download className="inline-flex min-h-11 items-center gap-2 rounded-full bg-blue px-4 text-[13.5px] font-bold text-on-blue">
           <Download aria-hidden="true" size={16} /> {t("export", { n: total })}
         </a>
         {can(admin, "owner") && (

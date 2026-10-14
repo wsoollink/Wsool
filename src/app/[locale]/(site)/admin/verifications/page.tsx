@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Card } from "@/components/ui/Card";
+import { KpiStrip } from "@/components/ui/KpiStrip";
 import { PLATFORM_NAMES, profileUrl } from "@/config/platforms";
 import { PlatformIcon } from "@/components/creator/PlatformIcon";
 import { CheckCheck } from "lucide-react";
@@ -67,9 +68,9 @@ async function Queue({ lang, tab, id, ai }: { lang: Locale; tab: Tab; id: string
     return (
       <Card className="overflow-x-auto p-0">
         <table className="w-full min-w-[640px] text-sm">
-          <thead className="text-start text-xs text-muted">
-            <tr className="border-b border-line">
-              {["account", "result", "reviewer", "when"].map((h) => <th key={h} scope="col" className="p-3 text-start font-medium">{t(`table.${h}`)}</th>)}
+          <thead className="bg-bg text-[11.5px] text-muted">
+            <tr className="border-b border-line-soft">
+              {["account", "result", "reviewer", "when"].map((h) => <th key={h} scope="col" className="p-3 text-start font-semibold">{t(`table.${h}`)}</th>)}
             </tr>
           </thead>
           <tbody>
@@ -116,21 +117,14 @@ async function Queue({ lang, tab, id, ai }: { lang: Locale; tab: Tab; id: string
     { label: t("stats.avg"), value: avgHours === null ? "—" : t("hours", { n: avgHours }) },
   ];
   const statsRow = (
-    <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-      {stats.map((s) => (
-        <Card key={s.label} className="flex flex-col gap-1 py-4">
-          <span className="text-xs text-muted">{s.label}</span>
-          <span className={`font-numbers text-2xl font-black ${s.bad ? "text-bad" : ""}`}>{s.value}</span>
-        </Card>
-      ))}
-    </div>
+    <KpiStrip items={stats.map((s) => ({ label: s.label, value: s.value, valueTone: s.bad ? ("bad" as const) : undefined }))} />
   );
 
   const aiChips = (
     <nav aria-label={t("ai.filter")} className="flex flex-wrap gap-2 px-2 pt-1">
       {(["", "match", "check"] as const).map((k) => (
         <Link key={k || "all"} href={k ? `/admin/verifications?ai=${k}` : "/admin/verifications"} aria-current={ai === k ? "page" : undefined}
-          className={`inline-flex min-h-9 items-center gap-1.5 rounded-full px-3 text-xs font-bold ${ai === k ? "bg-navy text-on-navy" : "bg-navy/5"}`}>
+          className={`inline-flex min-h-9 items-center gap-1.5 rounded-full px-3 text-xs font-bold ${ai === k ? "bg-blue/10 text-blue ring-1 ring-blue/30" : "bg-card text-muted shadow-card ring-1 ring-line hover:text-navy"}`}>
           {t(`ai.filters.${k || "all"}`)}{k && <span className="font-numbers opacity-70">{aiCounts[k]}</span>}
         </Link>
       ))}
@@ -256,7 +250,7 @@ async function Tabs({ searchParams, labels }: { searchParams: Promise<Record<str
       {(["pending", "licenses", "decided"] as const).map((k) => (
         <Link
           key={k} role="tab" aria-selected={tab === k} href={k === "pending" ? "/admin/verifications" : `/admin/verifications?tab=${k}`}
-          className={`inline-flex min-h-11 items-center rounded-full px-4 text-[13.5px] font-bold ${tab === k ? "bg-navy text-on-navy" : "bg-card ring-1 ring-navy/10"}`}
+          className={`inline-flex min-h-11 items-center rounded-full px-4 text-[13.5px] font-bold ${tab === k ? "bg-blue/10 text-blue ring-1 ring-blue/30" : "bg-card text-muted shadow-card ring-1 ring-line hover:text-navy"}`}
         >
           {labels[k]}
         </Link>

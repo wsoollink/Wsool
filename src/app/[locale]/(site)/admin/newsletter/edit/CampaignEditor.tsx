@@ -23,7 +23,7 @@ type Props = {
   adminEmail: string;
 };
 
-const input = "h-12 w-full rounded-xl border border-navy/16 bg-card px-3 text-[15px] disabled:bg-navy/[0.03]";
+const input = "h-11 w-full rounded-[10px] border border-navy/15 bg-card px-3 text-[15px] disabled:bg-navy/[0.03] outline-none shadow-card transition-[border-color,box-shadow] focus:border-blue focus:ring-3 focus:ring-blue/15";
 
 /**
  * Newsletter editor (admin): both language versions, optional button, live
@@ -177,7 +177,7 @@ export function CampaignEditor({ id, status, initial, audience, progress, sentOn
           {run && (
             <div className="flex flex-col gap-2" role="status" aria-live="polite">
               <p className="text-sm font-bold">{t("progress", { done: run.done, total: run.total })}</p>
-              <div className="h-2 overflow-hidden rounded-full bg-navy/5">
+              <div className="h-1.5 overflow-hidden rounded-full bg-line-soft">
                 <div className="h-full rounded-full bg-blue transition-[width]" style={{ width: `${run.total ? Math.round((run.done / run.total) * 100) : 0}%` }} />
               </div>
               <p className="text-xs text-muted">{t("keepOpen")}</p>
@@ -217,7 +217,7 @@ export function CampaignEditor({ id, status, initial, audience, progress, sentOn
           </div>
         </div>
         {preview ? (
-          <iframe title={t("preview")} srcDoc={preview} sandbox="" className="h-[640px] w-full rounded-xl border border-navy/8 bg-[#F4F6FA]" />
+          <iframe title={t("preview")} srcDoc={preview} sandbox="" className="h-[640px] w-full rounded-xl border border-line bg-[#F4F6FA]" />
         ) : (
           <p className="rounded-xl bg-navy/[0.03] p-6 text-center text-sm text-muted">{t("previewEmpty")}</p>
         )}

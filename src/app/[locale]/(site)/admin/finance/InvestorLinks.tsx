@@ -11,7 +11,7 @@ import { createInvestorLink, revokeInvestorLink } from "./actions";
 
 export type LinkRow = { id: string; label: string; status: "active" | "expired" | "revoked"; expires: string; views: number; password: boolean; sections: string[] };
 
-const control = "min-h-11 w-full min-w-0 rounded-xl border border-line bg-card px-3 text-base";
+const control = "min-h-11 w-full min-w-0 rounded-[10px] border border-navy/15 bg-card px-3 text-base outline-none shadow-card transition-[border-color,box-shadow] focus:border-blue focus:ring-3 focus:ring-blue/15";
 
 /** Owner only: read-only links for investors (sections, period, expiry, optional password). */
 export function InvestorLinks({ links }: { links: LinkRow[] }) {

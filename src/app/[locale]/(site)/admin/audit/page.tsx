@@ -58,7 +58,7 @@ const href = (f: Record<string, string | undefined>) => {
   const qs = new URLSearchParams(Object.entries(f).filter((e): e is [string, string] => !!e[1]));
   return qs.size ? `/admin/audit?${qs}` : "/admin/audit";
 };
-const field = "h-11 min-w-0 rounded-xl border border-navy/16 bg-card px-3 text-sm";
+const field = "h-11 min-w-0 rounded-[10px] border border-navy/15 bg-card px-3 text-sm outline-none shadow-card transition-[border-color,box-shadow] focus:border-blue focus:ring-3 focus:ring-blue/15";
 
 /** Owner only: admin actions as readable sentences, grouped by day, filtered by who / kind / period. Append-only. */
 async function Log({ lang, searchParams }: { lang: Locale; searchParams: SP }) {
@@ -78,7 +78,7 @@ async function Log({ lang, searchParams }: { lang: Locale; searchParams: SP }) {
           const on = f.p === p && (p || (!f.from && !f.to));
           return (
             <Link key={p ?? "all"} href={href({ who: f.who, type: f.type, p })} aria-current={on ? "page" : undefined}
-              className={`inline-flex min-h-11 items-center rounded-full px-4 text-[13.5px] font-bold ${on ? "bg-navy text-on-navy" : "bg-card ring-1 ring-navy/10"}`}>
+              className={`inline-flex min-h-11 items-center rounded-full px-4 text-[13.5px] font-bold ${on ? "bg-blue/10 text-blue ring-1 ring-blue/30" : "bg-card text-muted shadow-card ring-1 ring-line hover:text-navy"}`}>
               {t(`periods.${p ?? "all"}`)}
             </Link>
           );
@@ -107,7 +107,7 @@ async function Log({ lang, searchParams }: { lang: Locale; searchParams: SP }) {
           {t("to")}
           <input type="date" name="to" defaultValue={f.to ?? ""} dir="ltr" className={field} />
         </label>
-        <button type="submit" className="inline-flex h-11 items-center rounded-full bg-navy px-5 text-sm font-bold text-on-navy">{t("apply")}</button>
+        <button type="submit" className="inline-flex h-11 items-center rounded-full bg-blue px-5 text-sm font-bold text-on-blue">{t("apply")}</button>
         {filtered && <Link href="/admin/audit" className="inline-flex h-11 items-center px-2 text-sm font-bold text-muted underline">{t("clear")}</Link>}
       </form>
     </Card>
@@ -131,7 +131,7 @@ async function Log({ lang, searchParams }: { lang: Locale; searchParams: SP }) {
         <section key={d.label} className="flex flex-col gap-2">
           <h2 className="text-[13px] font-bold text-muted">{d.label}</h2>
           <Card className="p-2">
-            <ul className="flex flex-col divide-y divide-navy/6">
+            <ul className="flex flex-col divide-y divide-line-soft">
               {d.items.map(({ e, text }) => (
                 <li key={e.id} className="flex items-start gap-3 px-2 py-3">
                   <span aria-hidden="true" className="mt-0.5 inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-navy/5 text-xs font-bold uppercase">{e.actorEmail[0]}</span>

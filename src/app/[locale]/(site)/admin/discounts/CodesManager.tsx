@@ -10,7 +10,7 @@ import { createCodes, deleteRevoked, revokeCode, type CreateResult } from "./act
 
 type Row = { key: string; note: string; email: string };
 const newKey = () => Math.random().toString(36).slice(2);
-const control = "h-12 w-full min-w-0 rounded-xl border border-navy/16 bg-card px-3 text-[15px]";
+const control = "h-11 w-full min-w-0 rounded-[10px] border border-navy/15 bg-card px-3 text-[15px] outline-none shadow-card transition-[border-color,box-shadow] focus:border-blue focus:ring-3 focus:ring-blue/15";
 const PRESETS = [10, 20, 30, 50, 100];
 
 /** Form: percent + one row per person (name/note, optional email lock); then the new codes with copy buttons. */
@@ -59,7 +59,7 @@ export function CreateCodes({ limits }: { limits: { min: number; max: number; ba
           <legend className="mb-1.5 text-[13px] font-medium">{t("percent")}</legend>
           <div className="flex flex-wrap items-center gap-2">
             {PRESETS.map((p) => (
-              <button key={p} type="button" aria-pressed={percent === String(p)} onClick={() => setPercent(String(p))} className={`inline-flex min-h-11 items-center rounded-full px-4 text-sm font-bold ${percent === String(p) ? "bg-navy text-on-navy" : "bg-navy/5"}`}>
+              <button key={p} type="button" aria-pressed={percent === String(p)} onClick={() => setPercent(String(p))} className={`inline-flex min-h-11 items-center rounded-full px-4 text-sm font-bold ${percent === String(p) ? "bg-blue/10 text-blue ring-1 ring-blue/30" : "bg-card text-muted shadow-card ring-1 ring-line hover:text-navy"}`}>
                 {p === 100 ? t("freePreset") : `${p}%`}
               </button>
             ))}
@@ -68,7 +68,7 @@ export function CreateCodes({ limits }: { limits: { min: number; max: number; ba
               <input
                 type="text" inputMode="numeric" dir="ltr" value={percent} aria-label={t("percent")}
                 onChange={(e) => setPercent(e.target.value.replace(/[٠-٩]/g, (d) => String(d.charCodeAt(0) - 1632)).replace(/\D/g, "").slice(0, 3))}
-                className="h-11 w-20 rounded-xl border border-navy/16 bg-card px-3 text-center text-[15px]"
+                className="h-11 w-20 rounded-[10px] border border-navy/15 bg-card px-3 text-center text-[15px] outline-none shadow-card transition-[border-color,box-shadow] focus:border-blue focus:ring-3 focus:ring-blue/15"
               />
               <span>%</span>
             </label>
@@ -82,7 +82,7 @@ export function CreateCodes({ limits }: { limits: { min: number; max: number; ba
             <p className="text-[13px] font-bold">{t("freeCycle")}</p>
             <div className="flex flex-wrap gap-2">
               {(["monthly", "yearly"] as const).map((c) => (
-                <button key={c} type="button" aria-pressed={freeCycle === c} onClick={() => setFreeCycle(c)} className={`inline-flex min-h-11 items-center rounded-full px-4 text-sm font-bold ${freeCycle === c ? "bg-navy text-on-navy" : "bg-card"}`}>
+                <button key={c} type="button" aria-pressed={freeCycle === c} onClick={() => setFreeCycle(c)} className={`inline-flex min-h-11 items-center rounded-full px-4 text-sm font-bold ${freeCycle === c ? "bg-blue/10 text-blue ring-1 ring-blue/30" : "bg-card text-muted shadow-card ring-1 ring-line hover:text-navy"}`}>
                   {t(`cycle.${c}`)}
                 </button>
               ))}
@@ -111,7 +111,7 @@ export function CreateCodes({ limits }: { limits: { min: number; max: number; ba
           </ul>
           <p className="text-xs text-muted">{t("emailHint")}</p>
           {rows.length < limits.batch && (
-            <button type="button" onClick={() => setRows([...rows, { key: newKey(), note: "", email: "" }])} className="inline-flex min-h-11 items-center gap-2 self-start rounded-full bg-navy/5 px-4 text-[13.5px] font-bold">
+            <button type="button" onClick={() => setRows([...rows, { key: newKey(), note: "", email: "" }])} className="inline-flex min-h-11 items-center gap-2 self-start rounded-full border border-line bg-card shadow-card hover:bg-hover px-4 text-[13.5px] font-bold">
               <Plus aria-hidden="true" size={18} /> {t("addPerson")}
             </button>
           )}

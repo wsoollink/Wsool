@@ -158,7 +158,7 @@ export function AppearanceEditor({ initial, isPro, freeTemplates, preview }: { i
       <div className="lg:col-span-2">
         <SaveBar
           onSave={save} pending={pending}
-          extra={<button type="button" onClick={() => setShowPreview(true)} className="inline-flex h-12 items-center gap-2 rounded-full bg-navy/5 px-5 text-[15px] font-medium lg:hidden"><Eye aria-hidden="true" size={18} />{t("preview")}</button>}
+          extra={<button type="button" onClick={() => setShowPreview(true)} className="inline-flex h-11 items-center gap-2 rounded-full border border-line bg-card shadow-card hover:bg-hover px-5 text-[15px] font-medium lg:hidden"><Eye aria-hidden="true" size={18} />{t("preview")}</button>}
           status={status === "saved" ? { tone: "good", text: "" } : status === "pro_only" || status === "locked" ? { tone: "bad", text: t("proOnly") } : status === "failed" ? { tone: "bad", text: t("failed") } : null}
         />
       </div>
@@ -183,7 +183,7 @@ function ColorField({ id, label, value, onChange }: { id: string; label: string;
             setText(v);
             if (HEX.test(v)) onChange(v.toLowerCase());
           }}
-          className="h-12 w-32 rounded-xl border border-navy/16 bg-card px-3 font-mono text-base"
+          className="h-11 w-32 rounded-[10px] border border-navy/15 bg-card px-3 font-mono text-base outline-none shadow-card transition-[border-color,box-shadow] focus:border-blue focus:ring-3 focus:ring-blue/15"
         />
       </div>
     </div>

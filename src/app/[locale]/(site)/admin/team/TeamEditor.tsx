@@ -14,7 +14,7 @@ type Role = keyof typeof ROLE_PRESETS;
 export type Member = { id: string; email: string; role: Role; permissions: Permission[]; active: boolean; linked: boolean };
 
 const ROLES = Object.keys(ROLE_PRESETS) as Role[];
-const control = "h-12 w-full rounded-xl border border-navy/16 bg-card px-3 text-[15px]";
+const control = "h-11 w-full rounded-[10px] border border-navy/15 bg-card px-3 text-[15px] outline-none shadow-card transition-[border-color,box-shadow] focus:border-blue focus:ring-3 focus:ring-blue/15";
 
 /** Permission switches grouped as in the design (verification, users, money). */
 function PermissionSwitches({ id, value, onChange, readOnly }: { id: string; value: Permission[]; onChange?: (p: Permission[]) => void; readOnly?: boolean }) {

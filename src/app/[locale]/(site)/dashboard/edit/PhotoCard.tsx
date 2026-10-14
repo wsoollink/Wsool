@@ -88,7 +88,7 @@ export function PhotoCard({ photoUrl, shape: initialShape }: { photoUrl: string 
         </p>
       </div>
       </div>
-      <fieldset className="flex flex-col gap-2 border-t border-navy/8 pt-4">
+      <fieldset className="flex flex-col gap-2 border-t border-line pt-4">
         <legend className="mb-2 text-[13px] font-bold">{t("photoShape")}</legend>
         <div className="grid grid-cols-2 gap-2">
           {(["full", "circle"] as const).map((s) => (

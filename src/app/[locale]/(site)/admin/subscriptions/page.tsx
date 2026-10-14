@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Card } from "@/components/ui/Card";
+import { KpiStrip } from "@/components/ui/KpiStrip";
 import { PRICES } from "@/config/plans";
 import { isLocale, toIntlLocale, type Locale } from "@/i18n/config";
 import { can, requireAdmin } from "@/lib/admin";
@@ -59,15 +60,7 @@ async function Overview({ lang }: { lang: Locale }) {
       <p className={`rounded-xl p-3 text-sm ${provider ? (provider.testOnly ? "bg-warn/10 text-warn" : "bg-good/10 text-good") : "bg-navy/5 text-muted"}`}>
         {provider ? (provider.testOnly ? t("providerTest") : t("providerLive", { name: provider.name })) : t("providerOff")}
       </p>
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-5">
-        {tiles.map((tile) => (
-          <Card key={tile.label} className="flex flex-col gap-1.5">
-            <span className="text-[13px] text-muted">{tile.label}</span>
-            <span className={`font-numbers text-[28px] leading-none font-black ${tile.bad ? "text-bad" : ""}`}>{tile.value}</span>
-            {tile.note && <span className="text-xs text-muted">{tile.note}</span>}
-          </Card>
-        ))}
-      </div>
+      <KpiStrip items={tiles.map((tile) => ({ label: tile.label, value: tile.value, note: tile.note, valueTone: tile.bad ? ("bad" as const) : undefined }))} />
 
       {pastDue.length > 0 && (
         <Card className="flex flex-col gap-2 border-bad/20">
@@ -75,7 +68,7 @@ async function Overview({ lang }: { lang: Locale }) {
             <h2 className="font-bold">{t("failedTitle")}</h2>
             <p className="text-xs text-muted">{t("failedHint")}</p>
           </div>
-          <ul className="flex flex-col divide-y divide-navy/6">
+          <ul className="flex flex-col divide-y divide-line-soft">
             {pastDue.map((s) => (
               <li key={s.userId} className="flex flex-wrap items-center gap-x-4 gap-y-1 py-2.5">
                 <Link href={`/admin/users/${s.userId}`} dir="ltr" className="inline-flex min-h-11 min-w-0 flex-1 items-center font-bold text-blue">{s.user.page?.username ?? s.user.email}</Link>
@@ -92,15 +85,15 @@ async function Overview({ lang }: { lang: Locale }) {
         <div className="flex flex-wrap items-center justify-between gap-2 p-4 pb-2">
           <h2 className="font-bold">{t("payments")}</h2>
           {/* A route handler download, not a page: plain <a>. */}
-          <a href="/api/admin/invoices" download className="inline-flex min-h-11 items-center gap-2 rounded-full bg-navy/5 px-4 text-[13px] font-bold"><Download aria-hidden="true" size={16} /> {t("exportCsv")}</a>
+          <a href="/api/admin/invoices" download className="inline-flex min-h-11 items-center gap-2 rounded-full border border-line bg-card shadow-card hover:bg-hover px-4 text-[13px] font-bold"><Download aria-hidden="true" size={16} /> {t("exportCsv")}</a>
         </div>
         {invoices.length === 0 ? (
           <p className="p-4 text-sm text-muted">{t("noPayments")}</p>
         ) : (
           <table className="w-full min-w-[820px] text-sm">
-            <thead className="text-xs text-muted">
-              <tr className="border-b border-navy/8">
-                {["invoice", "creator", "plan", "amount", "status", "date", ""].map((h) => <th key={h} scope="col" className="px-4 py-3 text-start font-medium">{h && t(`table.${h}`)}</th>)}
+            <thead className="bg-bg text-[11.5px] text-muted">
+              <tr className="border-b border-line-soft">
+                {["invoice", "creator", "plan", "amount", "status", "date", ""].map((h) => <th key={h} scope="col" className="px-4 py-3 text-start font-semibold">{h && t(`table.${h}`)}</th>)}
               </tr>
             </thead>
             <tbody>

@@ -92,7 +92,7 @@ export function UsernameCard({ username, nextChange }: {
         <div className="flex flex-col gap-3">
           <div className="flex flex-col gap-1.5">
             <label htmlFor="new-username" className="text-[13px] font-medium">{t("newLabel")}</label>
-            <div dir="ltr" className="flex h-12 items-center rounded-xl border border-navy/16 bg-card ps-3 focus-within:outline-2 focus-within:outline-blue">
+            <div dir="ltr" className="flex h-11 items-center rounded-[10px] border border-navy/15 bg-card ps-3 focus-within:outline-2 focus-within:outline-blue outline-none shadow-card transition-[border-color,box-shadow] focus:border-blue focus:ring-3 focus:ring-blue/15">
               <span aria-hidden="true" className="text-muted">wsool.link/</span>
               <input
                 id="new-username" dir="ltr" autoFocus autoComplete="off" autoCapitalize="none" spellCheck={false}

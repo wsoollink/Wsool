@@ -42,9 +42,9 @@ async function Codes({ lang, searchParams }: { lang: Locale; searchParams: SP })
         {FILTERS.map((f) => (
           <Link
             key={f} href={f === "all" ? "/admin/discounts" : `/admin/discounts?s=${f}`} aria-current={f === filter ? "page" : undefined}
-            className={`inline-flex min-h-11 items-center gap-2 rounded-full px-4 text-[13.5px] font-bold ${f === filter ? "bg-navy text-on-navy" : "bg-card ring-1 ring-navy/10"}`}
+            className={`inline-flex min-h-11 items-center gap-2 rounded-full px-4 text-[13.5px] font-bold ${f === filter ? "bg-blue/10 text-blue ring-1 ring-blue/30" : "bg-card text-muted shadow-card ring-1 ring-line hover:text-navy"}`}
           >
-            {t(`filter.${f}`)} <span className={`font-numbers text-xs ${f === filter ? "text-on-navy/70" : "text-muted"}`}>{formatNumber(count(f), lang)}</span>
+            {t(`filter.${f}`)} <span className={`font-numbers text-xs ${f === filter ? "text-blue/70" : "text-faint"}`}>{formatNumber(count(f), lang)}</span>
           </Link>
         ))}
         {count("revoked") > 0 && (filter === "all" || filter === "revoked") && (
@@ -57,9 +57,9 @@ async function Codes({ lang, searchParams }: { lang: Locale; searchParams: SP })
       ) : (
         <Card className="overflow-x-auto p-0">
           <table className="w-full min-w-[820px] text-sm">
-            <thead className="text-xs text-muted">
-              <tr className="border-b border-navy/8">
-                {["code", "percent", "for", "created", "expires", "status", ""].map((h) => <th key={h} scope="col" className="px-4 py-3 text-start font-medium">{h && t(`table.${h}`)}</th>)}
+            <thead className="bg-bg text-[11.5px] text-muted">
+              <tr className="border-b border-line-soft">
+                {["code", "percent", "for", "created", "expires", "status", ""].map((h) => <th key={h} scope="col" className="px-4 py-3 text-start font-semibold">{h && t(`table.${h}`)}</th>)}
               </tr>
             </thead>
             <tbody>

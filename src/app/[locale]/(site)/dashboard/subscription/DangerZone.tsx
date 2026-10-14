@@ -54,7 +54,7 @@ export function DangerZone({ username, deletedAt, purgeDate }: { username: strin
             </ul>
             <div className="flex flex-col gap-1.5">
               <label htmlFor="confirm-username" className="text-[13px] font-medium">{t.rich("typeUsername2", { u: () => <b dir="ltr">{username}</b> })}</label>
-              <input id="confirm-username" autoFocus dir="ltr" autoComplete="off" value={confirm} onChange={(ev) => { setConfirm(ev.target.value); setError(""); }} className="h-12 rounded-xl border border-navy/16 bg-card px-3 text-[15px]" />
+              <input id="confirm-username" autoFocus dir="ltr" autoComplete="off" value={confirm} onChange={(ev) => { setConfirm(ev.target.value); setError(""); }} className="h-11 rounded-[10px] border border-navy/15 bg-card px-3 text-[15px] outline-none shadow-card transition-[border-color,box-shadow] focus:border-blue focus:ring-3 focus:ring-blue/15" />
             </div>
             {error && <p role="alert" className="text-sm text-bad">{error}</p>}
             <div className="grid grid-cols-2 gap-2">

@@ -69,7 +69,7 @@ export function UserActions({ userId, can, paid, suspended, published, self }: P
       {can.suspend && !self && (
         <div className="flex flex-col gap-2 border-t border-line pt-4">
           <label htmlFor="suspend-note" className="text-sm font-medium">{suspended ? t("unsuspendNote") : t("suspendNote")}</label>
-          <textarea id="suspend-note" value={note} maxLength={300} onChange={(ev) => setNote(ev.target.value)} className="min-h-20 rounded-xl border border-line bg-card px-3 py-2 text-base" />
+          <textarea id="suspend-note" value={note} maxLength={300} onChange={(ev) => setNote(ev.target.value)} className="min-h-20 rounded-[10px] border border-navy/15 bg-card px-3 py-2 text-base outline-none shadow-card transition-[border-color,box-shadow] focus:border-blue focus:ring-3 focus:ring-blue/15" />
           <button
             type="button" disabled={pending || (!suspended && !note.trim())}
             onClick={() => run(() => setSuspended(userId, !suspended, note))}

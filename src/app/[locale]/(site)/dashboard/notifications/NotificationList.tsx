@@ -61,7 +61,7 @@ export function NotificationList({ items }: { items: NotificationItem[] }) {
           return (
             <section key={g} className="flex flex-col gap-2">
               <h2 className="text-[13px] font-bold text-muted">{t(`groups.${g}`)}</h2>
-              <Card className="flex flex-col divide-y divide-navy/6 p-0">
+              <Card className="flex flex-col divide-y divide-line-soft p-0">
                 {group.map((n) => {
                   const { Icon, tone } = iconFor(n.type);
                   return (

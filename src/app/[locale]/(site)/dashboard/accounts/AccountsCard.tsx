@@ -7,7 +7,8 @@ import Link from "next/link";
 import { ArrowDown, ArrowUp, BadgeCheck, ChevronDown, Plus, Trash2, Users } from "lucide-react";
 import { buttonClasses } from "@/components/ui/Button";
 import { PlatformIcon } from "@/components/creator/PlatformIcon";
-import { Card } from "@/components/ui/Card";
+import { Panel } from "@/components/ui/Card";
+import { Pill } from "@/components/ui/Pill";
 import { HANDLE_PATTERN, linkProfileUrl, needsLink, normalizeHandle, PLATFORM_NAMES, PLATFORMS } from "@/config/platforms";
 import type { Platform, VerificationStatus } from "@/generated/prisma/enums";
 import type { Locale } from "@/i18n/config";
@@ -24,7 +25,7 @@ type Row = Omit<AccountRow, "followers"> & { key: string; followers: string; ori
 
 const newKey = () => Math.random().toString(36).slice(2);
 const iconButton = "inline-flex size-11 items-center justify-center rounded-[10px] bg-navy/5 text-navy disabled:opacity-30";
-const control = "h-12 w-full rounded-xl border border-navy/16 bg-card px-3 text-[15px] aria-[invalid=true]:border-bad";
+const control = "h-11 w-full rounded-[10px] border border-navy/15 bg-card px-3 text-[15px] aria-[invalid=true]:border-bad outline-none shadow-card transition-[border-color,box-shadow] focus:border-blue focus:ring-3 focus:ring-blue/15";
 
 const LINK_PLACEHOLDERS: Partial<Record<Platform, string>> = {
   spotify: "https://open.spotify.com/show/…",
@@ -111,46 +112,36 @@ export function AccountsCard({ initial }: { initial: AccountRow[] }) {
   const Chevron = ChevronDown;
 
   return (
-    <div className="flex flex-col gap-4">
-      <Card className="flex items-center justify-between gap-3">
-        <span className="flex flex-col">
-          <span className="text-[13px] text-muted">{t("totalTitle")}</span>
-          <span className="text-xs text-muted">{t("totalHint")}</span>
-        </span>
-        <span dir="ltr" className="font-numbers text-[30px] font-black">{formatNumber(total, lang)}</span>
-      </Card>
-
-      <section className="flex flex-col gap-3">
-        <div>
-          <h2 className="font-bold">{t("accounts")}</h2>
-          <p className="text-xs text-muted">{t("orderHint")}</p>
-        </div>
-        {rows.length === 0 && <p className="text-sm text-muted">{t("noAccounts")}</p>}
-        <ul className="flex flex-col gap-3">
+    <Panel
+      title={t("accounts")} flush
+      aside={<span className="flex items-baseline gap-2" title={t("totalHint")}>{t("totalTitle")} <b dir="ltr" className="font-numbers text-[17px] text-navy">{formatNumber(total, lang)}</b></span>}
+    >
+      <p className="px-5 pt-3 text-xs text-muted">{t("orderHint")}</p>
+      <section className="flex flex-col">
+        {rows.length === 0 && <p className="px-5 py-3 text-sm text-muted">{t("noAccounts")}</p>}
+        <ul className="flex flex-col divide-y divide-line-soft">
           {rows.map((row, i) => {
             const name = PLATFORM_NAMES[row.platform];
             const verifiedish = row.verificationStatus === "verified" || row.verificationStatus === "in_review";
             const open = openKey === row.key || row.error;
-            const statusTone = row.verificationStatus === "verified" ? "text-good" : row.verificationStatus === "in_review" ? "text-warn" : "text-muted";
+            const statusTone = row.verificationStatus === "verified" ? "good" : row.verificationStatus === "in_review" ? "blue" : "grey";
             return (
               <li key={row.key}>
-                <Card className="flex flex-col gap-3 p-0">
-                  <button type="button" aria-expanded={!!open} onClick={() => setOpenKey(open ? null : row.key)} className="flex min-h-16 w-full items-center gap-3 px-[18px] py-3 text-start">
-                    <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-[10px] bg-navy/5"><PlatformIcon platform={row.platform} size={18} /></span>
+                <div className={`flex flex-col ${open ? "bg-bg/60" : ""}`}>
+                  <button type="button" aria-expanded={!!open} onClick={() => setOpenKey(open ? null : row.key)} className="flex min-h-16 w-full items-center gap-3 px-5 py-3 text-start transition-colors hover:bg-hover/60">
+                    <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-[10px] border border-line-soft bg-card"><PlatformIcon platform={row.platform} size={18} /></span>
                     <span className="flex min-w-0 flex-1 flex-col">
                       <span className="text-sm font-bold">{name}</span>
                       <span dir="ltr" className="truncate text-xs text-muted rtl:text-end">{row.handle ? `@${normalizeHandle(row.handle)}` : "—"}</span>
                     </span>
-                    <span className="flex flex-col items-end">
-                      <span dir="ltr" className="font-numbers text-base font-black">{formatNumber(Number(row.followers) || 0, lang)}</span>
-                      <span className={`flex items-center gap-1 text-[11.5px] font-medium ${statusTone}`}>
-                        <span aria-hidden="true" className="size-1.5 rounded-full bg-current" /> {t(`vstatus.${row.verificationStatus === "verified" || row.verificationStatus === "in_review" ? row.verificationStatus : "none"}`)}
-                      </span>
+                    <span className="flex flex-col items-end gap-1">
+                      <span dir="ltr" className="font-numbers text-base">{formatNumber(Number(row.followers) || 0, lang)}</span>
+                      <Pill tone={statusTone}>{t(`vstatus.${row.verificationStatus === "verified" || row.verificationStatus === "in_review" ? row.verificationStatus : "none"}`)}</Pill>
                     </span>
                     <Chevron aria-hidden="true" size={18} className={`shrink-0 text-muted transition-transform ${open ? "rotate-180" : ""}`} />
                   </button>
                   {open && (
-                    <div className="flex flex-col gap-3 px-[18px] pb-[18px]">
+                    <div className="flex flex-col gap-3 px-5 pt-1 pb-5">
                       <div className="grid grid-cols-2 gap-3">
                         <div className="flex flex-col gap-1.5">
                           <label htmlFor={`handle-${row.key}`} className="text-[13px] font-medium">{t("handle")}</label>
@@ -188,7 +179,7 @@ export function AccountsCard({ initial }: { initial: AccountRow[] }) {
                       {row.error && <p className="text-sm text-bad">{needsLink(row.platform) && !linkProfileUrl(row.platform, row.link) ? t("linkError", { platform: name }) : t("rowError")}</p>}
                       {verifiedish && isChanged(row) && <p className="text-sm text-warn">{t("verificationWarning")}</p>}
                       {row.id && (
-                        <a href="#audience" className="flex min-h-12 items-center gap-3 rounded-xl bg-navy/5 px-3 text-[13px] font-bold">
+                        <a href="#audience" className="flex min-h-11 items-center gap-3 rounded-[10px] border border-line bg-card px-3 text-[13px] font-semibold shadow-card hover:bg-hover">
                           <Users aria-hidden="true" size={18} /> <span className="flex-1">{t("audienceRow")}</span>
                         </a>
                       )}
@@ -198,38 +189,38 @@ export function AccountsCard({ initial }: { initial: AccountRow[] }) {
                       <div className="flex items-center gap-2">
                         <button type="button" onClick={() => move(i, -1)} disabled={i === 0} aria-label={e("moveUp", { item: name })} className={iconButton}><ArrowUp aria-hidden="true" size={16} /></button>
                         <button type="button" onClick={() => move(i, 1)} disabled={i === rows.length - 1} aria-label={e("moveDown", { item: name })} className={iconButton}><ArrowDown aria-hidden="true" size={16} /></button>
-                        <button type="button" onClick={() => { setRows(rows.filter((r) => r.key !== row.key)); setStatus(""); }} className="ms-auto inline-flex h-10 items-center gap-2 rounded-[10px] bg-navy/5 px-3 text-[13px] font-medium text-bad">
+                        <button type="button" onClick={() => { setRows(rows.filter((r) => r.key !== row.key)); setStatus(""); }} className="ms-auto inline-flex min-h-11 items-center gap-2 rounded-full px-3 text-[13px] font-semibold text-bad hover:bg-bad/8 md:min-h-9">
                           <Trash2 aria-hidden="true" size={16} /> {t("removeAccount")}
                         </button>
                       </div>
                     </div>
                   )}
-                </Card>
+                </div>
               </li>
             );
           })}
         </ul>
 
         {rows.length < MAX_ACCOUNTS && (
-          <button type="button" onClick={() => setPicker(!picker)} aria-expanded={picker} className="inline-flex min-h-14 items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-navy/15 text-sm font-bold">
+          <button type="button" onClick={() => setPicker(!picker)} aria-expanded={picker} className="mx-5 mt-2 mb-4 inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-dashed border-navy/20 text-sm font-semibold text-blue hover:bg-blue/5">
             <Plus aria-hidden="true" size={18} /> {t("addAccount")}
           </button>
         )}
         {picker && (
-          <Card className="flex flex-col gap-2">
+          <div className="mx-5 mb-4 flex flex-col gap-2 rounded-xl border border-line bg-bg p-3">
             <span className="text-[13px] text-muted">{t("pickPlatform")}</span>
             <div className="grid grid-cols-3 gap-2">
               {PLATFORMS.map((p) => (
-                <button key={p} type="button" onClick={() => addPlatform(p)} className="inline-flex min-h-12 items-center justify-center gap-1.5 rounded-xl bg-navy/5 px-2 text-[13px] font-medium">
+                <button key={p} type="button" onClick={() => addPlatform(p)} className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-[10px] border border-line bg-card px-2 text-[13px] font-medium shadow-card hover:bg-hover">
                   <PlatformIcon platform={p} size={16} /> {PLATFORM_NAMES[p]}
                 </button>
               ))}
             </div>
-          </Card>
+          </div>
         )}
       </section>
 
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex items-center justify-between gap-3 border-t border-line-soft px-5 py-3">
         <p role="status" aria-live="polite" className={`text-sm ${status === "saved" ? "text-good" : "text-bad"}`}>
           {status === "saved" ? (resetNote ? t("savedReset") : e("saved")) : status === "failed" ? e("errors.failed") : status === "incomplete" ? e("fixErrors") : ""}
         </p>
@@ -237,6 +228,6 @@ export function AccountsCard({ initial }: { initial: AccountRow[] }) {
           {pending ? e("saving") : e("save")}
         </button>
       </div>
-    </div>
+    </Panel>
   );
 }

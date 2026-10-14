@@ -68,7 +68,7 @@ function TagList({ lang, initial, showTitle }: { lang: Locale; initial: string[]
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); add(); } }}
           disabled={tags.length >= MAX_TAGS}
-          className="h-12 min-w-0 flex-1 rounded-xl border border-navy/16 bg-card px-4 text-[15px]"
+          className="h-11 min-w-0 flex-1 rounded-[10px] border border-navy/15 bg-card px-4 text-[15px] outline-none shadow-card transition-[border-color,box-shadow] focus:border-blue focus:ring-3 focus:ring-blue/15"
         />
         <button type="button" onClick={add} disabled={!draft.trim() || tags.length >= MAX_TAGS} className={buttonClasses("primary", "h-12 px-4")}>
           <Plus aria-hidden="true" size={18} /> {t("addTag")}

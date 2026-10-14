@@ -10,7 +10,7 @@ import { saveCategoryList } from "./actions";
 
 type Row = { key: string; id: string | null; nameAr: string; nameEn: string; uses: number };
 const newKey = () => Math.random().toString(36).slice(2);
-const control = "h-12 w-full min-w-0 rounded-xl border border-navy/16 bg-card px-3 text-[15px]";
+const control = "h-11 w-full min-w-0 rounded-[10px] border border-navy/15 bg-card px-3 text-[15px] outline-none shadow-card transition-[border-color,box-shadow] focus:border-blue focus:ring-3 focus:ring-blue/15";
 const iconButton = "inline-flex size-11 shrink-0 items-center justify-center rounded-xl bg-navy/5 text-muted hover:text-navy disabled:opacity-30";
 
 /** Owner's category list: rename (Arabic + English), reorder, add, delete; one save for all. */
@@ -66,11 +66,11 @@ export function CategoryEditor({ initial }: { initial: { id: string; nameAr: str
         ))}
       </ol>
       {rows.length < MAX_CATEGORIES && (
-        <button type="button" onClick={() => { setStatus(""); setRows([...rows, { key: newKey(), id: null, nameAr: "", nameEn: "", uses: 0 }]); }} className="inline-flex min-h-11 items-center gap-2 self-start rounded-full bg-navy/5 px-4 text-[13.5px] font-bold">
+        <button type="button" onClick={() => { setStatus(""); setRows([...rows, { key: newKey(), id: null, nameAr: "", nameEn: "", uses: 0 }]); }} className="inline-flex min-h-11 items-center gap-2 self-start rounded-full border border-line bg-card shadow-card hover:bg-hover px-4 text-[13.5px] font-bold">
           <Plus aria-hidden="true" size={18} /> {t("add")}
         </button>
       )}
-      <div className="flex items-center justify-between gap-3 border-t border-navy/8 pt-4">
+      <div className="flex items-center justify-between gap-3 border-t border-line pt-4">
         <p role="status" aria-live="polite" className={`text-sm ${status === "saved" ? "text-good" : "text-bad"}`}>
           {status && t(`status.${status}`)}
         </p>

@@ -48,7 +48,7 @@ export function ManageCard({ autoRenew, cycle, hasCard, endDate }: { autoRenew: 
             ))}
           </fieldset>
           <label htmlFor="cx-note" className="sr-only">{t("cancelNote")}</label>
-          <textarea id="cx-note" value={note} maxLength={300} onChange={(e) => setNote(e.target.value)} placeholder={t("cancelNote")} className="min-h-20 rounded-xl border border-navy/16 bg-card p-3 text-[15px]" />
+          <textarea id="cx-note" value={note} maxLength={300} onChange={(e) => setNote(e.target.value)} placeholder={t("cancelNote")} className="min-h-20 rounded-[10px] border border-navy/15 bg-card p-3 text-[15px] outline-none shadow-card transition-[border-color,box-shadow] focus:border-blue focus:ring-3 focus:ring-blue/15" />
           <div className="grid grid-cols-2 gap-2">
             <button type="button" onClick={() => setAsking(false)} className="inline-flex h-11 items-center justify-center rounded-full bg-blue text-[13.5px] font-bold text-on-blue">{t("keepPlan")}</button>
             <button
@@ -74,7 +74,7 @@ export function ManageCard({ autoRenew, cycle, hasCard, endDate }: { autoRenew: 
       )}
 
       {autoRenew && (
-        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-navy/8 pt-3">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-line pt-3">
           <p className="text-[13px] text-muted">{t("nextCycle", { cycle: t(cycle) })}</p>
           <button type="button" disabled={pending} onClick={() => run(() => changeCycle(cycle === "monthly" ? "yearly" : "monthly"))} className={soft}>
             {cycle === "monthly" ? t("switchToYearly") : t("switchToMonthly")}

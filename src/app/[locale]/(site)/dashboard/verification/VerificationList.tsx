@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { AlertTriangle, CheckCircle2, ChevronDown, FileBadge, ImageUp, Sparkles } from "lucide-react";
 import { PlatformIcon } from "@/components/creator/PlatformIcon";
-import { Card } from "@/components/ui/Card";
+import { Card, Panel } from "@/components/ui/Card";
 import { PLATFORM_NAMES } from "@/config/platforms";
 import { UPLOAD_KINDS } from "@/config/uploads";
 import { REVIEW_HOURS, type DisplayStatus } from "@/config/verification";
@@ -64,30 +64,28 @@ export function VerificationList({ accounts, licenses }: { accounts: VerifyAccou
           </div>
           <span dir="ltr" className="font-numbers text-[28px] font-black">{ok}/{accounts.length}</span>
         </div>
-        <div className="h-2 overflow-hidden rounded-full bg-navy/5">
+        <div className="h-1.5 overflow-hidden rounded-full bg-line-soft">
           <div className="h-full rounded-full bg-blue" style={{ width: `${accounts.length ? Math.round((ok / accounts.length) * 100) : 0}%` }} />
         </div>
       </Card>
 
-      <section className="flex flex-col gap-3">
-        <h2 className="font-bold">{t("accountsTitle")}</h2>
-        <ul className="flex flex-col gap-3">
+      <Panel title={t("accountsTitle")} flush>
+        <ul className="flex flex-col divide-y divide-line-soft">
           {accounts.map((a) => <AccountRow key={a.id} account={a} />)}
         </ul>
-      </section>
+      </Panel>
 
-      <Card className="flex flex-col gap-1">
-        <h2 className="mb-1 font-bold">{t("licensesTitle")}</h2>
+      <Panel title={t("licensesTitle")} bodyClassName="flex flex-col gap-1 !py-2">
         {licenses.length === 0 ? (
           <p className="text-sm text-muted">
             {t("noLicenses")} <Link href="/dashboard/edit" className="font-bold text-blue">{t("addLicense")}</Link>
           </p>
         ) : (
-          <ul className="flex flex-col divide-y divide-navy/6">
+          <ul className="flex flex-col divide-y divide-line-soft">
             {licenses.map((l) => <LicenseRow key={l.id} license={l} />)}
           </ul>
         )}
-      </Card>
+      </Panel>
     </>
   );
 }
@@ -167,10 +165,9 @@ function AccountRow({ account: a }: { account: VerifyAccount }) {
   if ((status === "verified" || status === "expiring") && a.verifiedUntil) detail = status === "expiring" ? t("expiresIn", { days: a.daysLeft, date: date(a.verifiedUntil) }) : t("validUntil", { date: date(a.verifiedUntil) });
 
   return (
-    <li>
-      <Card className="flex flex-col gap-3">
+    <li className="flex flex-col gap-3 px-5 py-4">
         <div className="flex items-center gap-3">
-          <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-[10px] bg-navy/5"><PlatformIcon platform={a.platform} size={18} /></span>
+          <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-[10px] border border-line-soft bg-card"><PlatformIcon platform={a.platform} size={18} /></span>
           <span className="flex min-w-0 flex-1 flex-col">
             <span className="text-sm font-bold">{PLATFORM_NAMES[a.platform]} <span dir="ltr" className="font-normal text-muted">@{a.handle}</span></span>
             <span className="text-xs text-muted">{detail}</span>
@@ -218,7 +215,6 @@ function AccountRow({ account: a }: { account: VerifyAccount }) {
           </div>
         )}
         {error && <p role="alert" className="text-sm text-bad">{error}</p>}
-      </Card>
     </li>
   );
 }

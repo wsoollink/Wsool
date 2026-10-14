@@ -50,7 +50,7 @@ export function LicenseReviewCard({ item, canDecide }: { item: LicenseItem; canD
             </button>
             <div className="flex flex-1 flex-col gap-1">
               <label htmlFor={`lr-${item.id}`} className="text-xs text-muted">{t("rejectReason")}</label>
-              <select id={`lr-${item.id}`} value={reason} onChange={(e) => setReason(e.target.value)} className="h-12 rounded-xl border border-navy/16 bg-card px-3 text-sm">
+              <select id={`lr-${item.id}`} value={reason} onChange={(e) => setReason(e.target.value)} className="h-11 rounded-[10px] border border-navy/15 bg-card px-3 text-sm outline-none shadow-card transition-[border-color,box-shadow] focus:border-blue focus:ring-3 focus:ring-blue/15">
                 <option value="">—</option>
                 {LICENSE_REJECT_REASONS.map((r) => <option key={r} value={r}>{t(`reasons.${r}`)}</option>)}
               </select>

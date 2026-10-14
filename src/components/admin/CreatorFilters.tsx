@@ -61,7 +61,7 @@ export async function CreatorFilterForm({ action, options, filters, keep }: { ac
           </select>
         </label>
       ))}
-      <button type="submit" className="inline-flex h-11 items-center rounded-full bg-navy px-5 text-sm font-bold text-on-navy">{t("apply")}</button>
+      <button type="submit" className="inline-flex h-11 items-center rounded-full bg-blue px-5 text-sm font-bold text-on-blue">{t("apply")}</button>
     </form>
   );
 }

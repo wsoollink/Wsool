@@ -81,7 +81,7 @@ export function ProfileForm({ primaryLang: initialPrimary, enEnabled: initialEn,
         <h2 className="font-bold">{t("language")}</h2>
         <div className="flex flex-col gap-1.5">
           <label htmlFor="primaryLang" className="text-[13px] font-medium">{t("primaryLang")}</label>
-          <select id="primaryLang" name="primaryLang" value={primaryLang} onChange={(e) => setPrimaryLang(e.target.value as Locale)} className="h-12 rounded-xl border border-navy/16 bg-card px-3 text-[15px]">
+          <select id="primaryLang" name="primaryLang" value={primaryLang} onChange={(e) => setPrimaryLang(e.target.value as Locale)} className="h-11 rounded-[10px] border border-navy/15 bg-card px-3 text-[15px] outline-none shadow-card transition-[border-color,box-shadow] focus:border-blue focus:ring-3 focus:ring-blue/15">
             <option value="ar">العربية</option>
             <option value="en">English</option>
           </select>

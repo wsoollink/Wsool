@@ -25,7 +25,7 @@ type Props = {
 };
 
 const newKey = () => Math.random().toString(36).slice(2);
-const control = "h-12 w-full min-w-0 rounded-xl border border-navy/16 bg-card px-3 text-[15px] aria-[invalid=true]:border-bad";
+const control = "h-11 w-full min-w-0 rounded-[10px] border border-navy/15 bg-card px-3 text-[15px] aria-[invalid=true]:border-bad outline-none shadow-card transition-[border-color,box-shadow] focus:border-blue focus:ring-3 focus:ring-blue/15";
 const iconButton = "inline-flex size-11 shrink-0 items-center justify-center rounded-full text-muted hover:bg-navy/5 disabled:opacity-30";
 
 const KIND_ICONS: Record<LinkKind, typeof Link2> = { map: MapPin, store: ShoppingBag, video: Play, link: Link2 };
@@ -120,7 +120,7 @@ export function LinksEditor({ initialLinks, initialServices, currency, lang, fre
             const id = `${fileBase}-l${l.key}`;
             const label = l.title || t("linkN", { n: i + 1 });
             return (
-              <li key={l.key} className="flex flex-col gap-3 rounded-[16px] border border-navy/8 bg-card/70 p-3">
+              <li key={l.key} className="flex flex-col gap-3 rounded-[16px] border border-line bg-card/70 p-3">
                 <div className="flex items-start gap-3">
                   <div className="flex shrink-0 flex-col items-center gap-1">
                     <label htmlFor={`${id}-img`} className="relative flex size-[72px] cursor-pointer items-center justify-center overflow-hidden rounded-[14px] border border-navy/10 bg-navy/[0.03]">
@@ -169,7 +169,7 @@ export function LinksEditor({ initialLinks, initialServices, currency, lang, fre
         </ul>
         {uploadError && <p role="alert" className="text-sm text-bad">{uploadError}</p>}
         {links.length < MAX_LINKS && (
-          <button type="button" onClick={() => setLinks([...links, { key: newKey(), title: "", titleEn: "", url: "", path: null, imageUrl: null, preview: null }])} className="inline-flex min-h-11 items-center gap-2 self-start rounded-full bg-navy/5 px-4 text-[13.5px] font-bold">
+          <button type="button" onClick={() => setLinks([...links, { key: newKey(), title: "", titleEn: "", url: "", path: null, imageUrl: null, preview: null }])} className="inline-flex min-h-11 items-center gap-2 self-start rounded-full border border-line bg-card shadow-card hover:bg-hover px-4 text-[13.5px] font-bold">
             <Plus aria-hidden="true" size={18} /> {t("addLink")}
           </button>
         )}
@@ -187,7 +187,7 @@ export function LinksEditor({ initialLinks, initialServices, currency, lang, fre
             const id = `${fileBase}-s${s.key}`;
             const label = s.name || t("serviceN", { n: i + 1 });
             return (
-              <li key={s.key} className="flex flex-col gap-3 rounded-[16px] border border-navy/8 bg-card/70 p-3">
+              <li key={s.key} className="flex flex-col gap-3 rounded-[16px] border border-line bg-card/70 p-3">
                 <Field id={`${id}-n`} label={t("serviceName")}>
                   <input id={`${id}-n`} value={s.name} maxLength={60} dir={dirPrimary} lang={lang.primary} placeholder={t("serviceNamePh")} aria-invalid={!!s.error} onChange={(ev) => setService(s.key, { name: ev.target.value, error: false })} className={control} />
                 </Field>
@@ -232,7 +232,7 @@ export function LinksEditor({ initialLinks, initialServices, currency, lang, fre
           })}
         </ul>
         {services.length < MAX_SERVICES && (
-          <button type="button" onClick={() => setServices([...services, { key: newKey(), name: "", nameEn: "", description: "", descriptionEn: "", price: "", unit: "", unitEn: "" }])} className="inline-flex min-h-11 items-center gap-2 self-start rounded-full bg-navy/5 px-4 text-[13.5px] font-bold">
+          <button type="button" onClick={() => setServices([...services, { key: newKey(), name: "", nameEn: "", description: "", descriptionEn: "", price: "", unit: "", unitEn: "" }])} className="inline-flex min-h-11 items-center gap-2 self-start rounded-full border border-line bg-card shadow-card hover:bg-hover px-4 text-[13.5px] font-bold">
             <Plus aria-hidden="true" size={18} /> {t("addService")}
           </button>
         )}

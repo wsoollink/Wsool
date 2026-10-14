@@ -35,7 +35,7 @@ export function PagePreview({ username, langs }: { username: string; langs: Loca
     <div className="flex items-center gap-1">
       {langs.length > 1 && langs.map((l) => (
         <button key={l} type="button" aria-pressed={lang === l} onClick={() => setLang(l)}
-          className={`inline-flex min-h-11 min-w-11 items-center justify-center rounded-full px-3 text-xs font-bold ${lang === l ? "bg-navy text-on-navy" : "bg-navy/5"}`}>
+          className={`inline-flex min-h-11 min-w-11 items-center justify-center rounded-full px-3 text-xs font-bold ${lang === l ? "bg-blue/10 text-blue ring-1 ring-blue/30" : "bg-card text-muted shadow-card ring-1 ring-line hover:text-navy"}`}>
           {l === "ar" ? "ع" : "EN"}
         </button>
       ))}
@@ -66,7 +66,7 @@ export function PagePreview({ username, langs }: { username: string; langs: Loca
       </button>
       {open && (
         <div role="dialog" aria-modal="true" aria-label={t("previewTitle")} className="fixed inset-0 z-50 flex flex-col bg-card lg:hidden">
-          <div className="flex items-center justify-between gap-2 border-b border-navy/8 px-3 py-1.5">
+          <div className="flex items-center justify-between gap-2 border-b border-line px-3 py-1.5">
             <button type="button" autoFocus onClick={() => setOpen(false)} aria-label={t("previewClose")} className="inline-flex size-11 items-center justify-center rounded-full hover:bg-navy/5">
               <X aria-hidden="true" size={20} />
             </button>

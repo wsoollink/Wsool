@@ -17,13 +17,8 @@ import { SUPPORT_EMAIL } from "@/config/site";
 import { isLocale, toIntlLocale } from "@/i18n/config";
 import { requireCreator } from "@/lib/creator";
 import { db } from "@/lib/db";
+import { initials } from "@/lib/initials";
 import { signOut } from "../login/actions";
-
-/** "إب" for Arabic names (a lone إ reads like "!"), "I" for Latin ones. */
-function initials(name: string) {
-  const chars = Array.from(name.trim());
-  return /[\u0600-\u06FF]/.test(chars[0] ?? "") ? chars.slice(0, 2).join("") : (chars[0] ?? "");
-}
 
 /** Who is signed in: photo / initial, name and page link (top of the sidebar and the phone menu). */
 async function CreatorCard() {

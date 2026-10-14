@@ -638,7 +638,7 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
 - **Sentry** (`@sentry/nextjs`): `src/instrumentation.ts` (server/edge + `onRequestError`), `src/instrumentation-client.ts`,
   options in `src/sentry.shared.ts` (off without `NEXT_PUBLIC_SENTRY_DSN`; `sendDefaultPii: false`, no replay, 5% traces);
   `withSentryConfig` in `next.config.ts` (source maps only with `SENTRY_AUTH_TOKEN` + `SENTRY_ORG`/`SENTRY_PROJECT`).
-  Listed in the privacy policy. Uptime: UptimeRobot on `https://wsool.link` (owner's account).
+  Region EU (owner). Listed in the privacy policy. Uptime: UptimeRobot on `https://wsool.link` (owner's account).
 - Not done yet (low): dedicated signing secrets instead of `CRON_SECRET` for mock payments / investor cookie / newsletter
   links / visitor hash; cleanup of uploaded files no row uses; Turnstile on sign-up forms.
 

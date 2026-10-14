@@ -1581,7 +1581,8 @@
       "branding": "إخفاء «صنعت بـ❤️ وصول»",
       "brands": "شريط الشركات",
       "contact": "التواصل (واتساب وإيميل)",
-      "links": "روابطي وخدماتي"
+      "links": "روابطي وخدماتي",
+      "linksCount": "{links, plural, one {رابط} two {رابطين} few {# روابط} many {# رابط} other {# رابط}} و{services, plural, one {خدمة} two {خدمتين} few {# خدمات} many {# خدمة} other {# خدمة}}"
     },
     "viewInvoice": "عرض فاتورة {date}",
     "haveCode": "عندك كود خصم؟",

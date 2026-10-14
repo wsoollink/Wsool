@@ -49,7 +49,7 @@ export function PlanPicker({ defaultCurrency, canPay, renew, showTrial }: { defa
     { label: t("cmp.brands"), free: yes, pro: yes },
     { label: t("cmp.works"), free: String(FREE_LIMITS.portfolioItems), pro: t("cmp.unlimited") },
     { label: t("cmp.contact"), free: yes, pro: yes },
-    { label: t("cmp.links"), free: `${FREE_LIMITS.links} + ${FREE_LIMITS.services}`, pro: `${MAX_LINKS} + ${MAX_SERVICES}` },
+    { label: t("cmp.links"), free: t("cmp.linksCount", { links: FREE_LIMITS.links, services: FREE_LIMITS.services }), pro: t("cmp.linksCount", { links: MAX_LINKS, services: MAX_SERVICES }) },
     { label: t("cmp.rates"), free: FREE_LIMITS.rates ? yes : no, pro: yes },
     { label: t("cmp.audience"), free: FREE_LIMITS.audience ? yes : no, pro: yes },
     { label: t("cmp.badge"), free: no, pro: yes },

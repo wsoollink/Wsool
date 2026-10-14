@@ -1581,7 +1581,8 @@
       "branding": "Hide “Made with ❤️ Wsool”",
       "brands": "Brand logos strip",
       "contact": "Contact (WhatsApp & email)",
-      "links": "Links & services"
+      "links": "Links & services",
+      "linksCount": "{links} links, {services} services"
     },
     "viewInvoice": "View invoice from {date}",
     "haveCode": "Have a discount code?",

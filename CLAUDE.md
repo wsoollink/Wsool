@@ -632,6 +632,9 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   the same user's older pending ones are dropped).
 - Newsletter confirm/unsubscribe pages act only after a button press (`LinkAction` + `runNewsletterLink`), so mail scanners
   can't confirm or unsubscribe. One-click `List-Unsubscribe` POST stays.
+- **GitHub checks**: `.github/workflows/ci.yml` (lint, `next typegen` + tsc, migrations apply on a fresh Postgres 16 with
+  the local stub and match the schema) on pushes to main/claude/** and PRs; `codeql.yml` (weekly + main); Dependabot
+  (`.github/dependabot.yml`: weekly npm, minor/patch grouped; monthly actions). Dependabot PRs are never merged without the owner.
 - Not done yet (low): dedicated signing secrets instead of `CRON_SECRET` for mock payments / investor cookie / newsletter
   links / visitor hash; cleanup of uploaded files no row uses; Turnstile on sign-up forms.
 

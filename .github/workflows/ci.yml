@@ -1,0 +1,51 @@
+# Checks every push and pull request before it can reach the live site:
+# lint, TypeScript, and that the database migrations apply and match the schema.
+name: CI
+
+on:
+  push:
+    branches: [main, "claude/**"]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: wsool
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      # Local test database only (no real keys in CI).
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/wsool
+      DIRECT_URL: postgres://postgres:postgres@localhost:5432/wsool
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: TypeScript
+        run: |
+          npx next typegen
+          npx tsc --noEmit
+      - name: Migrations apply and match the schema
+        run: |
+          PGPASSWORD=postgres psql -h localhost -U postgres -d wsool -f prisma/local-supabase-stub.sql
+          npx prisma migrate deploy
+          npx prisma migrate diff --from-config-datasource --to-schema prisma/schema.prisma --exit-code

@@ -71,7 +71,7 @@ export function Marquee({ children, ariaLabel, seconds = 30 }: Props) {
       const dt = last ? Math.min(now - last, 100) : 0;
       last = now;
       const size = period();
-      if (held || !visible || now < resumeAt || size <= 0) return;
+      if (held || !visible || now < resumeAt || now < pageScrollUntil || size <= 0) return;
       pos = wrap(pos + dir * (size / seconds) * (dt / 1000), size);
       el.scrollLeft = pos;
     };
@@ -91,6 +91,13 @@ export function Marquee({ children, ariaLabel, seconds = 30 }: Props) {
       if (Math.abs(el.scrollLeft - pos) > 2) pauseThenResume();
     };
 
+    // iOS (WebKit) can cut the page's own scroll short when a nested row is
+    // scrolled from script at the same time, leaving the top of the page under
+    // the browser bar. So the row stands still while the page itself scrolls.
+    let pageScrollUntil = 0;
+    const onPageScroll = () => { pageScrollUntil = performance.now() + 400; };
+    window.addEventListener("scroll", onPageScroll, { passive: true });
+
     const io = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; });
     io.observe(el);
     el.addEventListener("pointerenter", hold);
@@ -105,6 +112,7 @@ export function Marquee({ children, ariaLabel, seconds = 30 }: Props) {
     return () => {
       cancelAnimationFrame(frame);
       io.disconnect();
+      window.removeEventListener("scroll", onPageScroll);
       el.removeEventListener("pointerenter", hold);
       el.removeEventListener("pointerleave", release);
       el.removeEventListener("touchstart", hold);

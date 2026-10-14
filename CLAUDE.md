@@ -386,7 +386,7 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   `... t.custom custom "#e63946,#1d3557:light"`, or add `free` as the last argument.
 - Interactions (client components in `src/components/creator/`): `CountUp` (server renders the
   final number; animates once in view), `Marquee` (scrollable row moved per frame, swipeable by hand, pauses
-  on touch/hover/focus/scroll and resumes after 2.5s; moves and duplicates its items only when they overflow; RTL-aware), `Modal` (native `<dialog>`), `PlatformCard` (audience pop-up), `WorkItem` (portrait
+  on touch/hover/focus/scroll and resumes after 2.5s; stands still while the page itself scrolls (iOS Chrome cut the page scroll short and hid the top under the browser bar); moves and duplicates its items only when they overflow; RTL-aware), `Modal` (native `<dialog>`), `PlatformCard` (audience pop-up), `WorkItem` (portrait
   video pop-up), `LicenseFile` (PDF/image pop-up). All respect `prefers-reduced-motion`.
 - Videos: store MP4 (H.264) for Safari/iOS. The sandbox's test Chromium can't decode H.264, so
   video playback can only be checked there with a WebM copy.

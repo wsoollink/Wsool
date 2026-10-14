@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { Copy, Eye, FileDown, Share2, X } from "lucide-react";
+import { Check, Copy, ExternalLink, FileDown, Languages, Palette, Share2, X } from "lucide-react";
+import { buttonClasses } from "@/components/ui/Button";
+import { Pill } from "@/components/ui/Pill";
 import { Card } from "@/components/ui/Card";
 import type { Locale } from "@/i18n/config";
 
@@ -14,12 +16,12 @@ type Props = {
   pdfLangs: Locale[] | null;
   pdfNote: string | null;
   templateName: string;
+  /** "العربية + English" etc. */
+  languages: string;
 };
 
-const soft = "inline-flex h-11 items-center justify-center gap-2 rounded-full bg-navy/5 px-4 text-sm font-medium text-navy hover:bg-navy/10";
-
 /** "Your page link" card from the dashboard design: copy, share, view, PDF export. */
-export function LinkCard({ username, url, published, pdfLangs, pdfNote, templateName }: Props) {
+export function LinkCard({ username, url, published, pdfLangs, pdfNote, templateName, languages }: Props) {
   const t = useTranslations("Home");
   const [copied, setCopied] = useState(false);
   const [pdfOpen, setPdfOpen] = useState(false);
@@ -31,36 +33,31 @@ export function LinkCard({ username, url, published, pdfLangs, pdfNote, template
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
-  const share = async () => {
-    if (navigator.share) {
-      try { await navigator.share({ url }); } catch { /* closed */ }
-    } else copy();
-  };
 
   return (
-    <Card className="flex flex-col gap-3">
-      <div className="flex items-center justify-between gap-2">
-        <span className="text-[13px] text-muted">{t("yourLink")}</span>
-        <span className={`flex items-center gap-1.5 text-xs font-medium ${published ? "text-good" : "text-warn"}`}>
-          <span aria-hidden="true" className={`size-2 rounded-full ${published ? "bg-good" : "bg-warn"}`} />
-          {published ? t("published") : t("hidden")}
-        </span>
+    <Card className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      <div className="flex min-w-0 flex-col gap-1.5">
+        <span className="text-[12.5px] text-muted">{t("yourLink")}</span>
+        <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
+          <span dir="ltr" className="min-w-0 truncate text-lg font-bold md:text-xl">
+            <span className="font-medium text-faint">{shortUrl.slice(0, shortUrl.length - username.length)}</span>{username}
+          </span>
+          <Pill tone={published ? "good" : "warn"}>{published ? t("published") : t("hidden")}</Pill>
+        </div>
+        <div className="flex flex-wrap gap-x-4 gap-y-1 text-[12.5px] text-muted">
+          <span className="inline-flex items-center gap-1.5"><Palette aria-hidden="true" size={14} className="text-faint" />{t("template", { name: templateName })}</span>
+          <span className="inline-flex items-center gap-1.5"><Languages aria-hidden="true" size={14} className="text-faint" />{languages}</span>
+        </div>
       </div>
-      <div className="flex items-center justify-between gap-3">
-        <span dir="ltr" className="min-w-0 truncate text-xl font-bold md:text-2xl">{shortUrl}</span>
-        <button type="button" onClick={share} aria-label={t("shareLink")} className="inline-flex size-11 shrink-0 items-center justify-center rounded-xl bg-navy/5">
-          <Share2 aria-hidden="true" size={18} />
+      <div className="flex shrink-0 flex-wrap gap-2 [&>*]:whitespace-nowrap">
+        <button type="button" onClick={copy} className={buttonClasses("secondary", "px-3.5 md:px-4")}>
+          <Copy aria-hidden="true" size={15} /> <span aria-live="polite">{copied ? t("copied") : t("copy")}</span>
         </button>
-      </div>
-      <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
-        <button type="button" onClick={copy} className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-blue px-4 text-sm font-bold text-on-blue">
-          <Copy aria-hidden="true" size={16} /> <span aria-live="polite">{copied ? t("copied") : t("copy")}</span>
-        </button>
-        <a href={`/${username}`} target="_blank" rel="noopener noreferrer" className={soft}>
-          <Eye aria-hidden="true" size={16} /> {t("viewPage")}
+        <a href={`/${username}`} target="_blank" rel="noopener noreferrer" className={buttonClasses("secondary", "px-3.5 md:px-4")}>
+          <ExternalLink aria-hidden="true" size={15} /> {t("viewPage")}
         </a>
-        <button type="button" onClick={() => setPdfOpen(true)} className={soft} aria-haspopup="dialog">
-          <FileDown aria-hidden="true" size={16} /> {t("exportPdf")}
+        <button type="button" onClick={() => setPdfOpen(true)} className={buttonClasses("secondary", "px-3.5 md:px-4")} aria-haspopup="dialog">
+          <FileDown aria-hidden="true" size={15} /> PDF
         </button>
       </div>
 
@@ -105,5 +102,26 @@ export function LinkCard({ username, url, published, pdfLangs, pdfNote, template
         </div>
       )}
     </Card>
+  );
+}
+
+/** "Share your link" (page header): the phone's share sheet, or copies the link. */
+export function ShareButton({ url }: { url: string }) {
+  const t = useTranslations("Home");
+  const [copied, setCopied] = useState(false);
+  const share = async () => {
+    if (navigator.share) {
+      try { await navigator.share({ url }); } catch { /* closed */ }
+      return;
+    }
+    await navigator.clipboard?.writeText(url);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+  return (
+    <button type="button" onClick={share} className={buttonClasses("primary")}>
+      {copied ? <Check aria-hidden="true" size={16} /> : <Share2 aria-hidden="true" size={16} />}
+      <span aria-live="polite">{copied ? t("copied") : t("share")}</span>
+    </button>
   );
 }

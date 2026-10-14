@@ -24,7 +24,7 @@ export default async function CategoriesPage({ params }: PageProps<"/[locale]/ad
   const nav = await getTranslations("Admin.nav");
   return (
     <div className="flex flex-col gap-4">
-      <AdminHeader title={nav("categories")} subtitle={(await getTranslations("Admin.sub"))("categories")} search={false} />
+      <AdminHeader title={nav("categories")} subtitle={(await getTranslations("Admin.sub"))("categories")} />
       <Suspense fallback={null}><Editor /></Suspense>
     </div>
   );

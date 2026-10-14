@@ -74,7 +74,7 @@ export default async function FinancePage({ params, searchParams }: PageProps<"/
   const nav = await getTranslations("Admin.nav");
   return (
     <div className="flex flex-col gap-4">
-      <AdminHeader title={nav("finance")} subtitle={(await getTranslations("Admin.sub"))("finance")} search={false} />
+      <AdminHeader title={nav("finance")} subtitle={(await getTranslations("Admin.sub"))("finance")} />
       <Suspense fallback={null}><Finance lang={locale} searchParams={searchParams} /></Suspense>
     </div>
   );

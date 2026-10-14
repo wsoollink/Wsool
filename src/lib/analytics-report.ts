@@ -73,3 +73,21 @@ export async function periodTotals(pageId: string, from: Date, to: Date) {
   const click = (k: string) => clicks.find((c) => c.kind === k)?._count ?? 0;
   return { views, whatsapp: click("whatsapp"), email: click("email"), countries: countries.length };
 }
+
+/** Visits, WhatsApp and email taps per day for the last `days` days (oldest first), for charts and sparklines. */
+export async function dailyCounts(pageId: string, days: number) {
+  const end = today();
+  const start = new Date(end.getTime() - (days - 1) * 86_400_000);
+  const where = { pageId, day: { gte: start, lte: end } };
+  const [views, clicks] = await Promise.all([
+    db.pageView.groupBy({ by: ["day"], where, _count: true }),
+    db.contactClick.groupBy({ by: ["day", "kind"], where: { ...where, kind: { in: ["whatsapp", "email"] } }, _count: true }),
+  ]);
+  const key = (d: Date) => d.toISOString().slice(0, 10);
+  const v = new Map(views.map((r) => [key(r.day), r._count]));
+  const c = new Map(clicks.map((r) => [`${key(r.day)}:${r.kind}`, r._count]));
+  return Array.from({ length: days }, (_, i) => {
+    const day = key(new Date(start.getTime() + i * 86_400_000));
+    return { day, views: v.get(day) ?? 0, whatsapp: c.get(`${day}:whatsapp`) ?? 0, email: c.get(`${day}:email`) ?? 0 };
+  });
+}

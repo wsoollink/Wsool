@@ -83,8 +83,8 @@ Logos: Arabic and English logo files (owner will add to `/public/brand/`).
 | logo blue | `#0A6CFF` | decorative only, gradients |
 | cyan | `#22B8F0` | gradient partner |
 | muted | `#56607A` | secondary text |
-| bg | `#F4F6FA` / `#F6F8FC` | app / marketing background |
-| line | `rgba(2,25,65,0.09)` | borders |
+| bg | `#F6F8FA` / `#F6F8FC` | app / marketing background |
+| line / line-soft | `#E3E8EE` / `#EBEEF3` | card borders / rows inside cards |
 | good / warn / bad | `#12805C` / `#B45309` / `#C0362C` | status |
 
 Fonts: text = **Noto Kufi Arabic** (Google, free OFL license; Arabic + Latin, variable weight
@@ -95,7 +95,13 @@ Big numbers: the same font's **Black (900)** cut (owner, instead of Menda), forc
 class asks for (`NotoKufiArabic-Black.woff2` / `.ttf`). Both sit behind the CSS variables
 `--font-text` and `--font-numbers` so they can be swapped in one place. Emails use system fonts.
 
-Dashboard style: light, white cards (radius 18–24px), soft borders, pill-shaped primary buttons.
+Dashboard style (**Stripe-style redesign**, owner approved Oct 2026): flat `bg` page, white cards (radius 14px,
+hairline `line` border, very soft shadow), pill-shaped buttons (`buttonClasses`: primary blue, secondary white + border;
+44px on touch screens, 38px with a mouse via `pointer-fine:`). Shared pieces: `Card` / `Panel` (title row + divider)
+in `src/components/ui/Card.tsx`, `Pill` (status badge), `KpiStrip` (numbers in one bordered strip, sparklines),
+`src/components/charts/` (`AreaChart`: current period + dashed previous, hover tooltip, time runs left→right in both
+languages; tooltip texts are precomputed `text` because functions can't be passed to client components; `Sparkline`),
+shell class strings in `src/components/ui/styles.ts` (`navRow`, `navRowActive`, `iconButton`, `topBar`).
 
 **Dark mode** (owner, Oct 2026) for the marketing site, dashboard, admin, login and legal pages (never creator pages:
 they follow the creator's template). Colours are CSS variables (`@theme`, not `inline`, in `globals.css`) with a
@@ -331,10 +337,13 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   ends its redirect. Both old and new cache tags are updated.
 
 ### Dashboard shell (Phase 1, step 7)
-- Sections are defined once in `src/config/dashboard.ts`. Layout:
-  `src/app/[locale]/(site)/dashboard/layout.tsx` (desktop sidebar). Phones: `MobileMenu`
-  (`src/components/dashboard/MobileMenu.tsx`, native `<dialog>` drawer from the start side, rendered by `PageHeader`
-  with "view my page", support and sign out; `/dashboard/more` redirects home). Sidebar and drawer sit on the
+- Sections are defined once in `src/config/dashboard.ts` (`group: "account"` = under the "Account" label). Layout:
+  `src/app/[locale]/(site)/dashboard/layout.tsx`: desktop sidebar (logo, `CreatorCard` = photo/name/link, sections,
+  support, sign out) + a sticky **top bar** (phones: ☰ + logo; desktop: `SectionSearch` "jump to a section", ⌘K;
+  then theme, bell, language). Phones: `MobileMenu` (`src/components/dashboard/MobileMenu.tsx`, native `<dialog>`
+  drawer from the start side; also used by admin with its own `nav`; `/dashboard/more` redirects home).
+  `PageHeader` is only the title row (title, subtitle, `actions`). Admin: same shell (sidebar with an "Owner" group,
+  top bar with `CreatorSearch`), `AdminHeader` = title row. Sidebar and drawer sit on the
   **start** side: right in Arabic, left in English.
 - Single-column grids need `grid-cols-1` (= `minmax(0,1fr)`) on phones: a bare `grid` sizes its column to the widest
   content and the page grows wider than the screen.
@@ -603,10 +612,9 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   template keeps its free color pickers).
 - Creator page: language switch sets the `NEXT_LOCALE` cookie and reloads; share uses
   `navigator.share` or copies the link (`PageActions.tsx`).
-- Dashboard shell (design pass): `app-backdrop` background, frosted `Card` (radius 18), blue primary
-  buttons (still pills), 48px inputs, `Switch` (`src/components/ui/Switch.tsx`, role=switch), and a
-  `PageHeader` per page (title + subtitle from `DashboardHeader` messages, bell, language pill).
-  Sections with one save for everything use `SaveBar` (fixed to the bottom of the screen on phones).
+- Dashboard shell: replaced by the Stripe-style redesign (section 4): flat `app-backdrop`, `Card` radius 14, 44px inputs
+  (`Field.tsx`, focus ring), `Switch` (`src/components/ui/Switch.tsx`, role=switch), `PageHeader` per page (title + subtitle
+  from `DashboardHeader` messages). Sections with one save for everything use `SaveBar` (fixed to the bottom on phones).
 - Ad rates: one bundle per page (`MAX_BUNDLES = 1`; the public page shows only the first), rate
   currencies SAR/USD/AED/KWD (`RateCurrency` enum, separate from the subscription `Currency`).
 - Accent color: presets only (`ACCENT_SWATCHES`, light + dark variant chosen by `pageTheme`).

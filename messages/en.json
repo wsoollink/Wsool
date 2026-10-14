@@ -85,7 +85,31 @@
     "paidPlan": "Paid plan",
     "renewsOn": "Renews {date} · {price} {currency, select, SAR {SAR} USD {USD} other {{currency}}} {cycle, select, yearly {per year} other {per month}}",
     "endsOn": "Ends {date} · won't renew",
-    "manage": "Manage"
+    "manage": "Manage",
+    "summary": "Your page over the last 30 days",
+    "vsPrev": "vs last month",
+    "previousPeriod": "Previous period",
+    "visitsChart30": "Page visits over the last 30 days, {total} in total",
+    "visitsCount": "{count, plural, one {1 visit} other {# visits}}",
+    "topCountries": "Top countries",
+    "noVisits": "No visits yet. Share your link and the numbers will show here.",
+    "others": "Others",
+    "stepsDone": "{done} of {total}",
+    "completionHint": "A complete page wins brands faster. {left, plural, one {1 step left.} other {# steps left.}}",
+    "subscription": "Subscription",
+    "proBadge": "Pro",
+    "freeBadge": "Free",
+    "trial": "Free trial",
+    "daysLeftShort": "{days, plural, one {1 day left} other {# days left}}",
+    "trialAfter": "After that your page moves to Free; nothing is deleted.",
+    "languages": "Languages",
+    "bothLangs": "العربية + English",
+    "arOnly": "العربية",
+    "enOnly": "English",
+    "template": "{name} template",
+    "share": "Share your link",
+    "accountsCol": "Account",
+    "verifyAll": "Manage"
   },
   "LanguageSwitcher": {
     "label": "Language",
@@ -186,7 +210,11 @@
     "links": "Links & services",
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
-    "viewPage": "View my page"
+    "viewPage": "View my page",
+    "groupAccount": "Account",
+    "search": "Jump to a section…",
+    "searchLabel": "Search sections",
+    "noResults": "No section with that name"
   },
   "CreatorPage": {
     "brand": "Wsool",
@@ -746,7 +774,8 @@
       "newsletter": "Newsletter",
       "discounts": "Discount codes",
       "insights": "Creator insights",
-      "categories": "Categories"
+      "categories": "Categories",
+      "groupOwner": "Owner"
     },
     "overview": {
       "users": "Users",
@@ -788,7 +817,12 @@
       },
       "activity": "Recent activity",
       "seeAll": "See all",
-      "noActivity": "No actions yet."
+      "noActivity": "No actions yet.",
+      "previousPeriod": "Previous period",
+      "signupsCount": "{n, plural, one {1 signup} other {# signups}}",
+      "waiting": "Waiting for you",
+      "weekNote": "this week",
+      "endingNote": "ending this week"
     },
     "verifications": {
       "tabPending": "Waiting",

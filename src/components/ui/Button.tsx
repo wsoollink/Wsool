@@ -3,15 +3,15 @@ import type { ButtonHTMLAttributes } from "react";
 type Variant = "primary" | "accent" | "secondary";
 
 const variants: Record<Variant, string> = {
-  // Design: primary actions are blue; secondary ones a soft navy fill without a border.
-  primary: "bg-blue text-on-blue hover:bg-blue/90",
-  accent: "bg-blue text-on-blue hover:bg-blue/90",
-  secondary: "bg-navy/5 text-navy hover:bg-navy/10",
+  primary: "border border-blue bg-blue text-on-blue hover:bg-blue/90",
+  accent: "border border-blue bg-blue text-on-blue hover:bg-blue/90",
+  // Stripe-style: white surface, hairline border, soft shadow.
+  secondary: "border border-line bg-card text-navy shadow-card hover:bg-hover",
 };
 
-/** Pill-shaped button with a 44px minimum touch target. */
+/** Pill-shaped button: 44px tall on touch screens, 38px with a mouse. */
 export function buttonClasses(variant: Variant = "primary", className = "") {
-  return `inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-5 text-sm font-semibold transition-colors disabled:opacity-50 ${variants[variant]} ${className}`;
+  return `inline-flex min-h-11 pointer-fine:min-h-[38px] items-center justify-center gap-2 rounded-full px-5 text-sm font-semibold transition-colors disabled:opacity-50 ${variants[variant]} ${className}`;
 }
 
 type Props = ButtonHTMLAttributes<HTMLButtonElement> & { variant?: Variant };

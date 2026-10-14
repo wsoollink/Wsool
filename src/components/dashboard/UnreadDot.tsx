@@ -9,7 +9,7 @@ export async function UnreadDot({ label }: { label: string }) {
   if (!unread) return null;
   return (
     <>
-      <span aria-hidden="true" className="absolute end-2.5 top-2.5 size-[9px] rounded-full bg-blue ring-2 ring-white" />
+      <span aria-hidden="true" className="absolute end-2 top-2 size-2 rounded-full bg-bad ring-2 ring-card" />
       <span className="sr-only">{label}</span>
     </>
   );

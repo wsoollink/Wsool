@@ -42,7 +42,7 @@ export default async function CampaignPage({ params, searchParams }: PageProps<"
   return (
     <div className="flex flex-col gap-4">
       <Link href="/admin/newsletter" className="inline-flex min-h-11 items-center self-start text-sm font-bold text-blue">{t("back")}</Link>
-      <AdminHeader title={nav("newsletter")} search={false} />
+      <AdminHeader title={nav("newsletter")} />
       <Suspense fallback={null}><Campaign lang={locale} searchParams={searchParams} /></Suspense>
     </div>
   );

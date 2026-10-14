@@ -102,7 +102,7 @@ export default async function DiscountsPage({ params, searchParams }: PageProps<
   const nav = await getTranslations("Admin.nav");
   return (
     <div className="flex flex-col gap-4">
-      <AdminHeader title={nav("discounts")} subtitle={(await getTranslations("Admin.sub"))("discounts")} search={false} />
+      <AdminHeader title={nav("discounts")} subtitle={(await getTranslations("Admin.sub"))("discounts")} />
       <Suspense fallback={null}><Codes lang={locale} searchParams={searchParams} /></Suspense>
     </div>
   );

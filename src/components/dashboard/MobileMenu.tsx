@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { Menu, X } from "lucide-react";
 import { fromIntlLocale } from "@/i18n/config";
+import { iconButton } from "@/components/ui/styles";
 import { SidebarNav } from "./DashboardNav";
 
 /**
@@ -15,7 +16,13 @@ import { SidebarNav } from "./DashboardNav";
  * Native <dialog>: focus stays inside, Esc closes. Tapping a section, the
  * dimmed backdrop or ✕ closes it too.
  */
-export function MobileMenu({ footer }: { footer: ReactNode }) {
+export function MobileMenu({ card, footer, nav, home = "/dashboard" }: {
+  card?: ReactNode;
+  footer: ReactNode;
+  /** Section list (default: the dashboard's). The drawer closes by itself when the page changes. */
+  nav?: ReactNode;
+  home?: string;
+}) {
   const t = useTranslations("DashboardNav");
   const lang = fromIntlLocale(useLocale());
   const ref = useRef<HTMLDialogElement>(null);
@@ -40,7 +47,7 @@ export function MobileMenu({ footer }: { footer: ReactNode }) {
     <>
       <button
         type="button" onClick={() => setOpen(true)} aria-label={t("openMenu")} aria-haspopup="dialog" aria-expanded={open}
-        className="inline-flex size-11 shrink-0 items-center justify-center rounded-full border border-navy/8 bg-card/72 shadow-card backdrop-blur-[14px] md:hidden"
+        className={`${iconButton} -ms-2 md:hidden`}
       >
         <Menu aria-hidden="true" size={20} />
       </button>
@@ -48,21 +55,22 @@ export function MobileMenu({ footer }: { footer: ReactNode }) {
         ref={ref} aria-label={t("menu")} tabIndex={-1}
         onClose={() => setOpen(false)}
         onClick={(ev) => { if (ev.target === ev.currentTarget) setOpen(false); }}
-        className="fixed inset-y-0 start-0 m-0 h-dvh max-h-none w-[min(320px,86vw)] max-w-none bg-card p-0 text-navy shadow-xl outline-none backdrop:bg-navy/40 md:hidden"
+        className="fixed inset-y-0 start-0 m-0 h-dvh max-h-none w-[min(320px,86vw)] max-w-none border-e border-line bg-bg p-0 text-navy shadow-pop outline-none backdrop:bg-[rgba(2,25,65,0.4)] md:hidden"
       >
         <div className="flex h-full flex-col gap-2 px-3 pt-[max(0.75rem,env(safe-area-inset-top))] pb-[max(0.75rem,env(safe-area-inset-bottom))]">
           <div className="flex items-center justify-between gap-3">
-            <Link href="/dashboard" className="inline-flex min-h-11 items-center px-3" aria-label={t("brand")}>
-              <BrandLogo lang={lang === "en" ? "en" : "ar"} alt={t("brand")} className="h-8 w-auto" />
+            <Link href={home} className="inline-flex min-h-11 items-center px-2.5" aria-label={t("brand")}>
+              <BrandLogo lang={lang === "en" ? "en" : "ar"} alt={t("brand")} className="h-7 w-auto" />
             </Link>
-            <button type="button" onClick={() => setOpen(false)} aria-label={t("closeMenu")} className="inline-flex size-11 items-center justify-center rounded-full text-muted hover:bg-navy/5">
+            <button type="button" onClick={() => setOpen(false)} aria-label={t("closeMenu")} className={iconButton}>
               <X aria-hidden="true" size={20} />
             </button>
           </div>
+          {card}
           <nav aria-label={t("menu")} className="min-h-0 flex-1 overflow-y-auto">
-            <SidebarNav compact onNavigate={() => setOpen(false)} />
+            {nav ?? <SidebarNav onNavigate={() => setOpen(false)} />}
           </nav>
-          <div className="flex flex-col border-t border-navy/8 pt-2">{footer}</div>
+          <div className="flex flex-col gap-0.5 border-t border-line pt-2">{footer}</div>
         </div>
       </dialog>
     </>

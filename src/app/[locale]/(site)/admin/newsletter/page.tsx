@@ -85,7 +85,7 @@ export default async function NewsletterPage({ params }: PageProps<"/[locale]/ad
   const nav = await getTranslations("Admin.nav");
   return (
     <div className="flex flex-col gap-4">
-      <AdminHeader title={nav("newsletter")} subtitle={(await getTranslations("Admin.sub"))("newsletter")} search={false} />
+      <AdminHeader title={nav("newsletter")} subtitle={(await getTranslations("Admin.sub"))("newsletter")} />
       <Suspense fallback={null}><Newsletter lang={locale} /></Suspense>
     </div>
   );

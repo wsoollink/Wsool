@@ -85,7 +85,31 @@
     "paidPlan": "الخطة المدفوعة",
     "renewsOn": "تتجدد {date} · {price} {currency, select, SAR {ريال} USD {دولار} other {{currency}}} {cycle, select, yearly {سنويًا} other {شهريًا}}",
     "endsOn": "تنتهي {date} · ما راح تتجدد",
-    "manage": "إدارة"
+    "manage": "إدارة",
+    "summary": "ملخص صفحتك خلال آخر 30 يوم",
+    "vsPrev": "عن الشهر الماضي",
+    "previousPeriod": "الفترة السابقة",
+    "visitsChart30": "زيارات الصفحة في آخر 30 يوم، المجموع {total}",
+    "visitsCount": "{count, plural, one {زيارة واحدة} two {زيارتين} few {# زيارات} other {# زيارة}}",
+    "topCountries": "أكثر الدول زيارة",
+    "noVisits": "ما فيه زيارات بعد. شارك رابطك وبتبان الأرقام هنا.",
+    "others": "أخرى",
+    "stepsDone": "{done} من {total}",
+    "completionHint": "صفحة كاملة تقنع الشركات أسرع. {left, plural, one {باقي لك خطوة وحدة.} two {باقي لك خطوتين.} few {باقي لك # خطوات.} other {باقي لك # خطوة.}}",
+    "subscription": "الاشتراك",
+    "proBadge": "الاحترافية",
+    "freeBadge": "المجانية",
+    "trial": "الفترة التجريبية",
+    "daysLeftShort": "{days, plural, one {يوم واحد باقي} two {يومين باقية} few {# أيام باقية} other {# يوم باقي}}",
+    "trialAfter": "بعدها تنتقل صفحتك للمجانية، وبياناتك ما تنحذف.",
+    "languages": "اللغات",
+    "bothLangs": "العربية + English",
+    "arOnly": "العربية",
+    "enOnly": "English",
+    "template": "قالب {name}",
+    "share": "شارك رابطك",
+    "accountsCol": "الحساب",
+    "verifyAll": "إدارة"
   },
   "LanguageSwitcher": {
     "label": "اللغة",
@@ -186,7 +210,11 @@
     "links": "روابطي وخدماتي",
     "openMenu": "افتح القائمة",
     "closeMenu": "اقفل القائمة",
-    "viewPage": "شوف صفحتي"
+    "viewPage": "شوف صفحتي",
+    "groupAccount": "الحساب",
+    "search": "انتقل إلى قسم…",
+    "searchLabel": "ابحث عن قسم",
+    "noResults": "ما فيه قسم بهذا الاسم"
   },
   "CreatorPage": {
     "brand": "وصول",
@@ -746,7 +774,8 @@
       "newsletter": "النشرة البريدية",
       "discounts": "أكواد الخصم",
       "insights": "توزيع الصناع",
-      "categories": "التصنيفات"
+      "categories": "التصنيفات",
+      "groupOwner": "المالك"
     },
     "overview": {
       "users": "المستخدمين",
@@ -788,7 +817,12 @@
       },
       "activity": "آخر الإجراءات",
       "seeAll": "عرض الكل",
-      "noActivity": "ما فيه إجراءات للحين."
+      "noActivity": "ما فيه إجراءات للحين.",
+      "previousPeriod": "الفترة السابقة",
+      "signupsCount": "{n, plural, one {تسجيل واحد} two {تسجيلين} few {# تسجيلات} other {# تسجيل}}",
+      "waiting": "بانتظارك",
+      "weekNote": "هالأسبوع",
+      "endingNote": "تنتهي هالأسبوع"
     },
     "verifications": {
       "tabPending": "تنتظر المراجعة",

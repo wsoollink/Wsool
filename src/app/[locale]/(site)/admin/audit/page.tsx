@@ -158,7 +158,7 @@ export default async function AuditPage({ params, searchParams }: PageProps<"/[l
   const nav = await getTranslations("Admin.nav");
   return (
     <div className="flex flex-col gap-4">
-      <AdminHeader title={nav("audit")} subtitle={(await getTranslations("Admin.sub"))("audit")} search={false} />
+      <AdminHeader title={nav("audit")} subtitle={(await getTranslations("Admin.sub"))("audit")} />
       <Suspense fallback={null}><Log lang={locale} searchParams={searchParams} /></Suspense>
     </div>
   );

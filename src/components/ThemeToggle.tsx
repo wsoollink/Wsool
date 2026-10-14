@@ -1,5 +1,6 @@
 "use client";
 
+import { iconButton } from "@/components/ui/styles";
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Moon, Sun } from "lucide-react";
@@ -53,14 +54,14 @@ function useTheme(): [Theme, (t: Theme) => void] {
 }
 
 /** Round sun/moon button (headers). */
-export function ThemeToggle({ className = "inline-flex" }: { className?: string }) {
+export function ThemeToggle({ className = "inline-flex", bare }: { className?: string; /** Borderless icon button (dashboard / admin top bar). */ bare?: boolean }) {
   const t = useTranslations("Theme");
   const [theme, set] = useTheme();
   const dark = theme === "dark";
   return (
     <button
       type="button" onClick={() => set(dark ? "light" : "dark")} aria-label={dark ? t("toLight") : t("toDark")} title={dark ? t("toLight") : t("toDark")}
-      className={`size-11 shrink-0 items-center justify-center rounded-full border border-navy/8 bg-card/72 shadow-card backdrop-blur-[14px] ${className}`}
+      className={bare ? `${iconButton.replace("inline-flex ", "")} ${className}` : `size-11 shrink-0 items-center justify-center rounded-full border border-navy/8 bg-card/72 shadow-card backdrop-blur-[14px] ${className}`}
     >
       {dark ? <Sun aria-hidden="true" size={18} /> : <Moon aria-hidden="true" size={18} />}
     </button>

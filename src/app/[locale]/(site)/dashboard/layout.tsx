@@ -1,45 +1,105 @@
+import { Suspense } from "react";
+import Image from "next/image";
 import Link from "next/link";
-import { BrandLogo } from "@/components/BrandLogo";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { LifeBuoy, LogOut } from "lucide-react";
+import { ExternalLink, LifeBuoy, LogOut } from "lucide-react";
+import { BrandLogo } from "@/components/BrandLogo";
+import { ThemeMenuItem, ThemeToggle } from "@/components/ThemeToggle";
 import { SidebarNav } from "@/components/dashboard/DashboardNav";
-import { SubmitButton } from "@/components/SubmitButton";
+import { LangPill } from "@/components/dashboard/LangPill";
+import { MobileMenu } from "@/components/dashboard/MobileMenu";
+import { SectionIcon } from "@/components/dashboard/SectionIcon";
+import { SectionSearch } from "@/components/dashboard/SectionSearch";
+import { UnreadDot } from "@/components/dashboard/UnreadDot";
+import { iconButton, navRow, topBar } from "@/components/ui/styles";
 import { SUPPORT_EMAIL } from "@/config/site";
 import { isLocale, toIntlLocale } from "@/i18n/config";
+import { requireCreator } from "@/lib/creator";
+import { db } from "@/lib/db";
 import { signOut } from "../login/actions";
 
-// Shell only: no user data here, so it renders instantly. Each page checks
-// the session itself through requireCreator().
+/** "إب" for Arabic names (a lone إ reads like "!"), "I" for Latin ones. */
+function initials(name: string) {
+  const chars = Array.from(name.trim());
+  return /[\u0600-\u06FF]/.test(chars[0] ?? "") ? chars.slice(0, 2).join("") : (chars[0] ?? "");
+}
+
+/** Who is signed in: photo / initial, name and page link (top of the sidebar and the phone menu). */
+async function CreatorCard() {
+  const { page } = await requireCreator();
+  const tr = await db.pageTranslation.findFirst({ where: { pageId: page.id, lang: page.primaryLang }, select: { fullName: true } });
+  const name = tr?.fullName || page.username;
+  return (
+    <a href={`/${page.username}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 rounded-xl border border-line bg-card p-2.5 shadow-card transition-colors hover:bg-hover">
+      {page.photoUrl ? (
+        <Image src={page.photoUrl} alt="" width={32} height={32} unoptimized className="size-8 shrink-0 rounded-full object-cover" />
+      ) : (
+        <span aria-hidden="true" className="brand-gradient inline-flex size-8 shrink-0 items-center justify-center rounded-full text-[12px] font-bold text-white uppercase">{initials(name)}</span>
+      )}
+      <span className="flex min-w-0 flex-1 flex-col leading-tight">
+        <span className="truncate text-[13px] font-bold">{name}</span>
+        <span dir="ltr" className="truncate text-[11.5px] text-muted rtl:text-end">wsool.link/{page.username}</span>
+      </span>
+      <ExternalLink aria-hidden="true" size={14} className="shrink-0 text-faint" />
+    </a>
+  );
+}
+
+// Shell: the sidebar and top bar render instantly; anything that needs the
+// session streams in (Suspense). Each page checks the session itself through requireCreator().
 export default async function DashboardLayout({ children, params }: LayoutProps<"/[locale]/dashboard">) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   setRequestLocale(toIntlLocale(locale));
   const t = await getTranslations("DashboardNav");
+  const logo = locale === "en" ? "en" : "ar";
+
+  const footer = (
+    <>
+      <ThemeMenuItem className={`${navRow} w-full md:hidden`} />
+      <a href={`mailto:${SUPPORT_EMAIL}`} className={navRow}>
+        <LifeBuoy aria-hidden="true" size={17} />
+        {t("help")}
+      </a>
+      <form action={signOut}>
+        <button type="submit" className={`${navRow} w-full`}>
+          <LogOut aria-hidden="true" size={17} />
+          {t("signOut")}
+        </button>
+      </form>
+    </>
+  );
 
   return (
     <div className="app-backdrop flex min-h-dvh flex-1">
-      <aside className="sticky top-0 hidden h-dvh w-[260px] shrink-0 flex-col gap-6 border-e border-navy/8 bg-card/82 px-4 py-6 backdrop-blur-[14px] md:flex">
-        <Link href="/dashboard" className="inline-flex min-h-11 items-center px-3" aria-label={t("brand")}>
-          <BrandLogo lang={locale === "en" ? "en" : "ar"} alt={t("brand")} className="h-8 w-auto" priority />
+      <aside className="sticky top-0 hidden h-dvh w-[248px] shrink-0 flex-col gap-3 border-e border-line px-3 pt-4 pb-3 md:flex">
+        <Link href="/dashboard" className="inline-flex min-h-10 items-center px-2.5" aria-label={t("brand")}>
+          <BrandLogo lang={logo} alt={t("brand")} className="h-7 w-auto" priority />
         </Link>
-        <nav aria-label={t("menu")} className="flex-1 overflow-y-auto">
+        <Suspense fallback={<div className="h-[54px] rounded-xl border border-line bg-card" />}><CreatorCard /></Suspense>
+        <nav aria-label={t("menu")} className="-mx-1 flex-1 overflow-y-auto px-1 pt-1">
           <SidebarNav />
         </nav>
-        <a href={`mailto:${SUPPORT_EMAIL}`} className="flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm font-medium text-muted hover:bg-navy/5">
-          <LifeBuoy aria-hidden="true" size={18} />
-          {t("help")}
-        </a>
-        <form action={signOut}>
-          <SubmitButton variant="secondary" className="w-full" pendingText={t("signingOut")}>
-            <LogOut aria-hidden="true" size={18} />
-            {t("signOut")}
-          </SubmitButton>
-        </form>
+        <div className="flex flex-col gap-0.5 border-t border-line pt-2">{footer}</div>
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <main className="mx-auto w-full max-w-[1160px] flex-1 px-4 pt-5 pb-10 md:px-8 md:pt-7 md:pb-10">{children}</main>
+        <header className={topBar}>
+          <MobileMenu card={<Suspense fallback={null}><CreatorCard /></Suspense>} footer={footer} />
+          <Link href="/dashboard" className="inline-flex min-h-11 items-center md:hidden" aria-label={t("brand")}>
+            <BrandLogo lang={logo} alt={t("brand")} className="h-[26px] w-auto" />
+          </Link>
+          <div className="hidden flex-1 md:block"><SectionSearch /></div>
+          <span className="flex-1 md:hidden" />
+          <ThemeToggle bare className="hidden md:inline-flex" />
+          <Link href="/dashboard/notifications" aria-label={t("notifications")} className={iconButton}>
+            <SectionIcon section="notifications" size={18} />
+            <Suspense fallback={null}><UnreadDot label={t("unread")} /></Suspense>
+          </Link>
+          <LangPill current={locale} />
+        </header>
+        <main className="mx-auto flex w-full max-w-[1240px] flex-1 flex-col px-4 pt-5 pb-10 md:px-8 md:pt-7">{children}</main>
       </div>
     </div>
   );

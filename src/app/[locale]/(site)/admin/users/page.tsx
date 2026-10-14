@@ -169,7 +169,7 @@ export default async function UsersPage({ params, searchParams }: PageProps<"/[l
   const t = await getTranslations("Admin.users");
   return (
     <div className="flex flex-col gap-4">
-      <AdminHeader title={nav("users")} subtitle={(await getTranslations("Admin.sub"))("users")} search={false} />
+      <AdminHeader title={nav("users")} subtitle={(await getTranslations("Admin.sub"))("users")} />
       <Suspense fallback={null}><SearchBox searchParams={searchParams} label={t("search")} /></Suspense>
       <Suspense fallback={null}><Results lang={locale} searchParams={searchParams} /></Suspense>
     </div>

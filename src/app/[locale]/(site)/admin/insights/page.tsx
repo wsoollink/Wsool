@@ -120,7 +120,7 @@ export default async function InsightsPage({ params, searchParams }: PageProps<"
   const nav = await getTranslations("Admin.nav");
   return (
     <div className="flex flex-col gap-4">
-      <AdminHeader title={nav("insights")} subtitle={(await getTranslations("Admin.sub"))("insights")} search={false} />
+      <AdminHeader title={nav("insights")} subtitle={(await getTranslations("Admin.sub"))("insights")} />
       <Suspense fallback={null}><Insights lang={locale} searchParams={searchParams} /></Suspense>
     </div>
   );

@@ -147,8 +147,11 @@ show in PDF, currency, VAT included or not. Hidden → show "الأسعار عن
   Prices are fixed in every country and **include VAT**.
 - Every new account automatically gets a **14-day Pro trial, no card**. Reminder emails at
   day 10, day 13, and day 14. If not subscribed, the page drops to Free; **no data is deleted**.
-- Free limits: 6 past works, White and Black templates, no verified badge, no analytics,
-  no PDF, Wsool footer shown. (Feature split will be reviewed by the owner; keep limits in one config file.)
+- Free plan (owner, Oct 2026): page + link, 2 templates (White, Black), brand logos strip, 6 past works, contact,
+  3 links + 3 services. Pro only: **ad rates and audience data** (hidden on Free pages, saved data kept; Free creators
+  see a `ProNotice` in those sections), verified badge, analytics, PDF, hiding the Wsool footer, all templates,
+  unlimited works. All limits live in `FREE_LIMITS` (`src/config/plans.ts`), applied in `shapePage()`; the
+  Subscription page comparison (`PlanPicker`) reads the same config.
 
 ---
 
@@ -167,7 +170,8 @@ show in PDF, currency, VAT included or not. Hidden → show "الأسعار عن
 Home · Edit page · Accounts & numbers · Brands & work · **Ad rates** · **Links & services** · Contact · Verification ·
 Appearance · Analytics · Subscription · Notifications (bell with unread dot in every header).
 Mobile: ☰ menu in every page header opening a side drawer with all sections (owner, Oct 2026; replaced the
-bottom tab bar). Desktop: left sidebar.
+bottom tab bar). The drawer is one scrolling column (card, sections, footer) with 40px rows so nothing hides behind
+a fixed footer on short screens. Collapsible rows are buttons, not `<details>` (iOS underlined `<summary>` text). Desktop: left sidebar.
 Subscription page also holds **self-service account deletion**: download data → type username
 to confirm → page hidden immediately → 30-day undo window → permanent deletion and link released.
 

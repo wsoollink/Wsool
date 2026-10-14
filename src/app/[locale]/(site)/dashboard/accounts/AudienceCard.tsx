@@ -2,10 +2,11 @@
 
 import { useId, useMemo, useState, useTransition } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { Plus, Sparkles, Trash2 } from "lucide-react";
+import { ChevronDown, Plus, Sparkles, Trash2 } from "lucide-react";
 import { PlatformIcon } from "@/components/creator/PlatformIcon";
 import { buttonClasses } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { Pill } from "@/components/ui/Pill";
 import { PLATFORM_NAMES } from "@/config/platforms";
 import type { Platform } from "@/generated/prisma/enums";
 import { digitsOnly, formatPercent } from "@/lib/format";
@@ -31,33 +32,42 @@ const iconButton = "inline-flex size-11 shrink-0 items-center justify-center rou
 const control = "min-h-11 rounded-[10px] border border-navy/15 bg-card px-3 text-base outline-none shadow-card transition-[border-color,box-shadow] focus:border-blue focus:ring-3 focus:ring-blue/15";
 
 /** Audience breakdown per account: gender, ages, top countries and cities, in %. */
-export function AudienceCard({ accounts }: { accounts: AudienceAccount[] }) {
+export function AudienceCard({ accounts, notice }: { accounts: AudienceAccount[]; /** Shown above the list (e.g. "Pro only on your page"). */ notice?: string }) {
   const t = useTranslations("AccountsPage");
+  const [openId, setOpenId] = useState<string | null>(null);
   return (
-    <Card id="audience" className="flex scroll-mt-6 flex-col gap-4">
+    <Card id="audience" className="flex scroll-mt-20 flex-col gap-4">
       <div>
         <h2 className="font-bold">{t("audience")}</h2>
         <p className="text-xs text-muted">{t("audienceHint")}</p>
       </div>
+      {notice && <p className="rounded-[10px] border border-blue/20 bg-blue/5 px-3 py-2.5 text-[13px] text-blue">{notice}</p>}
       {accounts.length === 0 ? (
         <p className="text-sm text-muted">{t("audienceNoAccounts")}</p>
       ) : (
-        <ul className="flex flex-col gap-2">
-          {accounts.map((a) => (
-            <li key={a.id}>
-              <details className="group rounded-2xl border border-line">
-                <summary className="flex min-h-11 cursor-pointer items-center gap-2 rounded-2xl px-3 py-2">
+        <ul className="flex flex-col divide-y divide-line-soft overflow-hidden rounded-xl border border-line">
+          {accounts.map((a) => {
+            const open = openId === a.id;
+            return (
+              <li key={a.id}>
+                {/* A plain button row (not <details>): iOS underlined the <summary> text like a link. */}
+                <button
+                  type="button" aria-expanded={open} aria-controls={`aud-${a.id}`} onClick={() => setOpenId(open ? null : a.id)}
+                  className="flex min-h-12 w-full items-center gap-2.5 px-3 py-2 text-start no-underline transition-colors hover:bg-hover/60"
+                >
                   <PlatformIcon platform={a.platform} className="shrink-0" />
                   <span className="font-medium">{PLATFORM_NAMES[a.platform]}</span>
-                  <span dir="ltr" className="truncate text-sm text-muted">@{a.handle}</span>
-                  <span className="ms-auto text-xs text-muted">{a.audience ? t("audienceAdded") : t("audienceEmpty")}</span>
-                </summary>
-                <div className="border-t border-line p-3">
+                  <span dir="ltr" className="min-w-0 truncate text-sm text-muted">@{a.handle}</span>
+                  <Pill tone={a.audience ? "good" : "grey"} className="ms-auto">{a.audience ? t("audienceAdded") : t("audienceEmpty")}</Pill>
+                  <ChevronDown aria-hidden="true" size={16} className={`shrink-0 text-faint transition-transform ${open ? "rotate-180" : ""}`} />
+                </button>
+                {/* Kept mounted while closed so unsaved edits survive collapsing. */}
+                <div id={`aud-${a.id}`} hidden={!open} className="border-t border-line-soft bg-bg/60 p-3">
                   <AudienceForm account={a} />
                 </div>
-              </details>
-            </li>
-          ))}
+              </li>
+            );
+          })}
         </ul>
       )}
     </Card>

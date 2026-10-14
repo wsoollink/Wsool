@@ -4,20 +4,27 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { isLocale, toIntlLocale } from "@/i18n/config";
 import { requireCreator } from "@/lib/creator";
 import { db } from "@/lib/db";
+import { FREE_LIMITS, hasPro } from "@/config/plans";
+import { ProNotice } from "@/components/dashboard/ProNotice";
 import { RatesEditor } from "./RatesEditor";
 import { PageHeader } from "@/components/dashboard/PageHeader";
 
 async function Editor() {
-  const { page } = await requireCreator();
+  const { user, page } = await requireCreator();
+  const t = await getTranslations("RatesPage");
   // Scoped to the creator's own page from the verified session.
-  const [settings, accounts, bundles] = await Promise.all([
+  const [settings, accounts, bundles, sub] = await Promise.all([
     db.rateSettings.findUnique({ where: { pageId: page.id } }),
     db.socialAccount.findMany({ where: { pageId: page.id }, orderBy: { sort: "asc" }, include: { rates: { orderBy: { sort: "asc" } } } }),
     db.rateBundle.findMany({ where: { pageId: page.id }, orderBy: { sort: "asc" }, include: { platforms: true, rates: { orderBy: { sort: "asc" } } } }),
+    db.subscription.findUnique({ where: { userId: user.id }, select: { status: true, trialEndsAt: true } }),
   ]);
+  const locked = !hasPro(sub) && !FREE_LIMITS.rates;
   const rate = (r: { name: string; nameEn: string | null; price: unknown }) => ({ name: r.name, nameEn: r.nameEn, price: Number(r.price) });
 
   return (
+    <>
+    {locked && <ProNotice text={t("proOnly")} />}
     <RatesEditor
       // Same defaults as the public page when nothing is saved yet.
       settings={
@@ -30,6 +37,7 @@ async function Editor() {
       bundle={bundles[0] ? { name: bundles[0].name ?? "", nameEn: bundles[0].nameEn ?? "", accountIds: bundles[0].platforms.map((p) => p.accountId), rates: bundles[0].rates.map(rate) } : null}
       lang={{ primary: page.primaryLang as "ar" | "en", showEnglish: page.primaryLang === "ar" && page.enEnabled }}
     />
+    </>
   );
 }
 

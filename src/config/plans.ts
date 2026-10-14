@@ -14,6 +14,10 @@ export const FREE_LIMITS = {
   services: 3,
   /** Templates a Free page can use; others fall back to the first one. */
   templates: ["white", "black"] as readonly Template[],
+  /** Ad rates (and the bundle) on the page: Pro only (owner, Oct 2026). Saved rates are kept. */
+  rates: false,
+  /** Audience pop-ups on the platform cards: Pro only (owner, Oct 2026). Saved data is kept. */
+  audience: false,
   verifiedBadge: false,
   analytics: false,
   pdf: false,

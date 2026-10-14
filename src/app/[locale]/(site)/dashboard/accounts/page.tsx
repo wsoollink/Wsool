@@ -4,6 +4,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { isLocale, toIntlLocale, type Locale } from "@/i18n/config";
 import { requireCreator } from "@/lib/creator";
 import { db } from "@/lib/db";
+import { FREE_LIMITS, hasPro } from "@/config/plans";
 import { AccountsCard } from "./AccountsCard";
 import { AudienceCard, type AudienceValue } from "./AudienceCard";
 import { ViewsCard } from "./ViewsCard";
@@ -16,11 +17,13 @@ function monthsBetween(month: Date) {
 }
 
 async function Editor({ lang }: { lang: Locale }) {
-  const { page } = await requireCreator();
+  const { user, page } = await requireCreator();
+  const t = await getTranslations("AccountsPage");
   // Scoped to the creator's own page from the verified session.
-  const [accounts, views] = await Promise.all([
+  const [accounts, views, sub] = await Promise.all([
     db.socialAccount.findMany({ where: { pageId: page.id }, orderBy: { sort: "asc" }, include: { audience: true } }),
     db.monthlyView.findFirst({ where: { pageId: page.id }, orderBy: { month: "desc" } }),
+    db.subscription.findUnique({ where: { userId: user.id }, select: { status: true, trialEndsAt: true } }),
   ]);
   const byAccount = (views?.byAccount ?? {}) as Record<string, number>;
   const viewsOf = (id: string) => (typeof byAccount[id] === "number" ? byAccount[id] : null);
@@ -53,6 +56,7 @@ async function Editor({ lang }: { lang: Locale }) {
         // Remount when the list changes so each form starts from saved data.
         key={accounts.map((a) => a.id).join()}
         accounts={accounts.map((a) => ({ id: a.id, platform: a.platform, handle: a.handle, audience: audienceOf(a) }))}
+        notice={!hasPro(sub) && !FREE_LIMITS.audience ? t("audienceProOnly") : undefined}
       />
     </div>
   );

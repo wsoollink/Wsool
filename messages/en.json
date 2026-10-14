@@ -490,7 +490,8 @@
       "spotify": "Open your Spotify page (podcast or artist), tap Share → Copy link.",
       "discord": "Your server invite link, like discord.gg/… (preferably one that never expires). Followers here = server members.",
       "jaco": "Open your Jaco profile, tap Share → Copy link."
-    }
+    },
+    "audienceProOnly": "Your audience data is saved, but it shows on your page with Pro only."
   },
   "WorkPage": {
     "brands": "Brands you worked with",
@@ -584,7 +585,8 @@
     "bundle": "All-in bundle",
     "bundleHint": "One price for posting on several platforms",
     "saved": "Saved",
-    "failed": "Something went wrong. Try again."
+    "failed": "Something went wrong. Try again.",
+    "proOnly": "Your rates are saved, but they show on your page with Pro only."
   },
   "ContactPage": {
     "intro": "Brands contact you from your page with one tap. Leave a field empty to hide it.",
@@ -1576,7 +1578,10 @@
       "badge": "Verified badge",
       "analytics": "Analytics",
       "pdf": "PDF media kit",
-      "branding": "Hide “Made with ❤️ Wsool”"
+      "branding": "Hide “Made with ❤️ Wsool”",
+      "brands": "Brand logos strip",
+      "contact": "Contact (WhatsApp & email)",
+      "links": "Links & services"
     },
     "viewInvoice": "View invoice from {date}",
     "haveCode": "Have a discount code?",

@@ -57,7 +57,7 @@ export function MobileMenu({ card, footer, nav, home = "/dashboard" }: {
         onClick={(ev) => { if (ev.target === ev.currentTarget) setOpen(false); }}
         className="fixed inset-y-0 start-0 m-0 h-dvh max-h-none w-[min(320px,86vw)] max-w-none border-e border-line bg-bg p-0 text-navy shadow-pop outline-none backdrop:bg-[rgba(2,25,65,0.4)] md:hidden"
       >
-        <div className="flex h-full flex-col gap-2 px-3 pt-[max(0.75rem,env(safe-area-inset-top))] pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+        <div className="flex h-full flex-col gap-1 px-3 pt-[max(0.75rem,env(safe-area-inset-top))] pb-[max(0.75rem,env(safe-area-inset-bottom))]">
           <div className="flex items-center justify-between gap-3">
             <Link href={home} className="inline-flex min-h-11 items-center px-2.5" aria-label={t("brand")}>
               <BrandLogo lang={lang === "en" ? "en" : "ar"} alt={t("brand")} className="h-7 w-auto" />
@@ -66,11 +66,14 @@ export function MobileMenu({ card, footer, nav, home = "/dashboard" }: {
               <X aria-hidden="true" size={20} />
             </button>
           </div>
-          {card}
-          <nav aria-label={t("menu")} className="min-h-0 flex-1 overflow-y-auto">
-            {nav ?? <SidebarNav onNavigate={() => setOpen(false)} />}
-          </nav>
-          <div className="flex flex-col gap-0.5 border-t border-line pt-2">{footer}</div>
+          {/* One scrolling column (sections + footer), compact 40px rows, so nothing hides behind a fixed footer on short screens. */}
+          <div className="-mx-1 flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto px-1 [&_a]:min-h-10 [&_button]:min-h-10 [&_p]:pt-2.5">
+            {card}
+            <nav aria-label={t("menu")}>
+              {nav ?? <SidebarNav onNavigate={() => setOpen(false)} />}
+            </nav>
+            <div className="flex flex-col gap-0.5 border-t border-line pt-2">{footer}</div>
+          </div>
         </div>
       </dialog>
     </>

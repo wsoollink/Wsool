@@ -99,6 +99,9 @@ export async function getPreviewPage(pageId: string) {
 /** Applies the plan limits and turns a page row into what the creator page renders. */
 function shapePage(page: PageRow, now: number) {
   const isPro = hasPro(page.user.subscription, now);
+  // Free pages hide rates and audience data (FREE_LIMITS); nothing is deleted.
+  const showRates = isPro || FREE_LIMITS.rates;
+  const showAudience = isPro || FREE_LIMITS.audience;
   return {
     status: "published" as const,
     username: page.username,
@@ -132,8 +135,8 @@ function shapePage(page: PageRow, now: number) {
         followersUpdatedAt: a.followersUpdatedAt?.toISOString() ?? null,
         // The badge is a Pro feature (CLAUDE.md section 6).
         verified: verified && isPro,
-        audience: a.audience,
-        rates: a.rates.map((r) => ({ id: r.id, name: r.name, nameEn: r.nameEn, price: Number(r.price) })),
+        audience: showAudience ? a.audience : null,
+        rates: (showRates ? a.rates : []).map((r) => ({ id: r.id, name: r.name, nameEn: r.nameEn, price: Number(r.price) })),
       };
     }),
     monthlyViews: page.monthlyViews[0] ? Number(page.monthlyViews[0].views) : null,
@@ -144,7 +147,7 @@ function shapePage(page: PageRow, now: number) {
     // No saved settings yet = the defaults (shown, VAT included, SAR or USD by primary language).
     rateSettings: page.rateSettings ?? { showOnPage: true, showInPdf: true, currency: page.primaryLang === "en" ? ("USD" as const) : ("SAR" as const), vatIncluded: true },
     // One bundle per page (older pages may still have more saved).
-    bundles: page.rateBundles.slice(0, 1).map((b) => ({
+    bundles: (showRates ? page.rateBundles.slice(0, 1) : []).map((b) => ({
       id: b.id,
       name: b.name,
       nameEn: b.nameEn,

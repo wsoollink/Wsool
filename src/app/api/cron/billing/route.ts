@@ -1,6 +1,7 @@
 import { timingSafeEqual } from "node:crypto";
 import { purgeDeletedAccounts } from "@/lib/account-deletion";
 import { runBillingJob } from "@/lib/billing";
+import { purgeRateLimits } from "@/lib/rate-limit";
 import { runReminders } from "@/lib/reminders";
 
 /**
@@ -15,6 +16,7 @@ export async function POST(req: Request) {
   }
   const report = await runBillingJob();
   const purged = await purgeDeletedAccounts();
+  await purgeRateLimits();
   const reminders = await runReminders();
   return Response.json({ ...report, purged, reminders });
 }

@@ -27,8 +27,7 @@ export function deviceOf(ua: string): "mobile" | "tablet" | "desktop" {
 
 /** Country code from Cloudflare or Netlify headers. */
 export function countryOf(headers: Headers): string | null {
-  const cf = headers.get("cf-ipcountry");
-  if (cf && /^[A-Z]{2}$/.test(cf) && cf !== "XX" && cf !== "T1") return cf;
+  // Netlify's geo header only: Cloudflare is DNS-only here, so a cf-ipcountry header would come from the visitor.
   const geo = headers.get("x-nf-geo");
   if (geo) {
     try {

@@ -11,12 +11,12 @@ import { aiEnabled, readAccountScreenshot } from "@/lib/ai/screenshots";
 import { readPrivateImage } from "@/lib/storage";
 import type { Prisma } from "@/generated/prisma/client";
 
-export type DecisionResult = { ok?: boolean; error?: "failed" | "checks" | "already_decided" };
+export type DecisionResult = { ok?: boolean; error?: "failed" | "checks" | "already_decided" | "changed" };
 
 async function loadPending(requestId: string) {
   return db.verificationRequest.findFirst({
     where: { id: String(requestId), status: "pending" },
-    include: { account: { select: { id: true, verificationStatus: true, verifiedUntil: true, page: { select: { username: true, userId: true } } } } },
+    include: { account: { select: { id: true, platform: true, handle: true, followers: true, verificationStatus: true, verifiedUntil: true, page: { select: { username: true, userId: true } } } } },
   });
 }
 
@@ -26,6 +26,9 @@ export async function approveVerification(requestId: string, checks: string[]): 
   if (!Array.isArray(checks) || !REVIEW_CHECKS.every((c) => checks.includes(c))) return { error: "checks" };
   const request = await loadPending(requestId);
   if (!request) return { error: "already_decided" };
+  // The account must still show what the screenshot was checked against.
+  const a = request.account;
+  if (a.platform !== request.platform || a.handle !== request.handle || a.followers !== request.followers) return { error: "changed" };
 
   const now = new Date();
   const until = new Date(now.getTime() + VERIFICATION_DAYS * 86_400_000);
@@ -96,7 +99,8 @@ export async function decideLicense(licenseId: string, approve: boolean, reason?
 
 /** Reads a pending request's screenshot with the AI (requests sent before the AI, or when it failed then). Audited. */
 export async function readRequestWithAi(requestId: string): Promise<{ ok?: boolean; error?: "failed" | "off" }> {
-  const admin = await requireAdmin("verifications.view");
+  // A paid AI call that writes to the request: deciders only.
+  const admin = await requireAdmin("verifications.decide");
   if (!aiEnabled()) return { error: "off" };
   const request = await db.verificationRequest.findFirst({ where: { id: String(requestId), status: "pending" }, select: { id: true, screenshotPath: true, handle: true } });
   if (!request) return { error: "failed" };

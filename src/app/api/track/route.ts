@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { countryOf, deviceOf, isBot, MAX_EVENTS_PER_VISITOR_DAY, referrerHost, today, visitorHash } from "@/lib/analytics";
+import { ipFrom, rateLimit } from "@/lib/rate-limit";
 import { getCurrentUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { PLATFORMS } from "@/config/platforms";
@@ -39,7 +40,9 @@ export async function POST(req: Request) {
   if (req.headers.get("cookie")?.includes("sb-") && (await getCurrentUser())?.id === page.userId) return done;
 
   const day = today();
-  const ip = req.headers.get("x-nf-client-connection-ip") ?? req.headers.get("cf-connecting-ip") ?? req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "";
+  const ip = ipFrom(req.headers);
+  // Per IP and page per day, whatever User-Agent is sent (the hash below includes it, so it can be varied).
+  if (!(await rateLimit(`track:${ip}:${page.id}`, 60, 86400))) return done;
   const hash = visitorHash(ip, ua, page.id, day);
   const [views, clicks] = await Promise.all([
     db.pageView.count({ where: { pageId: page.id, visitorHash: hash, day } }),

@@ -9,3 +9,15 @@ export function supabaseEnv() {
 
 /** Supabase auth cookies all start with this prefix. */
 export const AUTH_COOKIE_PREFIX = "sb-";
+
+/**
+ * Session cookies are only read on the server (the browser client uploads to
+ * signed URLs without a session), so page scripts never need them: httpOnly
+ * keeps them out of reach of any injected script.
+ */
+export const SESSION_COOKIE_OPTIONS = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: "lax" as const,
+  path: "/",
+};

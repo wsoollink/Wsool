@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { ensureAccount } from "@/lib/account";
+import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export type LoginState = {
@@ -20,6 +21,12 @@ const codeSchema = z.string().trim().regex(/^\d{6,10}$/);
 export async function requestCode(_prev: LoginState, formData: FormData): Promise<LoginState> {
   const email = emailSchema.safeParse(formData.get("email"));
   if (!email.success) return { step: "email", error: "invalid_email" };
+
+  // Our own limits (Supabase only sees the server's IP): per visitor and per address.
+  const ip = await clientIp();
+  if (!(await rateLimit(`otp-ip:${ip}`, 10, 3600)) || !(await rateLimit(`otp-email:${email.data}`, 5, 3600))) {
+    return { step: "email", email: email.data, error: "rate_limited" };
+  }
 
   const supabase = await createSupabaseServerClient();
   const { error } = await supabase.auth.signInWithOtp({
@@ -42,6 +49,9 @@ export async function verifyCode(_prev: LoginState, formData: FormData): Promise
 
   const code = codeSchema.safeParse(formData.get("code"));
   if (!code.success) return { step: "code", email: email.data, error: "invalid_code" };
+  if (!(await rateLimit(`verify:${email.data}`, 10, 900)) || !(await rateLimit(`verify-ip:${await clientIp()}`, 30, 900))) {
+    return { step: "code", email: email.data, error: "rate_limited" };
+  }
 
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase.auth.verifyOtp({

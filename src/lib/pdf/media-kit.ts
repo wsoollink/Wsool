@@ -4,6 +4,7 @@ import {
   pushGraphicsState, rgb, LineCapStyle, type PDFImage, type PDFPage, type RGB,
 } from "pdf-lib";
 import QRCode from "qrcode";
+import { fetchImage } from "@/lib/fetch-capped";
 import { createTranslator } from "use-intl/core";
 import { PLATFORM_ICON_PATHS } from "@/components/creator/PlatformIcon";
 import { pageTheme } from "@/components/creator/theme";
@@ -67,9 +68,10 @@ const ICONS = {
 async function loadImage(doc: PDFDocument, src: string | null): Promise<PDFImage | null> {
   if (!src) return null;
   try {
-    const res = await fetch(new URL(src, siteOrigin()));
-    if (!res.ok) return null;
-    let bytes = Buffer.from(await res.arrayBuffer());
+    // Images only, size-capped (the route is public).
+    const img = await fetchImage(new URL(src, siteOrigin()));
+    if (!img) return null;
+    let bytes = img.bytes;
     if (bytes[0] === 0xff && bytes[1] === 0xd8) return await doc.embedJpg(bytes);
     if (bytes[0] === 0x89 && bytes[1] === 0x50) return await doc.embedPng(bytes);
     // WebP/AVIF (brand logos): convert to PNG when sharp is available, else skip.

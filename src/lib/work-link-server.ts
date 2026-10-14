@@ -1,5 +1,6 @@
 import "server-only";
 import { isTikTokShortLink, parseWorkLink, type WorkLink } from "@/lib/work-link";
+import { readCapped } from "@/lib/fetch-capped";
 
 /**
  * Network side of work links: TikTok share links are followed to the video
@@ -40,14 +41,16 @@ export async function resolveWorkLink(input: string): Promise<WorkLink | null> {
 
 async function image(url: string): Promise<{ bytes: Buffer; type: string } | null> {
   try {
-    const res = await fetch(url, { signal: AbortSignal.timeout(TIMEOUT), headers: { "user-agent": "Mozilla/5.0" } });
+    // Cover hosts are fixed platform CDNs; a redirect must stay on the same host.
+    const res = await fetch(url, { signal: AbortSignal.timeout(TIMEOUT), headers: { "user-agent": "Mozilla/5.0" }, redirect: "manual" });
     const type = (res.headers.get("content-type") ?? "").split(";")[0].trim();
     if (!res.ok || !IMAGE_TYPES.includes(type)) {
       console.warn("[work-link] cover image refused", res.status, type, new URL(url).hostname);
+      await res.body?.cancel().catch(() => {});
       return null;
     }
-    const bytes = Buffer.from(await res.arrayBuffer());
-    return bytes.length > 0 && bytes.length <= MAX_BYTES ? { bytes, type } : null;
+    const bytes = await readCapped(res, MAX_BYTES);
+    return bytes && bytes.length > 0 ? { bytes, type } : null;
   } catch (err) {
     console.warn("[work-link] cover image failed", new URL(url).hostname, String(err));
     return null;
@@ -89,7 +92,7 @@ async function instagramCover(link: WorkLink): Promise<{ bytes: Buffer; type: st
       console.warn("[work-link] instagram embed", res.status, link.id);
       return null;
     }
-    const html = (await res.text()).slice(0, 2_000_000);
+    const html = (await readCapped(res, 2_000_000))?.toString("utf8") ?? "";
     const img = html.match(/<img[^>]*class="[^"]*EmbeddedMediaImage[^"]*"[^>]*>/)?.[0];
     const found = img?.match(/\ssrc="([^"]+)"/)?.[1] ?? html.match(/"display_url":"([^"]+)"/)?.[1] ?? html.match(/<meta[^>]*property="og:image"[^>]*content="([^"]+)"/)?.[1];
     if (!found) {

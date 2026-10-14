@@ -9,7 +9,7 @@ import { db } from "@/lib/db";
 export type Admin = { userId: string; email: string; isOwner: boolean; permissions: Set<Permission> };
 
 /** Owner email(s) from the OWNER_EMAIL env var (comma-separated, case-insensitive). */
-function ownerEmails(): string[] {
+export function ownerEmails(): string[] {
   return (process.env.OWNER_EMAIL ?? "").split(",").map((e) => e.trim().toLowerCase()).filter(Boolean);
 }
 
@@ -31,6 +31,9 @@ export const getAdmin = cache(async (): Promise<Admin | null> => {
     if (invited && !invited.userId) member = await db.adminMember.update({ where: { id: invited.id }, data: { userId: user.id } });
   }
   if (!member || !member.active || member.role === "owner") return null;
+  // A suspended account loses staff access too.
+  const account = await db.user.findUnique({ where: { id: user.id }, select: { suspendedAt: true } });
+  if (account?.suspendedAt) return null;
   const granted = Array.isArray(member.permissions) ? member.permissions : [];
   const permissions = new Set(PERMISSIONS.filter((p) => granted.includes(p)));
   return { userId: user.id, email, isOwner: false, permissions };

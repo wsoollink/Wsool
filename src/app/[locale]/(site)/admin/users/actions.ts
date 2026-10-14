@@ -2,7 +2,7 @@
 
 import { updateTag } from "next/cache";
 import { TRIAL_EXTENSIONS } from "@/config/admin";
-import { audit, requireAdmin } from "@/lib/admin";
+import { audit, requireAdmin, ownerEmails } from "@/lib/admin";
 import { db } from "@/lib/db";
 import { pageCacheTag } from "@/lib/public-page";
 
@@ -34,8 +34,11 @@ export async function extendTrial(userId: string, days: number): Promise<UserAct
 /** Suspends (page hidden, no dashboard) or restores an account. The owner's account can't be suspended here. */
 export async function setSuspended(userId: string, suspend: boolean, note: string): Promise<UserActionResult> {
   const admin = await requireAdmin("users.suspend");
-  const user = await db.user.findUnique({ where: { id: String(userId) }, select: { id: true } });
+  const user = await db.user.findUnique({ where: { id: String(userId) }, select: { id: true, email: true } });
   if (!user || user.id === admin.userId) return { error: "failed" };
+  // Never the owner; other staff only by the owner.
+  if (ownerEmails().includes(user.email.toLowerCase())) return { error: "failed" };
+  if (!admin.isOwner && (await db.adminMember.count({ where: { OR: [{ userId: user.id }, { email: user.email.toLowerCase() }] } }))) return { error: "failed" };
   await db.$transaction(async (tx) => {
     await tx.user.update({ where: { id: user.id }, data: { suspendedAt: suspend ? new Date() : null } });
     await audit(admin, suspend ? "user.suspend" : "user.unsuspend", { type: "user", id: user.id }, { note: String(note ?? "").slice(0, 300) }, tx);

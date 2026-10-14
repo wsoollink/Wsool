@@ -1,5 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
+import { fetchImage } from "@/lib/fetch-capped";
 import { ImageResponse } from "next/og";
 import type { NextRequest } from "next/server";
 import { siteOrigin } from "@/lib/site-url";
@@ -28,10 +29,9 @@ const LABELS = {
 async function imageDataUrl(src: string | null): Promise<string | null> {
   if (!src) return null;
   try {
-    const res = await fetch(new URL(src, siteOrigin()));
-    if (!res.ok) return null;
-    const type = res.headers.get("content-type") ?? "image/png";
-    return `data:${type};base64,${Buffer.from(await res.arrayBuffer()).toString("base64")}`;
+    // Images only, size-capped (the route is public).
+    const img = await fetchImage(new URL(src, siteOrigin()));
+    return img ? `data:${img.type};base64,${img.bytes.toString("base64")}` : null;
   } catch {
     return null;
   }

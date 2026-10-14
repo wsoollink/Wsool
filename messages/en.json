@@ -873,7 +873,8 @@
       "errors": {
         "failed": "Something went wrong. Try again.",
         "checks": "Tick all three first.",
-        "already_decided": "Another member decided this request, or the creator cancelled it."
+        "already_decided": "Another member decided this request, or the creator cancelled it.",
+        "changed": "The creator changed this account (platform, username or followers) after sending the request. Reject it and ask them to send it again."
       },
       "table": {
         "account": "Account",
@@ -1247,7 +1248,10 @@
       "newsletter": {
         "export": "Downloaded the newsletter list ({count})",
         "send": "Sent the newsletter “{subject}” to {count} subscribers",
-        "retry": "Resent the newsletter to {count} failed"
+        "retry": "Resent the newsletter to {count} failed",
+        "create": "Created a new newsletter draft",
+        "test": "Sent a test of the newsletter “{subject}” to themselves",
+        "delete": "Deleted the newsletter draft “{subject}”"
       },
       "discount": {
         "create": "Created {count} discount codes at {percent}%",
@@ -1857,7 +1861,7 @@
     "investorHint": "A read-only link: you choose what it shows and for how long. No personal user data.",
     "linkLabel": "Link name",
     "linkLabelPlaceholder": "e.g. Fund X - seed round",
-    "password": "Password (optional)",
+    "password": "Password (optional, at least 8 characters)",
     "expiresIn": "Valid for",
     "days": "{n} days",
     "sections": "Sections",
@@ -1932,6 +1936,16 @@
     "campaign": {
       "footer": "You're getting this because you subscribed to the Wsool newsletter. Unsubscribe: {url}",
       "unsubscribeSample": "(each subscriber's own unsubscribe link)"
+    },
+    "confirmPrompt": {
+      "title": "Confirm your subscription",
+      "body": "Press the button to join the Wsool newsletter.",
+      "cta": "Confirm my subscription"
+    },
+    "unsubscribePrompt": {
+      "title": "Unsubscribe",
+      "body": "Stop receiving the Wsool newsletter?",
+      "cta": "Unsubscribe me"
     }
   },
   "DashboardHeader": {

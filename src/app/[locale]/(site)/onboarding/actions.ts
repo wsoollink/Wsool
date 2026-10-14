@@ -22,6 +22,8 @@ export type ClaimState = { name?: string; error?: UsernameError | "failed" };
 /** Claims the username and creates the creator's page (first time only). */
 export async function claimUsername(_prev: ClaimState, formData: FormData): Promise<ClaimState> {
   const user = await requireUser();
+  // A suspended account can't take a name (same rule as requireCreator).
+  if ((await db.user.findUnique({ where: { id: user.id }, select: { suspendedAt: true } }))?.suspendedAt) redirect("/suspended");
   const name = normalizeUsername(String(formData.get("username") ?? "").slice(0, 40));
 
   const error = await usernameError(name, user.id);

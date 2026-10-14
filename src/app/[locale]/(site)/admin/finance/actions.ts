@@ -47,7 +47,8 @@ const linkSchema = z.object({
   sections: z.array(z.enum(INVESTOR_SECTIONS)).min(1),
   months: z.union([z.literal(3), z.literal(6), z.literal(12)]),
   expiresInDays: z.number().int().min(1).max(365),
-  password: z.string().max(100),
+  // Optional; when set, at least 8 characters (tries are also rate-limited).
+  password: z.union([z.literal(""), z.string().min(8).max(100)]),
 });
 
 /** Owner only. Returns the link once; only a hash of its token is stored. */

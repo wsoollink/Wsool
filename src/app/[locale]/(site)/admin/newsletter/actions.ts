@@ -24,7 +24,11 @@ type Result = { ok?: boolean; error?: string };
 /** New empty draft; the browser then opens its editor (no server redirect). */
 export async function createCampaign(): Promise<{ id: string }> {
   const admin = await requireAdmin("newsletter.send");
-  return db.newsletterCampaign.create({ data: { createdBy: admin.userId }, select: { id: true } });
+  return db.$transaction(async (tx) => {
+    const c = await tx.newsletterCampaign.create({ data: { createdBy: admin.userId }, select: { id: true } });
+    await audit(admin, "newsletter.create", { type: "newsletter_campaign", id: c.id }, {}, tx);
+    return c;
+  });
 }
 
 export async function saveCampaign(campaignId: string, input: CampaignInput): Promise<Result> {
@@ -59,6 +63,7 @@ export async function sendTest(campaignId: string): Promise<Result> {
       return sendEmail({ to: admin.email, subject: `[TEST] ${subject}`, html, text });
     }),
   );
+  await audit(admin, "newsletter.test", { type: "newsletter_campaign", id: campaignId }, { subject: c.subjectAr || c.subjectEn });
   return results.every(Boolean) ? { ok: true } : { error: "failed" };
 }
 
@@ -102,8 +107,13 @@ export async function retryFailed(campaignId: string): Promise<Result> {
 }
 
 export async function deleteDraft(campaignId: string): Promise<Result> {
-  await requireAdmin("newsletter.send");
+  const admin = await requireAdmin("newsletter.send");
   if (!id.safeParse(campaignId).success) return { error: "invalid" };
-  const res = await db.newsletterCampaign.deleteMany({ where: { id: campaignId, status: "draft" } });
-  return res.count ? { ok: true } : { error: "not_draft" };
+  const deleted = await db.$transaction(async (tx) => {
+    const c = await tx.newsletterCampaign.findFirst({ where: { id: campaignId, status: "draft" }, select: { subjectAr: true, subjectEn: true } });
+    const res = await tx.newsletterCampaign.deleteMany({ where: { id: campaignId, status: "draft" } });
+    if (res.count && c) await audit(admin, "newsletter.delete", { type: "newsletter_campaign", id: campaignId }, { subject: c.subjectAr || c.subjectEn }, tx);
+    return res.count > 0;
+  });
+  return deleted ? { ok: true } : { error: "not_draft" };
 }

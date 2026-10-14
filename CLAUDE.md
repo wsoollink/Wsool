@@ -528,7 +528,7 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   The public page's `Tracker` (client) sends a view beacon and taps on elements with
   `data-track="whatsapp|email|social:<platform>|work:<platform>"` to `/api/track`. No IP/UA is
   stored: a daily salted `visitorHash` counts unique visitors; bots, the owner's own visits and
-  more than 20 events per visitor/page/day are ignored. Country from `cf-ipcountry` / `x-nf-geo`.
+  more than 20 events per visitor/page/day are ignored (plus 60/day per IP + page). Country from Netlify's `x-nf-geo`.
   Report: `src/lib/analytics-report.ts`; dashboard `dashboard/analytics/` (Pro only, 7/30/90 days,
   bar chart with hover + table view). Data is collected for Free pages too.
 - **Notifications & emails**: `notify(userId, type, data, { dedupeKey })` (`src/lib/notify.ts`) adds a
@@ -610,6 +610,31 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   ones show as [placeholders]. Login shows "by continuing you agree…" with both links.
   Update the text whenever a provider or data practice changes.
 
+### Security pass (Oct 2026, pre-launch review)
+- **Rate limits**: `rateLimit(key, limit, windowSeconds)` (`src/lib/rate-limit.ts`, table `rate_limits`, server only, atomic
+  upsert; purged hourly by the billing cron). Used for login codes (10/h per IP, 5/h per email; verify 10/15 min), newsletter
+  sign-up (5/h per IP, 3/day per address), uploads (150/h per creator), investor-link passwords (10/15 min per link, min 8
+  chars), page tracking (60/day per IP + page) and the AI daily limit (`underDailyLimit`, counted before the call).
+  Client IP = `x-nf-client-connection-ip` (`ipFrom` / `clientIp`). Country = Netlify's `x-nf-geo` only (cf-ipcountry can be
+  forged: Cloudflare is DNS-only).
+- **Headers** (`next.config.ts`): `frame-ancestors 'self'` + X-Frame-Options SAMEORIGIN, HSTS, nosniff, Referrer-Policy,
+  Permissions-Policy. No script CSP yet (needs nonces for `THEME_SCRIPT`); revisit when the payment gateway's form is added.
+- Session cookies are httpOnly (`SESSION_COOKIE_OPTIONS`, `src/lib/supabase/env.ts`); the browser Supabase client only
+  uploads to signed URLs.
+- `isOwnUploadedFile` also checks the stored object's real mimetype + size against the upload kind (deletes it otherwise).
+  Image fetches for PDF/OG use `fetchImage()` (`src/lib/fetch-capped.ts`: images only, 10 MB cap, timeout); cover fetches
+  don't follow redirects and read with `readCapped`.
+- Verification: `applyReadFollowers` resets a verification / cancels a pending request like `saveAccounts`;
+  `approveVerification` refuses when the account changed since the request (error `changed`).
+- Admin: staff can't suspend the owner (or other staff unless owner); suspended staff lose admin access; AI re-read needs
+  `verifications.decide`; refunding an old invoice doesn't end the current period; newsletter create/test/delete audited.
+- Discounts: a code can only be in one open checkout at a time (another user's pending invoice in the last hour = "used";
+  the same user's older pending ones are dropped).
+- Newsletter confirm/unsubscribe pages act only after a button press (`LinkAction` + `runNewsletterLink`), so mail scanners
+  can't confirm or unsubscribe. One-click `List-Unsubscribe` POST stays.
+- Not done yet (low): dedicated signing secrets instead of `CRON_SECRET` for mock payments / investor cookie / newsletter
+  links / visitor hash; cleanup of uploaded files no row uses; Turnstile on sign-up forms.
+
 ### Design pass (Oct 2026, owner decisions)
 - The built screens are being matched to the owner's design artifacts ("صفحة الصانع", "لوحة التحكم",
   "لوحة الإدارة"), in that order. Where a design conflicts with this file, this file wins (44px touch
@@ -681,7 +706,7 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   `beta.messages.parse` + `betaZodOutputFormat`, effort `low`, refusal fallback `fallbacks: "default"` with beta
   `server-side-fallback-2026-07-01`). Off without `ANTHROPIC_API_KEY` (everything falls back to the manual flow); local
   tests point `ANTHROPIC_BASE_URL` at a fake server. Text inside images is data, never instructions (system prompt).
-  Table `ai_reads` (server only) logs every read and enforces `AI_DAILY_LIMIT` = 20 per creator per 24h.
+  Table `ai_reads` (server only) logs every read; `AI_DAILY_LIMIT` = 20 per creator per day is an atomic `rateLimit` counter.
   Verification: picking a screenshot uploads it and runs `checkScreenshot` → `compareRead()` (`src/lib/ai/compare.ts`,
   pure: username, platform, followers within 3% = match, 10% = close); the creator can `applyReadFollowers` (value from
   the stored read, never the browser); `submitVerification(..., readId)` copies the read to

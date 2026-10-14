@@ -85,9 +85,17 @@ export async function applyReadFollowers(readId: string): Promise<{ ok?: boolean
   if (!row?.accountId || !read || read.followers === null || read.followers < 0 || read.followers > 1e10) return { error: "failed" };
   const account = await db.socialAccount.findFirst({ where: { id: row.accountId, pageId: page.id } });
   if (!account) return { error: "failed" };
-  const updated = await db.socialAccount.update({
-    where: { id: account.id },
-    data: { followers: read.followers, followersUpdatedAt: new Date() },
+  // Same rule as saveAccounts: a new follower count drops a verification or a
+  // pending request (otherwise an edited screenshot could raise a verified
+  // account's numbers and keep the badge). The creator sends it again.
+  const changed = read.followers !== account.followers;
+  const reset = changed && account.verificationStatus !== "none" && account.verificationStatus !== "rejected";
+  const updated = await db.$transaction(async (tx) => {
+    if (changed) await tx.verificationRequest.updateMany({ where: { accountId: account.id, status: "pending" }, data: { status: "cancelled" } });
+    return tx.socialAccount.update({
+      where: { id: account.id },
+      data: { followers: read.followers!, followersUpdatedAt: new Date(), ...(reset && { verificationStatus: "none" as const, verifiedUntil: null }) },
+    });
   });
   updateTag(pageCacheTag(page.username));
   return { ok: true, followers: updated.followers, comparison: compareRead(read, updated) };

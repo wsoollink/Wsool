@@ -44,8 +44,21 @@ export async function isOwnUploadedFile(userId: string, kind: UploadKind, path: 
   if (!path.startsWith(prefix) || path.includes("..")) return false;
   const name = path.slice(prefix.length);
   if (!/^[0-9a-f-]{36}\.[a-z0-9]{2,4}$/.test(name)) return false;
-  const { data } = await createSupabaseAdmin().storage.from(UPLOAD_KINDS[kind].bucket).list(`${userId}/${kind}`, { search: name, limit: 1 });
-  return !!data?.some((f) => f.name === name);
+  const rule = UPLOAD_KINDS[kind];
+  const storage = createSupabaseAdmin().storage.from(rule.bucket);
+  const { data } = await storage.list(`${userId}/${kind}`, { search: name, limit: 1 });
+  const file = data?.find((f) => f.name === name);
+  if (!file) return false;
+  // The signed upload URL only fixes the path, so check what was really uploaded against this
+  // kind's rules (type + size); otherwise a "photo" ticket could carry a 50 MB video or PDF.
+  const meta = (file.metadata ?? {}) as { size?: number; mimetype?: string };
+  const okType = !!meta.mimetype && (rule.types as readonly string[]).includes(meta.mimetype);
+  const okSize = typeof meta.size === "number" && meta.size > 0 && meta.size <= rule.maxBytes;
+  if (!okType || !okSize) {
+    await storage.remove([path]).catch(() => {});
+    return false;
+  }
+  return true;
 }
 
 export function publicFileUrl(path: string): string {

@@ -1,9 +1,9 @@
 import "server-only";
 import Anthropic from "@anthropic-ai/sdk";
+import { rateLimit } from "@/lib/rate-limit";
 import { betaZodOutputFormat } from "@anthropic-ai/sdk/helpers/beta/zod";
 import { z } from "zod";
 import { PLATFORMS } from "@/config/platforms";
-import { db } from "@/lib/db";
 import type { AccountRead } from "@/lib/ai/compare";
 
 /**
@@ -20,9 +20,12 @@ export const aiEnabled = () => !!process.env.ANTHROPIC_API_KEY;
 let client: Anthropic | null = null;
 const anthropic = () => (client ??= new Anthropic({ maxRetries: 1, timeout: 90_000 }));
 
+/**
+ * Counts one read for this creator and says whether it is allowed. An atomic
+ * counter taken before the (slow) AI call, so parallel requests can't all pass.
+ */
 export async function underDailyLimit(userId: string) {
-  const used = await db.aiRead.count({ where: { userId, createdAt: { gte: new Date(Date.now() - 86_400_000) } } });
-  return used < AI_DAILY_LIMIT;
+  return rateLimit(`ai:${userId}`, AI_DAILY_LIMIT, 86_400);
 }
 
 const SYSTEM = `You read screenshots that content creators upload to Wsool, a media-kit platform, and report exactly what is visible.

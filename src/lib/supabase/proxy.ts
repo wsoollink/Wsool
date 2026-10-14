@@ -1,6 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
-import { AUTH_COOKIE_PREFIX, supabaseEnv } from "./env";
+import { AUTH_COOKIE_PREFIX, SESSION_COOKIE_OPTIONS, supabaseEnv } from "./env";
 
 /**
  * Refreshes the Supabase session cookie (when there is one) and returns the
@@ -14,6 +14,7 @@ export async function rewriteWithSession(request: NextRequest, destination: URL)
 
   const { url, key } = supabaseEnv();
   const supabase = createServerClient(url, key, {
+    cookieOptions: SESSION_COOKIE_OPTIONS,
     cookies: {
       getAll: () => request.cookies.getAll(),
       setAll: (cookiesToSet, headers) => {

@@ -42,6 +42,16 @@ export async function startCheckout(user: { id: string; email: string }, cycle: 
   if (discount && "error" in discount) return { error: discount.error };
   // A free (100%) code is redeemed without checkout (redeemFreeCode).
   if (discount && discount.percent >= 100) return { error: "failed" };
+  // One open checkout per code: while someone else's invoice with it is being paid (last hour), it's taken.
+  // (Codes are only marked used when a payment settles, so this stops one shared code paying for many.)
+  if (discount) {
+    const busy = await db.invoice.count({
+      where: { discountCodeId: discount.id, status: "pending", userId: { not: user.id }, createdAt: { gte: new Date(Date.now() - 3_600_000) } },
+    });
+    if (busy) return { error: "used" };
+    // Earlier unpaid checkouts of this user with the same code are dropped, so only one can be paid.
+    await db.invoice.updateMany({ where: { discountCodeId: discount.id, status: "pending", userId: user.id }, data: { status: "failed", failureReason: "replaced" } });
+  }
   const full = PRICES[currency][cycle];
   const amount = discount ? discountedPrice(full, discount.percent) : full;
   const invoice = await db.invoice.create({
@@ -262,9 +272,12 @@ export async function refundInvoice(invoiceId: string): Promise<{ ok: boolean; e
   if (!provider || provider.name !== invoice.provider) return { ok: false, error: "provider" };
   const res = await provider.refund(invoice.providerPaymentId, Number(invoice.amount));
   if (!res.ok) return { ok: false, error: "provider" };
+  // Pro ends now only when this invoice paid for the current (or a later) period, not for an old one.
+  const sub = await db.subscription.findUnique({ where: { id: invoice.subscriptionId }, select: { currentPeriodEnd: true } });
+  const current = !sub?.currentPeriodEnd || !invoice.periodEnd || invoice.periodEnd.getTime() >= sub.currentPeriodEnd.getTime();
   await db.$transaction([
     db.invoice.update({ where: { id: invoice.id }, data: { status: "refunded", refundedAt: new Date() } }),
-    db.subscription.update({ where: { id: invoice.subscriptionId }, data: { status: "canceled", plan: "free", cancelAtPeriodEnd: true, currentPeriodEnd: new Date() } }),
+    ...(current ? [db.subscription.update({ where: { id: invoice.subscriptionId }, data: { status: "canceled", plan: "free", cancelAtPeriodEnd: true, currentPeriodEnd: new Date() } })] : []),
   ]);
   await refreshPage(invoice.userId);
   await notify(invoice.userId, "refund_issued", { invoice: invoiceLabel(invoice.number), amount: Number(invoice.amount), currency: invoice.currency });

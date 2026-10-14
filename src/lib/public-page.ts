@@ -20,7 +20,7 @@ export function expirePage(username: string) {
 /** Every column the public page needs (public fields only, never the owner's account email). */
 const PAGE_SELECT = {
   id: true, username: true, primaryLang: true, enEnabled: true, template: true,
-  customColors: true, accent: true, photoShape: true, hideBranding: true,
+  customColors: true, accent: true, photoShape: true, iconStyle: true, hideBranding: true,
   isPublished: true, deletedAt: true, photoUrl: true, logoUrl: true, whatsapp: true, contactEmail: true, whatsappVisible: true, emailVisible: true,
   user: { select: { suspendedAt: true, subscription: { select: { plan: true, status: true, trialEndsAt: true } } } },
   translations: true,
@@ -112,6 +112,7 @@ function shapePage(page: PageRow, now: number) {
     customColors: page.customColors,
     accent: page.accent,
     photoShape: page.photoShape,
+    iconStyle: page.iconStyle,
     isPro,
     // Hiding the footer is a Pro feature unless the Free limits allow it.
     showBranding: !(page.hideBranding && (isPro || FREE_LIMITS.hideBranding)),

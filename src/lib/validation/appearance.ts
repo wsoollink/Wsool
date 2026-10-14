@@ -2,6 +2,8 @@ import { z } from "zod";
 
 const hex = z.string().regex(/^#[0-9a-fA-F]{6}$/).transform((v) => v.toLowerCase());
 
+export const ICON_STYLES = ["solid", "color", "outline"] as const;
+
 export const TEMPLATES = ["white", "black", "sand", "pink", "black_gold", "vivid", "green", "custom"] as const;
 
 export const appearanceSchema = z
@@ -11,6 +13,8 @@ export const appearanceSchema = z
     /** null = the template's own accent; otherwise one of ACCENT_SWATCHES (stored as its light hex). */
     accent: hex.refine((v) => ACCENT_SWATCHES.some((s) => s.light === v), { message: "preset" }).nullable(),
     hideBranding: z.boolean(),
+    /** Social icons row on the page (all plans). */
+    iconStyle: z.enum(ICON_STYLES),
   })
   .refine((v) => v.template !== "custom" || v.customColors !== null, { path: ["customColors"] });
 

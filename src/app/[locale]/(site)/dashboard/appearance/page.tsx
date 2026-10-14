@@ -30,6 +30,7 @@ async function Editor() {
         // Accents are presets now; an older free-picked color starts as "template color".
         accent: ACCENT_SWATCHES.some((sw) => sw.light === page.accent) ? page.accent : null,
         hideBranding: page.hideBranding,
+        iconStyle: page.iconStyle,
       }}
       preview={{
         name: tr?.fullName ?? "",

@@ -10,6 +10,7 @@ import { PageActions } from "@/components/creator/PageActions";
 import { Check, PlatformCard, type Audience } from "@/components/creator/PlatformCard";
 import { glassCard } from "@/components/creator/styles";
 import { PlatformIcon } from "@/components/creator/PlatformIcon";
+import { SocialIcon } from "@/components/creator/SocialIcon";
 import { Tracker } from "@/components/creator/Tracker";
 import { WorkItem } from "@/components/creator/WorkItem";
 import { pageTheme, themeStyle } from "@/components/creator/theme";
@@ -186,9 +187,9 @@ export async function CreatorProfile({ page, lang, preview = false }: ProfilePro
                     <a
                       href={a.url} target="_blank" rel="noopener noreferrer" data-track={`social:${a.platform}`}
                       aria-label={`${PLATFORM_NAMES[a.platform]} @${a.handle}`}
-                      className={`${solidBox} inline-flex size-11 items-center justify-center rounded-full`}
+                      className="inline-flex rounded-[13px] transition-transform hover:-translate-y-0.5"
                     >
-                      <PlatformIcon platform={a.platform} size={18} />
+                      <SocialIcon platform={a.platform} iconStyle={page.iconStyle} />
                     </a>
                   </li>
                 ))}

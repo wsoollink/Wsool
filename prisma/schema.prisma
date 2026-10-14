@@ -34,6 +34,14 @@ enum PhotoShape {
   circle
 }
 
+/// Look of the social icons row on the creator page (Appearance): brand-colour squares,
+/// solid circles in the template's text colour (default), or outline glyphs.
+enum IconStyle {
+  color
+  solid
+  outline
+}
+
 enum Plan {
   free
   pro
@@ -99,6 +107,7 @@ model Page {
   customColors      Json?      @map("custom_colors")
   accent            String?    @db.VarChar(7)
   photoShape        PhotoShape @default(full) @map("photo_shape")
+  iconStyle         IconStyle  @default(solid) @map("icon_style")
   hideBranding      Boolean    @default(false) @map("hide_branding")
   /// Square hero photo (Supabase Storage URL).
   photoUrl          String?    @map("photo_url")

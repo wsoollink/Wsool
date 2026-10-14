@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { BadgeCheck, Mail } from "lucide-react";
 import { PlatformIcon } from "@/components/creator/PlatformIcon";
+import { SocialIcon } from "@/components/creator/SocialIcon";
 import { pageTheme, themeStyle } from "@/components/creator/theme";
 import type { Platform, Template } from "@/generated/prisma/enums";
 import type { Locale } from "@/i18n/config";
@@ -29,6 +30,8 @@ export function Preview({ value, data }: { value: AppearanceInput; data: Preview
   const numbers = "font-numbers";
   const accounts = data.accounts.length ? data.accounts.slice(0, 2) : [{ platform: "tiktok" as const, followers: 125000 }, { platform: "instagram" as const, followers: 48000 }];
   const total = data.followers || accounts.reduce((s, a) => s + a.followers, 0);
+  // The creator's own platforms (up to 5), else a sample row.
+  const icons: Platform[] = data.accounts.length ? data.accounts.slice(0, 5).map((a) => a.platform) : ["tiktok", "instagram", "snapchat", "x"];
 
   return (
     <figure className="flex flex-col gap-2">
@@ -59,6 +62,9 @@ export function Preview({ value, data }: { value: AppearanceInput; data: Preview
           <p className="text-sm font-medium text-[var(--page-accent)]">{data.specialty || t("sampleSpecialty")}</p>
           <p className={`${numbers} mt-1 text-4xl font-bold tabular-nums`}>{formatCompact(total, data.lang)}</p>
           <p className="text-xs text-[var(--page-muted)]">{t("followers")}</p>
+          <div className="mt-1 flex flex-wrap justify-center gap-1.5">
+            {icons.map((p) => <SocialIcon key={p} platform={p} iconStyle={value.iconStyle} small />)}
+          </div>
         </div>
         <div className="grid grid-cols-2 gap-2 px-4">
           {accounts.map((a, i) => (

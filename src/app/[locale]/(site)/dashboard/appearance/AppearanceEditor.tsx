@@ -4,18 +4,20 @@ import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { Eye, Lock } from "lucide-react";
-import { pageTheme } from "@/components/creator/theme";
+import { SocialIcon } from "@/components/creator/SocialIcon";
+import { pageTheme, themeStyle } from "@/components/creator/theme";
 import { buttonClasses } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import type { Template } from "@/generated/prisma/enums";
 import { SaveBar } from "@/components/dashboard/SaveBar";
 import { Switch } from "@/components/ui/Switch";
-import { ACCENT_SWATCHES, TEMPLATES, type AppearanceInput } from "@/lib/validation/appearance";
+import { ACCENT_SWATCHES, ICON_STYLES, TEMPLATES, type AppearanceInput } from "@/lib/validation/appearance";
 import { saveAppearance } from "./actions";
 import { Preview, type PreviewData } from "./Preview";
 
 type Value = AppearanceInput & { customColors: NonNullable<AppearanceInput["customColors"]> };
 const HEX = /^#[0-9a-fA-F]{6}$/;
+const SAMPLE_ICONS = ["instagram", "tiktok", "snapchat"] as const;
 
 /** Template, colors, number font and Wsool footer, with a live preview (dashboard design). */
 export function AppearanceEditor({ initial, isPro, freeTemplates, preview }: { initial: Value; isPro: boolean; freeTemplates: readonly string[]; preview: PreviewData }) {
@@ -127,6 +129,35 @@ export function AppearanceEditor({ initial, isPro, freeTemplates, preview }: { i
                   className={`size-11 rounded-full p-[3px] ${checked ? "ring-2 ring-navy" : "ring-1 ring-navy/10"}`}
                 >
                   <span className="block size-full rounded-full" style={{ backgroundColor: s.color }} />
+                </button>
+              );
+            })}
+          </div>
+        </Card>
+
+        <Card className="flex flex-col gap-3">
+          <div>
+            <h2 className="font-bold">{t("iconStyle")}</h2>
+            <p className="text-xs text-muted">{t("iconStyleHint")}</p>
+          </div>
+          <div role="radiogroup" aria-label={t("iconStyle")} className="grid grid-cols-1 gap-2.5 sm:grid-cols-3">
+            {ICON_STYLES.map((style) => {
+              const checked = value.iconStyle === style;
+              return (
+                <button
+                  key={style} type="button" role="radio" aria-checked={checked} onClick={() => set({ iconStyle: style })}
+                  className={`flex items-center gap-3 rounded-2xl border bg-card p-2 text-start sm:flex-col sm:items-stretch ${checked ? "border-blue ring-2 ring-blue/25" : "border-line"}`}
+                >
+                  {/* Sample row on the chosen template's colours. */}
+                  <span aria-hidden="true" style={themeStyle(current)} className="flex h-14 shrink-0 items-center justify-center gap-1.5 rounded-[10px] bg-[var(--page-bg)] px-3">
+                    {SAMPLE_ICONS.map((p) => <SocialIcon key={p} platform={p} iconStyle={style} small />)}
+                  </span>
+                  <span className="flex flex-1 items-center justify-between gap-2 px-1">
+                    <span className="text-[13.5px] font-bold">{t(`iconStyles.${style}`)}</span>
+                    <span aria-hidden="true" className={`inline-flex size-[18px] shrink-0 items-center justify-center rounded-full border-2 ${checked ? "border-blue" : "border-navy/20"}`}>
+                      {checked && <span className="size-2 rounded-full bg-blue" />}
+                    </span>
+                  </span>
                 </button>
               );
             })}

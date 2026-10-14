@@ -675,7 +675,14 @@
     "hideBrandingPro": "Removes the Wsool line at the bottom of your page. Part of the paid plan.",
     "preview": "Preview",
     "closePreview": "Close preview",
-    "failed": "Something went wrong. Try again."
+    "failed": "Something went wrong. Try again.",
+    "iconStyle": "Account icons style",
+    "iconStyleHint": "The row of your account icons under total followers.",
+    "iconStyles": {
+      "solid": "Solid circle",
+      "color": "Colour",
+      "outline": "Outline"
+    }
   },
   "Suspended": {
     "title": "Your account is suspended",

@@ -129,6 +129,11 @@ Desktop: left sticky sidebar with photo, info and contact; main column with the 
 (creator picks 1–2 colors + light/dark; palette is derived automatically, with contrast guards).
 Templates are fixed: there is **no visitor light/dark toggle**.
 Creator can also pick an accent color (Appearance) and the photo shape (Edit page photo card: full = square fading into the page, or circle).
+**Account icons style** (owner, Oct 2026, all plans): Appearance card "شكل أيقونات الحسابات" sets `pages.icon_style`
+(`solid` default = circle in the template's text colour with the glyph in its background colour, `color` = brand-colour
+rounded squares with white glyphs (`BRAND_COLORS`), `outline` = Tabler outline glyphs (MIT, `OUTLINE_ICON_PATHS`, Jaco
+hand-drawn) in the text colour), in `src/components/creator/icon-styles.ts` + `SocialIcon.tsx`. Only the icons row under
+total followers uses it (not platform cards, PDF or OG).
 Big numbers always use the wide Black cut (the number-font choice was removed by the owner, Oct 2026).
 
 **Licenses**: a flexible list. Each item = free-text name (e.g. "رخصة موثوق") + number + optional

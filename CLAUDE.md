@@ -736,3 +736,28 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   `code-review-and-quality` (review your own change before saying a step is done), `shipping-and-launch` (use together
   with `docs/launch-checklist.md`). This file wins over any skill where they disagree (e.g. stack, branches, deploy
   credits); skip skill steps that don't fit a solo owner (feature flags, staged rollouts, heavy test suites) unless asked.
+
+### Affiliate program (owner, Oct 2026)
+- Rules in `REFERRAL` (`src/config/referrals.ts`): 20% of each paid invoice **before VAT** (in SAR, USD × 3.75), for payments
+  before the customer's first payment + 12 months; referrer must be Pro (and not suspended) when the payment settles; 30-day
+  cookie (last click wins); payable after 14 days (a refund before then cancels it, `cancelCommissionForRefund`); bank
+  transfers from SAR 100. Logic: `src/lib/referrals.ts`.
+- Link `wsool.link/?ref=<username>` (any site path): `src/proxy.ts` redirects to `/api/ref?u=&next=`, which counts a unique
+  click (`referral_clicks`, visitor hash, bots/30 per IP per day ignored), sets the httpOnly `wsool_ref` cookie
+  (`<referrerId>.<ms>`) only for eligible referrers, and goes back to the clean same-site path. Old usernames still redirecting
+  keep working. Pro creator pages put the ref link on the "Made with Wsool" footer (plain `<a>`, full load).
+- `ensureAccount()` (first sign-in only) calls `attachReferral()`: sets `users.referred_by` / `referred_at`; never self, never
+  the same inbox (`sameInbox`: gmail dots / +tags); DB check `users_not_self_referred`.
+- `earnCommission(invoiceId)` runs after `settleCheckout` and renewals (idempotent: unique `invoice_id`), notifies
+  `commission_earned`. Balance = payable commissions − `referral_payouts` (`referralBalance`).
+- Payout method (`referral_accounts`, server only, IBAN mod-97 checked by `validIban` in `src/lib/iban.ts`): `credit` (default)
+  = `renewalCredit()` in `runBillingJob` takes it off the creator's own renewal (`invoices.credit_amount`, card charged the
+  rest, 0 = no provider call, never leaves a charge under 1; a payout row `method=credit`; refund gives the provider only the
+  charged part and deletes that payout) or `bank` = staff record transfers.
+- Dashboard `dashboard/referrals/` (section "العمولة", account group): link (copy/share, disabled on Free + `ProNotice`),
+  KPIs, 30-day clicks chart, balance, customers table (no personal data: "Customer N", date, plan, commission), payout form
+  (`savePayoutSettings`; empty IBAN keeps the saved one, only shown masked), payouts history, rules.
+- Admin `admin/referrals/` (permission `referrals.manage`, money group): balances per creator with full IBAN, "Transferred"
+  (`recordBankPayout`: whole payable balance, row-locked, reference, audited `referral.payout`, notifies `commission_paid`),
+  CSV `/api/admin/referrals` (audited `referral.export`). Finance counts commissions as expense category `affiliate` (and in
+  marketing for CAC). Terms section 7 + privacy (data row, 30-day cookie) describe it. Data export includes it.

@@ -35,6 +35,7 @@ export async function auditSentences(entries: Entry[]) {
       code: str(d.code),
       added: str(d.added),
       removed: str(d.removed),
+      amount: str(d.amount),
     };
     return t.has(e.action) ? t(e.action, values) : e.action;
   });

@@ -14,6 +14,7 @@ export const DASHBOARD_SECTIONS = [
   { key: "verification", href: "/dashboard/verification", group: "account" },
   { key: "appearance", href: "/dashboard/appearance", group: "account" },
   { key: "analytics", href: "/dashboard/analytics", group: "account" },
+  { key: "referrals", href: "/dashboard/referrals", group: "account" },
   { key: "subscription", href: "/dashboard/subscription", group: "account" },
 ] as const;
 

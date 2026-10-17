@@ -90,6 +90,18 @@ model User {
   cancellationFeedback CancellationFeedback[]
   aiReads              AiRead[]
 
+  /// Affiliate program: the creator whose referral link this user signed up through (set once, on sign-up).
+  referredById         String?               @map("referred_by") @db.Uuid
+  referredAt           DateTime?             @map("referred_at") @db.Timestamptz
+  referredBy           User?                 @relation("Referrals", fields: [referredById], references: [id], onDelete: SetNull)
+  referrals            User[]                @relation("Referrals")
+  referralAccount      ReferralAccount?
+  commissionsEarned    ReferralCommission[]  @relation("CommissionReferrer")
+  commissionsFrom      ReferralCommission[]  @relation("CommissionReferred")
+  referralClicks       ReferralClick[]
+  referralPayouts      ReferralPayout[]
+
+  @@index([referredById])
   @@map("users")
 }
 
@@ -580,6 +592,8 @@ model Invoice {
   /// Discount code used on this (first) payment; amount is already after the discount.
   discountCodeId    String?       @map("discount_code_id") @db.Uuid
   discountAmount    Decimal       @default(0) @map("discount_amount") @db.Decimal(10, 2)
+  /// Paid from the creator's affiliate credit (renewals); `amount` is the full price, the provider charged amount - credit.
+  creditAmount      Decimal       @default(0) @map("credit_amount") @db.Decimal(10, 2)
   paidAt            DateTime?     @map("paid_at") @db.Timestamptz
   refundedAt        DateTime?     @map("refunded_at") @db.Timestamptz
   createdAt         DateTime      @default(now()) @map("created_at") @db.Timestamptz
@@ -920,4 +934,82 @@ model RateLimit {
   resetAt DateTime @map("reset_at") @db.Timestamptz
 
   @@map("rate_limits")
+}
+
+/// Affiliate program (CLAUDE.md, owner Oct 2026): how a creator wants their commission paid.
+/// Server only (IBAN), never exposed through the Data API.
+model ReferralAccount {
+  userId       String         @id @map("user_id") @db.Uuid
+  payoutMethod PayoutMethod   @default(credit) @map("payout_method")
+  /// International bank account number, uppercase without spaces (bank payouts).
+  iban         String?        @db.VarChar(34)
+  holderName   String?        @map("holder_name") @db.VarChar(100)
+  updatedAt    DateTime       @updatedAt @map("updated_at") @db.Timestamptz
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("referral_accounts")
+}
+
+enum PayoutMethod {
+  /// Taken off the creator's next Wsool renewal.
+  credit
+  /// Bank transfer by the owner once the balance reaches the minimum.
+  bank
+}
+
+/// One unique click on a creator's referral link per visitor and day (no IP stored).
+model ReferralClick {
+  id          BigInt   @id @default(autoincrement())
+  referrerId  String   @map("referrer_id") @db.Uuid
+  day         DateTime @db.Date
+  visitorHash String   @map("visitor_hash") @db.VarChar(32)
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  referrer User @relation(fields: [referrerId], references: [id], onDelete: Cascade)
+
+  @@unique([referrerId, day, visitorHash])
+  @@map("referral_clicks")
+}
+
+/// A commission on one paid invoice of a referred customer (amounts in SAR, before VAT).
+model ReferralCommission {
+  id             String    @id @default(uuid()) @db.Uuid
+  referrerId     String    @map("referrer_id") @db.Uuid
+  referredUserId String?   @map("referred_user_id") @db.Uuid
+  invoiceId      String?   @unique @map("invoice_id") @db.Uuid
+  /// Invoice amount without VAT, in SAR.
+  baseAmount     Decimal   @map("base_amount") @db.Decimal(10, 2)
+  /// Percent applied (REFERRAL.percent when earned).
+  percent        Int
+  amount         Decimal   @db.Decimal(10, 2)
+  /// Payable from this date (hold period for refunds).
+  availableAt    DateTime  @map("available_at") @db.Timestamptz
+  /// The invoice was refunded during the hold period.
+  cancelledAt    DateTime? @map("cancelled_at") @db.Timestamptz
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  referrer     User  @relation("CommissionReferrer", fields: [referrerId], references: [id], onDelete: Cascade)
+  referredUser User? @relation("CommissionReferred", fields: [referredUserId], references: [id], onDelete: SetNull)
+
+  @@index([referrerId, createdAt])
+  @@map("referral_commissions")
+}
+
+/// Money paid out to a creator: a bank transfer (recorded by staff) or credit used on a renewal.
+model ReferralPayout {
+  id         String       @id @default(uuid()) @db.Uuid
+  referrerId String       @map("referrer_id") @db.Uuid
+  method     PayoutMethod
+  amount     Decimal      @db.Decimal(10, 2)
+  /// Bank: last 4 digits of the IBAN and the transfer reference. Credit: the renewal invoice id.
+  note       String       @default("") @db.VarChar(200)
+  invoiceId  String?      @map("invoice_id") @db.Uuid
+  createdBy  String?      @map("created_by") @db.Uuid
+  createdAt  DateTime     @default(now()) @map("created_at") @db.Timestamptz
+
+  referrer User @relation(fields: [referrerId], references: [id], onDelete: Cascade)
+
+  @@index([referrerId, createdAt])
+  @@map("referral_payouts")
 }

@@ -1,5 +1,5 @@
 import {
-  Activity, BadgeCheck, Bell, Briefcase, ChartColumn, CreditCard, House,
+  Activity, BadgeCheck, HandCoins, Bell, Briefcase, ChartColumn, CreditCard, House,
   Link2, MessageCircle, Palette, Pencil, Tag, type LucideProps,
 } from "lucide-react";
 import type { SectionKey } from "@/config/dashboard";
@@ -15,6 +15,7 @@ const ICONS: Record<SectionKey, React.ComponentType<LucideProps>> = {
   verification: BadgeCheck,
   appearance: Palette,
   analytics: Activity,
+  referrals: HandCoins,
   subscription: CreditCard,
   notifications: Bell,
 };

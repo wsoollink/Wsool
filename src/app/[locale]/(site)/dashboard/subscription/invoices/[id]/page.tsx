@@ -28,6 +28,8 @@ async function Invoice({ params, lang }: { params: Promise<{ id: string }>; lang
   const total = Number(inv.amount), vat = Number(inv.vatAmount);
   // Prices include VAT; a discount is shown before VAT: full line, minus the discount, = subtotal.
   const discount = Number(inv.discountAmount);
+  // Affiliate credit paid part of a renewal: shown after the total, the card was charged the rest.
+  const credit = Number(inv.creditAmount);
   const subtotal = Math.round((total - vat) * 100) / 100;
   const lineEx = discount ? Math.round((total + discount - vatPart(total + discount)) * 100) / 100 : subtotal;
 
@@ -58,6 +60,8 @@ async function Invoice({ params, lang }: { params: Promise<{ id: string }>; lang
           <tr><td className="py-2 text-muted">{t("subtotal")}</td><td className="py-2 text-end">{money(subtotal)}</td></tr>
           <tr><td className="py-2 text-muted">{t("vat")}</td><td className="py-2 text-end">{money(vat)}</td></tr>
           <tr className="border-t border-line font-bold"><td className="py-3">{t("total")}</td><td className="py-3 text-end">{money(total)}</td></tr>
+          {credit > 0 && <tr><td className="py-2 text-muted">{t("credit")}</td><td className="py-2 text-end text-good">−{money(credit)}</td></tr>}
+          {credit > 0 && <tr className="font-bold"><td className="py-2">{t("charged")}</td><td className="py-2 text-end">{money(Math.round((total - credit) * 100) / 100)}</td></tr>}
         </tbody>
       </table>
       {inv.status === "refunded" && <p className="rounded-xl bg-warn/10 p-3 text-sm text-warn">{t("refunded")}</p>}

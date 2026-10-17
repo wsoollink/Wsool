@@ -214,7 +214,8 @@
     "groupAccount": "Account",
     "search": "Jump to a section…",
     "searchLabel": "Search sections",
-    "noResults": "No section with that name"
+    "noResults": "No section with that name",
+    "referrals": "Commission"
   },
   "CreatorPage": {
     "brand": "Wsool",
@@ -784,7 +785,8 @@
       "discounts": "Discount codes",
       "insights": "Creator insights",
       "categories": "Categories",
-      "groupOwner": "Owner"
+      "groupOwner": "Owner",
+      "referrals": "Commissions"
     },
     "overview": {
       "users": "Users",
@@ -1082,6 +1084,9 @@
         },
         "discounts": {
           "manage": "Creates and revokes discount codes"
+        },
+        "referrals": {
+          "manage": "See commissions and record transfers"
         }
       },
       "invite": "Add",
@@ -1207,7 +1212,8 @@
       "newsletter": "Write an issue and send it to confirmed subscribers",
       "discounts": "First-payment discounts for people you choose",
       "insights": "Creators by category, country, city, platform and size",
-      "categories": "The list creators pick their content category from"
+      "categories": "The list creators pick their content category from",
+      "referrals": "What creators earned on the customers they brought, and bank transfers"
     },
     "sentence": {
       "verification": {
@@ -1263,6 +1269,10 @@
       },
       "category": {
         "update": "Edited the category list ({count} categories, {added} added, {removed} removed)"
+      },
+      "referral": {
+        "payout": "Recorded a SAR {amount} commission transfer to {username}",
+        "export": "Downloaded commissions ({count})"
       }
     },
     "newsletter": {
@@ -1438,6 +1448,42 @@
         "duplicate": "Two names are the same.",
         "failed": "Something went wrong, try again."
       }
+    },
+    "referrals": {
+      "stat": {
+        "due": "Due for transfer",
+        "available": "Ready to pay out (all)",
+        "pending": "Pending",
+        "signups": "Referred sign-ups"
+      },
+      "dueNote": "{n} creators reached {min}",
+      "holdNote": "Ready after {days} days",
+      "paidOutNote": "{amount} paid out",
+      "rule": "Commission is {percent}% before VAT for the first {months} months of the customer's subscription.",
+      "export": "Export CSV",
+      "empty": "No commissions yet.",
+      "table": {
+        "creator": "Creator",
+        "method": "Payout",
+        "signups": "Sign-ups",
+        "pending": "Pending",
+        "available": "Ready",
+        "paidOut": "Paid out"
+      },
+      "method": {
+        "credit": "Credit",
+        "bank": "Bank transfer"
+      },
+      "creditAuto": "Comes off their renewal automatically",
+      "confirmPayout": "Confirm transferring {amount} to {who}.\nTransfer reference (optional):",
+      "markPaid": "Transferred",
+      "saving": "Saving…",
+      "error": {
+        "invalid": "Invalid data.",
+        "nothing": "Nothing is ready to pay out.",
+        "not_bank": "This creator didn't choose bank transfer.",
+        "failed": "Something went wrong, try again."
+      }
     }
   },
   "Billing": {
@@ -1542,7 +1588,9 @@
       "vat": "VAT 15%",
       "total": "Total incl. VAT",
       "refunded": "This invoice was refunded.",
-      "discount": "Discount (promo code)"
+      "discount": "Discount (promo code)",
+      "credit": "Paid from commission balance",
+      "charged": "Charged to card"
     },
     "mock": {
       "badge": "Test payment",
@@ -1776,6 +1824,24 @@
       "title": "Your free Pro is ending",
       "body": "Your free Pro plan ends on {endDate}.\nSubscribe to keep the templates, verified badge and analytics. If you don't, your page goes back to the Free plan and none of your data is deleted.",
       "cta": "Subscribe to Pro"
+    },
+    "commission_earned": {
+      "subject": "New commission: {amount}",
+      "title": "You earned a commission",
+      "body": "A customer who came through your link paid for their subscription, and you earned {amount}.\nIt will be ready to pay out on {availableDate}.",
+      "cta": "See your commission"
+    },
+    "commission_paid": {
+      "subject": "Your commission was transferred: {amount}",
+      "title": "Commission paid",
+      "body": "We transferred {amount} of your commission to your bank account. It may take a few days to arrive.",
+      "cta": "Commission history"
+    },
+    "commission_credit": {
+      "subject": "Your commission paid for your renewal",
+      "title": "Your commission paid your renewal",
+      "body": "{amount} from your commission balance was used on renewal invoice {invoice}.",
+      "cta": "See the invoice"
     }
   },
   "Notifications": {
@@ -1850,7 +1916,8 @@
       "salaries": "Salaries",
       "payment_fees": "Payment fees",
       "legal": "Legal & government fees",
-      "other": "Other"
+      "other": "Other",
+      "affiliate": "Referral commissions"
     },
     "recurrences": {
       "none": "One-off",
@@ -1960,7 +2027,8 @@
     "subscription": "Your plan, invoices and payment method",
     "notifications": "Everything that happened on your page and account",
     "home": "Here's your page today",
-    "links": "Your store and course links, and services besides ads"
+    "links": "Your store and course links, and services besides ads",
+    "referrals": "Earn from every subscriber who comes through your link"
   },
   "SaveBar": {
     "save": "Save changes",
@@ -2004,5 +2072,69 @@
   "Theme": {
     "toDark": "Dark mode",
     "toLight": "Light mode"
+  },
+  "Referrals": {
+    "proOnly": "The affiliate program is for Pro subscribers. Subscribe to switch on your link and start earning.",
+    "yourLink": "Your referral link",
+    "linkHint": "Share it with anyone who wants a page. The “Made with Wsool” link on your page counts for you too.",
+    "copy": "Copy",
+    "copied": "Copied",
+    "share": "Share link",
+    "shareText": "Make your media kit on Wsool",
+    "stat": {
+      "clicks": "Clicks",
+      "signups": "Sign-ups",
+      "paying": "Paid subscriptions",
+      "earned": "Total commission"
+    },
+    "last30": "{n} in the last 30 days",
+    "rule": "{percent}% for the first {months} months",
+    "clicksChart": "Clicks on your link",
+    "lastDays": "Last {n} days",
+    "clicksChartAlt": "Daily clicks chart, {total} in total",
+    "clicksCount": "{count, plural, one {# click} other {# clicks}}",
+    "balance": "Your balance",
+    "pending": "Pending",
+    "available": "Ready to pay out",
+    "paidOut": "Paid out",
+    "holdNote": "A commission is ready {days} days after the payment, and is cancelled if the customer is refunded before then.",
+    "customers": "Your customers",
+    "noCustomers": "No one has signed up from your link yet. Share it and your customers will show here.",
+    "table": {
+      "customer": "Customer",
+      "joined": "Joined",
+      "plan": "Status",
+      "commission": "Your commission"
+    },
+    "customerN": "Customer {n}",
+    "plan": {
+      "pro": "Subscribed",
+      "trial": "Trial",
+      "free": "Free"
+    },
+    "payouts": "Payouts",
+    "noPayouts": "No payouts yet.",
+    "method": {
+      "credit": "Wsool credit",
+      "bank": "Bank transfer"
+    },
+    "howTitle": "How it works",
+    "how1": "You get {percent}% (before VAT) of every payment the customer makes in their first {months} months.",
+    "how2": "A visitor counts for you for {days} days after their last click on your link; only paid subscriptions earn.",
+    "how3": "A commission is ready to pay out after {days} days.",
+    "how4": "Your balance comes off your own renewal automatically, or we transfer it to your bank once it reaches {min}.",
+    "payoutTitle": "How do you want to be paid?",
+    "creditHint": "Taken off your next renewal automatically.",
+    "bankHint": "We transfer it once your balance reaches {min}.",
+    "iban": "IBAN",
+    "ibanSaved": "Saved: {iban}. Leave empty to keep it.",
+    "ibanHint": "Saudi IBANs start with SA and have 24 characters.",
+    "ibanError": "This IBAN isn't valid, please check it.",
+    "holderName": "Account holder name",
+    "holderError": "Enter the account holder's name as it is at the bank.",
+    "saving": "Saving…",
+    "save": "Save",
+    "saved": "Saved",
+    "saveFailed": "Not saved, please check the fields."
   }
 }

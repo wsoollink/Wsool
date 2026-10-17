@@ -27,7 +27,13 @@ export async function GET() {
     where: { userId: user.id, number: { not: null } },
     select: { number: true, status: true, cycle: true, currency: true, amount: true, vatAmount: true, paidAt: true, periodStart: true, periodEnd: true },
   });
-  const body = JSON.stringify({ exportedAt: new Date(), ...data, invoices }, (_k, v) => (typeof v === "bigint" ? Number(v) : v), 2);
+  // Affiliate program: payout settings, commissions and payouts (customers are not identified).
+  const referrals = {
+    account: await db.referralAccount.findUnique({ where: { userId: user.id }, select: { payoutMethod: true, iban: true, holderName: true } }),
+    commissions: await db.referralCommission.findMany({ where: { referrerId: user.id }, orderBy: { createdAt: "asc" }, select: { amount: true, percent: true, availableAt: true, cancelledAt: true, createdAt: true } }),
+    payouts: await db.referralPayout.findMany({ where: { referrerId: user.id }, orderBy: { createdAt: "asc" }, select: { method: true, amount: true, note: true, createdAt: true } }),
+  };
+  const body = JSON.stringify({ exportedAt: new Date(), ...data, invoices, referrals }, (_k, v) => (typeof v === "bigint" ? Number(v) : v), 2);
   return new Response(body, {
     headers: {
       "content-type": "application/json; charset=utf-8",

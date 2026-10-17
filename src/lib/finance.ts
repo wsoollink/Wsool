@@ -54,6 +54,9 @@ export async function financeReport(months: number) {
   const firstPaid = await db.invoice.groupBy({ by: ["userId"], where: { status: { in: ["paid", "refunded"] } }, _min: { paidAt: true } });
   const firstByUser = new Map(firstPaid.map((f) => [f.userId, f._min.paidAt]));
   const expenses = (await db.expense.findMany({ where: { date: { lt: nextMonth(keys[keys.length - 1]) } } })).map((e) => ({ ...e, amount: Number(e.amount) }));
+  // Affiliate commissions (SAR) are an automatic acquisition cost in the month they were earned.
+  const commissions = await db.referralCommission.findMany({ where: { cancelledAt: null, createdAt: { gte: from } }, select: { amount: true, createdAt: true } });
+  const commissionsIn = (key: string) => commissions.reduce((s, c) => s + (monthOf(c.createdAt) === key ? Number(c.amount) : 0), 0);
 
   const rows: MonthRow[] = keys.map((key) => {
     const start = monthStart(key), end = nextMonth(key);
@@ -68,8 +71,9 @@ export async function financeReport(months: number) {
         paying.add(inv.userId);
       }
     }
-    const monthExpenses = expenses.reduce((s, e) => s + expenseInMonth(e, key), 0);
-    const marketing = expenses.filter((e) => e.category === "marketing").reduce((s, e) => s + expenseInMonth(e, key), 0);
+    const affiliate = commissionsIn(key);
+    const monthExpenses = expenses.reduce((s, e) => s + expenseInMonth(e, key), 0) + affiliate;
+    const marketing = expenses.filter((e) => e.category === "marketing").reduce((s, e) => s + expenseInMonth(e, key), 0) + affiliate;
     const newCustomers = [...firstByUser.values()].filter((d) => d && monthOf(d) === key).length;
     return { month: key, revenue, expenses: monthExpenses, profit: revenue - monthExpenses, marketing, mrr, customers: paying.size, newCustomers, churned: 0, payingIds: paying } as MonthRow & { payingIds: Set<string> };
   });
@@ -101,6 +105,8 @@ export async function financeReport(months: number) {
     const sum = keys.reduce((s, key) => s + expenseInMonth(e, key), 0);
     if (sum) byCategory[e.category] = (byCategory[e.category] ?? 0) + sum;
   }
+  const affiliateTotal = keys.reduce((s, key) => s + commissionsIn(key), 0);
+  if (affiliateTotal) byCategory.affiliate = affiliateTotal;
 
   return {
     months: clean,

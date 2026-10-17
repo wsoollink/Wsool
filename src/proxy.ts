@@ -1,4 +1,5 @@
-import type { NextRequest } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
+import { REF_PARAM } from "@/config/referrals";
 import { LOCALE_COOKIE, resolveLocale } from "@/i18n/config";
 import { rewriteWithSession } from "@/lib/supabase/proxy";
 
@@ -10,6 +11,17 @@ import { rewriteWithSession } from "@/lib/supabase/proxy";
  * Signed-in visitors also get their Supabase session refreshed here.
  */
 export async function proxy(request: NextRequest) {
+  // Referral links (?ref=<username>): counted and remembered by /api/ref, which comes back without the parameter.
+  const ref = request.nextUrl.searchParams.get(REF_PARAM);
+  if (ref !== null && request.method === "GET") {
+    const next = request.nextUrl.clone();
+    next.searchParams.delete(REF_PARAM);
+    const landing = new URL("/api/ref", request.url);
+    landing.searchParams.set("u", ref.slice(0, 40));
+    landing.searchParams.set("next", next.pathname + next.search);
+    return NextResponse.redirect(landing, 307);
+  }
+
   const locale = resolveLocale(
     request.cookies.get(LOCALE_COOKIE)?.value,
     request.headers.get("accept-language"),

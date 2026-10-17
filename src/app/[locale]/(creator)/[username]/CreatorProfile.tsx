@@ -15,6 +15,7 @@ import { Tracker } from "@/components/creator/Tracker";
 import { WorkItem } from "@/components/creator/WorkItem";
 import { pageTheme, themeStyle } from "@/components/creator/theme";
 import { PLATFORM_NAMES } from "@/config/platforms";
+import { REF_PARAM } from "@/config/referrals";
 import { toIntlLocale, type Locale } from "@/i18n/config";
 import { siteOrigin } from "@/lib/site-url";
 import { currencyLabel, formatAmount, formatPercent, formatPhone } from "@/lib/format";
@@ -283,9 +284,10 @@ export async function CreatorProfile({ page, lang, preview = false }: ProfilePro
 
           {page.showBranding && (
             <footer className="mt-auto flex justify-center pb-8">
-              <Link href="/" className="inline-flex min-h-11 items-center text-[13px] text-[var(--page-muted)]">
+              {/* Pro pages carry the creator's referral link (affiliate program); a full page load so /api/ref counts it. */}
+              <a href={page.isPro ? `/?${REF_PARAM}=${page.username}` : "/"} className="inline-flex min-h-11 items-center text-[13px] text-[var(--page-muted)]">
                 {t.rich("madeWith", { b: (c) => <b className="ms-1 font-bold text-[var(--page-text)]">{c}</b> })}
-              </Link>
+              </a>
             </footer>
           )}
         </main>

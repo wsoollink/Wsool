@@ -36,6 +36,9 @@ export const NOTIFICATIONS = {
   license_verified: { href: "/dashboard/verification", reminder: false },
   license_rejected: { href: "/dashboard/verification", reminder: false },
   deletion_scheduled: { href: "/dashboard/subscription", reminder: false },
+  commission_earned: { href: "/dashboard/referrals", reminder: false },
+  commission_paid: { href: "/dashboard/referrals", reminder: false, billing: true },
+  commission_credit: { href: "/dashboard/subscription", reminder: false, billing: true },
 } as const;
 export type NotificationType = keyof typeof NOTIFICATIONS;
 

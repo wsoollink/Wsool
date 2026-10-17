@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { BadgeCheck, ChartPie, CreditCard, LayoutDashboard, Mail, ScrollText, Shapes, TicketPercent, ShieldCheck, Users, Wallet, type LucideIcon } from "lucide-react";
+import { BadgeCheck, ChartPie, CreditCard, HandCoins, LayoutDashboard, Mail, ScrollText, Shapes, TicketPercent, ShieldCheck, Users, Wallet, type LucideIcon } from "lucide-react";
 import { ADMIN_SECTIONS, type AdminSectionKey } from "@/config/admin";
 import { navRow, navRowActive } from "@/components/ui/styles";
 
@@ -16,6 +16,7 @@ const ICONS: Record<AdminSectionKey, LucideIcon> = {
   finance: Wallet,
   newsletter: Mail,
   discounts: TicketPercent,
+  referrals: HandCoins,
   categories: Shapes,
   team: ShieldCheck,
   audit: ScrollText,

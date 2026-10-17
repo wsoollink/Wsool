@@ -6,6 +6,7 @@ import { checkDiscountCode, discountedPrice, type CodeError } from "@/lib/discou
 import { paymentProvider, type Payment } from "@/lib/payments";
 import { notify } from "@/lib/notify";
 import { expirePage } from "@/lib/public-page";
+import { cancelCommissionForRefund, earnCommission, renewalCredit } from "@/lib/referrals";
 import { siteOrigin } from "@/lib/site-url";
 
 /** "WS-001042" */
@@ -153,6 +154,7 @@ export async function settleCheckout(invoiceId: string, payment: Payment): Promi
     await refreshPage(invoice.userId);
     const paid = await db.invoice.findUnique({ where: { id: invoice.id }, select: { number: true } });
     await notify(invoice.userId, "payment_receipt", { invoice: invoiceLabel(paid?.number ?? null), amount: Number(invoice.amount), currency: invoice.currency, periodEndDate: end.toISOString() });
+    await earnCommission(invoice.id);
   }
   return "paid";
 }
@@ -222,14 +224,21 @@ export async function runBillingJob(now = new Date()): Promise<JobReport> {
     const amount = PRICES[sub.currency][sub.cycle];
     const start = sub.currentPeriodEnd;
     const end = addCycle(start, sub.cycle);
+    // Affiliate credit (creators who chose "credit") pays part or all of the renewal.
+    const { credit, creditSar } = await renewalCredit(sub.userId, amount, sub.currency);
+    const charge = Math.round((amount - credit) * 100) / 100;
     const invoice = await db.invoice.create({
-      data: { userId: sub.userId, subscriptionId: sub.id, kind: "renewal", cycle: sub.cycle, currency: sub.currency, amount, vatAmount: vatPart(amount), provider: provider.name, periodStart: start, periodEnd: end },
+      data: { userId: sub.userId, subscriptionId: sub.id, kind: "renewal", cycle: sub.cycle, currency: sub.currency, amount, vatAmount: vatPart(amount), creditAmount: credit, provider: provider.name, periodStart: start, periodEnd: end },
     });
     let payment: Payment;
-    try {
-      payment = await provider.chargeToken({ token: sub.paymentToken, amount, currency: sub.currency, description: `Wsool Pro renewal (${sub.cycle})`, invoiceId: invoice.id });
-    } catch {
-      payment = { id: `error_${invoice.id}`, status: "failed", amount, currency: sub.currency, invoiceId: invoice.id, failureReason: "Provider error" };
+    if (charge <= 0) {
+      payment = { id: `credit_${invoice.id}`, status: "paid", amount: 0, currency: sub.currency, invoiceId: invoice.id };
+    } else {
+      try {
+        payment = await provider.chargeToken({ token: sub.paymentToken, amount: charge, currency: sub.currency, description: `Wsool Pro renewal (${sub.cycle})`, invoiceId: invoice.id });
+      } catch {
+        payment = { id: `error_${invoice.id}`, status: "failed", amount: charge, currency: sub.currency, invoiceId: invoice.id, failureReason: "Provider error" };
+      }
     }
 
     if (payment.status === "paid") {
@@ -237,10 +246,16 @@ export async function runBillingJob(now = new Date()): Promise<JobReport> {
         const [{ nextval }] = await tx.$queryRaw<{ nextval: bigint }[]>`SELECT nextval('invoice_number_seq')`;
         await tx.invoice.update({ where: { id: invoice.id }, data: { status: "paid", number: Number(nextval), providerPaymentId: payment.id, paidAt: now } });
         await tx.subscription.update({ where: { id: sub.id }, data: { status: "active", currentPeriodEnd: end, failedAttempts: 0, nextRetryAt: null } });
+        // The credit used is a payout of the creator's commission balance.
+        if (creditSar > 0) {
+          await tx.referralPayout.create({ data: { referrerId: sub.userId, method: "credit", amount: creditSar, invoiceId: invoice.id, note: invoiceLabel(Number(nextval)) } });
+        }
         return Number(nextval);
       });
       report.renewed++;
       await notify(sub.userId, "renewal_receipt", { invoice: invoiceLabel(number), amount, currency: sub.currency, periodEndDate: end.toISOString() });
+      if (creditSar > 0) await notify(sub.userId, "commission_credit", { amount: credit, currency: sub.currency, invoice: invoiceLabel(number) });
+      await earnCommission(invoice.id);
     } else {
       const attempts = sub.failedAttempts + 1;
       const retryDay = RENEWAL_RETRY_DAYS[attempts - 1];
@@ -270,16 +285,22 @@ export async function refundInvoice(invoiceId: string): Promise<{ ok: boolean; e
   const provider = paymentProvider();
   if (!invoice || invoice.status !== "paid" || !invoice.providerPaymentId) return { ok: false, error: "not_refundable" };
   if (!provider || provider.name !== invoice.provider) return { ok: false, error: "provider" };
-  const res = await provider.refund(invoice.providerPaymentId, Number(invoice.amount));
-  if (!res.ok) return { ok: false, error: "provider" };
+  // Only what the provider charged goes back; an affiliate credit used on it is restored to the balance.
+  const charged = Math.round((Number(invoice.amount) - Number(invoice.creditAmount)) * 100) / 100;
+  if (charged > 0) {
+    const res = await provider.refund(invoice.providerPaymentId, charged);
+    if (!res.ok) return { ok: false, error: "provider" };
+  }
   // Pro ends now only when this invoice paid for the current (or a later) period, not for an old one.
   const sub = await db.subscription.findUnique({ where: { id: invoice.subscriptionId }, select: { currentPeriodEnd: true } });
   const current = !sub?.currentPeriodEnd || !invoice.periodEnd || invoice.periodEnd.getTime() >= sub.currentPeriodEnd.getTime();
   await db.$transaction([
     db.invoice.update({ where: { id: invoice.id }, data: { status: "refunded", refundedAt: new Date() } }),
+    db.referralPayout.deleteMany({ where: { invoiceId: invoice.id, method: "credit" } }),
     ...(current ? [db.subscription.update({ where: { id: invoice.subscriptionId }, data: { status: "canceled", plan: "free", cancelAtPeriodEnd: true, currentPeriodEnd: new Date() } })] : []),
   ]);
+  await cancelCommissionForRefund(invoice.id);
   await refreshPage(invoice.userId);
-  await notify(invoice.userId, "refund_issued", { invoice: invoiceLabel(invoice.number), amount: Number(invoice.amount), currency: invoice.currency });
+  await notify(invoice.userId, "refund_issued", { invoice: invoiceLabel(invoice.number), amount: charged, currency: invoice.currency });
   return { ok: true, userId: invoice.userId };
 }

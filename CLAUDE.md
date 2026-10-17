@@ -761,3 +761,8 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   (`recordBankPayout`: whole payable balance, row-locked, reference, audited `referral.payout`, notifies `commission_paid`),
   CSV `/api/admin/referrals` (audited `referral.export`). Finance counts commissions as expense category `affiliate` (and in
   marketing for CAC). Terms section 7 + privacy (data row, 30-day cookie) describe it. Data export includes it.
+
+### Mobile app (owner, Oct 2026 — planning, not started)
+- Native React Native (Expo) app for creators, before the official launch, published as "وصول" (organization accounts).
+  Decisions, store rules (no in-app subscription sales, Sign in with Apple, in-app account deletion), architecture
+  (`/api/mobile/v1` + `mobile/`), phases and open questions: **`docs/mobile-app-plan.md`**. Read it before any app work.

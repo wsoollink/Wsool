@@ -1,9 +1,8 @@
 "use server";
 
-import { updateTag } from "next/cache";
 import { requireCreator } from "@/lib/creator";
 import { db } from "@/lib/db";
-import { pageCacheTag } from "@/lib/public-page";
+import { pageChanged } from "@/lib/public-page";
 import { isOwnUploadedFile, readPrivateImage, removeVerificationFiles } from "@/lib/storage";
 import { compareRead, type AccountRead, type ReadComparison } from "@/lib/ai/compare";
 import { aiEnabled, readAccountScreenshot, underDailyLimit } from "@/lib/ai/screenshots";
@@ -39,7 +38,7 @@ export async function submitVerification(accountId: string, path: string, readId
     ...(isValid(account) ? [] : [db.socialAccount.update({ where: { id: account.id }, data: { verificationStatus: "in_review", verifiedUntil: null } })]),
   ]);
   await removeVerificationFiles(pending.map((r) => r.screenshotPath)).catch(() => {});
-  updateTag(pageCacheTag(page.username));
+  pageChanged(page.username);
   return { ok: true };
 }
 
@@ -97,7 +96,7 @@ export async function applyReadFollowers(readId: string): Promise<{ ok?: boolean
       data: { followers: read.followers!, followersUpdatedAt: new Date(), ...(reset && { verificationStatus: "none" as const, verifiedUntil: null }) },
     });
   });
-  updateTag(pageCacheTag(page.username));
+  pageChanged(page.username);
   return { ok: true, followers: updated.followers, comparison: compareRead(read, updated) };
 }
 
@@ -112,7 +111,7 @@ export async function cancelVerification(accountId: string): Promise<VerifyResul
     ...(account.verificationStatus === "in_review" ? [db.socialAccount.update({ where: { id: account.id }, data: { verificationStatus: "none" } })] : []),
   ]);
   await removeVerificationFiles(pending.map((r) => r.screenshotPath)).catch(() => {});
-  updateTag(pageCacheTag(page.username));
+  pageChanged(page.username);
   return { ok: true };
 }
 

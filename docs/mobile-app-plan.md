@@ -1,6 +1,6 @@
 # تطبيق وصول للجوال — الخطة والقرارات (أكتوبر 2026)
 
-> الحالة: المرحلة 1 مبنية ومجرّبة (نسخة الويب من التطبيق ضد السيرفر المحلي). الجاية: المرحلة 2 (أقسام التعديل).
+> الحالة: المرحلة 1 و2 مبنية ومجرّبة (نسخة الويب ضد السيرفر المحلي). الجاية: المرحلة 3 (التوثيق، الإحصائيات، العمولة، الاشتراك عرض فقط، حذف الحساب).
 
 ## قرارات المالك
 - **تطبيق أصلي مستقل بـ React Native** (Expo + EAS Build في السحابة، بدون Mac). رفض PWA و Capacitor كبداية.
@@ -49,3 +49,15 @@
   و`npm install` بدل `npx expo install`. التجربة: `EXPO_PUBLIC_API_URL=http://localhost:3123 npx expo export -p web` + Playwright.
   Netlify يتجاهل التعديلات اللي في `mobile/` و`docs/` فقط (`ignore` في `netlify.toml`). CI فيه job `mobile` (tsc).
 - ناقص قبل التجربة على الجوال: حساب Expo + `eas.json` + `projectId` (الإشعارات تحتاجه)، أيقونة وشاشة بداية حقيقية (المرحلة 4).
+
+## ما تم في المرحلة 2
+- السيرفر بدون تكرار منطق: `getCurrentUser()` يقبل `Authorization: Bearer` (`src/lib/mobile/bearer.ts`)، فنفس server actions
+  حق لوحة التحكم تشتغل للتطبيق عبر `POST /api/mobile/v1/rpc/<action>` (قائمة مسموحة فقط في `rpc/[action]/route.ts`،
+  `saveProfile` يحوّل الكائن لـ FormData). `pageChanged(username)` في `src/lib/public-page.ts` بدل `updateTag` (يرجع لـ
+  `expirePage` داخل route handlers). `GET /api/mobile/v1/section/<key>` (`src/lib/mobile/sections.ts`) يعطي بيانات كل قسم.
+  تذكرة الرفع فيها `signedUrl` والتطبيق يرفع بـ PUT مباشرة.
+- التطبيق: شاشات `src/app/section/{edit,accounts,work,rates,links,contact,appearance}.tsx` (الثابتة تغلب `[key]`)، مكونات
+  `src/components/editor.tsx` (SaveBar، Toggle، Chips، ItemTools، PickerSheet، LangTabs)، `src/lib/media.ts` (اختيار وتصغير
+  الصور، الفيديو + غلاف، ملفات الترخيص، الرفع)، `src/lib/platforms.ts` مولّد من أيقونات الموقع.
+- مجرّب: حفظ كل قسم ووصوله لقاعدة البيانات، رفع صورة، تطبيع واتساب والأرقام العربية، عربي/إنجليزي، فاتح/داكن.
+

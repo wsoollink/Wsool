@@ -93,3 +93,12 @@ export async function api<T = Record<string, unknown>>(path: string, opts: { met
 /** Calls that don't need a session (sign-in). */
 export const publicApi = <T = Record<string, unknown>>(path: string, body: unknown) =>
   request(path, { method: "POST", body: JSON.stringify(body) }) as Promise<T>;
+
+/**
+ * Calls one of the website's dashboard actions (same validation and rules as
+ * the website) through /api/mobile/v1/rpc/<name>, and returns its result.
+ */
+export async function rpc<T = Record<string, unknown>>(name: string, ...args: unknown[]): Promise<T> {
+  const res = await api<{ result: T }>(`/rpc/${name}`, { method: "POST", body: { args } });
+  return res.result;
+}

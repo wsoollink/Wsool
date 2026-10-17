@@ -1,7 +1,6 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { updateTag } from "next/cache";
 import { z } from "zod";
 import { CANCEL_REASONS } from "@/config/plans";
 import { getAdmin } from "@/lib/admin";
@@ -12,7 +11,7 @@ import { checkDiscountCode, type CodeError } from "@/lib/discounts";
 import { paymentProvider } from "@/lib/payments";
 import { DELETE_AFTER_DAYS } from "@/lib/account-deletion";
 import { notify } from "@/lib/notify";
-import { pageCacheTag } from "@/lib/public-page";
+import { pageChanged } from "@/lib/public-page";
 
 const cycle = z.enum(["monthly", "yearly"]);
 const currency = z.enum(["SAR", "USD"]);
@@ -43,7 +42,7 @@ export async function redeemFree(code: string): Promise<{ ok?: boolean; error?: 
   const res = await redeemFreeCode(user, String(code ?? "").slice(0, 30));
   if ("error" in res) return res;
   // Pro features (templates, badge, PDF) show on the public page right away.
-  updateTag(pageCacheTag(page.username));
+  pageChanged(page.username);
   return { ok: true };
 }
 
@@ -78,7 +77,7 @@ export async function requestDeletion(confirmUsername: string) {
     db.page.update({ where: { id: page.id }, data: { deletedAt: new Date() } }),
     db.subscription.updateMany({ where: { userId: user.id, status: { in: ["active", "past_due"] } }, data: { cancelAtPeriodEnd: true } }),
   ]);
-  updateTag(pageCacheTag(page.username));
+  pageChanged(page.username);
   await notify(user.id, "deletion_scheduled", { purgeDate: new Date(Date.now() + DELETE_AFTER_DAYS * 86_400_000).toISOString() });
   return { ok: true };
 }
@@ -86,6 +85,6 @@ export async function requestDeletion(confirmUsername: string) {
 export async function undoDeletion() {
   const { page } = await requireCreator();
   await db.page.update({ where: { id: page.id }, data: { deletedAt: null } });
-  updateTag(pageCacheTag(page.username));
+  pageChanged(page.username);
   return { ok: true };
 }

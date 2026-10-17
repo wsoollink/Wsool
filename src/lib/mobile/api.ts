@@ -6,6 +6,7 @@ import { isLocale, type Locale } from "@/i18n/config";
 import type { CurrentUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { supabaseEnv } from "@/lib/supabase/env";
+import { bearerUserFromHeader } from "./bearer";
 
 /**
  * Helpers for the mobile app API (/api/mobile/v1, docs/mobile-app-plan.md).
@@ -35,19 +36,7 @@ export function supabaseForApi() {
 }
 
 /** The user behind the Bearer token, verified with Supabase (signature + expiry). */
-export async function bearerUser(req: Request): Promise<CurrentUser | null> {
-  const token = req.headers.get("authorization")?.match(/^Bearer\s+(.+)$/i)?.[1];
-  if (!token || token.length > 4096) return null;
-  try {
-    const { data, error } = await supabaseForApi().auth.getClaims(token);
-    const claims = data?.claims;
-    if (error || !claims?.sub) return null;
-    return { id: claims.sub, email: typeof claims.email === "string" ? claims.email.toLowerCase() : "" };
-  } catch {
-    // A malformed token makes the decoder throw: same as no token.
-    return null;
-  }
-}
+export const bearerUser = (req: Request) => bearerUserFromHeader(req.headers.get("authorization"));
 
 /** Response language: ?lang=, then Accept-Language, else Arabic. */
 export function apiLang(req: Request): Locale {

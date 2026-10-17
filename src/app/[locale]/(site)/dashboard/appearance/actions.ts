@@ -1,10 +1,9 @@
 "use server";
 
-import { updateTag } from "next/cache";
 import { FREE_LIMITS, hasPro } from "@/config/plans";
 import { requireCreator } from "@/lib/creator";
 import { db } from "@/lib/db";
-import { pageCacheTag } from "@/lib/public-page";
+import { pageChanged } from "@/lib/public-page";
 import { appearanceSchema, type AppearanceInput } from "@/lib/validation/appearance";
 
 export type AppearanceResult = { ok?: boolean; error?: "failed" | "pro_only" };
@@ -33,6 +32,6 @@ export async function saveAppearance(input: AppearanceInput): Promise<Appearance
       iconStyle: value.iconStyle,
     },
   });
-  updateTag(pageCacheTag(page.username));
+  pageChanged(page.username);
   return { ok: true };
 }

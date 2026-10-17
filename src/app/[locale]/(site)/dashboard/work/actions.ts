@@ -1,11 +1,10 @@
 "use server";
 
-import { updateTag } from "next/cache";
 import type { Platform } from "@/generated/prisma/enums";
 import { requireCreator } from "@/lib/creator";
 import { db } from "@/lib/db";
 import { pageLanguages } from "@/lib/page-language";
-import { pageCacheTag } from "@/lib/public-page";
+import { pageChanged } from "@/lib/public-page";
 import { removeUnused, resolveFile } from "@/lib/page-files";
 import { parseWorkLink, type WorkLinkPlatform } from "@/lib/work-link";
 import { resolveWorkLink, workLinkCover } from "@/lib/work-link-server";
@@ -31,7 +30,7 @@ export async function saveBrands(items: BrandInput[]): Promise<WorkResult> {
 
   await db.$transaction([db.brandLogo.deleteMany({ where: { pageId: page.id } }), db.brandLogo.createMany({ data: rows })]);
   await removeUnused(current, new Set(rows.map((r) => r.logoUrl)));
-  updateTag(pageCacheTag(page.username));
+  pageChanged(page.username);
   return { ok: true };
 }
 
@@ -84,7 +83,7 @@ export async function saveWorks(items: WorkInput[]): Promise<WorkResult> {
   ]);
   await removeUnused(videos, new Set(rows.map((r) => r.videoUrl).filter((u): u is string => !!u)));
   await removeUnused(thumbs, new Set(rows.map((r) => r.thumbUrl).filter((u): u is string => !!u)));
-  updateTag(pageCacheTag(page.username));
+  pageChanged(page.username);
   return { ok: true };
 }
 

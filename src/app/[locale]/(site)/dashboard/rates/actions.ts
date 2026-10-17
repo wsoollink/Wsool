@@ -1,9 +1,8 @@
 "use server";
 
-import { updateTag } from "next/cache";
 import { requireCreator } from "@/lib/creator";
 import { db } from "@/lib/db";
-import { pageCacheTag } from "@/lib/public-page";
+import { pageChanged } from "@/lib/public-page";
 import {
   bundlesSchema, rateSettingsSchema, ratesSchema,
   type BundleInput, type RateInput, type RateSettingsInput,
@@ -17,7 +16,7 @@ export async function saveRateSettings(input: RateSettingsInput): Promise<RatesR
   const parsed = rateSettingsSchema.safeParse(input);
   if (!parsed.success) return { error: "failed" };
   await db.rateSettings.upsert({ where: { pageId: page.id }, create: { pageId: page.id, ...parsed.data }, update: parsed.data });
-  updateTag(pageCacheTag(page.username));
+  pageChanged(page.username);
   return { ok: true };
 }
 
@@ -36,7 +35,7 @@ export async function saveRates(accountId: string, items: RateInput[]): Promise<
       data: parsed.data.map((r, sort) => ({ accountId: account.id, name: r.name, nameEn: r.nameEn || null, price: r.price, sort })),
     }),
   ]);
-  updateTag(pageCacheTag(page.username));
+  pageChanged(page.username);
   return { ok: true };
 }
 
@@ -66,6 +65,6 @@ export async function saveBundles(items: BundleInput[]): Promise<RatesResult> {
       }),
     ),
   ]);
-  updateTag(pageCacheTag(page.username));
+  pageChanged(page.username);
   return { ok: true };
 }

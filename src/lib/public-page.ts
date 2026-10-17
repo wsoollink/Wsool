@@ -1,5 +1,5 @@
 import "server-only";
-import { cacheLife, cacheTag, revalidateTag } from "next/cache";
+import { cacheLife, cacheTag, revalidateTag, updateTag } from "next/cache";
 import { FREE_LIMITS, hasPro } from "@/config/plans";
 import type { Prisma } from "@/generated/prisma/client";
 import { db } from "@/lib/db";
@@ -15,6 +15,20 @@ export const pageCacheTag = (username: string) => `page:${username}`;
  */
 export function expirePage(username: string) {
   revalidateTag(pageCacheTag(username), { expire: 0 });
+}
+
+/**
+ * After the creator edits their page. Server actions use updateTag (the next
+ * view is fresh); when the mobile app calls the same action through a route
+ * handler (/api/mobile/v1/rpc), updateTag isn't allowed there, so it falls
+ * back to expiring the tag.
+ */
+export function pageChanged(username: string) {
+  try {
+    updateTag(pageCacheTag(username));
+  } catch {
+    expirePage(username);
+  }
 }
 
 /** Every column the public page needs (public fields only, never the owner's account email). */

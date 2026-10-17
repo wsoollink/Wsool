@@ -1,6 +1,8 @@
 import "server-only";
 import { cache } from "react";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { bearerUserFromHeader } from "@/lib/mobile/bearer";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export type CurrentUser = { id: string; email: string };
@@ -11,6 +13,11 @@ export type CurrentUser = { id: string; email: string };
  * by the browser (CLAUDE.md section 12).
  */
 export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
+  // Mobile app API calls carry the token in "Authorization: Bearer" (no cookies); the same
+  // server actions then work for the app (src/app/api/mobile/v1/rpc). Browsers can't send
+  // this header cross-site without CORS approval, so it adds no CSRF risk.
+  const auth = (await headers()).get("authorization");
+  if (auth?.startsWith("Bearer ")) return bearerUserFromHeader(auth);
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase.auth.getClaims();
   const claims = data?.claims;

@@ -1,10 +1,9 @@
 "use server";
 
-import { updateTag } from "next/cache";
 import { requireCreator } from "@/lib/creator";
 import { isOwnUploadedFile, pathFromPublicUrl, publicFileUrl, removeFiles } from "@/lib/storage";
 import { db } from "@/lib/db";
-import { pageCacheTag } from "@/lib/public-page";
+import { pageChanged } from "@/lib/public-page";
 import { pageLanguages } from "@/lib/page-language";
 import { MAX_PAGE_CATEGORIES } from "@/config/categories";
 import { z } from "zod";
@@ -50,7 +49,7 @@ export async function saveProfile(_prev: SaveState, formData: FormData): Promise
   } catch {
     return { error: "failed" };
   }
-  updateTag(pageCacheTag(page.username));
+  pageChanged(page.username);
   return { ok: true };
 }
 
@@ -65,7 +64,7 @@ export async function setPublished(publish: boolean): Promise<SaveState> {
     if (!tr?.fullName) return { error: "needs_name" };
   }
   await db.page.update({ where: { id: page.id }, data: { isPublished: publish } });
-  updateTag(pageCacheTag(page.username));
+  pageChanged(page.username);
   return { ok: true };
 }
 
@@ -78,7 +77,7 @@ export async function savePhoto(path: string | null): Promise<SaveState & { url?
   const url = path ? publicFileUrl(path) : null;
   await db.page.update({ where: { id: page.id }, data: { photoUrl: url } });
   await removeFiles([pathFromPublicUrl(page.photoUrl)]).catch(() => {});
-  updateTag(pageCacheTag(page.username));
+  pageChanged(page.username);
   return { ok: true, url };
 }
 
@@ -90,7 +89,7 @@ export async function savePhotoShape(shape: "full" | "circle"): Promise<SaveStat
   const parsed = photoShape.safeParse(shape);
   if (!parsed.success) return { error: "failed" };
   await db.page.update({ where: { id: page.id }, data: { photoShape: parsed.data } });
-  updateTag(pageCacheTag(page.username));
+  pageChanged(page.username);
   return { ok: true };
 }
 
@@ -103,7 +102,7 @@ export async function saveLogo(path: string | null): Promise<SaveState & { url?:
   const url = path ? publicFileUrl(path) : null;
   await db.page.update({ where: { id: page.id }, data: { logoUrl: url } });
   await removeFiles([pathFromPublicUrl(page.logoUrl)]).catch(() => {});
-  updateTag(pageCacheTag(page.username));
+  pageChanged(page.username);
   return { ok: true, url };
 }
 
@@ -117,7 +116,7 @@ export async function saveTags(lang: "ar" | "en", labels: string[]): Promise<Sav
     db.tag.deleteMany({ where: { pageId: page.id, lang } }),
     db.tag.createMany({ data: unique.map((label, sort) => ({ pageId: page.id, lang, label, sort })) }),
   ]);
-  updateTag(pageCacheTag(page.username));
+  pageChanged(page.username);
   return { ok: true };
 }
 
@@ -176,7 +175,7 @@ export async function saveLicenses(items: LicenseInput[]): Promise<SaveState> {
   await db.$transaction([db.license.deleteMany({ where: { pageId: page.id } }), db.license.createMany({ data: rows })]);
   const kept = new Set(rows.map((r) => r.fileUrl));
   await removeFiles([...currentUrls].filter((u) => !kept.has(u)).map((u) => pathFromPublicUrl(u))).catch(() => {});
-  updateTag(pageCacheTag(page.username));
+  pageChanged(page.username);
   return { ok: true };
 }
 
@@ -215,7 +214,7 @@ export async function changeUsername(raw: string): Promise<UsernameChangeResult>
     if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") return { error: "taken" };
     return { error: "failed" };
   }
-  updateTag(pageCacheTag(page.username));
-  updateTag(pageCacheTag(name));
+  pageChanged(page.username);
+  pageChanged(name);
   return { ok: true, username: name };
 }

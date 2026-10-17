@@ -10,7 +10,7 @@ import { supabaseEnv } from "@/lib/supabase/env";
  * picks the path, so a creator can never write into someone else's folder.
  */
 
-export type UploadTicket = { path: string; token: string };
+export type UploadTicket = { path: string; token: string; signedUrl: string };
 export type UploadError = "type" | "size" | "failed";
 
 export async function createUploadTicket(
@@ -26,7 +26,8 @@ export async function createUploadTicket(
   const path = `${userId}/${kind}/${randomUUID()}.${EXTENSIONS[contentType]}`;
   const { data, error } = await createSupabaseAdmin().storage.from(rule.bucket).createSignedUploadUrl(path);
   if (error || !data) return { error: "failed" };
-  return { path: data.path, token: data.token };
+  // signedUrl: the mobile app uploads with a plain PUT to it (the website uses the token with supabase-js).
+  return { path: data.path, token: data.token, signedUrl: data.signedUrl };
 }
 
 /** Stores bytes the server fetched itself (e.g. a work link's cover) in the user's folder; returns its path. */

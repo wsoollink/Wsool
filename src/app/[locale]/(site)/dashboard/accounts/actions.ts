@@ -1,11 +1,10 @@
 "use server";
 
-import { updateTag } from "next/cache";
 import type { Platform } from "@/generated/prisma/enums";
 import { linkProfileUrl, profileUrl } from "@/config/platforms";
 import { requireCreator } from "@/lib/creator";
 import { db } from "@/lib/db";
-import { pageCacheTag } from "@/lib/public-page";
+import { pageChanged } from "@/lib/public-page";
 import { audienceFromRead, type AudienceFill } from "@/lib/ai/audience";
 import { aiEnabled, readAudienceScreenshot, underDailyLimit } from "@/lib/ai/screenshots";
 import { isOwnUploadedFile, readPrivateImage, removeVerificationFiles } from "@/lib/storage";
@@ -73,7 +72,7 @@ export async function saveAccounts(items: AccountInput[]): Promise<AccountsResul
   }).catch(() => null);
   if (!result) return { error: "failed" };
 
-  updateTag(pageCacheTag(page.username));
+  pageChanged(page.username);
   return { ok: true, accounts: result.map((a) => ({ id: a.id, handle: a.handle, verificationReset: resets.has(a.id) })) };
 }
 
@@ -118,7 +117,7 @@ export async function saveMonthlyViews(input: MonthlyViewsInput): Promise<{ ok?:
     const byAccount = Object.fromEntries(filled.map((r) => [r.accountId, r.views!]));
     await tx.monthlyView.create({ data: { pageId: page.id, month, views, byAccount } });
   });
-  updateTag(pageCacheTag(page.username));
+  pageChanged(page.username);
   return { ok: true };
 }
 
@@ -140,7 +139,7 @@ export async function saveAudience(accountId: string, input: AudienceInput): Pro
   } else {
     await db.audienceData.upsert({ where: { accountId: account.id }, create: { accountId: account.id, ...data }, update: data });
   }
-  updateTag(pageCacheTag(page.username));
+  pageChanged(page.username);
   return { ok: true };
 }
 

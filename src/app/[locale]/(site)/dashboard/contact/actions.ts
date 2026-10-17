@@ -1,9 +1,8 @@
 "use server";
 
-import { updateTag } from "next/cache";
 import { requireCreator } from "@/lib/creator";
 import { db } from "@/lib/db";
-import { pageCacheTag } from "@/lib/public-page";
+import { pageChanged } from "@/lib/public-page";
 import { contactSchema, type ContactInput } from "@/lib/validation/contact";
 
 export type ContactResult = { ok?: boolean; whatsapp?: string; email?: string; errors?: { whatsapp?: boolean; email?: boolean } };
@@ -18,6 +17,6 @@ export async function saveContact(input: ContactInput): Promise<ContactResult> {
   }
   const { whatsapp, email, whatsappVisible, emailVisible } = parsed.data;
   await db.page.update({ where: { id: page.id }, data: { whatsapp: whatsapp || null, contactEmail: email || null, whatsappVisible, emailVisible } });
-  updateTag(pageCacheTag(page.username));
+  pageChanged(page.username);
   return { ok: true, whatsapp, email };
 }

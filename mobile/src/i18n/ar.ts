@@ -2,7 +2,7 @@
 export const ar = {
   brand: "وصول",
   common: {
-    retry: "حاول مرة ثانية", loading: "جاري التحميل…", error: "صار خطأ. جرّب مرة ثانية.", offline: "ما فيه اتصال بالإنترنت.",
+    back: "رجوع", retry: "حاول مرة ثانية", loading: "جاري التحميل…", error: "صار خطأ. جرّب مرة ثانية.", offline: "ما فيه اتصال بالإنترنت.",
     soon: "قريباً في التطبيق", openOnWeb: "افتحه في الموقع",
   },
   login: {
@@ -54,5 +54,71 @@ export const ar = {
   section: {
     edit: "تعديل الصفحة", accounts: "الحسابات والأرقام", work: "الشركات والأعمال", rates: "أسعار الإعلانات", links: "روابطي وخدماتي",
     contact: "التواصل", verification: "التوثيق", appearance: "المظهر", analytics: "الإحصائيات", referrals: "العمولة", subscription: "الاشتراك",
+  },
+
+  editor: {
+    save: "احفظ", saving: "جاري الحفظ…", saved: "تم الحفظ", failed: "ما انحفظ، راجع البيانات وجرّب مرة ثانية.",
+    uploading: "جاري الرفع…", moveUp: "حرّك لفوق", moveDown: "حرّك لتحت", remove: "احذف", close: "إغلاق",
+  },
+  contact: {
+    subtitle: "كيف يوصل لك البراند من صفحتك", show: "يظهر في صفحتي", whatsapp: "رقم WhatsApp", whatsappHint: "مع رمز الدولة، مثل \u2066+966 5X XXX XXXX\u2069",
+    whatsappError: "رقم غير صحيح. اكتبه مع رمز الدولة.", emailTitle: "الإيميل", email: "إيميل التواصل", emailError: "اكتب إيميل صحيح.",
+    taps: "{n} ضغطة هذا الشهر", test: "جرّب الرابط",
+  },
+  appearance: {
+    subtitle: "شكل صفحتك عند الزوار", template: "القالب", templatesPro: "القوالب المقفلة متاحة في الباقة الاحترافية.",
+    templates: { white: "أبيض", black: "أسود", sand: "رملي", pink: "وردي", black_gold: "أسود وذهبي", vivid: "حيوي", green: "أخضر", custom: "مخصص" },
+    customColors: "ألوانك", color1: "اللون الأساسي", color2: "اللون الثاني (اختياري)", hexError: "اكتب اللون بصيغة #RRGGBB",
+    modeLight: "فاتح", modeDark: "داكن", accent: "لون التمييز", accentDefault: "لون القالب", auto: "تلقائي",
+    icons: "شكل أيقونات الحسابات", iconSolid: "دائرة مصمتة", iconColor: "ألوان المنصات", iconOutline: "خطوط",
+    hideBranding: "إخفاء «صنعت بـ❤️ وصول»", hideBrandingPro: "متاح في الباقة الاحترافية", proOnly: "هذا الخيار متاح في الباقة الاحترافية.",
+  },
+  links: {
+    subtitle: "روابط متجرك ودوراتك، وخدماتك غير الإعلانات", links: "روابطي", services: "خدماتي",
+    title: "عنوان الرابط", titleEn: "العنوان بالإنجليزي", url: "الرابط", image: "صورة الرابط", addLink: "أضف رابط",
+    serviceName: "اسم الخدمة", serviceNameEn: "اسم الخدمة بالإنجليزي", description: "وصف مختصر", descriptionEn: "الوصف بالإنجليزي",
+    price: "السعر ({currency})", onRequest: "عند الطلب", unit: "الوحدة", unitHint: "مثل: للساعة", unitEn: "الوحدة بالإنجليزي",
+    addService: "أضف خدمة", badUrl: "الرابط رقم {n} غير صحيح.", freeLimit: "الخطة المجانية تعرض أول {links} روابط و{services} خدمات في صفحتك.",
+  },
+  rates: {
+    subtitle: "حدد أسعارك، وأنت تقرر تظهرها أو لا", proOnly: "الأسعار تظهر في صفحتك مع الباقة الاحترافية. تقدر تجهزها الحين.",
+    showOnPage: "إظهار الأسعار في صفحتي", showOnPageHint: "إذا أخفيتها يظهر «الأسعار عند التواصل»", showInPdf: "إظهارها في ملف PDF", vatIncluded: "الأسعار شاملة الضريبة",
+    currency: "العملة", currencies: { SAR: "ريال", USD: "دولار", AED: "درهم", KWD: "دينار كويتي" },
+    type: "نوع الإعلان", typeEn: "النوع بالإنجليزي", price: "السعر ({currency})", addRate: "أضف سعر", suggestions: "فيديو|ستوري|منشور|بث مباشر|ذكر في فيديو|حضور فعالية",
+    noAccounts: "أضف حساباتك أولاً من «الحسابات والأرقام».", bundle: "باقة إعلانية", bundleHint: "منصتين أو أكثر بسعر واحد",
+    bundleName: "اسم الباقة", bundlePlatforms: "المنصات في الباقة", bundleIncomplete: "الباقة تحتاج منصتين على الأقل وسعر واحد.",
+  },
+  accounts: {
+    subtitle: "حدّث أرقامك أول كل شهر", accounts: "حساباتي", platform: "المنصة", handle: "اسم المستخدم", followers: "المتابعين", members: "الأعضاء",
+    link: "رابط الحساب", add: "أضف حساب", resetHint: "تغيير اسم المستخدم أو عدد المتابعين لحساب موثّق يلغي توثيقه.", saveAccounts: "احفظ الحسابات",
+    views: "المشاهدات الشهرية", viewsHint: "مجموع المشاهدات اللي تظهر في صفحتك", viewsLabel: "مشاهدات {platform}", saveViews: "احفظ المشاهدات",
+    audience: "بيانات الجمهور", audiencePro: "بيانات الجمهور تظهر في صفحتك مع الباقة الاحترافية.", fromShot: "عبّي من صورة الإحصائيات", reading: "جاري قراءة الصورة…",
+    gender: "الجنس", female: "إناث", male: "ذكور", ages: "الأعمار", countries: "أكثر الدول (5)", cities: "أكثر المدن", city: "المدينة", saveAudience: "احفظ بيانات الجمهور",
+    status: {
+      saving: "جاري الحفظ…", saved: "تم الحفظ", failed: "ما انحفظ، راجع البيانات.", over: "مجموع النسب في مجموعة أكثر من 100%.",
+      reading: "جاري قراءة الصورة…", filled: "عبّينا البيانات من الصورة، راجعها واحفظ.", uncertain: "عبّينا البيانات، بس تأكد من الأعمار قبل الحفظ.",
+      limit: "وصلت الحد اليومي لقراءة الصور.", not_stats: "الصورة ما فيها إحصائيات جمهور واضحة.",
+    },
+  },
+  work: {
+    subtitle: "شعارات تعاوناتك وفيديوهات أعمالك", brands: "الشركات اللي تعاملت معها", brandsHint: "تظهر كشريط متحرك في صفحتك", brandName: "اسم الشركة",
+    addBrand: "أضف شعار", saveBrands: "احفظ الشعارات", works: "أعمالي السابقة", freeLimit: "الخطة المجانية تعرض أول {n} أعمال.",
+    video: "فيديو", link: "رابط منشور", pickVideo: "اختر فيديو", replaceVideo: "بدّل الفيديو", postLink: "رابط المنشور (TikTok / Instagram / YouTube)",
+    checkLink: "تحقق من الرابط", cover: "صورة الغلاف", brand: "اسم الشركة", type: "نوع العمل", typeHint: "مثل: إعلان، تغطية", addWork: "أضف عمل",
+    badLink: "الرابط لازم يكون منشور من TikTok أو Instagram أو YouTube.", missingFile: "فيه عمل بدون فيديو أو رابط.",
+  },
+  edit: {
+    subtitle: "التغييرات تظهر في صفحتك بعد الحفظ", publishTitle: "حالة الصفحة", published: "صفحتك منشورة", hidden: "صفحتك مخفية",
+    publishHint: "المخفية ما يشوفها أحد غيرك", needsName: "اكتب اسمك أولاً وبعدها انشر.",
+    username: "اسم المستخدم", usernameHint: "تقدر تغيّره مرة كل 30 يوم", changeUsername: "غيّر الاسم", cooldown: "تقدر تغيّره بعد {date}",
+    photo: "الصورة", changePhoto: "غيّر الصورة", removePhoto: "احذف الصورة", shape: "شكل الصورة", shapeFull: "كاملة", shapeCircle: "دائرة",
+    logo: "شعارك", logoHint: "يظهر أعلى ملف PDF", addLogo: "أضف شعار", changeLogo: "غيّر الشعار", removeLogo: "احذف الشعار",
+    about: "معلوماتك", primaryLang: "لغة صفحتك الأساسية", enEnabled: "أضف نسخة إنجليزية", secondLangHint: "الزائر يشوف صفحتك بلغة جهازه",
+    fields: { fullName: "الاسم", specialty: "التخصص", bio: "نبذة عنك", city: "المدينة", country: "الدولة" },
+    required: "مطلوب", invalid: "غير صحيح", checkFields: "راجع الحقول المحددة.",
+    categories: "تصنيف محتواك", categoriesHint: "اختر تصنيف أو تصنيفين (ما يظهر في صفحتك)",
+    tags: "الوسوم", tagsHint: "كلمات قصيرة عن محتواك (حتى 12)", addTag: "أضف وسم", tagHint: "اكتب الوسم واضغط تم",
+    licenses: "التراخيص", licensesHint: "مثل رخصة موثوق، تظهر في صفحتك إذا أضفتها", licenseName: "اسم الترخيص", licenseNameHint: "مثل: رخصة موثوق",
+    licenseNameEn: "الاسم بالإنجليزي", licenseNumber: "رقم الترخيص", addFile: "أرفق الملف (اختياري)", replaceFile: "بدّل الملف", addLicense: "أضف ترخيص",
   },
 };

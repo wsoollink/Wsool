@@ -1,10 +1,9 @@
 "use server";
 
-import { updateTag } from "next/cache";
 import { requireCreator } from "@/lib/creator";
 import { db } from "@/lib/db";
 import { removeUnused, resolveFile } from "@/lib/page-files";
-import { pageCacheTag } from "@/lib/public-page";
+import { pageChanged } from "@/lib/public-page";
 import { linksSchema, servicesSchema, type LinkInput, type ServiceInput } from "@/lib/validation/links";
 
 export type LinksResult = { ok?: boolean; error?: "failed" | "invalid_url"; index?: number };
@@ -45,6 +44,6 @@ export async function saveLinksAndServices(links: LinkInput[], services: Service
     db.service.createMany({ data: serviceRows }),
   ]);
   await removeUnused(current, new Set(linkRows.map((r) => r.imageUrl)));
-  updateTag(pageCacheTag(page.username));
+  pageChanged(page.username);
   return { ok: true };
 }

@@ -14,14 +14,17 @@
       "usesAppleSignIn": true,
       "infoPlist": {
         "CFBundleDevelopmentRegion": "ar",
-        "CFBundleLocalizations": ["ar", "en"],
+        "CFBundleLocalizations": [
+          "ar",
+          "en"
+        ],
         "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
       "package": "link.wsool.app",
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#FFFFFF",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
@@ -37,11 +40,30 @@
       "expo-secure-store",
       "expo-localization",
       "expo-apple-authentication",
-      ["expo-notifications", { "color": "#0060E6" }],
-      ["expo-splash-screen", { "image": "./assets/icon.png", "imageWidth": 120, "backgroundColor": "#F6F8FA", "dark": { "backgroundColor": "#07090E" } }]
+      [
+        "expo-notifications",
+        {
+          "color": "#0060E6"
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 120,
+          "backgroundColor": "#F6F8FA",
+          "dark": {
+            "backgroundColor": "#07090E"
+          }
+        }
+      ]
     ],
     "extra": {
-      "supportsRTL": true
-    }
+      "supportsRTL": true,
+      "eas": {
+        "projectId": "b0425cd3-7078-46d7-8292-ab91e83e3fec"
+      }
+    },
+    "owner": "wsoolapp"
   }
 }

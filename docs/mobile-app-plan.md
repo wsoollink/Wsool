@@ -71,3 +71,10 @@
   الاشتراك: **عرض فقط** (الخطة، الفترة، الفواتير، بدون أي زر شراء أو رابط دفع)، حذف الحساب بكتابة اسم المستخدم + تراجع.
 - مجرّب: طلب توثيق (in_review) وإلغاؤه، حفظ IBAN، عدم وجود زر شراء، الحذف والتراجع.
 
+## المرحلة 4 (جارية)
+- حساب Expo: `wsoolapp`، المشروع `wsool` (`owner` + `extra.eas.projectId` في `mobile/app.json`).
+- `mobile/eas.json`: `preview` = نسخة تجربة داخلية (Android APK)، `production` = المتاجر (رقم البناء يزيد تلقائياً).
+- الأيقونات وشاشة البداية مولّدة من `public/brand/icon.png` (خلفية بيضاء، أيقونة أحادية اللون لأندرويد).
+- البناء: GitHub → Actions → "Mobile build" (`.github/workflows/mobile-build.yml`) يحتاج سر `EXPO_TOKEN` في GitHub.
+- الآيفون (TestFlight) ينتظر حساب Apple Developer للمؤسسة (السجل التجاري + D-U-N-S).
+

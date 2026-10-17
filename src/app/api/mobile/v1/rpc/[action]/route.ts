@@ -6,6 +6,9 @@ import * as contact from "@/app/[locale]/(site)/dashboard/contact/actions";
 import * as edit from "@/app/[locale]/(site)/dashboard/edit/actions";
 import * as links from "@/app/[locale]/(site)/dashboard/links/actions";
 import * as rates from "@/app/[locale]/(site)/dashboard/rates/actions";
+import * as referrals from "@/app/[locale]/(site)/dashboard/referrals/actions";
+import * as subscription from "@/app/[locale]/(site)/dashboard/subscription/actions";
+import * as verification from "@/app/[locale]/(site)/dashboard/verification/actions";
 import * as work from "@/app/[locale]/(site)/dashboard/work/actions";
 import { requestUpload } from "@/app/[locale]/(site)/dashboard/upload-actions";
 
@@ -50,6 +53,19 @@ const ACTIONS: Record<string, (...args: never[]) => Promise<unknown>> = {
   saveLinksAndServices: links.saveLinksAndServices,
   saveContact: contact.saveContact,
   saveAppearance: appearance.saveAppearance,
+  // Verification (screenshot read by the AI first, like the website)
+  checkScreenshot: verification.checkScreenshot,
+  applyReadFollowers: verification.applyReadFollowers,
+  submitVerification: verification.submitVerification,
+  cancelVerification: verification.cancelVerification,
+  submitLicense: verification.submitLicense,
+  cancelLicense: verification.cancelLicense,
+  // Commission payout settings
+  savePayoutSettings: referrals.savePayoutSettings,
+  // Account deletion (Apple requires it inside the app). Nothing that buys or renews a plan is listed:
+  // store rules allow selling subscriptions only through their own payments.
+  requestDeletion: subscription.requestDeletion,
+  undoDeletion: subscription.undoDeletion,
   // Uploads: a one-time signed URL in the creator's own folder.
   requestUpload,
 };

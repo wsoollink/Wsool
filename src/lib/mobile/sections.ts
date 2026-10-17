@@ -9,6 +9,14 @@ import { pageLanguages } from "@/lib/page-language";
 import { nextUsernameChange } from "@/lib/username";
 import { ACCENT_SWATCHES } from "@/lib/validation/appearance";
 import { siteOrigin } from "@/lib/site-url";
+import { toVerifyAccounts } from "@/app/[locale]/(site)/dashboard/verification/accounts";
+import { analyticsReport, periodTotals, RANGES, type Range } from "@/lib/analytics-report";
+import { today } from "@/lib/analytics";
+import { REFERRAL } from "@/config/referrals";
+import { maskIban, referralBalance, referralLink } from "@/lib/referrals";
+import { planLabel, trialDaysLeft } from "@/config/plans";
+import { DELETE_AFTER_DAYS } from "@/lib/account-deletion";
+import { invoiceLabel } from "@/lib/billing";
 
 /**
  * What each dashboard section's editor starts from (the same data the website
@@ -119,6 +127,80 @@ const LOADERS = {
     const taps = (k: string) => clicks.find((c) => c.kind === k)?._count ?? 0;
     return { whatsapp: page.whatsapp ?? "", email: page.contactEmail ?? "", whatsappVisible: page.whatsappVisible, emailVisible: page.emailVisible, taps: { whatsapp: taps("whatsapp"), email: taps("email") } };
   },
+  async verification(page: Page) {
+    const [accounts, isPro, licenses] = await Promise.all([
+      db.socialAccount.findMany({
+        where: { pageId: page.id }, orderBy: { sort: "asc" },
+        include: { verificationRequests: { where: { status: { in: ["pending", "approved", "rejected"] } }, orderBy: { createdAt: "desc" }, take: 1 } },
+      }),
+      pro(page.userId),
+      db.license.findMany({ where: { pageId: page.id }, orderBy: { sort: "asc" } }),
+    ]);
+    return {
+      isPro,
+      accounts: toVerifyAccounts(accounts),
+      licenses: licenses.map((l) => ({
+        id: l.id, name: l.name, number: l.number, hasFile: !!l.fileUrl, rejectReason: l.rejectReason,
+        status: l.verificationStatus === "verified" || l.verificationStatus === "in_review" || l.verificationStatus === "rejected" ? l.verificationStatus : "none",
+      })),
+    };
+  },
+  async analytics(page: Page, params: URLSearchParams) {
+    const isPro = await pro(page.userId);
+    if (!isPro && !FREE_LIMITS.analytics) return { locked: true as const };
+    const raw = Number(params.get("range"));
+    const range: Range = (RANGES as readonly number[]).includes(raw) ? (raw as Range) : 30;
+    const end = today();
+    const [report, prev] = await Promise.all([
+      analyticsReport(page.id, range),
+      periodTotals(page.id, new Date(end.getTime() - (2 * range - 1) * 86_400_000), new Date(end.getTime() - range * 86_400_000)),
+    ]);
+    return { locked: false as const, range, ranges: RANGES, report, prev };
+  },
+  async referrals(page: Page) {
+    const userId = page.userId;
+    const since = new Date(today().getTime() - 29 * 86_400_000);
+    const [isPro, balance, clicksAll, clicksDays, customers, commissions, payouts, account, signups] = await Promise.all([
+      pro(userId),
+      referralBalance(userId),
+      db.referralClick.count({ where: { referrerId: userId } }),
+      db.referralClick.groupBy({ by: ["day"], where: { referrerId: userId, day: { gte: since } }, _count: { _all: true } }),
+      db.user.findMany({ where: { referredById: userId }, orderBy: { referredAt: "desc" }, take: 200, select: { id: true, referredAt: true, createdAt: true, subscription: { select: { status: true, trialEndsAt: true } } } }),
+      db.referralCommission.groupBy({ by: ["referredUserId"], where: { referrerId: userId, cancelledAt: null }, _sum: { amount: true } }),
+      db.referralPayout.findMany({ where: { referrerId: userId }, orderBy: { createdAt: "desc" }, take: 20 }),
+      db.referralAccount.findUnique({ where: { userId } }),
+      db.user.count({ where: { referredById: userId } }),
+    ]);
+    const earned = new Map(commissions.map((c) => [c.referredUserId, Number(c._sum.amount ?? 0)]));
+    const perDay = new Map(clicksDays.map((d) => [d.day.toISOString().slice(0, 10), d._count._all]));
+    return {
+      isPro, rule: REFERRAL, link: referralLink(page.username), balance, clicksAll, signups,
+      paying: commissions.filter((c) => c.referredUserId && Number(c._sum.amount ?? 0) > 0).length,
+      series: Array.from({ length: 30 }, (_, i) => {
+        const day = new Date(since.getTime() + i * 86_400_000).toISOString().slice(0, 10);
+        return { day, clicks: perDay.get(day) ?? 0 };
+      }),
+      customers: customers.map((c) => ({ joined: (c.referredAt ?? c.createdAt).toISOString(), plan: planLabel(c.subscription), commission: earned.get(c.id) ?? 0 })),
+      payouts: payouts.map((p) => ({ method: p.method, amount: Number(p.amount), note: p.note, createdAt: p.createdAt.toISOString() })),
+      payout: { method: account?.payoutMethod ?? "credit", maskedIban: maskIban(account?.iban ?? null), holderName: account?.holderName ?? "" },
+    };
+  },
+  async subscription(page: Page) {
+    const [sub, invoices] = await Promise.all([
+      db.subscription.findUnique({ where: { userId: page.userId } }),
+      db.invoice.findMany({ where: { userId: page.userId, status: { in: ["paid", "refunded"] } }, orderBy: { createdAt: "desc" }, take: 24 }),
+    ]);
+    return {
+      plan: planLabel(sub), status: sub?.status ?? "expired", cycle: sub?.cycle ?? null, currency: sub?.currency ?? null,
+      trialDaysLeft: sub?.status === "trialing" ? trialDaysLeft(sub.trialEndsAt) : 0,
+      periodEnd: sub?.currentPeriodEnd?.toISOString() ?? null, cancelAtPeriodEnd: sub?.cancelAtPeriodEnd ?? false,
+      paymentMethod: sub?.paymentMethodLabel ?? null,
+      invoices: invoices.map((i) => ({ id: i.id, label: invoiceLabel(i.number), status: i.status, amount: Number(i.amount), currency: i.currency, paidAt: i.paidAt?.toISOString() ?? null })),
+      username: page.username,
+      deletedAt: page.deletedAt?.toISOString() ?? null,
+      purgeAt: page.deletedAt ? new Date(page.deletedAt.getTime() + DELETE_AFTER_DAYS * 86_400_000).toISOString() : null,
+    };
+  },
   async appearance(page: Page) {
     const isPro = await pro(page.userId);
     return {
@@ -136,4 +218,4 @@ const LOADERS = {
 
 export type SectionKey = keyof typeof LOADERS;
 export const isSection = (k: string): k is SectionKey => Object.hasOwn(LOADERS, k);
-export const loadSection = (key: SectionKey, page: Page) => LOADERS[key](page);
+export const loadSection = (key: SectionKey, page: Page, params: URLSearchParams) => LOADERS[key](page, params);

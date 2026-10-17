@@ -123,4 +123,37 @@ export const en: typeof ar = {
     licenses: "Licenses", licensesHint: "e.g. Mawthooq license, shown on your page when added", licenseName: "License name", licenseNameHint: "e.g. Mawthooq license",
     licenseNameEn: "Name in English", licenseNumber: "License number", addFile: "Attach file (optional)", replaceFile: "Replace file", addLicense: "Add license",
   },
+
+  verify: {
+    subtitle: "Verified numbers earn more trust from brands", freeNote: "The verified badge shows on your page with Pro.", noAccounts: "Add your accounts first in “Accounts & numbers”.",
+    start: "Verify with a screenshot", renew: "Renew verification", reading: "Reading the screenshot…", noRead: "We couldn't read it automatically; you can still send it for review.",
+    match: "✓ The screenshot matches your account", unreadable: "The screenshot doesn't clearly show the profile. Try another or send it anyway.", differs: "The screenshot and your account details differ",
+    useRead: "Use the number from the screenshot ({n})", followersUpdated: "Followers updated from the screenshot.", send: "Send for review", cancelDraft: "Cancel",
+    sent: "Sent. We review it within 48 hours.", cancel: "Cancel request", uploadFailed: "We couldn't upload the screenshot.", inReview: "In review (within 48 hours).",
+    until: "Verified until {date}", expiring: "Verification ends in {n} days", howTo: "Take a screenshot of your profile showing the username and followers. Verification lasts 90 days.",
+    licenses: "Licenses", sendLicense: "Send license for verification", licenseNeedsFile: "Attach the license file in “Edit page” to verify it.",
+    reasons: { username_missing: "The username isn't visible in the screenshot.", followers_mismatch: "The follower count in the screenshot doesn't match the number you entered.", unclear: "The screenshot is unclear or cropped.", edited: "The screenshot looks edited.", not_owner: "We couldn't confirm the account is yours.", other_account: "The screenshot shows a different account.", license_unclear: "The license file isn't clear.", license_mismatch: "The name or number in the file doesn't match what you entered.", license_expired: "The license has expired.", license_edited: "The file looks edited." },
+  },
+  analytics: {
+    subtitle: "Who visits your page and from where", lastDays: "Last {n} days", visitors: "Unique visitors", countries: "Countries", referrers: "Where they came from",
+    direct: "Most visits are direct or from apps that don't share the source.", devices: "Devices", device: { mobile: "Phone", desktop: "Computer", tablet: "Tablet" },
+    topClicks: "Most tapped", noClicks: "No taps yet.", email: "Email", social: "Account", work: "Work", link: "Link: {name}", service: "Service: {name}",
+    empty: "No visits in this period. Share your link!", privacy: "We don't keep any personal data about your visitors.",
+  },
+  referrals: {
+    subtitle: "Earn from every subscriber who comes through your link", proOnly: "The affiliate program is for Pro subscribers.", yourLink: "Your referral link",
+    linkHint: "Share it with anyone who wants a page.", clicks: "Clicks", signups: "Sign-ups", paying: "Paid subscriptions", earned: "Total commission",
+    rule: "You get {percent}% before VAT for the first {months} months of each customer's subscription.", clicksChart: "Clicks on your link", balance: "Your balance",
+    pending: "Pending", available: "Ready to pay out", paidOut: "Paid out", holdNote: "A commission is ready {days} days after the payment.",
+    payoutTitle: "How do you want to be paid?", credit: "Wsool credit", bank: "Bank transfer", creditHint: "Taken off your next renewal automatically.", bankHint: "We transfer it once your balance reaches {min}.",
+    iban: "IBAN", ibanSaved: "Saved: {iban}. Leave empty to keep it.", ibanHint: "Saudi IBANs start with SA and have 24 characters.", ibanError: "This IBAN isn't valid.",
+    holder: "Account holder name", holderError: "Enter the holder's name as it is at the bank.", customers: "Your customers", noCustomers: "No one has signed up from your link yet.",
+    customerN: "Customer {n}", payouts: "Payouts", sar: "SAR {n}",
+  },
+  sub: {
+    subtitle: "Your plan and invoices", yourPlan: "Your plan", monthly: "Monthly plan", yearly: "Yearly plan", freeText: "Your page is on the Free plan.",
+    invoices: "Invoices", refunded: "Refunded", deleteTitle: "Delete account",
+    deleteText: "Your page is hidden right away and renewal stops. After 30 days everything is deleted for good and your name is released; you can undo it until then.",
+    typeUsername: "To confirm, type your username: {username}", delete: "Delete my account", deleteScheduled: "Your account will be deleted for good on {date}; your page is hidden.", undo: "Undo deletion",
+  },
 };

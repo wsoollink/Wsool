@@ -1,11 +1,9 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { Prisma } from "@/generated/prisma/client";
 import { normalizeUsername } from "@/config/usernames";
-import { ensureAccount } from "@/lib/account";
 import { requireUser } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { claimPage } from "@/lib/onboarding";
 import { usernameError, type UsernameError } from "@/lib/username";
 
 export type AvailabilityResult = { name: string; error: UsernameError | null };
@@ -22,23 +20,8 @@ export type ClaimState = { name?: string; error?: UsernameError | "failed" };
 /** Claims the username and creates the creator's page (first time only). */
 export async function claimUsername(_prev: ClaimState, formData: FormData): Promise<ClaimState> {
   const user = await requireUser();
-  // A suspended account can't take a name (same rule as requireCreator).
-  if ((await db.user.findUnique({ where: { id: user.id }, select: { suspendedAt: true } }))?.suspendedAt) redirect("/suspended");
-  const name = normalizeUsername(String(formData.get("username") ?? "").slice(0, 40));
-
-  const error = await usernameError(name, user.id);
-  if (error) return { name, error };
-
-  await ensureAccount(user);
-  const existing = await db.page.findUnique({ where: { userId: user.id }, select: { id: true } });
-  if (existing) redirect("/dashboard");
-
-  try {
-    await db.page.create({ data: { userId: user.id, username: name } });
-  } catch (e) {
-    // Someone else claimed it between the check and the insert.
-    if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") return { name, error: "taken" };
-    return { name, error: "failed" };
-  }
-  redirect("/dashboard");
+  const res = await claimPage(user, String(formData.get("username") ?? ""));
+  if ("ok" in res || res.error === "has_page") redirect("/dashboard");
+  if (res.error === "suspended") redirect("/suspended");
+  return { name: res.name, error: res.error };
 }

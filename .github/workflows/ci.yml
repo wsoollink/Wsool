@@ -49,3 +49,21 @@ jobs:
           PGPASSWORD=postgres psql -h localhost -U postgres -d wsool -f prisma/local-supabase-stub.sql
           npx prisma migrate deploy
           npx prisma migrate diff --from-config-datasource --to-schema prisma/schema.prisma --exit-code
+
+  mobile:
+    # The Expo app in mobile/ (docs/mobile-app-plan.md): installs and type-checks.
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+      - run: npm ci
+      - name: TypeScript
+        run: npx tsc --noEmit

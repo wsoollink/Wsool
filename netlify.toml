@@ -4,6 +4,8 @@
   # Applies pending Prisma migrations to Supabase, then builds.
   command = "npm run build:deploy"
   publish = ".next"
+  # Skip the deploy (and its credits) when only the mobile app or docs changed.
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ':(exclude)mobile' ':(exclude)docs'"
 
 [build.environment]
   NODE_VERSION = "22"

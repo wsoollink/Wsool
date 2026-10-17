@@ -16,6 +16,8 @@ const eslintConfig = defineConfig([
     "src/generated/**",
     // Netlify build output
     ".netlify/**",
+    // Mobile app (Expo project with its own tooling: cd mobile && npm run typecheck)
+    "mobile/**",
   ]),
 ]);
 

@@ -1,0 +1,47 @@
+{
+  "expo": {
+    "name": "وصول",
+    "slug": "wsool",
+    "scheme": "wsool",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "backgroundColor": "#F6F8FA",
+    "ios": {
+      "bundleIdentifier": "link.wsool.app",
+      "supportsTablet": false,
+      "usesAppleSignIn": true,
+      "infoPlist": {
+        "CFBundleDevelopmentRegion": "ar",
+        "CFBundleLocalizations": ["ar", "en"],
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "package": "link.wsool.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "output": "single"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      "expo-localization",
+      "expo-apple-authentication",
+      ["expo-notifications", { "color": "#0060E6" }],
+      ["expo-splash-screen", { "image": "./assets/icon.png", "imageWidth": 120, "backgroundColor": "#F6F8FA", "dark": { "backgroundColor": "#07090E" } }]
+    ],
+    "extra": {
+      "supportsRTL": true
+    }
+  }
+}

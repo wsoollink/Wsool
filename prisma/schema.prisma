@@ -100,6 +100,7 @@ model User {
   commissionsFrom      ReferralCommission[]  @relation("CommissionReferred")
   referralClicks       ReferralClick[]
   referralPayouts      ReferralPayout[]
+  pushTokens           PushToken[]
 
   @@index([referredById])
   @@map("users")
@@ -1012,4 +1013,20 @@ model ReferralPayout {
 
   @@index([referrerId, createdAt])
   @@map("referral_payouts")
+}
+
+/// Mobile app: one row per installed device (Expo push token), so notifications also arrive as phone pushes.
+model PushToken {
+  id         String   @id @default(uuid()) @db.Uuid
+  userId     String   @map("user_id") @db.Uuid
+  /// "ExponentPushToken[...]"
+  token      String   @unique @db.VarChar(200)
+  platform   String   @db.VarChar(10)
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz
+  lastSeenAt DateTime @default(now()) @map("last_seen_at") @db.Timestamptz
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("push_tokens")
 }

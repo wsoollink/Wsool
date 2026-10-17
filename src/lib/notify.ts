@@ -7,6 +7,7 @@ import { renderEmail } from "@/lib/email/layout";
 import { sendEmail } from "@/lib/email/send";
 import { BILLING_EMAIL } from "@/config/site";
 import { formatPrice } from "@/lib/format";
+import { sendPush } from "@/lib/push";
 import { siteOrigin } from "@/lib/site-url";
 import ar from "../../messages/ar.json";
 import en from "../../messages/en.json";
@@ -90,7 +91,7 @@ function emailFor(type: NotificationType, data: Data, lang: Locale, footer: stri
 }
 
 /**
- * Notifies a creator: adds it to their bell and emails it in their page's
+ * Notifies a creator: adds it to their bell, sends it to their phones (app) and emails it in their page's
  * language. With a dedupeKey the same notification is never sent twice (safe
  * for hourly reminder jobs). Never throws.
  */
@@ -110,6 +111,9 @@ export async function notify(userId: string, type: NotificationType, data: Data 
     }
     if (NOTIFICATIONS[type].reminder && user.notificationSettings?.emailReminders === false) return;
     const lang = (user.page?.primaryLang ?? "ar") as Locale;
+    // Mobile app: the same notification as a phone push (no-op without registered devices).
+    const text = notificationText(type, data, lang);
+    if (text) await sendPush(userId, { title: text.title, body: text.body, href: text.href });
     const footer = createTranslator({ locale: toIntlLocale(lang), messages: MESSAGES[lang], namespace: "Notify" })("footer");
     const replyTo = "billing" in NOTIFICATIONS[type] ? BILLING_EMAIL : undefined;
     await sendEmail({ to: user.email, replyTo, ...emailFor(type, data, lang, footer) });

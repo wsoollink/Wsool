@@ -762,7 +762,11 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   CSV `/api/admin/referrals` (audited `referral.export`). Finance counts commissions as expense category `affiliate` (and in
   marketing for CAC). Terms section 7 + privacy (data row, 30-day cookie) describe it. Data export includes it.
 
-### Mobile app (owner, Oct 2026 — planning, not started)
+### Mobile app (owner, Oct 2026 — phase 1 built)
 - Native React Native (Expo) app for creators, before the official launch, published as "وصول" (organization accounts).
   Decisions, store rules (no in-app subscription sales, Sign in with Apple, in-app account deletion), architecture
   (`/api/mobile/v1` + `mobile/`), phases and open questions: **`docs/mobile-app-plan.md`**. Read it before any app work.
+- Server: `/api/mobile/v1/*` (Bearer Supabase token, `authed`/`withPage` in `src/lib/mobile/api.ts`, CORS open: no cookies).
+  Shared logic goes in `src/lib/*` (e.g. `claimPage`), never duplicated. `notify()` also pushes to phones (`src/lib/push.ts`,
+  table `push_tokens`). App: `mobile/` (Expo SDK 58, own package.json; excluded from the root tsc/eslint; CI job `mobile`).
+  Changes only in `mobile/` or `docs/` don't trigger a Netlify deploy (`ignore` in `netlify.toml`).

@@ -726,3 +726,13 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   Audience reads use effort `medium` and `AUDIENCE_TASK` (pair each age label with the percent on its row, RTL apps
   swap sides, never estimate from bar length); ages not adding up to 100 ±3 show a "check the ages" warning (`agesUncertain`).
 
+### Agent tools (owner, Oct 2026)
+- **Context7** (`.mcp.json`, MCP server `https://mcp.context7.com/mcp`, no API key yet = lower rate limit): before writing
+  or changing code that uses Next.js, Supabase, Prisma, next-intl, Resend, Sentry, Netlify or the payment gateway, look
+  up the current docs with Context7 (for Next.js, `node_modules/next/dist/docs/` from AGENTS.md comes first). If Context7
+  is unreachable (cloud sessions need `mcp.context7.com` in the environment's allowed domains), say so and carry on.
+- **Skills** from addyosmani/agent-skills (MIT, `.claude/skills/LICENSE-agent-skills.md`), shared checklists in
+  `.claude/references/`: `security-and-hardening` (auth, input, uploads, payments), `performance-optimization`,
+  `code-review-and-quality` (review your own change before saying a step is done), `shipping-and-launch` (use together
+  with `docs/launch-checklist.md`). This file wins over any skill where they disagree (e.g. stack, branches, deploy
+  credits); skip skill steps that don't fit a solo owner (feature flags, staged rollouts, heavy test suites) unless asked.

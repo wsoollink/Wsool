@@ -75,6 +75,7 @@
 - حساب Expo: `wsoolapp`، المشروع `wsool` (`owner` + `extra.eas.projectId` في `mobile/app.json`).
 - `mobile/eas.json`: `preview` = نسخة تجربة داخلية (Android APK)، `production` = المتاجر (رقم البناء يزيد تلقائياً).
 - الأيقونات وشاشة البداية مولّدة من `public/brand/icon.png` (خلفية بيضاء، أيقونة أحادية اللون لأندرويد).
-- البناء: GitHub → Actions → "Mobile build" (`.github/workflows/mobile-build.yml`) يحتاج سر `EXPO_TOKEN` في GitHub.
+- البناء: Expo مربوط بالمستودع مباشرة (expo.dev → المشروع → GitHub، Base directory = `/mobile`). البناء من expo.dev →
+  Builds → Build from GitHub (اختيار الفرع والمنصة و`preview`/`production`). بدون `EXPO_TOKEN` ولا GitHub Actions.
 - الآيفون (TestFlight) ينتظر حساب Apple Developer للمؤسسة (السجل التجاري + D-U-N-S).
 

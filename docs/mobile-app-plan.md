@@ -72,7 +72,7 @@
 - مجرّب: طلب توثيق (in_review) وإلغاؤه، حفظ IBAN، عدم وجود زر شراء، الحذف والتراجع.
 
 ## المرحلة 4 (جارية)
-- حساب Expo: `wsoolapp`، المشروع `wsool` (`owner` + `extra.eas.projectId` في `mobile/app.json`).
+- حساب Expo: `wsoolapp`، المشروع `wsool-app` (ID `38c46e0b-…`، `owner` + `extra.eas.projectId` في `mobile/app.json`).
 - `mobile/eas.json`: `preview` = نسخة تجربة داخلية (Android APK)، `production` = المتاجر (رقم البناء يزيد تلقائياً).
 - الأيقونات وشاشة البداية مولّدة من `public/brand/icon.png` (خلفية بيضاء، أيقونة أحادية اللون لأندرويد).
 - البناء: Expo مربوط بالمستودع مباشرة (expo.dev → المشروع → GitHub، Base directory = `/mobile`). البناء من expo.dev →

@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "وصول",
-    "slug": "wsool",
+    "slug": "wsool-app",
     "scheme": "wsool",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -61,7 +61,7 @@
     "extra": {
       "supportsRTL": true,
       "eas": {
-        "projectId": "b0425cd3-7078-46d7-8292-ab91e83e3fec"
+        "projectId": "38c46e0b-c3c4-4411-99cd-12f09e7d7c02"
       }
     },
     "owner": "wsoolapp"

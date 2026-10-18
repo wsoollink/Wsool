@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { Linking } from "react-native";
 import { Mail } from "lucide-react-native";
-import { PlatformIcon } from "../../components/PlatformIcon";
-import { SaveBar, SectionScreen, SwitchRow, useSaver, useSection } from "../../components/editor";
-import { Card, Field, Row, T } from "../../components/ui";
-import { useI18n } from "../../i18n";
-import { rpc } from "../../lib/api";
-import { useTheme } from "../../lib/theme";
+import { PlatformIcon } from "../../../components/PlatformIcon";
+import { SaveBar, SectionScreen, SwitchRow, useSaver, useSection } from "../../../components/editor";
+import { Card, Field, Row, T } from "../../../components/ui";
+import { useI18n } from "../../../i18n";
+import { rpc } from "../../../lib/api";
+import { useTheme } from "../../../lib/theme";
 
 type Data = { whatsapp: string; email: string; whatsappVisible: boolean; emailVisible: boolean; taps: { whatsapp: number; email: number } };
 

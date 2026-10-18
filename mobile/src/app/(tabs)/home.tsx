@@ -9,7 +9,7 @@ import { Button, Card, Panel, Pill, Row, Screen, Status, T } from "../../compone
 import { useI18n } from "../../i18n";
 import { api, ApiError } from "../../lib/api";
 import { useAuth } from "../../lib/app";
-import { useTheme } from "../../lib/theme";
+import { useTheme, align } from "../../lib/theme";
 
 type Home = {
   name: string | null; username: string; url: string; published: boolean; photoUrl: string | null;
@@ -86,7 +86,7 @@ export default function HomeScreen() {
           <T size={12.5} tone="muted">{t("home.yourLink")}</T>
           <Pill tone={data.published ? "good" : "warn"}>{data.published ? t("home.published") : t("home.hidden")}</Pill>
         </Row>
-        <T weight="bold" size={18} style={{ textAlign: rtl ? "right" : "left", writingDirection: "ltr" }} numberOfLines={1}>{short}</T>
+        <T weight="bold" size={18} style={{ textAlign: align(rtl ? "right" : "left"), writingDirection: "ltr" }} numberOfLines={1}>{short}</T>
         <Row style={{ flexWrap: "wrap" }}>
           <Button title={t("home.share")} icon={<Share2 size={16} color={colors.onBlue} />} onPress={() => Share.share({ message: data.url, url: data.url })} style={{ flexGrow: 1 }} />
           <Button title={copied ? t("home.copied") : t("home.copy")} variant="secondary" icon={<Copy size={16} color={colors.navy} />} onPress={async () => { await Clipboard.setStringAsync(data.url); setCopied(true); setTimeout(() => setCopied(false), 2000); }} />
@@ -142,7 +142,7 @@ export default function HomeScreen() {
           <Row key={a.id} style={{ justifyContent: "space-between", minHeight: 40 }}>
             <View style={{ flexShrink: 1 }}>
               <T weight="bold">{PLATFORM[a.platform] ?? a.platform}</T>
-              <T size={12.5} tone="muted" style={{ writingDirection: "ltr", textAlign: rtl ? "right" : "left" }}>@{a.handle} · {num(a.followers)}</T>
+              <T size={12.5} tone="muted" style={{ writingDirection: "ltr", textAlign: align(rtl ? "right" : "left") }}>@{a.handle} · {num(a.followers)}</T>
             </View>
             <Pill tone={VTONE[a.verification as keyof typeof VTONE] ?? "grey"}>{t(`home.vstatus.${a.verification}`)}</Pill>
           </Row>

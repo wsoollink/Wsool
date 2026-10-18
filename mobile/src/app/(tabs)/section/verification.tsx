@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { View } from "react-native";
 import { BadgeCheck, Camera } from "lucide-react-native";
-import { PlatformIcon } from "../../components/PlatformIcon";
-import { ProNote, SectionScreen, useSection } from "../../components/editor";
-import { Button, Card, Pill, Row, T } from "../../components/ui";
-import { useI18n } from "../../i18n";
-import { rpc } from "../../lib/api";
-import { pickImage, upload } from "../../lib/media";
-import { PLATFORM_NAMES, type Platform } from "../../lib/platforms";
-import { useTheme } from "../../lib/theme";
+import { PlatformIcon } from "../../../components/PlatformIcon";
+import { ProNote, SectionScreen, useSection } from "../../../components/editor";
+import { Button, Card, Pill, Row, T } from "../../../components/ui";
+import { useI18n } from "../../../i18n";
+import { rpc } from "../../../lib/api";
+import { pickImage, upload } from "../../../lib/media";
+import { PLATFORM_NAMES, type Platform } from "../../../lib/platforms";
+import { useTheme } from "../../../lib/theme";
 
 type Status = "none" | "in_review" | "verified" | "expiring" | "expired" | "rejected";
 type Account = { id: string; platform: Platform; handle: string; followers: number; status: Status; verifiedUntil: string | null; daysLeft: number; pendingSince: string | null; rejectReason: string | null };

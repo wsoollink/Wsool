@@ -1,13 +1,14 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
+import { useFocusEffect } from "expo-router";
 import { View } from "react-native";
 import { Lock } from "lucide-react-native";
-import { AreaChart } from "../../components/AreaChart";
-import { Chips, SectionScreen } from "../../components/editor";
-import { Card, Panel, Row, T } from "../../components/ui";
-import { useI18n } from "../../i18n";
-import { api } from "../../lib/api";
-import { PLATFORM_NAMES, type Platform } from "../../lib/platforms";
-import { useTheme } from "../../lib/theme";
+import { AreaChart } from "../../../components/AreaChart";
+import { Chips, SectionScreen } from "../../../components/editor";
+import { Card, Panel, Row, T } from "../../../components/ui";
+import { useI18n } from "../../../i18n";
+import { api } from "../../../lib/api";
+import { PLATFORM_NAMES, type Platform } from "../../../lib/platforms";
+import { useTheme } from "../../../lib/theme";
 
 type Count = { key: string; count: number };
 type Report = {
@@ -27,7 +28,7 @@ export default function Analytics() {
   const load = useCallback(async () => {
     try { setError(null); setData(await api<Data>(`/section/analytics?range=${range}`)); } catch { setError(t("common.offline")); }
   }, [range, t]);
-  useEffect(() => { load(); }, [load]);
+  useFocusEffect(useCallback(() => { load(); }, [load]));
 
   const region = (c: string) => { try { return new Intl.DisplayNames([lang], { type: "region" }).of(c) ?? c; } catch { return c; } };
   const delta = (cur: number, before: number) => {

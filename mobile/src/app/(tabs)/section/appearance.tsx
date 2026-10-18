@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { Pressable, View } from "react-native";
 import { Check, Lock } from "lucide-react-native";
-import { Chips, ProNote, SaveBar, SectionScreen, SwitchRow, useSaver, useSection } from "../../components/editor";
-import { Card, Field, T } from "../../components/ui";
-import { useI18n } from "../../i18n";
-import { rpc } from "../../lib/api";
-import { useTheme } from "../../lib/theme";
+import { Chips, ProNote, SaveBar, SectionScreen, SwitchRow, useSaver, useSection } from "../../../components/editor";
+import { Card, Field, T } from "../../../components/ui";
+import { useI18n } from "../../../i18n";
+import { rpc } from "../../../lib/api";
+import { useTheme } from "../../../lib/theme";
 
 type Template = "white" | "black" | "sand" | "pink" | "black_gold" | "vivid" | "green" | "custom";
 type Data = {

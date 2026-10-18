@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import { Pressable, View } from "react-native";
 import { Image } from "expo-image";
 import { ImagePlus } from "lucide-react-native";
-import { AddButton, ItemTools, move, ProNote, SaveBar, SectionScreen, useSaver, useSection } from "../../components/editor";
-import { Card, Field, Row, T } from "../../components/ui";
-import { useI18n } from "../../i18n";
-import { rpc } from "../../lib/api";
-import { pickImage, upload } from "../../lib/media";
-import { useTheme } from "../../lib/theme";
+import { AddButton, ItemTools, move, ProNote, SaveBar, SectionScreen, useSaver, useSection } from "../../../components/editor";
+import { Card, Field, Row, T } from "../../../components/ui";
+import { useI18n } from "../../../i18n";
+import { rpc } from "../../../lib/api";
+import { pickImage, upload } from "../../../lib/media";
+import { useTheme } from "../../../lib/theme";
 
 type FileRef = { path: string | null; url: string | null };
 type Link = { title: string; titleEn: string; url: string; image: FileRef };

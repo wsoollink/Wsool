@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { View } from "react-native";
-import { SectionScreen, useSection } from "../../components/editor";
-import { Button, Card, Field, Panel, Pill, Row, T } from "../../components/ui";
-import { useI18n } from "../../i18n";
-import { rpc } from "../../lib/api";
-import { useAuth } from "../../lib/app";
-import { useTheme } from "../../lib/theme";
+import { SectionScreen, useSection } from "../../../components/editor";
+import { Button, Card, Field, Panel, Pill, Row, T } from "../../../components/ui";
+import { useI18n } from "../../../i18n";
+import { rpc } from "../../../lib/api";
+import { useAuth } from "../../../lib/app";
+import { useTheme } from "../../../lib/theme";
 
 type Data = {
   plan: "pro" | "trial" | "free"; status: string; cycle: "monthly" | "yearly" | null; trialDaysLeft: number;

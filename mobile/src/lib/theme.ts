@@ -1,3 +1,4 @@
+import { I18nManager, Platform } from "react-native";
 import { createContext, useContext } from "react";
 
 /** Same colours as the website (src/app/globals.css), light and dark. */
@@ -21,3 +22,11 @@ export const ThemeContext = createContext<{ colors: Colors; dark: boolean; mode:
   colors: LIGHT, dark: false, mode: "system", setMode: () => {},
 });
 export const useTheme = () => useContext(ThemeContext);
+
+/**
+ * textAlign of a <Text> for a physical side. Android swaps "left" and "right"
+ * on Text when the app is laid out right-to-left; iOS, the web and TextInput
+ * keep them physical, so inputs use plain "left"/"right".
+ */
+export const align = (side: "left" | "right"): "left" | "right" =>
+  Platform.OS === "android" && I18nManager.isRTL ? (side === "left" ? "right" : "left") : side;

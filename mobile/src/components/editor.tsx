@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useState, type ReactNode } from "react";
+import { useCallback, useState, type ReactNode } from "react";
 import { KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, View } from "react-native";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ArrowDown, ArrowUp, Check, ChevronLeft, ChevronRight, Plus, Trash2, X } from "lucide-react-native";
 import { useI18n } from "../i18n";
@@ -8,7 +8,10 @@ import { api, ApiError } from "../lib/api";
 import { useTheme } from "../lib/theme";
 import { Button, Card, Row, Status, T } from "./ui";
 
-/** Loads a dashboard section's data (/section/<key>) with reload. */
+/**
+ * Loads a dashboard section's data (/section/<key>) with reload. Sections stay
+ * mounted inside the tabs, so the data is fetched again each time one opens.
+ */
 export function useSection<D>(key: string) {
   const { t } = useI18n();
   const [data, setData] = useState<D | null>(null);
@@ -17,7 +20,7 @@ export function useSection<D>(key: string) {
     try { setError(null); setData(await api<D>(`/section/${key}`)); }
     catch (err) { setError(err instanceof ApiError && err.code !== "network" ? t("common.error") : t("common.offline")); }
   }, [key, t]);
-  useEffect(() => { load(); }, [load]);
+  useFocusEffect(useCallback(() => { load(); }, [load]));
   return { data, error, reload: load, setData };
 }
 

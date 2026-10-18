@@ -1,10 +1,10 @@
 import { Linking, View } from "react-native";
 import { Stack, useLocalSearchParams, router } from "expo-router";
 import { ChevronLeft, ChevronRight, Hammer } from "lucide-react-native";
-import { Button, Card, Row, Screen, T } from "../../components/ui";
-import { useI18n } from "../../i18n";
-import { SITE_URL } from "../../lib/config";
-import { useTheme } from "../../lib/theme";
+import { Button, Card, Row, Screen, T } from "../../../components/ui";
+import { useI18n } from "../../../i18n";
+import { SITE_URL } from "../../../lib/config";
+import { useTheme } from "../../../lib/theme";
 
 /**
  * Dashboard sections that arrive in later phases (docs/mobile-app-plan.md):

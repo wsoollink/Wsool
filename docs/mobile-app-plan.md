@@ -75,6 +75,10 @@
 - حساب Expo: `wsoolapp`، المشروع `wsool-app` (ID `38c46e0b-…`، `owner` + `extra.eas.projectId` في `mobile/app.json`).
 - `mobile/eas.json`: `preview` = نسخة تجربة داخلية (Android APK)، `production` = المتاجر (رقم البناء يزيد تلقائياً).
 - اللغة: العربية افتراضياً (الإنجليزي من «المزيد»). `expo-localization` محذوفة لأنها ترجّع `forceRTL` لقيمتها الثابتة مع كل تشغيل، فكان التبديل للعربي يدخل حلقة إعادة تشغيل (صفحة بيضاء). `applyDirection` يعيد التشغيل مرة وحدة فقط، وإذا ما تعدّل الاتجاه يطلب من المستخدم يقفل التطبيق ويفتحه. `plugins/with-rtl.js` يضبط `android:supportsRtl`.
+- الأقسام داخل التبويبات (`src/app/(tabs)/section/`) عشان الشريط السفلي يبقى ظاهر: مخفية من الشريط بـ `tabBarButton: () => null`
+  (مو `href: null`، لأن Expo Router يرجّع للرئيسية من التبويب المخفي)، `backBehavior="history"`، والبيانات تنجلب كل ما ينفتح القسم.
+- محاذاة النص: أندرويد يقلب `left`/`right` في `<Text>` لما يكون التطبيق من اليمين لليسار، فالنصوص تستخدم `align()` (`src/lib/theme.ts`).
+  خانات الكتابة (TextInput) و iOS ما تقلبها، فتبقى `left`/`right` عادي.
 - الأيقونات وشاشة البداية مولّدة من `public/brand/icon.png` (خلفية بيضاء، أيقونة أحادية اللون لأندرويد).
 - البناء: Expo مربوط بالمستودع مباشرة (expo.dev → المشروع → GitHub، Base directory = `/mobile`). البناء من expo.dev →
   Builds → Build from GitHub (اختيار الفرع والمنصة و`preview`/`production`). بدون `EXPO_TOKEN` ولا GitHub Actions.

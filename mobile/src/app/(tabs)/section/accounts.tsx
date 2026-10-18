@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { Pressable, View } from "react-native";
 import { ChevronDown, Sparkles } from "lucide-react-native";
-import { PlatformIcon } from "../../components/PlatformIcon";
-import { AddButton, Chips, ItemTools, move, PickerSheet, ProNote, SectionScreen, useSection } from "../../components/editor";
-import { Button, Card, Field, Pill, Row, T } from "../../components/ui";
-import { useI18n } from "../../i18n";
-import { rpc } from "../../lib/api";
-import { pickImage, upload } from "../../lib/media";
-import { LINK_PLATFORMS, PLATFORM_NAMES, PLATFORMS, type Platform } from "../../lib/platforms";
-import { useTheme } from "../../lib/theme";
+import { PlatformIcon } from "../../../components/PlatformIcon";
+import { AddButton, Chips, ItemTools, move, PickerSheet, ProNote, SectionScreen, useSection } from "../../../components/editor";
+import { Button, Card, Field, Pill, Row, T } from "../../../components/ui";
+import { useI18n } from "../../../i18n";
+import { rpc } from "../../../lib/api";
+import { pickImage, upload } from "../../../lib/media";
+import { LINK_PLATFORMS, PLATFORM_NAMES, PLATFORMS, type Platform } from "../../../lib/platforms";
+import { useTheme } from "../../../lib/theme";
 
 type Share = { label: string; percent: number };
 type Audience = { gender: Share[]; ages: Share[]; countries: Share[]; cities: Share[] };

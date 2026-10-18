@@ -6,6 +6,9 @@ import { useI18n } from "../../i18n";
 import { useAuth } from "../../lib/app";
 import { FONTS, useTheme } from "../../lib/theme";
 
+/** Dashboard sections open inside the tabs (bar stays visible) without a button of their own. */
+const SECTIONS = ["[key]", "accounts", "analytics", "appearance", "contact", "edit", "links", "rates", "referrals", "subscription", "verification", "work"];
+
 /** Bottom tabs once signed in with a page: Home, Notifications (unread badge), More (all sections). */
 export default function TabsLayout() {
   const { t } = useI18n();
@@ -15,6 +18,7 @@ export default function TabsLayout() {
   if (me && !me.page) return <Redirect href="/onboarding" />;
   return (
     <Tabs
+      backBehavior="history"
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: colors.blue,
@@ -31,6 +35,8 @@ export default function TabsLayout() {
         options={{ title: t("tabs.notifications"), tabBarIcon: ({ color, size }) => <Bell color={color} size={size} />, tabBarBadge: me?.unread ? (me.unread > 9 ? "9+" : me.unread) : undefined, tabBarBadgeStyle: { backgroundColor: colors.bad } }}
       />
       <Tabs.Screen name="more" options={{ title: t("tabs.more"), tabBarIcon: ({ color, size }) => <Menu color={color} size={size} /> }} />
+      {/* Hidden with tabBarButton, not href: null (Expo Router redirects away from hidden tabs). */}
+      {SECTIONS.map((s) => <Tabs.Screen key={s} name={`section/${s}`} options={{ tabBarButton: () => null, tabBarItemStyle: { display: "none" } }} />)}
     </Tabs>
   );
 }

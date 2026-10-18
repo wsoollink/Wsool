@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, TextInput, View, type PressableProps, type StyleProp, type TextInputProps, type TextProps, type TextStyle, type ViewStyle } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useI18n } from "../i18n";
-import { FONTS, RADIUS, useTheme } from "../lib/theme";
+import { FONTS, RADIUS, useTheme, align } from "../lib/theme";
 
 type Weight = "regular" | "bold" | "black";
 
@@ -11,7 +11,7 @@ export function T({ weight = "regular", tone, size = 15, style, ...props }: Text
   const { colors } = useTheme();
   const { rtl } = useI18n();
   const color = tone ? colors[tone] : colors.navy;
-  return <Text {...props} style={[{ fontFamily: FONTS[weight], fontSize: size, color, lineHeight: Math.round(size * (weight === "black" ? 1.25 : 1.7)), textAlign: rtl ? "right" : "left", writingDirection: rtl ? "rtl" : "ltr" }, style]} />;
+  return <Text {...props} style={[{ fontFamily: FONTS[weight], fontSize: size, color, lineHeight: Math.round(size * (weight === "black" ? 1.25 : 1.7)), textAlign: align(rtl ? "right" : "left"), writingDirection: rtl ? "rtl" : "ltr" }, style]} />;
 }
 
 /** Page wrapper: safe area, app background, optional scroll and pull to refresh. */

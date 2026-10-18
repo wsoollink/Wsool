@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import { Share, View } from "react-native";
 import * as Clipboard from "expo-clipboard";
 import { Copy, Share2 } from "lucide-react-native";
-import { AreaChart } from "../../components/AreaChart";
-import { Chips, ProNote, SectionScreen, useSaver, useSection } from "../../components/editor";
-import { Button, Card, Field, Panel, Pill, Row, T } from "../../components/ui";
-import { useI18n } from "../../i18n";
-import { rpc } from "../../lib/api";
-import { useTheme } from "../../lib/theme";
+import { AreaChart } from "../../../components/AreaChart";
+import { Chips, ProNote, SectionScreen, useSaver, useSection } from "../../../components/editor";
+import { Button, Card, Field, Panel, Pill, Row, T } from "../../../components/ui";
+import { useI18n } from "../../../i18n";
+import { rpc } from "../../../lib/api";
+import { useTheme } from "../../../lib/theme";
 
 type Data = {
   isPro: boolean; rule: { percent: number; months: number; cookieDays: number; holdDays: number; minBankPayout: number }; link: string;

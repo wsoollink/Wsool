@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { View } from "react-native";
-import { PlatformIcon } from "../../components/PlatformIcon";
-import { AddButton, Chips, ItemTools, move, ProNote, SaveBar, SectionScreen, SwitchRow, useSaver, useSection } from "../../components/editor";
-import { Card, Field, Row, T } from "../../components/ui";
-import { useI18n } from "../../i18n";
-import { rpc } from "../../lib/api";
-import { PLATFORM_NAMES, type Platform } from "../../lib/platforms";
-import { useTheme } from "../../lib/theme";
+import { PlatformIcon } from "../../../components/PlatformIcon";
+import { AddButton, Chips, ItemTools, move, ProNote, SaveBar, SectionScreen, SwitchRow, useSaver, useSection } from "../../../components/editor";
+import { Card, Field, Row, T } from "../../../components/ui";
+import { useI18n } from "../../../i18n";
+import { rpc } from "../../../lib/api";
+import { PLATFORM_NAMES, type Platform } from "../../../lib/platforms";
+import { useTheme } from "../../../lib/theme";
 
 type Rate = { name: string; nameEn: string; price: string };
 type Settings = { showOnPage: boolean; showInPdf: boolean; currency: "SAR" | "USD" | "AED" | "KWD"; vatIncluded: boolean };

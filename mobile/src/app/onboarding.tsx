@@ -6,6 +6,7 @@ import { Button, Card, Field, Screen, T } from "../components/ui";
 import { useI18n } from "../i18n";
 import { api, ApiError } from "../lib/api";
 import { useAuth } from "../lib/app";
+import { align } from "../lib/theme";
 
 const ERRORS = ["length", "characters", "dots", "reserved", "extension", "taken"];
 /** Same rule as the website (src/config/usernames.ts): lowercase as you type. */
@@ -55,7 +56,7 @@ export default function Onboarding() {
           <T tone="muted">{t("onboarding.subtitle")}</T>
         </View>
         <View style={{ direction: "ltr" }}>
-          <T size={13} tone="faint" style={{ textAlign: "left", writingDirection: "ltr" }}>wsool.link/<T size={13} weight="bold" style={{ textAlign: "left" }}>{name || "username"}</T></T>
+          <T size={13} tone="faint" style={{ textAlign: align("left"), writingDirection: "ltr" }}>wsool.link/<T size={13} weight="bold" style={{ textAlign: align("left") }}>{name || "username"}</T></T>
         </View>
         <Field
           label={t("onboarding.label")} value={name} onChangeText={(v) => { setName(normalize(v)); setFailed(null); }}

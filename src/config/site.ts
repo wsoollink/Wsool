@@ -45,6 +45,15 @@ export const LEGAL = {
  * footer (CLAUDE.md section 11, phase 6). Leave a link empty to hide its icon.
  * Order here = order in the footer.
  */
+/**
+ * Store pages of the Wsool app (docs/mobile-app-plan.md). Empty = not published
+ * yet: the home page shows that store's badge as "Coming soon" without a link.
+ */
+export const APP_LINKS = {
+  ios: "",
+  android: "",
+} as const;
+
 export const SOCIAL_LINKS = {
   instagram: "https://www.instagram.com/wsoollink",
   tiktok: "https://www.tiktok.com/@wsoollink",

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { PRICES } from "@/config/plans";
 import { PLATFORM_NAMES } from "@/config/platforms";
-import { SOCIAL_LINKS } from "@/config/site";
+import { APP_LINKS, SOCIAL_LINKS } from "@/config/site";
 import { normalizeUsername, usernameFormatError } from "@/config/usernames";
 import type { Locale } from "@/i18n/config";
 import { setLocale } from "@/i18n/actions";
@@ -95,6 +95,13 @@ export function useMarketing(lang: Locale, opts: { initialClaim?: string; source
     socialList: (Object.entries(SOCIAL_LINKS) as [keyof typeof SOCIAL_LINKS, string][])
       .filter(([, href]) => href)
       .map(([key, href]) => ({ key, href, name: PLATFORM_NAMES[key], label: T.followOn(PLATFORM_NAMES[key]) })),
+    // "Get the app" under Follow us: a store link once APP_LINKS has it, else "Coming soon" (no link).
+    appIosHref: APP_LINKS.ios || undefined,
+    appIosTop: APP_LINKS.ios ? T.appGet : T.appSoon,
+    appIosLabel: T.appLabel("App Store", !!APP_LINKS.ios),
+    appAndroidHref: APP_LINKS.android || undefined,
+    appAndroidTop: APP_LINKS.android ? T.appGet : T.appSoon,
+    appAndroidLabel: T.appLabel("Google Play", !!APP_LINKS.android),
     switchLang: (e: React.MouseEvent) => {
       e.preventDefault();
       const form = new FormData();

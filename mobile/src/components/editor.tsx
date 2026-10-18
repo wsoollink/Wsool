@@ -50,7 +50,7 @@ export function SectionScreen({ title, subtitle, children, footer, loading, erro
         </View>
       )}
       {loading || error ? <Status loading={loading} error={error} onRetry={onRetry} /> : (
-        <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
+        <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
           <ScrollView contentContainerStyle={{ padding: 16, paddingTop: tab ? 12 : 14, gap: 16, paddingBottom: footer ? TAB_BAR_SPACE + 76 : TAB_BAR_SPACE }} keyboardShouldPersistTaps="handled">
             {tab ? <T weight="black" size={30} accessibilityRole="header">{title}</T> : null}
             {subtitle ? <T size={13.5} tone="muted" style={{ marginTop: tab ? -10 : 0 }}>{subtitle}</T> : null}

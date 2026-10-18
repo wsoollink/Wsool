@@ -15,13 +15,15 @@ export const TABS: { name: string; label: string; Icon: LucideIcon }[] = [
   { name: "account", label: "tabs.account", Icon: CircleUserRound },
 ];
 
+/** What Expo Router's js-tabs passes to a custom tab bar (BottomTabBarProps): there is no `navigation` object. */
 type Props = {
   state: { index: number; routes: { key: string; name: string }[] };
-  navigation: { navigate: (name: string) => void; emit: (e: { type: "tabPress"; target: string; canPreventDefault: true }) => { defaultPrevented: boolean } };
+  emitter: { emit: (e: { type: "tabPress"; target: string; canPreventDefault: true }) => { defaultPrevented: boolean } };
+  navigateToTab: (routeKey: string) => void;
 };
 
 /** Floating capsule tab bar from the app design: the active tab sits on a soft blue pill. */
-export function TabBar({ state, navigation }: Props) {
+export function TabBar({ state, emitter, navigateToTab }: Props) {
   const { t } = useI18n();
   const { colors, dark } = useTheme();
   const { me } = useAuth();
@@ -43,8 +45,9 @@ export function TabBar({ state, navigation }: Props) {
         const on = name === active;
         const route = state.routes.find((r) => r.name === name);
         const press = () => {
-          const e = navigation.emit({ type: "tabPress", target: route?.key ?? name, canPreventDefault: true });
-          if (!e.defaultPrevented) navigation.navigate(name);
+          if (!route) return;
+          const e = emitter.emit({ type: "tabPress", target: route.key, canPreventDefault: true });
+          if (!e.defaultPrevented && route.name !== current) navigateToTab(route.key);
         };
         const badge = name === "notifications" && (me?.unread ?? 0) > 0;
         return (

@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { KeyboardAvoidingView, Linking, Platform, ScrollView, View } from "react-native";
+import { useEffect, useRef, useState } from "react";
+import { Keyboard, KeyboardAvoidingView, Linking, Platform, ScrollView, View, type ScrollViewInstance } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Redirect } from "expo-router";
 import * as AppleAuthentication from "expo-apple-authentication";
@@ -24,6 +24,13 @@ export default function Login() {
   const [code, setCode] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // The form sits at the bottom: when the keyboard opens, scroll it into view (Android draws edge to edge, so the window doesn't shrink).
+  const scroll = useRef<ScrollViewInstance>(null);
+  useEffect(() => {
+    const sub = Keyboard.addListener("keyboardDidShow", () => setTimeout(() => scroll.current?.scrollToEnd({ animated: true }), 50));
+    return () => sub.remove();
+  }, []);
 
   if (status === "signedIn") return <Redirect href="/" />;
   const fail = (err: unknown) => {
@@ -61,8 +68,8 @@ export default function Login() {
     <View style={{ flex: 1, backgroundColor: "#021941", overflow: "hidden" }}>
       <View pointerEvents="none" style={{ position: "absolute", top: -120, right: -100, width: 380, height: 380, borderRadius: 190, backgroundColor: "rgba(34,184,240,0.20)" }} />
       <View pointerEvents="none" style={{ position: "absolute", top: 120, left: -140, width: 320, height: 320, borderRadius: 160, backgroundColor: "rgba(10,108,255,0.30)" }} />
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
-        <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled" bounces={false}>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
+        <ScrollView ref={scroll} contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled" bounces={false}>
           <SafeAreaView edges={["top"]} style={{ flexGrow: 1, justifyContent: "center", paddingHorizontal: 24, paddingVertical: 32, gap: 14, maxWidth: 520, width: "100%", alignSelf: "center" }}>
             <Logo height={40} onDark />
             <T weight="black" size={32} style={{ color: "#FFFFFF" }}>{t("login.headline")}</T>

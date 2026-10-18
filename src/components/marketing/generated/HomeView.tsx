@@ -1037,30 +1037,10 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
               </span>
               <div style={{"display": "flex", "flexWrap": "wrap", "gap": "8px"}}>
                 <a href={v.appIosHref} target="_blank" rel="noopener" aria-label={v.appIosLabel} className="wapp">
-                  <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701" />
-                  </svg>
-                  <span className="wapp-t">
-                    <span className="wapp-s">
-                      {v.appIosTop}
-                    </span>
-                    <span className="wapp-n">
-                      {t(175)}
-                    </span>
-                  </span>
+                  <img src="/marketing/app-store-badge.png" alt="" width="151" height="40" />
                 </a>
                 <a href={v.appAndroidHref} target="_blank" rel="noopener" aria-label={v.appAndroidLabel} className="wapp">
-                  <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M22.018 13.298l-3.919 2.218-3.515-3.493 3.543-3.521 3.891 2.202a1.49 1.49 0 0 1 0 2.594zM1.337.924a1.486 1.486 0 0 0-.112.568v21.017c0 .217.045.419.124.6l11.155-11.087L1.337.924zm12.207 10.065l3.258-3.238L3.45.195a1.466 1.466 0 0 0-.946-.179l11.04 10.973zm0 2.067l-11 10.933c.298.036.612-.016.906-.183l13.324-7.54-3.23-3.21z" />
-                  </svg>
-                  <span className="wapp-t">
-                    <span className="wapp-s">
-                      {v.appAndroidTop}
-                    </span>
-                    <span className="wapp-n">
-                      {t(176)}
-                    </span>
-                  </span>
+                  <img src="/marketing/google-play-badge.png" alt="" width="151" height="40" />
                 </a>
               </div>
             </div>
@@ -1069,21 +1049,21 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
             {v.nlForm && (
               <>
                 <label htmlFor="nl-email" style={{"position": "absolute", "width": "1px", "height": "1px", "overflow": "hidden", "clip": "rect(0 0 0 0)"}}>
-                  {t(177)}
+                  {t(175)}
                 </label>
                 <div style={{"display": "flex", "alignItems": "center", "gap": "6px", "padding": "6px", "borderRadius": "999px", "background": "#F4F6FA", "border": `1.5px solid ${v.nlBorder}`, "transition": "border-color .2s ease, box-shadow .2s ease"}} className="nlbox">
                   <input id="nl-email" dir="ltr" type="email" inputMode="email" autoComplete="email" placeholder="name@email.com" value={v.nlV} onChange={v.onNl} onKeyDown={v.nlKey} aria-invalid={v.nlInvalid} aria-describedby="nl-msg" style={{"flex": "1", "minWidth": "0", "height": "46px", "padding": "0 16px", "border": "none", "background": "transparent", "fontFamily": "inherit", "fontSize": "15px", "color": "var(--mk-text)", "textAlign": v.en ? "left" : "right"}} className="nlin" />
                   <button type="button" onClick={v.nlGo} style={{"height": "46px", "padding": "0 24px", "borderRadius": "999px", "border": "none", "background": "#0060E6", "color": "#FFFFFF", "fontFamily": "inherit", "fontSize": "15px", "fontWeight": "700", "cursor": "pointer", "flexShrink": "0"}}>
-                    {t(178)}
+                    {t(176)}
                   </button>
                 </div>
                 <span id="nl-msg" role="status" style={{"minHeight": "18px", "fontSize": "13px", "color": "var(--mk-bad)", "padding": "0 12px"}}>
                   {v.nlErrMsg}
                 </span>
                 <span style={{"fontSize": "12.5px", "color": "var(--mk-muted)", "padding": "0 12px"}}>
-                  {t(179)}{" "}
+                  {t(177)}{" "}
                   <Link href="/privacy" style={{"color": "var(--mk-text)", "textDecoration": "underline"}}>
-                    {t(180)}
+                    {t(178)}
                   </Link>
                 </span>
               </>
@@ -1098,16 +1078,16 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
                   </span>
                   <div style={{"display": "flex", "flexDirection": "column", "gap": "4px"}}>
                     <span style={{"fontSize": "14.5px", "lineHeight": "1.7", "color": "var(--mk-text)"}}>
-                      {t(181)}{" "}
+                      {t(179)}{" "}
                       <b dir="ltr">
                         {v.nlV}
                       </b>
                     </span>
                     <span style={{"fontSize": "13.5px", "color": "var(--mk-muted)"}}>
-                      {t(182)}
+                      {t(180)}
                     </span>
                     <button type="button" onClick={v.nlReset} style={{"alignSelf": "flex-start", "marginTop": "4px", "padding": "0", "border": "none", "background": "none", "fontFamily": "inherit", "fontSize": "13px", "fontWeight": "700", "color": "var(--mk-blue-text)", "cursor": "pointer", "textDecoration": "underline"}}>
-                      {t(183)}
+                      {t(181)}
                     </button>
                   </div>
                 </div>
@@ -1117,56 +1097,56 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
         </section>
         <div style={{"display": "flex", "flexWrap": "wrap", "justifyContent": "space-between", "gap": "36px"}}>
           <div style={{"display": "flex", "flexDirection": "column", "gap": "14px", "maxWidth": "320px"}}>
-            <img className="mk-logo-light" src={v.en ? "/marketing/a841426bbb5bd28188577aa5bd4b74da.png" : "/marketing/84a13f503b73bc5552ed2fb6c15e33e3.png"} alt={t(184)} style={{"height": "38px", "width": "auto", "display": "block", "alignSelf": "flex-start"}} /><img className="mk-logo-dark" src={v.en ? "/brand/logo-en-dark.png" : "/brand/logo-ar-dark.png"} alt={t(184)} style={{"height": "38px", "width": "auto", "display": "block", "alignSelf": "flex-start"}} />
+            <img className="mk-logo-light" src={v.en ? "/marketing/a841426bbb5bd28188577aa5bd4b74da.png" : "/marketing/84a13f503b73bc5552ed2fb6c15e33e3.png"} alt={t(182)} style={{"height": "38px", "width": "auto", "display": "block", "alignSelf": "flex-start"}} /><img className="mk-logo-dark" src={v.en ? "/brand/logo-en-dark.png" : "/brand/logo-ar-dark.png"} alt={t(182)} style={{"height": "38px", "width": "auto", "display": "block", "alignSelf": "flex-start"}} />
             <p style={{"margin": "0", "fontSize": "14px", "lineHeight": "1.8", "color": "var(--mk-muted)"}}>
-              {t(185)}
+              {t(183)}
             </p>
           </div>
           <div style={{"display": "flex", "flexWrap": "wrap", "gap": "72px"}} className="mk-home-69">
             <div style={{"display": "flex", "flexDirection": "column", "gap": "12px"}}>
               <span style={{"fontSize": "13px", "fontWeight": "700", "color": "var(--mk-text)"}}>
-                {t(186)}
+                {t(184)}
               </span>
               <Link href="/#features" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
-                {t(187)}
+                {t(185)}
               </Link>
               <Link href="/#templates" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
-                {t(188)}
+                {t(186)}
               </Link>
               <Link href="/pricing" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
-                {t(189)}
+                {t(187)}
               </Link>
             </div>
             <div style={{"display": "flex", "flexDirection": "column", "gap": "12px"}}>
               <span style={{"fontSize": "13px", "fontWeight": "700", "color": "var(--mk-text)"}}>
-                {t(190)}
+                {t(188)}
               </span>
               <Link href="/#faq" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
-                {t(191)}
+                {t(189)}
               </Link>
               <a href="mailto:support@wsool.link" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
-                {t(192)}
+                {t(190)}
               </a>
             </div>
             <div style={{"display": "flex", "flexDirection": "column", "gap": "12px"}}>
               <span style={{"fontSize": "13px", "fontWeight": "700", "color": "var(--mk-text)"}}>
-                {t(193)}
+                {t(191)}
               </span>
               <Link href="/terms" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
-                {t(194)}
+                {t(192)}
               </Link>
               <Link href="/privacy" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
-                {t(195)}
+                {t(193)}
               </Link>
             </div>
           </div>
         </div>
         <div style={{"display": "flex", "flexWrap": "wrap", "justifyContent": "space-between", "gap": "12px", "paddingTop": "24px", "borderTop": "1px solid rgba(var(--mk-ink),0.09)", "fontSize": "13px", "color": "var(--mk-muted)"}}>
           <span dir="ltr">
-            {t(196)}
+            {t(194)}
           </span>
           <span>
-            {t(197)}
+            {t(195)}
           </span>
         </div>
       </footer>

@@ -46,15 +46,11 @@
 .nlin:focus{outline:none}
 .nlbox:focus-within{border-color:#0060E6!important;box-shadow:0 0 0 4px rgba(0,96,230,0.12)!important}
 @media (prefers-reduced-motion: reduce){.wsoc{transition:none}}
-/* App store badges ("Get the app"): solid pill, "Coming soon" ones without a link look the same but don't react. */
-.wapp{display:inline-flex;align-items:center;gap:9px;min-height:48px;padding:6px 16px 6px 14px;border-radius:12px;background:var(--mk-solid);color:var(--mk-on-solid);text-decoration:none;transition:transform .2s ease,opacity .2s ease}
-.wapp svg{flex-shrink:0}
-.wapp-t{display:flex;flex-direction:column;line-height:1.2;text-align:start}
-.wapp-s{font-size:10.5px;opacity:.8}
-.wapp-n{font-size:15px;font-weight:700;direction:ltr;unicode-bidi:isolate}
+/* App store badges ("Get the app"): the official images; without a store link they are plain images. */
+.wapp{display:inline-flex;border-radius:7px;transition:transform .2s ease}
+.wapp img{display:block;height:40px;width:auto;border-radius:6px;box-shadow:0 0 0 1px rgba(var(--mk-ink),0.14)}
 .wapp[href]:hover{transform:translateY(-2px)}
 .wapp[href]:focus-visible{outline:2px solid #0060E6;outline-offset:3px}
-.wapp:not([href]){cursor:default}
 @media (prefers-reduced-motion: reduce){.wapp{transition:none}}
 .wsoc-instagram span{-webkit-mask-image:url(/marketing/c29d2b71c7556f8ca7caaad85838d28a.png);mask-image:url(/marketing/c29d2b71c7556f8ca7caaad85838d28a.png)}
 .wsoc-tiktok span{-webkit-mask-image:url(/marketing/f2eac10a4a90fc41314bdb5ae069b51f.png);mask-image:url(/marketing/f2eac10a4a90fc41314bdb5ae069b51f.png)}

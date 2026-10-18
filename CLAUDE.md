@@ -771,5 +771,5 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   table `push_tokens`). App: `mobile/` (Expo SDK 58, own package.json; excluded from the root tsc/eslint; CI job `mobile`).
   Changes only in `mobile/` or `docs/` don't trigger a Netlify deploy (`ignore` in `netlify.toml`).
 - Home page "Get the app" (owner, Oct 2026): App Store + Google Play badges under "Follow us" in the newsletter card
-  (`.wapp` in the design files + `marketing.css`). Store links in `APP_LINKS` (`src/config/site.ts`); an empty link shows
-  that badge as "Coming soon" without a link (official store badges can't be used before the app is live).
+  (`.wapp` in the design files + `marketing.css`, images `public/marketing/{app-store,google-play}-badge.png` from the owner).
+  Store links in `APP_LINKS` (`src/config/site.ts`); an empty link shows that badge as a plain image without a link.

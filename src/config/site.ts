@@ -47,7 +47,7 @@ export const LEGAL = {
  */
 /**
  * Store pages of the Wsool app (docs/mobile-app-plan.md). Empty = not published
- * yet: the home page shows that store's badge as "Coming soon" without a link.
+ * yet: the home page shows that store's badge without a link.
  */
 export const APP_LINKS = {
   ios: "",

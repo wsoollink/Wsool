@@ -1,8 +1,9 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { DevSettings, I18nManager, Platform, useColorScheme } from "react-native";
-import * as Localization from "expo-localization";
+import { DevSettings, I18nManager, Platform, Pressable, View, useColorScheme } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as Updates from "expo-updates";
-import { I18nProvider, type Lang } from "../i18n";
+import { I18nProvider, useI18n, type Lang } from "../i18n";
+import { T } from "../components/ui";
 import { api, ApiError, loadSession, onSessionChange, setApiLang, setSession, type Session } from "./api";
 import { registerPush, unregisterPush } from "./push";
 import { storage } from "./storage";
@@ -34,18 +35,46 @@ export const useAuth = () => {
 const LANG_KEY = "wsool.lang";
 const THEME_KEY = "wsool.theme";
 
-/** Arabic layouts are right-to-left: native apps switch direction with a reload, the web preview sets <html dir>. */
-async function applyDirection(lang: Lang) {
+const DIR_RELOAD_KEY = "wsool.dirReload";
+
+/**
+ * Arabic layouts are right-to-left: native apps switch direction with one
+ * reload, the web preview sets <html dir>. Returns true when the direction
+ * still doesn't match (the app then asks for a restart instead of reloading
+ * again: a reload loop showed a blank screen on Android).
+ */
+async function applyDirection(lang: Lang): Promise<boolean> {
   const rtl = lang === "ar";
   if (Platform.OS === "web") {
     document.documentElement.dir = rtl ? "rtl" : "ltr";
     document.documentElement.lang = lang;
-    return;
+    return false;
   }
-  if (I18nManager.isRTL === rtl) return;
+  if (I18nManager.isRTL === rtl) {
+    await storage.remove(DIR_RELOAD_KEY);
+    return false;
+  }
   I18nManager.allowRTL(true);
   I18nManager.forceRTL(rtl);
-  try { await Updates.reloadAsync(); } catch { DevSettings.reload(); }
+  if ((await storage.get(DIR_RELOAD_KEY)) === lang) return true;
+  await storage.set(DIR_RELOAD_KEY, lang);
+  try { await Updates.reloadAsync(); } catch { try { DevSettings.reload(); } catch {} }
+  return true;
+}
+
+/** Shown when the layout direction needs a full restart of the app. */
+function RestartNotice({ onClose }: { onClose: () => void }) {
+  const { t } = useI18n();
+  const { colors } = useContext(ThemeContext);
+  const insets = useSafeAreaInsets();
+  return (
+    <View style={{ position: "absolute", left: 16, right: 16, bottom: insets.bottom + 80, padding: 14, borderRadius: 14, backgroundColor: colors.navy, flexDirection: "row", alignItems: "center", gap: 12 }}>
+      <T size={13} style={{ flex: 1, color: colors.bg }}>{t("common.restartForDirection")}</T>
+      <Pressable onPress={onClose} accessibilityRole="button" accessibilityLabel={t("common.close")} hitSlop={12} style={{ minWidth: 44, minHeight: 44, alignItems: "center", justifyContent: "center" }}>
+        <T size={18} style={{ color: colors.bg }}>✕</T>
+      </Pressable>
+    </View>
+  );
 }
 
 /** Everything the screens share: language, theme, session and the signed-in account. */
@@ -56,6 +85,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [status, setStatus] = useState<AuthState["status"]>("loading");
   const [me, setMe] = useState<Me | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [restart, setRestart] = useState(false);
 
   const refreshMe = useCallback(async () => {
     try {
@@ -76,10 +106,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     (async () => {
       const stored = (await storage.get(LANG_KEY)) as Lang | null;
-      const device = Localization.getLocales()[0]?.languageCode === "en" ? "en" : "ar";
-      const l: Lang = stored === "ar" || stored === "en" ? stored : device;
+      // Arabic first (CLAUDE.md section 3); English is one tap away in More.
+      const l: Lang = stored === "en" ? "en" : "ar";
       setApiLang(l);
-      await applyDirection(l);
+      setRestart(await applyDirection(l));
       setLangState(l);
       const t = (await storage.get(THEME_KEY)) as ThemeMode | null;
       if (t) setModeState(t);
@@ -92,7 +122,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   useEffect(() => { if (status === "signedIn" && me) registerPush(); }, [status, me?.user.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const setLang = useCallback((l: Lang) => {
-    storage.set(LANG_KEY, l).then(() => { setApiLang(l); setLangState(l); applyDirection(l); });
+    storage.set(LANG_KEY, l).then(() => { setApiLang(l); setLangState(l); applyDirection(l).then(setRestart); });
   }, []);
   const setMode = useCallback((m: ThemeMode) => { setModeState(m); storage.set(THEME_KEY, m); }, []);
 
@@ -109,7 +139,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
   return (
     <ThemeContext.Provider value={theme}>
       <I18nProvider lang={lang} setLang={setLang}>
-        <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>
+        <AuthContext.Provider value={auth}>
+          {children}
+          {restart && <RestartNotice onClose={() => setRestart(false)} />}
+        </AuthContext.Provider>
       </I18nProvider>
     </ThemeContext.Provider>
   );

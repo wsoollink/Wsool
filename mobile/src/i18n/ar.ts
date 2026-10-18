@@ -3,6 +3,7 @@ export const ar = {
   brand: "وصول",
   common: {
     back: "رجوع", retry: "حاول مرة ثانية", loading: "جاري التحميل…", error: "صار خطأ. جرّب مرة ثانية.", offline: "ما فيه اتصال بالإنترنت.",
+    restartForDirection: "اقفل التطبيق وافتحه من جديد عشان يتعدّل اتجاه الصفحة.", close: "إغلاق",
     soon: "قريباً في التطبيق", openOnWeb: "افتحه في الموقع",
   },
   login: {

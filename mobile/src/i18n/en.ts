@@ -5,6 +5,7 @@ export const en: typeof ar = {
   brand: "Wsool",
   common: {
     back: "Back", retry: "Try again", loading: "Loading…", error: "Something went wrong. Please try again.", offline: "No internet connection.",
+    restartForDirection: "Close the app and open it again to apply the page direction.", close: "Close",
     soon: "Coming soon to the app", openOnWeb: "Open on the website",
   },
   login: {

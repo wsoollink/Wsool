@@ -38,7 +38,6 @@
     "plugins": [
       "expo-router",
       "expo-secure-store",
-      "expo-localization",
       "expo-apple-authentication",
       [
         "expo-notifications",
@@ -56,10 +55,10 @@
             "backgroundColor": "#07090E"
           }
         }
-      ]
+      ],
+      "./plugins/with-rtl.js"
     ],
     "extra": {
-      "supportsRTL": true,
       "eas": {
         "projectId": "38c46e0b-c3c4-4411-99cd-12f09e7d7c02"
       }

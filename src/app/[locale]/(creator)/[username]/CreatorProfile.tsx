@@ -1,8 +1,9 @@
 import Image from "next/image";
-import { ArrowUpRight, Link2, MapPin, Play, ShoppingBag } from "lucide-react";
+import { ArrowUpRight, Link2, MapPin, Play, ShoppingBag, Store } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { getTranslations } from "next-intl/server";
+import { CopyCode } from "@/components/creator/CopyCode";
 import { CountUp } from "@/components/creator/CountUp";
 import { LicenseFile } from "@/components/creator/LicenseFile";
 import { Marquee } from "@/components/creator/Marquee";
@@ -279,6 +280,7 @@ export async function CreatorProfile({ page, lang, preview = false }: ProfilePro
           <Rates page={page} lang={lang} t={t} numbersFont={numbersFont} />
           <Services page={page} lang={lang} t={t} numbersFont={numbersFont} />
           <Links page={page} lang={lang} t={t} />
+          <Coupons page={page} lang={lang} t={t} />
 
           <div className="md:hidden">{contact(false)}</div>
 
@@ -465,6 +467,48 @@ function Links({ page, lang, t }: Props & { t: T }) {
                 <ArrowUpRight aria-hidden="true" size={18} className="shrink-0 text-[var(--page-muted)] rtl:-scale-x-100" />
                 <span className="sr-only">{t("opensNewTab")}</span>
               </a>
+            </li>
+          );
+        })}
+      </ul>
+    </Section>
+  );
+}
+
+/** "Discount coupons": store logo + name, the discount, the code with a copy button, and the creator's tracking link. */
+function Coupons({ page, lang, t }: Props & { t: T }) {
+  if (page.coupons.length === 0) return null;
+  const pick = (ar: string, en: string | null) => (lang === "en" && en ? en : ar);
+  const day = new Intl.DateTimeFormat(toIntlLocale(lang), { day: "numeric", month: "long", timeZone: "UTC" });
+  return (
+    <Section title={t("coupons")} aside={t("couponDisclosure")}>
+      <ul className="grid grid-cols-1 gap-3 md:grid-cols-2">
+        {page.coupons.map((c) => {
+          const store = pick(c.store, c.storeEn);
+          const description = pick(c.description, c.descriptionEn);
+          return (
+            <li key={c.id} className={`${glassCard} flex min-w-0 flex-col gap-3 rounded-[18px] p-4`}>
+              <div className="flex items-center gap-3">
+                <span className="relative inline-flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-[12px] bg-white text-[#56607A]">
+                  {c.logoUrl ? <Image src={c.logoUrl} alt="" fill unoptimized sizes="48px" className="object-contain p-1" /> : <Store aria-hidden="true" size={22} />}
+                </span>
+                <span className="flex min-w-0 flex-1 flex-col">
+                  <h3 dir="auto" className="truncate text-[16px] font-bold">{store}</h3>
+                  {description && <span dir="auto" className="text-[13px] leading-6 text-[var(--page-muted)]">{description}</span>}
+                </span>
+              </div>
+              <CopyCode id={c.id} code={c.code} copyLabel={t("copyCode")} copiedLabel={t("codeCopied")} codeLabel={t("couponCode", { code: c.code })} />
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                {c.expiresOn ? <span className="text-xs text-[var(--page-muted)]">{t("couponEnds", { date: day.format(new Date(`${c.expiresOn}T00:00:00Z`)) })}</span> : <span />}
+                <a
+                  href={c.url} target="_blank" rel="noopener noreferrer nofollow sponsored" data-track={`coupon_open:${c.id}`}
+                  className="inline-flex min-h-11 items-center gap-1.5 rounded-full bg-[var(--page-accent)] px-4 text-[13.5px] font-bold text-[var(--page-on-accent)]"
+                >
+                  {t("shopNow")}
+                  <ArrowUpRight aria-hidden="true" size={16} className="rtl:-scale-x-100" />
+                  <span className="sr-only">{t("opensNewTab")}</span>
+                </a>
+              </div>
             </li>
           );
         })}

@@ -12,6 +12,8 @@ export const FREE_LIMITS = {
   /** "My links" and "My services" shown on the page (the dashboard keeps all). */
   links: 3,
   services: 3,
+  /** "Discount coupons" shown on the page (owner, Oct 2026). */
+  coupons: 2,
   /** Templates a Free page can use; others fall back to the first one. */
   templates: ["white", "black"] as readonly Template[],
   /** Ad rates (and the bundle) on the page: Pro only (owner, Oct 2026). Saved rates are kept. */

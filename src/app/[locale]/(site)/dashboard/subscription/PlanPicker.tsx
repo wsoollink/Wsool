@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { Card } from "@/components/ui/Card";
+import { MAX_COUPONS } from "@/lib/validation/coupons";
 import { MAX_LINKS, MAX_SERVICES } from "@/lib/validation/links";
 import { FREE_LIMITS, PRICES } from "@/config/plans";
 import { fromIntlLocale } from "@/i18n/config";
@@ -50,6 +51,7 @@ export function PlanPicker({ defaultCurrency, canPay, renew, showTrial }: { defa
     { label: t("cmp.works"), free: String(FREE_LIMITS.portfolioItems), pro: t("cmp.unlimited") },
     { label: t("cmp.contact"), free: yes, pro: yes },
     { label: t("cmp.links"), free: t("cmp.linksCount", { links: FREE_LIMITS.links, services: FREE_LIMITS.services }), pro: t("cmp.linksCount", { links: MAX_LINKS, services: MAX_SERVICES }) },
+    { label: t("cmp.coupons"), free: t("cmp.couponsCount", { n: FREE_LIMITS.coupons }), pro: t("cmp.couponsCount", { n: MAX_COUPONS }) },
     { label: t("cmp.rates"), free: FREE_LIMITS.rates ? yes : no, pro: yes },
     { label: t("cmp.audience"), free: FREE_LIMITS.audience ? yes : no, pro: yes },
     { label: t("cmp.badge"), free: no, pro: yes },

@@ -208,6 +208,7 @@
     "help": "Contact support",
     "unread": "You have new notifications",
     "links": "Links & services",
+    "coupons": "Discount coupons",
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
     "viewPage": "View my page",
@@ -272,12 +273,19 @@
     "licenseVerified": "Verified license",
     "services": "My services",
     "links": "My links",
+    "coupons": "Discount coupons",
     "onRequest": "Price on request",
     "requestService": "Request",
     "serviceMessage": "Hi, I saw your “{service}” service on your Wsool page and would like the details: {link}",
     "serviceSubject": "Service request: {service}",
     "opensNewTab": "(opens in a new tab)",
-    "openOn": "Open in {platform}"
+    "openOn": "Open in {platform}",
+    "copyCode": "Copy code",
+    "codeCopied": "Copied",
+    "shopNow": "Shop now",
+    "couponDisclosure": "Sponsored codes",
+    "couponCode": "Discount code {code}",
+    "couponEnds": "Ends {date}"
   },
   "MediaKit": {
     "wsool": "Wsool",
@@ -319,6 +327,7 @@
     "separately": "{currency} separately",
     "save": "Save {percent}",
     "services": "My services",
+    "coupons": "Discount coupons",
     "onRequest": "Price on request",
     "brands": "Brands I have worked with",
     "brandsCount": "{count, plural, one {# brand} other {# brands}}",
@@ -331,7 +340,10 @@
     "email": "Email",
     "fullPage": "My full page",
     "fullPageNote": "Live numbers, video work, and every way to reach me.",
-    "madeWith": "Made with❤️"
+    "madeWith": "Made with❤️",
+    "couponDisclosure": "Sponsored codes · tap a coupon to open the store",
+    "shopNow": "Shop now",
+    "couponEnds": "Ends {date}"
   },
   "EditPage": {
     "categories": "Your content category",
@@ -1641,7 +1653,9 @@
       "brands": "Brand logos strip",
       "contact": "Contact (WhatsApp & email)",
       "links": "Links & services",
-      "linksCount": "{links} links, {services} services"
+      "linksCount": "{links} links, {services} services",
+      "coupons": "Discount coupons",
+      "couponsCount": "{n, plural, one {# coupon} other {# coupons}}"
     },
     "viewInvoice": "View invoice from {date}",
     "haveCode": "Have a discount code?",
@@ -1706,7 +1720,9 @@
     "clickLink": "Link: {name}",
     "clickService": "Service request: {name}",
     "deleted": "(deleted)",
-    "vsPrevNote": "vs previous period"
+    "vsPrevNote": "vs previous period",
+    "clickCouponCopy": "Code copied: {name}",
+    "clickCouponOpen": "Shop at: {name}"
   },
   "Notify": {
     "footer": "Questions? Just reply to this email. You got this email because you have a Wsool account. Manage reminder emails under Notifications in your dashboard.",
@@ -2028,6 +2044,7 @@
     "notifications": "Everything that happened on your page and account",
     "home": "Here's your page today",
     "links": "Your store and course links, and services besides ads",
+    "coupons": "Your store discount codes and tracking links",
     "referrals": "Earn from every subscriber who comes through your link"
   },
   "SaveBar": {
@@ -2067,6 +2084,33 @@
     "fixErrors": "Some fields need fixing (marked in red).",
     "errors": {
       "url": "That link isn't valid. Use a full link like https://example.com"
+    }
+  },
+  "CouponsPage": {
+    "title": "Discount coupons",
+    "hint": "Your discount codes at stores (Noon, Namshi…) with your tracking link. Up to {max} coupons. They show on your page under “My links”.",
+    "couponN": "Coupon {n}",
+    "store": "Store name",
+    "storePh": "e.g. Noon",
+    "description": "What the discount is (optional)",
+    "descriptionPh": "e.g. 10% off everything",
+    "code": "Discount code",
+    "url": "Tracking link",
+    "urlHint": "Your own link from the store's affiliate program.",
+    "expires": "Ends on (optional)",
+    "expiresHint": "After this day it disappears from your page.",
+    "addLogo": "Logo",
+    "changeLogo": "Change",
+    "removeLogo": "Remove logo",
+    "logoFor": "Logo of {item}",
+    "add": "Add a coupon",
+    "englishVersion": "English version (optional)",
+    "freeLimit": "The Free plan shows the first {n} coupons on your page. The rest are saved and show when you subscribe.",
+    "fixErrors": "Some fields need fixing (marked in red).",
+    "disclosureNote": "“Sponsored codes” shows under the section, as the rules require. You're responsible for your codes and links.",
+    "errors": {
+      "url": "The link isn't valid. Use a full link like https://example.com",
+      "code": "Use letters and numbers without spaces (up to 30)."
     }
   },
   "Theme": {

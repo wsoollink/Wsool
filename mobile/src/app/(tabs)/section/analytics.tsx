@@ -48,7 +48,9 @@ export function AnalyticsScreen({ tab }: { tab?: boolean }) {
   });
   const clickLabel = (c: Report["topClicks"][number]) =>
     c.kind === "whatsapp" ? "WhatsApp" : c.kind === "email" ? t("analytics.email") : c.kind === "link" ? t("analytics.link", { name: c.targetName ?? "—" })
-      : c.kind === "service" ? t("analytics.service", { name: c.targetName ?? "—" }) : `${t(`analytics.${c.kind}`)} ${c.platform ? PLATFORM_NAMES[c.platform] : ""}`;
+      : c.kind === "service" ? t("analytics.service", { name: c.targetName ?? "—" })
+      : c.kind === "coupon_copy" ? t("analytics.couponCopy", { name: c.targetName ?? "—" })
+      : c.kind === "coupon_open" ? t("analytics.couponOpen", { name: c.targetName ?? "—" }) : `${t(`analytics.${c.kind}`)} ${c.platform ? PLATFORM_NAMES[c.platform] : ""}`;
 
   return (
     <SectionScreen tab={tab} title={t("section.analytics")} subtitle={t("analytics.subtitle")} loading={!data && !error} error={error} onRetry={load}>

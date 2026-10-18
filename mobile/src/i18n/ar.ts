@@ -65,7 +65,7 @@ export const ar = {
     signedInAs: "مسجّل باسم {email}", version: "الإصدار {v}",
   },
   section: {
-    edit: "تعديل الصفحة", accounts: "الحسابات والأرقام", work: "الشركات والأعمال", rates: "أسعار الإعلانات", links: "روابطي وخدماتي",
+    edit: "تعديل الصفحة", accounts: "الحسابات والأرقام", work: "الشركات والأعمال", rates: "أسعار الإعلانات", links: "روابطي وخدماتي", coupons: "كوبونات الخصم",
     contact: "التواصل", verification: "التوثيق", appearance: "المظهر", analytics: "الإحصائيات", referrals: "العمولة", subscription: "الاشتراك",
   },
 
@@ -85,6 +85,13 @@ export const ar = {
     modeLight: "فاتح", modeDark: "داكن", accent: "لون التمييز", accentDefault: "لون القالب", auto: "تلقائي",
     icons: "شكل أيقونات الحسابات", iconSolid: "دائرة مصمتة", iconColor: "ألوان المنصات", iconOutline: "خطوط",
     hideBranding: "إخفاء «صنعت بـ❤️ وصول»", hideBrandingPro: "متاح في الباقة الاحترافية", proOnly: "هذا الخيار متاح في الباقة الاحترافية.",
+  },
+  coupons: {
+    subtitle: "أكواد الخصم وروابط التتبع حقتك في المتاجر", store: "اسم المتجر", storeEn: "اسم المتجر بالإنجليزي", storePh: "مثل: نون",
+    description: "وصف الخصم", descriptionEn: "الوصف بالإنجليزي", descriptionPh: "مثل: خصم 10% على كل الطلبات", code: "كود الخصم",
+    url: "رابط التتبع", expires: "ينتهي في (اختياري)", expiresHint: "بصيغة \u20662026-12-31\u2069. بعد هذا اليوم يختفي من صفحتك.", logo: "شعار المتجر",
+    add: "أضف كوبون", badUrl: "رابط الكوبون رقم {n} غير صحيح.", badCode: "كود الكوبون رقم {n} لازم يكون حروف وأرقام بدون مسافات.",
+    freeLimit: "الخطة المجانية تعرض أول {n} كوبونات في صفحتك.", disclosure: "يظهر تحت القسم «أكواد إعلانية» للإفصاح المطلوب نظاماً.",
   },
   links: {
     subtitle: "روابط متجرك ودوراتك، وخدماتك غير الإعلانات", links: "روابطي", services: "خدماتي",
@@ -148,7 +155,7 @@ export const ar = {
   analytics: {
     subtitle: "مين يزور صفحتك ومن وين", lastDays: "آخر {n} يوم", visitors: "زوار مختلفين", countries: "الدول", referrers: "من وين جوا",
     direct: "أغلب الزيارات مباشرة أو من تطبيقات ما ترسل المصدر.", devices: "الأجهزة", device: { mobile: "جوال", desktop: "كمبيوتر", tablet: "تابلت" },
-    topClicks: "أكثر شي ضغطوا عليه", noClicks: "ما فيه ضغطات للحين.", email: "الإيميل", social: "حساب", work: "عمل", link: "رابط: {name}", service: "خدمة: {name}",
+    topClicks: "أكثر شي ضغطوا عليه", noClicks: "ما فيه ضغطات للحين.", email: "الإيميل", social: "حساب", work: "عمل", link: "رابط: {name}", service: "خدمة: {name}", couponCopy: "نسخ كود: {name}", couponOpen: "تسوّق من: {name}",
     empty: "ما فيه زيارات في هذي الفترة. شارك رابطك!", privacy: "ما نحفظ أي بيانات شخصية عن زوارك.",
   },
   referrals: {

@@ -85,7 +85,10 @@ async function Report({ lang, searchParams }: { lang: Locale; searchParams: SP }
   const deviceTotal = r.devices.reduce((s, d) => s + d.count, 0) || 1;
   const mobilePct = Math.round(((r.devices.find((d) => d.key === "mobile")?.count ?? 0) / deviceTotal) * 100);
   const clickLabel = (c: { kind: string; platform: string | null; targetName?: string | null }) =>
-    c.kind === "link" ? t("clickLink", { name: c.targetName ?? t("deleted") }) : c.kind === "service" ? t("clickService", { name: c.targetName ?? t("deleted") }) : c.kind === "whatsapp" ? "WhatsApp" : c.kind === "email" ? t("email") : c.kind === "social" ? t("clickSocial", { platform: c.platform ? PLATFORM_NAMES[c.platform as keyof typeof PLATFORM_NAMES] : "" }) : t("clickWork", { platform: c.platform ? PLATFORM_NAMES[c.platform as keyof typeof PLATFORM_NAMES] : "" });
+    c.kind === "link" ? t("clickLink", { name: c.targetName ?? t("deleted") })
+      : c.kind === "coupon_copy" ? t("clickCouponCopy", { name: c.targetName ?? t("deleted") })
+      : c.kind === "coupon_open" ? t("clickCouponOpen", { name: c.targetName ?? t("deleted") })
+      : c.kind === "service" ? t("clickService", { name: c.targetName ?? t("deleted") }) : c.kind === "whatsapp" ? "WhatsApp" : c.kind === "email" ? t("email") : c.kind === "social" ? t("clickSocial", { platform: c.platform ? PLATFORM_NAMES[c.platform as keyof typeof PLATFORM_NAMES] : "" }) : t("clickWork", { platform: c.platform ? PLATFORM_NAMES[c.platform as keyof typeof PLATFORM_NAMES] : "" });
 
   return (
     <div className="flex flex-col gap-4">

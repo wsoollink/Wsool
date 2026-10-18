@@ -6,8 +6,8 @@ import * as VideoThumbnails from "expo-video-thumbnails";
 import { rpc } from "./api";
 
 /** Upload kinds and limits (same as the website, src/config/uploads.ts). */
-export type UploadKind = "photo" | "logo" | "license" | "linkImage" | "thumb" | "video" | "verification" | "audienceShot";
-const MAX: Record<UploadKind, number> = { photo: 8, logo: 4, license: 10, linkImage: 4, thumb: 4, video: 50, verification: 10, audienceShot: 10 };
+export type UploadKind = "photo" | "logo" | "license" | "linkImage" | "couponLogo" | "thumb" | "video" | "verification" | "audienceShot";
+const MAX: Record<UploadKind, number> = { photo: 8, logo: 4, license: 10, linkImage: 4, couponLogo: 4, thumb: 4, video: 50, verification: 10, audienceShot: 10 };
 
 export type Picked = { uri: string; type: string; size: number; width?: number; height?: number };
 export type UploadError = "type" | "size" | "failed" | "permission";

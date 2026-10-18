@@ -150,6 +150,7 @@ model Page {
   rateBundles    RateBundle[]
   links          PageLink[]
   services       Service[]
+  coupons        Coupon[]
   categories     PageCategory[]
   oldUsernames   UsernameRedirect[]
   pageViews      PageView[]
@@ -406,6 +407,30 @@ model PageLink {
   @@map("page_links")
 }
 
+/// "Discount coupons" (owner, Oct 2026): a store's code + the creator's tracking link, shown after "My links".
+model Coupon {
+  id            String    @id @default(uuid()) @db.Uuid
+  pageId        String    @map("page_id") @db.Uuid
+  store         String    @db.VarChar(40)
+  storeEn       String?   @map("store_en") @db.VarChar(40)
+  /// e.g. "10% off everything".
+  description   String    @default("") @db.VarChar(120)
+  descriptionEn String?   @map("description_en") @db.VarChar(120)
+  code          String    @db.VarChar(30)
+  /// The creator's tracking link (https).
+  url           String    @db.VarChar(500)
+  /// Store logo (Supabase Storage URL), uploaded by the creator.
+  logoUrl       String?   @map("logo_url")
+  /// Last day the coupon shows (inclusive, Saudi time); null = no end.
+  expiresOn     DateTime? @map("expires_on") @db.Date
+  sort          Int       @default(0)
+
+  page Page @relation(fields: [pageId], references: [id], onDelete: Cascade)
+
+  @@index([pageId, sort])
+  @@map("coupons")
+}
+
 /// "My services" (photography, hosting events…), shown after the ad rates. No price = "on request".
 model Service {
   id            String   @id @default(uuid()) @db.Uuid
@@ -637,6 +662,10 @@ enum ClickKind {
   link
   /// "Request this service"; target_id = the service.
   service
+  /// Coupon code copied; target_id = the coupon.
+  coupon_copy
+  /// Coupon "Shop now" link; target_id = the coupon.
+  coupon_open
 }
 
 /// A tap on a contact button, social icon or past work on a public page.
@@ -647,7 +676,7 @@ model ContactClick {
   kind        ClickKind
   /// Platform for social icons and works.
   platform    Platform?
-  /// The link or service tapped (kinds link / service).
+  /// The link, service or coupon tapped (kinds link / service / coupon_*).
   targetId    String?   @map("target_id") @db.Uuid
   visitorHash String    @map("visitor_hash") @db.VarChar(32)
   createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz

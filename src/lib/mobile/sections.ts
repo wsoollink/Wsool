@@ -120,6 +120,20 @@ const LOADERS = {
       services: services.map((s) => ({ name: s.name, nameEn: s.nameEn ?? "", description: s.description, descriptionEn: s.descriptionEn ?? "", price: s.price === null ? "" : String(Number(s.price)), unit: s.unit, unitEn: s.unitEn ?? "" })),
     };
   },
+  async coupons(page: Page) {
+    const [coupons, isPro] = await Promise.all([
+      db.coupon.findMany({ where: { pageId: page.id }, orderBy: { sort: "asc" } }),
+      pro(page.userId),
+    ]);
+    return {
+      ...langsOf(page),
+      freeLimit: isPro ? null : FREE_LIMITS.coupons,
+      coupons: coupons.map((c) => ({
+        store: c.store, storeEn: c.storeEn ?? "", description: c.description, descriptionEn: c.descriptionEn ?? "",
+        code: c.code, url: c.url, logoUrl: c.logoUrl, expiresOn: c.expiresOn ? c.expiresOn.toISOString().slice(0, 10) : "",
+      })),
+    };
+  },
   async contact(page: Page) {
     const now = new Date();
     const since = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));

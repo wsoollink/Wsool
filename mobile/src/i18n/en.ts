@@ -67,7 +67,7 @@ export const en: typeof ar = {
     signedInAs: "Signed in as {email}", version: "Version {v}",
   },
   section: {
-    edit: "Edit page", accounts: "Accounts & numbers", work: "Brands & work", rates: "Ad rates", links: "Links & services",
+    edit: "Edit page", accounts: "Accounts & numbers", work: "Brands & work", rates: "Ad rates", links: "Links & services", coupons: "Discount coupons",
     contact: "Contact", verification: "Verification", appearance: "Appearance", analytics: "Analytics", referrals: "Commission", subscription: "Subscription",
   },
 
@@ -87,6 +87,13 @@ export const en: typeof ar = {
     modeLight: "Light", modeDark: "Dark", accent: "Accent colour", accentDefault: "Template colour", auto: "Auto",
     icons: "Account icons style", iconSolid: "Solid circle", iconColor: "Brand colours", iconOutline: "Outline",
     hideBranding: "Hide “Made with Wsool”", hideBrandingPro: "Available on Pro", proOnly: "This option is available on Pro.",
+  },
+  coupons: {
+    subtitle: "Your store discount codes and tracking links", store: "Store name", storeEn: "Store name in English", storePh: "e.g. Noon",
+    description: "What the discount is", descriptionEn: "Description in English", descriptionPh: "e.g. 10% off everything", code: "Discount code",
+    url: "Tracking link", expires: "Ends on (optional)", expiresHint: "As 2026-12-31. After this day it disappears from your page.", logo: "Store logo",
+    add: "Add a coupon", badUrl: "Coupon {n} has an invalid link.", badCode: "Coupon {n}: use letters and numbers without spaces.",
+    freeLimit: "The Free plan shows the first {n} coupons on your page.", disclosure: "“Sponsored codes” shows under the section, as the rules require.",
   },
   links: {
     subtitle: "Your store and course links, and services beyond ads", links: "My links", services: "My services",
@@ -150,7 +157,7 @@ export const en: typeof ar = {
   analytics: {
     subtitle: "Who visits your page and from where", lastDays: "Last {n} days", visitors: "Unique visitors", countries: "Countries", referrers: "Where they came from",
     direct: "Most visits are direct or from apps that don't share the source.", devices: "Devices", device: { mobile: "Phone", desktop: "Computer", tablet: "Tablet" },
-    topClicks: "Most tapped", noClicks: "No taps yet.", email: "Email", social: "Account", work: "Work", link: "Link: {name}", service: "Service: {name}",
+    topClicks: "Most tapped", noClicks: "No taps yet.", email: "Email", social: "Account", work: "Work", link: "Link: {name}", service: "Service: {name}", couponCopy: "Code copied: {name}", couponOpen: "Shop at: {name}",
     empty: "No visits in this period. Share your link!", privacy: "We don't keep any personal data about your visitors.",
   },
   referrals: {

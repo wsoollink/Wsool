@@ -23,7 +23,7 @@ import en from "../../../messages/en.json";
 /**
  * The PDF media kit, matching the owner's design ("لوحة التحكم" › ملف PDF):
  * A4 pages in the creator's template colors: cover, about, numbers, one page
- * per platform (audience + rates), bundle, services, brands, selected work and
+ * per platform (audience + rates), bundle, services, coupons, brands, selected work and
  * contact. Sections without data are left out. Layout is written in the
  * design's CSS pixels (794 × 1123 per page) and scaled to points. Text is
  * shaped with fontkit and drawn as outlines, so Arabic always joins.
@@ -54,6 +54,7 @@ function paint(value: string): Paint {
 // ---------- icons (24 × 24 grid, stroked) ----------
 
 const ICONS = {
+  store: "M3 9l1.5-5h15L21 9 M3 9h18v1.5a3 3 0 0 1-6 0 3 3 0 0 1-6 0 3 3 0 0 1-6 0z M5 13v7h14v-7 M10 20v-4h4v4",
   external: "M14 4h6v6 M20 4l-9 9 M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5",
   shield: "M12 3l8 3v6c0 4.5-3.4 8.2-8 9-4.6-.8-8-4.5-8-9V6z M8.5 12l2.5 2.5 4.5-5",
   briefcase: "M5 7h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2",
@@ -287,11 +288,12 @@ export async function buildMediaKit(page: PublishedPage, lang: Locale): Promise<
   const settings = page.rateSettings;
   const currency = currencyLabel(settings.currency, lang);
   const lastUpdate = accounts.map((a) => a.followersUpdatedAt).filter((d): d is string => !!d).sort().pop() ?? null;
-  const [photo, logo, brandImages, thumbs] = await Promise.all([
+  const [photo, logo, brandImages, thumbs, couponLogos] = await Promise.all([
     loadImage(doc, page.photoUrl),
     loadImage(doc, page.logoUrl),
     Promise.all(page.brandLogos.slice(0, 20).map((b) => loadImage(doc, b.logoUrl))),
     Promise.all(page.portfolio.slice(0, 12).map((w) => loadImage(doc, w.thumbUrl))),
+    Promise.all(page.coupons.map((c) => loadImage(doc, c.logoUrl))),
   ]);
 
   // ================= 1) Cover =================
@@ -749,6 +751,41 @@ export async function buildMediaKit(page: PublishedPage, lang: Locale): Promise<
       }
       y += h + 14;
     }
+  }
+
+  // ================= 5c) Discount coupons =================
+  if (page.coupons.length) {
+    const title = t("coupons");
+    section(title, t("couponDisclosure"));
+    const pick = (a: string, b: string | null) => (lang === "en" && b ? b : a);
+    const day = new Intl.DateTimeFormat(intl, { day: "numeric", month: "long", timeZone: "UTC" });
+    page.coupons.forEach((c, i) => {
+      const h = 112, tile = 56;
+      ensure(h + 14, title);
+      card(PAD, y, CONTENT, h);
+      // Store logo tile at the start, the code (+ "Shop now") at the end; the whole card opens the tracking link.
+      const tx = rtl ? PAD + CONTENT - 24 - tile : PAD + 24;
+      box(tx, y + (h - tile) / 2, tile, tile, { fill: "#FFFFFF", stroke: "rgba(18,21,26,0.08)", r: 12 });
+      const img = couponLogos[i];
+      const store = pick(c.store, c.storeEn);
+      if (img) image(img, tx + 6, y + (h - tile) / 2 + 6, tile - 12, tile - 12, "contain");
+      else stroke(ICONS.store, tx + 16, y + (h - tile) / 2 + 16, 24, "#56607A");
+      const cm = measure(c.code, { size: 18, weight: 700, width: 260 });
+      const codeW = Math.max(150, cm.width + 40);
+      const cx = rtl ? PAD + 24 : PAD + CONTENT - 24 - codeW;
+      box(cx, y + 20, codeW, 46, { fill: P.soft, stroke: P.accent, r: 12 });
+      text(c.code, cx, y + 31, { size: 18, weight: 700, color: P.ink, width: codeW, align: "center" });
+      text(t("shopNow"), cx, y + 76, { size: 12.5, weight: 700, color: P.accent, width: codeW, align: "center" });
+      const textW = CONTENT - 48 - tile - 16 - codeW - 16;
+      const textX = rtl ? cx + codeW + 16 : tx + tile + 16;
+      const description = pick(c.description, c.descriptionEn);
+      let ty = y + 24;
+      ty += text(store, textX, ty, { size: 20, weight: 700, color: P.ink, width: textW }) + 6;
+      if (description) ty += text(description, textX, ty, { size: 13.5, color: P.muted, width: textW, maxLines: 2, lineHeight: 1.5 }) + 4;
+      if (c.expiresOn) text(t("couponEnds", { date: day.format(new Date(`${c.expiresOn}T00:00:00Z`)) }), textX, ty, { size: 12, color: P.muted, width: textW });
+      link(PAD, y, CONTENT, h, c.url);
+      y += h + 14;
+    });
   }
 
   // ================= 6) Brands =================

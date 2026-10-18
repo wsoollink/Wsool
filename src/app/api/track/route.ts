@@ -9,9 +9,9 @@ const body = z.discriminatedUnion("type", [
   z.object({ type: z.literal("view"), username: z.string().max(20), lang: z.enum(["ar", "en"]), referrer: z.string().max(500).nullable() }),
   z.object({
     type: z.literal("click"), username: z.string().max(20),
-    kind: z.enum(["whatsapp", "email", "social", "work", "link", "service"]),
+    kind: z.enum(["whatsapp", "email", "social", "work", "link", "service", "coupon_copy", "coupon_open"]),
     platform: z.enum(PLATFORMS as [string, ...string[]]).nullable(),
-    /** The link or service id for kinds link / service. */
+    /** The link, service or coupon id for kinds link / service / coupon_*. */
     target: z.uuid().optional(),
   }),
 ]);
@@ -59,11 +59,11 @@ export async function POST(req: Request) {
     });
   } else {
     let targetId: string | null = null;
-    if (data.kind === "link" || data.kind === "service") {
-      // Only this page's own links/services count.
+    if (data.kind === "link" || data.kind === "service" || data.kind === "coupon_copy" || data.kind === "coupon_open") {
+      // Only this page's own links/services/coupons count.
       if (!data.target) return done;
       const where = { id: data.target, pageId: page.id };
-      const exists = data.kind === "link" ? await db.pageLink.count({ where }) : await db.service.count({ where });
+      const exists = data.kind === "link" ? await db.pageLink.count({ where }) : data.kind === "service" ? await db.service.count({ where }) : await db.coupon.count({ where });
       if (!exists) return done;
       targetId = data.target;
     }

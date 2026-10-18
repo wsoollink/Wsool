@@ -3,6 +3,7 @@ import { apiError, json, preflight, readBody, withPage } from "@/lib/mobile/api"
 import * as accounts from "@/app/[locale]/(site)/dashboard/accounts/actions";
 import * as appearance from "@/app/[locale]/(site)/dashboard/appearance/actions";
 import * as contact from "@/app/[locale]/(site)/dashboard/contact/actions";
+import * as coupons from "@/app/[locale]/(site)/dashboard/coupons/actions";
 import * as edit from "@/app/[locale]/(site)/dashboard/edit/actions";
 import * as links from "@/app/[locale]/(site)/dashboard/links/actions";
 import * as rates from "@/app/[locale]/(site)/dashboard/rates/actions";
@@ -51,6 +52,7 @@ const ACTIONS: Record<string, (...args: never[]) => Promise<unknown>> = {
   saveBundles: rates.saveBundles,
   // Links & services, contact, appearance
   saveLinksAndServices: links.saveLinksAndServices,
+  saveCoupons: coupons.saveCoupons,
   saveContact: contact.saveContact,
   saveAppearance: appearance.saveAppearance,
   // Verification (screenshot read by the AI first, like the website)

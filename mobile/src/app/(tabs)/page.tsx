@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import { Alert, Linking, Pressable, RefreshControl, Share, View } from "react-native";
 import { router, useFocusEffect } from "expo-router";
-import { BadgeCheck, Briefcase, Link2, MessageCircle, Palette, Pencil, Share2, Tag, Users } from "lucide-react-native";
+import { BadgeCheck, Briefcase, Link2, MessageCircle, Palette, Pencil, Share2, Tag, TicketPercent, Users } from "lucide-react-native";
 import { Toggle } from "../../components/editor";
 import { Avatar, Button, Card, Group, IconTile, ListRow, Pill, Row, Screen, Status, T } from "../../components/ui";
 import { useI18n } from "../../i18n";
@@ -89,6 +89,7 @@ export default function PageTab() {
         <ListRow icon={<IconTile color="#E8590C"><Briefcase size={17} color="#fff" /></IconTile>} label={t("section.work")} onPress={go("work")} />
         <ListRow icon={<IconTile color="#0E8A5F"><Tag size={17} color="#fff" /></IconTile>} label={t("section.rates")} badge={data.plan.pro ? undefined : <Pill tone="blue">PRO</Pill>} onPress={go("rates")} />
         <ListRow icon={<IconTile color="#0891B2"><Link2 size={17} color="#fff" /></IconTile>} label={t("section.links")} onPress={go("links")} />
+        <ListRow icon={<IconTile color="#C2410C"><TicketPercent size={17} color="#fff" /></IconTile>} label={t("section.coupons")} onPress={go("coupons")} />
         <ListRow icon={<IconTile color="#16A34A"><MessageCircle size={17} color="#fff" /></IconTile>} label={t("section.contact")} onPress={go("contact")} />
       </Group>
 

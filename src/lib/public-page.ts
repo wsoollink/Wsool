@@ -54,6 +54,7 @@ const PAGE_SELECT = {
   },
   links: { orderBy: { sort: "asc" } },
   services: { orderBy: { sort: "asc" } },
+  coupons: { orderBy: { sort: "asc" } },
 } satisfies Prisma.PageSelect;
 
 type PageRow = Prisma.PageGetPayload<{ select: typeof PAGE_SELECT }>;
@@ -175,9 +176,21 @@ function shapePage(page: PageRow, now: number) {
       id: s.id, name: s.name, nameEn: s.nameEn, description: s.description, descriptionEn: s.descriptionEn,
       price: s.price === null ? null : Number(s.price), unit: s.unit, unitEn: s.unitEn,
     })),
+    coupons: liveCoupons(page.coupons, now).slice(0, isPro ? undefined : FREE_LIMITS.coupons).map((c) => ({
+      id: c.id, store: c.store, storeEn: c.storeEn, description: c.description, descriptionEn: c.descriptionEn,
+      code: c.code, url: c.url, logoUrl: c.logoUrl, expiresOn: c.expiresOn ? c.expiresOn.toISOString().slice(0, 10) : null,
+    })),
   };
 }
 
+
+/**
+ * Coupons still running: the end date is the last day shown, in Saudi time (UTC+3), so a coupon ending
+ * on the 20th disappears at midnight Riyadh = 21:00 UTC on the 20th (within the page cache life).
+ */
+function liveCoupons<C extends { expiresOn: Date | null }>(list: C[], now: number) {
+  return list.filter((c) => !c.expiresOn || now < c.expiresOn.getTime() + 21 * 3600_000);
+}
 
 export type PublicPage = NonNullable<Awaited<ReturnType<typeof getPublicPage>>>;
 export type PublishedPage = Extract<PublicPage, { status: "published" }>;

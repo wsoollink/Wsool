@@ -675,6 +675,15 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   `FREE_LIMITS.links` / `FREE_LIMITS.services` (3 each). Services print in the PDF after the rates.
   Taps are counted as click kinds `link` / `service` with `contact_clicks.target_id` (checked to belong
   to the page) and shown by name in Analytics. Shared upload helpers: `src/lib/page-files.ts`.
+- **Discount coupons** (owner, Oct 2026; creators' store codes, not Wsool's own discount codes below): dashboard `dashboard/coupons/`
+  (section "كوبونات الخصم", `saveCoupons` replaces the whole list), table `coupons` (store + optional `storeEn`, description, code
+  `[\p{L}\p{N}._-]{1,30}` without spaces, https tracking `url`, optional logo = upload kind `couponLogo`, optional `expires_on` = last
+  day shown in Saudi time). `MAX_COUPONS` 10 (`src/lib/validation/coupons.ts`), Free pages show the first `FREE_LIMITS.coupons` = 2
+  live ones; expired coupons are dropped in `shapePage()` (`liveCoupons`). Public page: after My links, cards with logo, store,
+  description, the code with a copy button (`CopyCode`, client) and "Shop now" (`rel="sponsored"`), section aside "أكواد إعلانية"
+  (ad disclosure). Taps are click kinds `coupon_copy` / `coupon_open` (target = coupon id, checked in `/api/track`), named by store in
+  Analytics. PDF (Pro): "Discount coupons" page after services, each card links to the tracking URL. App: `section/coupons.tsx`, row in
+  My page. Terms section 3 has a line on them; data export includes them.
 - **Discount codes** (owner, Oct 2026): admin `admin/discounts/` (permission `discounts.manage`, in the
   money group): one code per row (name/note + optional email lock), percent 5-90 (`DISCOUNT_MIN/MAX`;
   free time = "extend trial"), valid `DISCOUNT_DAYS` = 30, statuses unused / used (by whom, when) /

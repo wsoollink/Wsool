@@ -9,6 +9,7 @@ export const en: typeof ar = {
     soon: "Coming soon to the app", openOnWeb: "Open on the website",
   },
   login: {
+    headline: "Your media kit in your pocket", tagline: "Edit your page, follow your visitors and share your link with brands from anywhere.",
     title: "Sign in", subtitle: "We'll email you a sign-in code.", email: "Email", sendCode: "Send code", sending: "Sending…",
     codeSent: "We sent a sign-in code to", code: "Sign-in code", verify: "Sign in", verifying: "Checking…", changeEmail: "Change email",
     apple: "Continue with Apple", google: "Continue with Google", or: "or with email",
@@ -28,7 +29,17 @@ export const en: typeof ar = {
       taken: "This name is taken, try another.", failed: "Something went wrong. Please try again.",
     },
   },
-  tabs: { home: "Home", page: "My page", stats: "Analytics", notifications: "Notifications", more: "More" },
+  tabs: { home: "Home", page: "My page", stats: "Insights", notifications: "Alerts", account: "Account", more: "More", unread: "{n} new" },
+  greeting: { morning: "Good morning", evening: "Good evening" },
+  pageTab: {
+    visible: "Page visible to visitors", hiddenNote: "Your page is hidden, nobody can see it", preview: "Preview", pdf: "PDF kit",
+    content: "Page content", look: "Look and trust", insights: "Performance", needsName: "Add your name in “Edit page” before publishing.",
+    accounts: "{n} accounts", pending: "{n} pending",
+  },
+  account: {
+    plan: "Your plan", daysLeft: "{n} days left", ofDays: "of {n}", money: "Commission and plan", prefs: "Preferences", help: "Help",
+    legal: "Terms and privacy",
+  },
   home: {
     hello: "Hi {name}", yourLink: "Your page link", published: "Published", hidden: "Hidden", share: "Share link", copy: "Copy", copied: "Copied",
     view: "View page", last30: "Last 30 days", vsPrev: "vs previous month", noCompare: "Nothing to compare yet",
@@ -43,12 +54,13 @@ export const en: typeof ar = {
     verification: "Account verification", verifiedOf: "{done} of {total} verified", noAccounts: "Add your accounts to verify them.",
     vstatus: { none: "Not verified", verified: "Verified", expiring: "Expiring soon", in_review: "In review", rejected: "Rejected", expired: "Expired" },
     numbersStale: "Update your numbers for this month",
+    details: "Details", qr: "QR code", completeTitle: "Finish your page", completeLeft: "{n} steps left to be brand-ready", ready: "Your page is brand-ready",
   },
   plan: {
     pro: "Pro", trial: "Free trial", free: "Free", trialLeft: "{days} days left in your trial",
     renews: "Renews on {date}", ends: "Ends on {date}", manageOnWeb: "Manage your plan on wsool.link",
   },
-  notifications: { title: "Notifications", empty: "No notifications yet.", markAll: "Mark all as read" },
+  notifications: { title: "Notifications", empty: "No notifications yet.", markAll: "Mark all read", today: "Today", earlier: "Earlier" },
   more: {
     title: "More", sections: "Your page", account: "Account", settings: "Settings", language: "Language", theme: "Appearance",
     themeSystem: "Device setting", themeLight: "Light", themeDark: "Dark", signOut: "Sign out", support: "Contact support",

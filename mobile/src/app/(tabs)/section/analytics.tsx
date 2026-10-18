@@ -3,8 +3,8 @@ import { useFocusEffect } from "expo-router";
 import { View } from "react-native";
 import { Lock } from "lucide-react-native";
 import { AreaChart } from "../../../components/AreaChart";
-import { Chips, SectionScreen } from "../../../components/editor";
-import { Card, Panel, Row, T } from "../../../components/ui";
+import { SectionScreen } from "../../../components/editor";
+import { Card, Panel, Row, Segmented, T } from "../../../components/ui";
 import { useI18n } from "../../../i18n";
 import { api } from "../../../lib/api";
 import { PLATFORM_NAMES, type Platform } from "../../../lib/platforms";
@@ -19,7 +19,8 @@ type Report = {
 type Data = { locked: true } | { locked: false; range: number; ranges: number[]; report: Report; prev: { views: number; whatsapp: number; email: number } };
 
 /** Page visits and contact taps for 7 / 30 / 90 days (Pro), like the website's Analytics. */
-export default function Analytics() {
+/** As its own tab (Insights) it gets a large title and no back button. */
+export function AnalyticsScreen({ tab }: { tab?: boolean }) {
   const { t, num, date, lang } = useI18n();
   const { colors } = useTheme();
   const [range, setRange] = useState(30);
@@ -50,12 +51,12 @@ export default function Analytics() {
       : c.kind === "service" ? t("analytics.service", { name: c.targetName ?? "—" }) : `${t(`analytics.${c.kind}`)} ${c.platform ? PLATFORM_NAMES[c.platform] : ""}`;
 
   return (
-    <SectionScreen title={t("section.analytics")} subtitle={t("analytics.subtitle")} loading={!data && !error} error={error} onRetry={load}>
+    <SectionScreen tab={tab} title={t("section.analytics")} subtitle={t("analytics.subtitle")} loading={!data && !error} error={error} onRetry={load}>
       {data && (data.locked ? (
         <Card><Row><Lock size={18} color={colors.muted} /><T tone="muted" style={{ flex: 1 }}>{t("home.statsPro")}</T></Row></Card>
       ) : (
         <>
-          <Chips value={[String(range)]} onChange={([v]) => setRange(Number(v))} options={data.ranges.map((r) => ({ value: String(r), label: t("analytics.lastDays", { n: num(r) }) }))} />
+          <Segmented label={t("section.analytics")} value={range} onChange={setRange} options={data.ranges.map((r) => ({ value: r, label: t("analytics.lastDays", { n: num(r) }) }))} />
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 10 }}>
             {[
               { label: t("home.stat.views"), value: data.report.views, d: delta(data.report.views, data.prev.views) },
@@ -94,4 +95,8 @@ export default function Analytics() {
       ))}
     </SectionScreen>
   );
+}
+
+export default function Analytics() {
+  return <AnalyticsScreen />;
 }

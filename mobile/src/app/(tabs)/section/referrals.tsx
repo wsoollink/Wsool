@@ -40,7 +40,7 @@ export default function Referrals() {
   });
 
   return (
-    <SectionScreen title={t("section.referrals")} subtitle={t("referrals.subtitle")} loading={!data && !error} error={error} onRetry={reload}>
+    <SectionScreen parent="account" title={t("section.referrals")} subtitle={t("referrals.subtitle")} loading={!data && !error} error={error} onRetry={reload}>
       {data && (
         <>
           {!data.isPro && <ProNote text={t("referrals.proOnly")} />}

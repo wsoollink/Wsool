@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useState } from "react";
-import { FlatList, Pressable, RefreshControl, View } from "react-native";
-import { router } from "expo-router";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Button, Card, Row, Status, T } from "../../components/ui";
+import { useCallback, useState } from "react";
+import { Pressable, RefreshControl, StyleSheet, View } from "react-native";
+import { router, useFocusEffect } from "expo-router";
+import { Bell } from "lucide-react-native";
+import { Card, Group, Row, Screen, Status, T } from "../../components/ui";
 import { useI18n } from "../../i18n";
 import { api } from "../../lib/api";
 import { useAuth } from "../../lib/app";
@@ -11,9 +11,36 @@ import { useTheme } from "../../lib/theme";
 
 type Item = { id: string; title: string; body: string; href: string; read: boolean; createdAt: string };
 
-/** The bell: newest first; tapping one marks it read and opens its screen. */
+/** One notification row inside a group (unread ones tinted with a blue dot). */
+function NotificationRow({ n, onPress, first }: { n: Item; onPress: () => void; first?: boolean }) {
+  const { colors } = useTheme();
+  const { date } = useI18n();
+  const today = new Date(n.createdAt).toDateString() === new Date().toDateString();
+  return (
+    <Pressable accessibilityRole="button" accessibilityState={{ selected: !n.read }} onPress={onPress}
+      style={({ pressed }) => ({ backgroundColor: pressed ? colors.hover : n.read ? "transparent" : colors.blue + "0F" })}>
+      <Row style={{ paddingHorizontal: 14, gap: 12, alignItems: "flex-start" }}>
+        <View style={{ width: 38, height: 38, borderRadius: 19, marginTop: 12, backgroundColor: colors.blueSoft, alignItems: "center", justifyContent: "center" }}>
+          <Bell size={18} color={colors.blue} />
+        </View>
+        <Row style={{ flex: 1, gap: 8, alignItems: "flex-start", paddingVertical: 12, borderTopWidth: first ? 0 : StyleSheet.hairlineWidth, borderTopColor: colors.line }}>
+          <View style={{ flex: 1, gap: 2 }}>
+            <Row style={{ justifyContent: "space-between", alignItems: "flex-start" }}>
+              <T weight="bold" size={15} style={{ flex: 1 }}>{n.title}</T>
+              <T size={12} tone="faint">{date(n.createdAt, today ? { hour: "numeric", minute: "2-digit" } : { day: "numeric", month: "short" })}</T>
+            </Row>
+            <T size={13.5} tone="muted">{n.body}</T>
+          </View>
+          {!n.read ? <View accessibilityLabel="•" style={{ width: 9, height: 9, borderRadius: 5, backgroundColor: colors.blue, marginTop: 8 }} /> : null}
+        </Row>
+      </Row>
+    </Pressable>
+  );
+}
+
+/** The bell: grouped by today / earlier; tapping one marks it read and opens its screen. */
 export default function Notifications() {
-  const { t, date } = useI18n();
+  const { t } = useI18n();
   const { colors } = useTheme();
   const { refreshMe } = useAuth();
   const [items, setItems] = useState<Item[] | null>(null);
@@ -23,7 +50,7 @@ export default function Notifications() {
   const load = useCallback(async () => {
     try { setError(null); setItems((await api<{ items: Item[] }>("/notifications")).items); } catch { setError(t("common.offline")); }
   }, [t]);
-  useEffect(() => { load(); }, [load]);
+  useFocusEffect(useCallback(() => { load(); }, [load]));
 
   const open = async (n: Item) => {
     if (!n.read) {
@@ -40,33 +67,27 @@ export default function Notifications() {
   };
 
   if (!items) return <Status loading={!error} error={error} onRetry={load} />;
+  const isToday = (n: Item) => new Date(n.createdAt).toDateString() === new Date().toDateString();
+  const groups = [
+    { title: t("notifications.today"), list: items.filter(isToday) },
+    { title: t("notifications.earlier"), list: items.filter((n) => !isToday(n)) },
+  ].filter((g) => g.list.length);
+
   return (
-    <SafeAreaView edges={["top", "left", "right"]} style={{ flex: 1, backgroundColor: colors.bg }}>
-      <FlatList
-        data={items}
-        keyExtractor={(n) => n.id}
-        contentContainerStyle={{ padding: 16, gap: 10 }}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={async () => { setRefreshing(true); await load(); setRefreshing(false); }} tintColor={colors.blue} />}
-        ListHeaderComponent={
-          <Row style={{ justifyContent: "space-between", marginBottom: 4 }}>
-            <T weight="bold" size={22}>{t("notifications.title")}</T>
-            {items.some((n) => !n.read) && <Button title={t("notifications.markAll")} variant="ghost" onPress={markAll} style={{ paddingHorizontal: 8 }} />}
-          </Row>
-        }
-        ListEmptyComponent={<Card><T tone="muted">{t("notifications.empty")}</T></Card>}
-        renderItem={({ item: n }) => (
-          <Pressable accessibilityRole="button" accessibilityState={{ selected: !n.read }} onPress={() => open(n)}>
-            <Card style={{ gap: 4, ...(n.read ? {} : { borderColor: colors.blue + "55", backgroundColor: colors.blue + "0D" }) }}>
-              <Row style={{ justifyContent: "space-between", alignItems: "flex-start" }}>
-                <T weight="bold" style={{ flex: 1 }}>{n.title}</T>
-                {!n.read && <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: colors.bad, marginTop: 8 }} />}
-              </Row>
-              <T tone="muted" size={14}>{n.body}</T>
-              <T tone="faint" size={12}>{date(n.createdAt, { day: "numeric", month: "short", hour: "numeric", minute: "2-digit" })}</T>
-            </Card>
-          </Pressable>
-        )}
-      />
-    </SafeAreaView>
+    <Screen
+      title={t("notifications.title")}
+      action={items.some((n) => !n.read) ? (
+        <Pressable accessibilityRole="button" onPress={markAll} hitSlop={8} style={{ minHeight: 44, justifyContent: "center" }}>
+          <T weight="bold" size={14.5} tone="blue">{t("notifications.markAll")}</T>
+        </Pressable>
+      ) : undefined}
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={async () => { setRefreshing(true); await load(); setRefreshing(false); }} tintColor={colors.blue} />}
+    >
+      {groups.length === 0 ? <Card><T tone="muted">{t("notifications.empty")}</T></Card> : groups.map((g) => (
+        <Group key={g.title} title={g.title}>
+          {g.list.map((n) => <NotificationRow key={n.id} n={n} onPress={() => open(n)} />)}
+        </Group>
+      ))}
+    </Screen>
   );
 }

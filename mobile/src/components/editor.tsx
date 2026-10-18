@@ -1,12 +1,12 @@
 import { useCallback, useState, type ReactNode } from "react";
 import { KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, View } from "react-native";
 import { router, useFocusEffect } from "expo-router";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { ArrowDown, ArrowUp, Check, ChevronLeft, ChevronRight, Plus, Trash2, X } from "lucide-react-native";
 import { useI18n } from "../i18n";
 import { api, ApiError } from "../lib/api";
 import { useTheme } from "../lib/theme";
-import { Button, Card, Row, Status, T } from "./ui";
+import { Button, Card, Row, Status, T, TAB_BAR_SPACE } from "./ui";
 
 /**
  * Loads a dashboard section's data (/section/<key>) with reload. Sections stay
@@ -24,28 +24,36 @@ export function useSection<D>(key: string) {
   return { data, error, reload: load, setData };
 }
 
-/** A section page: back button + title + subtitle, scrolling body, optional save bar fixed at the bottom. */
-export function SectionScreen({ title, subtitle, children, footer, loading, error, onRetry }: {
+/**
+ * A section page: a bar with back (to the tab it belongs to) and the title in the middle, a short
+ * description, the scrolling body, and an optional save button floating above the tab bar.
+ * `tab` = the screen is itself a tab (Insights): large title, no back button.
+ */
+export function SectionScreen({ title, subtitle, children, footer, loading, error, onRetry, tab, parent = "page" }: {
   title: string; subtitle?: string; children?: ReactNode; footer?: ReactNode; loading?: boolean; error?: string | null; onRetry?: () => void;
+  tab?: boolean; parent?: "page" | "account" | "home";
 }) {
   const { colors } = useTheme();
   const { rtl, t } = useI18n();
   const Back = rtl ? ChevronRight : ChevronLeft;
+  const back = () => (router.canGoBack() ? router.back() : router.replace(`/${parent}` as never));
   return (
     <SafeAreaView edges={["top", "left", "right"]} style={{ flex: 1, backgroundColor: colors.bg }}>
-      <Row style={{ paddingHorizontal: 8, paddingTop: 4, gap: 4 }}>
-        <Pressable accessibilityRole="button" accessibilityLabel={t("common.back")} onPress={() => (router.canGoBack() ? router.back() : router.replace("/more"))}
-          style={{ width: 44, height: 44, alignItems: "center", justifyContent: "center" }}>
-          <Back size={24} color={colors.navy} />
-        </Pressable>
-        <View style={{ flex: 1 }}>
-          <T weight="bold" size={19} numberOfLines={1}>{title}</T>
-          {subtitle ? <T size={12.5} tone="muted" numberOfLines={2}>{subtitle}</T> : null}
+      {tab ? null : (
+        <View style={{ height: 48, justifyContent: "center", paddingHorizontal: 4, borderBottomWidth: 1, borderBottomColor: colors.lineSoft }}>
+          <T weight="bold" size={17} numberOfLines={1} accessibilityRole="header" style={{ position: "absolute", left: 90, right: 90, textAlign: "center" }}>{title}</T>
+          <Pressable accessibilityRole="button" accessibilityLabel={t("common.back")} onPress={back} hitSlop={6}
+            style={{ alignSelf: "flex-start", flexDirection: "row", alignItems: "center", minHeight: 44, paddingHorizontal: 6 }}>
+            <Back size={24} color={colors.blue} strokeWidth={2.2} />
+            <T size={16} weight="bold" tone="blue">{t(`tabs.${parent}`)}</T>
+          </Pressable>
         </View>
-      </Row>
+      )}
       {loading || error ? <Status loading={loading} error={error} onRetry={onRetry} /> : (
         <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
-          <ScrollView contentContainerStyle={{ padding: 16, gap: 14, paddingBottom: footer ? 110 : 40 }} keyboardShouldPersistTaps="handled">
+          <ScrollView contentContainerStyle={{ padding: 16, paddingTop: tab ? 12 : 14, gap: 16, paddingBottom: footer ? TAB_BAR_SPACE + 76 : TAB_BAR_SPACE }} keyboardShouldPersistTaps="handled">
+            {tab ? <T weight="black" size={30} accessibilityRole="header">{title}</T> : null}
+            {subtitle ? <T size={13.5} tone="muted" style={{ marginTop: tab ? -10 : 0 }}>{subtitle}</T> : null}
             {children}
           </ScrollView>
           {footer}
@@ -57,18 +65,23 @@ export function SectionScreen({ title, subtitle, children, footer, loading, erro
 
 export type SaveStatus = "" | "saving" | "saved" | "failed";
 
-/** One save for the whole section, fixed at the bottom (like the website's SaveBar). */
+/** One save for the whole section, floating just above the tab bar (like the website's SaveBar). */
 export function SaveBar({ onSave, status, message, disabled }: { onSave: () => void; status: SaveStatus; message?: string | null; disabled?: boolean }) {
   const { colors } = useTheme();
   const { t } = useI18n();
+  const insets = useSafeAreaInsets();
+  const note = status === "saved" || status === "failed" || message;
   return (
-    <View style={{ position: "absolute", left: 0, right: 0, bottom: 0, padding: 12, paddingBottom: 16, backgroundColor: colors.card, borderTopWidth: 1, borderTopColor: colors.line, gap: 6 }}>
-      {status === "saved" || status === "failed" || message ? (
-        <T size={13} tone={status === "failed" ? "bad" : "good"} accessibilityLiveRegion="polite" style={{ textAlign: "center" }}>
-          {message ?? (status === "saved" ? t("editor.saved") : t("editor.failed"))}
-        </T>
+    <View pointerEvents="box-none" style={{ position: "absolute", left: 16, right: 16, bottom: Math.max(insets.bottom, 10) + 80, gap: 6, alignItems: "stretch" }}>
+      {note ? (
+        <View style={{ alignSelf: "center", paddingHorizontal: 12, paddingVertical: 4, borderRadius: 999, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.line }}>
+          <T size={13} tone={status === "failed" ? "bad" : "good"} accessibilityLiveRegion="polite" style={{ textAlign: "center" }}>
+            {message ?? (status === "saved" ? t("editor.saved") : t("editor.failed"))}
+          </T>
+        </View>
       ) : null}
-      <Button title={status === "saving" ? t("editor.saving") : t("editor.save")} onPress={onSave} loading={status === "saving"} disabled={disabled} />
+      <Button title={status === "saving" ? t("editor.saving") : t("editor.save")} onPress={onSave} loading={status === "saving"} disabled={disabled}
+        style={{ minHeight: 52, shadowColor: "#0060E6", shadowOpacity: 0.28, shadowRadius: 12, shadowOffset: { width: 0, height: 6 }, elevation: 6 }} />
     </View>
   );
 }

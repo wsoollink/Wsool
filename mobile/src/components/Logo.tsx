@@ -7,9 +7,9 @@ const LOGOS = {
   en: { light: require("../../assets/brand/logo-en.png"), dark: require("../../assets/brand/logo-en-dark.png") },
 };
 
-/** Wsool logo in the app language (white word in dark mode). */
-export function Logo({ height = 30 }: { height?: number }) {
+/** Wsool logo in the app language (white word in dark mode, or always on a dark background with `onDark`). */
+export function Logo({ height = 30, onDark }: { height?: number; onDark?: boolean }) {
   const { lang } = useI18n();
   const { dark } = useTheme();
-  return <Image source={LOGOS[lang][dark ? "dark" : "light"]} style={{ height, width: height * 3.2 }} contentFit="contain" accessibilityLabel={lang === "ar" ? "وصول" : "Wsool"} />;
+  return <Image source={LOGOS[lang][dark || onDark ? "dark" : "light"]} style={{ height, width: height * 3.2 }} contentFit="contain" accessibilityLabel={lang === "ar" ? "وصول" : "Wsool"} />;
 }

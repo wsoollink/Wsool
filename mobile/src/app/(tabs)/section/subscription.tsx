@@ -39,7 +39,7 @@ export default function Subscription() {
   const undo = async () => { setBusy(true); await rpc("undoDeletion").catch(() => {}); setBusy(false); reload(); refreshMe(); };
 
   return (
-    <SectionScreen title={t("section.subscription")} subtitle={t("sub.subtitle")} loading={!data && !error} error={error} onRetry={reload}>
+    <SectionScreen parent="account" title={t("section.subscription")} subtitle={t("sub.subtitle")} loading={!data && !error} error={error} onRetry={reload}>
       {data && (
         <>
           <Card>

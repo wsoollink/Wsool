@@ -7,6 +7,7 @@ export const ar = {
     soon: "قريباً في التطبيق", openOnWeb: "افتحه في الموقع",
   },
   login: {
+    headline: "ملفك الإعلامي في جيبك", tagline: "عدّل صفحتك، تابع زوارك، وشارك رابطك مع البراندات من أي مكان.",
     title: "سجّل دخولك", subtitle: "بنرسل لك رمز دخول على إيميلك.", email: "الإيميل", sendCode: "أرسل الرمز", sending: "جاري الإرسال…",
     codeSent: "أرسلنا رمز الدخول إلى", code: "رمز الدخول", verify: "دخول", verifying: "جاري التحقق…", changeEmail: "تغيير الإيميل",
     apple: "المتابعة مع Apple", google: "المتابعة مع Google", or: "أو بالإيميل",
@@ -26,7 +27,17 @@ export const ar = {
       taken: "الاسم مأخوذ، جرّب غيره.", failed: "صار خطأ. جرّب مرة ثانية.",
     },
   },
-  tabs: { home: "الرئيسية", page: "صفحتي", stats: "الإحصائيات", notifications: "التنبيهات", more: "المزيد" },
+  tabs: { home: "الرئيسية", page: "صفحتي", stats: "الإحصائيات", notifications: "التنبيهات", account: "حسابي", more: "المزيد", unread: "{n} جديدة" },
+  greeting: { morning: "صباح الخير", evening: "مساء الخير" },
+  pageTab: {
+    visible: "الصفحة ظاهرة للزوار", hiddenNote: "صفحتك مخفية، محد يقدر يشوفها", preview: "معاينة", pdf: "ملف PDF",
+    content: "محتوى الصفحة", look: "الشكل والثقة", insights: "الأداء", needsName: "اكتب اسمك في «تعديل الصفحة» قبل ما تنشرها.",
+    accounts: "{n} حسابات", pending: "{n} بانتظار",
+  },
+  account: {
+    plan: "اشتراكك", daysLeft: "باقي {n} يوم", ofDays: "من {n}", money: "العمولة والاشتراك", prefs: "التفضيلات", help: "المساعدة",
+    legal: "الشروط والخصوصية",
+  },
   home: {
     hello: "أهلًا {name}", yourLink: "رابط صفحتك", published: "منشورة", hidden: "مخفية", share: "شارك الرابط", copy: "انسخ", copied: "تم النسخ",
     view: "عرض الصفحة", last30: "آخر 30 يوم", vsPrev: "عن الشهر السابق", noCompare: "ما فيه بيانات للمقارنة",
@@ -41,12 +52,13 @@ export const ar = {
     verification: "توثيق الحسابات", verifiedOf: "{done} من {total} موثّقة", noAccounts: "أضف حساباتك عشان توثقها.",
     vstatus: { none: "غير موثّق", verified: "موثّق", expiring: "ينتهي قريب", in_review: "قيد المراجعة", rejected: "مرفوض", expired: "منتهي" },
     numbersStale: "حدّث أرقامك لهذا الشهر",
+    details: "التفاصيل", qr: "رمز QR", completeTitle: "كمّل صفحتك", completeLeft: "باقي {n} خطوات وتصير جاهزة للبراندات", ready: "صفحتك جاهزة للبراندات",
   },
   plan: {
     pro: "الاحترافية", trial: "تجربة مجانية", free: "مجانية", trialLeft: "باقي {days} يوم على التجربة",
     renews: "يتجدد في {date}", ends: "ينتهي في {date}", manageOnWeb: "إدارة الاشتراك من الموقع wsool.link",
   },
-  notifications: { title: "التنبيهات", empty: "ما عندك تنبيهات للحين.", markAll: "تحديد الكل كمقروء" },
+  notifications: { title: "التنبيهات", empty: "ما عندك تنبيهات للحين.", markAll: "قراءة الكل", today: "اليوم", earlier: "قبل كذا" },
   more: {
     title: "المزيد", sections: "أقسام صفحتك", account: "الحساب", settings: "الإعدادات", language: "اللغة", theme: "المظهر",
     themeSystem: "حسب الجهاز", themeLight: "فاتح", themeDark: "داكن", signOut: "تسجيل الخروج", support: "تواصل مع الدعم",

@@ -52,6 +52,16 @@
 .wapp[href]:hover{transform:translateY(-2px)}
 .wapp[href]:focus-visible{outline:2px solid #0060E6;outline-offset:3px}
 @media (prefers-reduced-motion: reduce){.wapp{transition:none}}
+/* Phones (owner): the newsletter card reads title → description → email field, then "Follow us" and
+   "Get the app" under a divider. The text column is unwrapped so its blocks can be reordered. */
+@media (max-width: 767px){
+  .mk-home-66>div:nth-child(2){display:contents!important}
+  .mk-home-66>div:nth-child(2)>*{position:relative}
+  .mk-home-66>div:nth-child(2)>h2,.mk-home-66>div:nth-child(2)>p{margin-top:-10px!important}
+  .mk-home-66>.mk-home-68{order:1}
+  .mk-home-66>div:nth-child(2)>div{order:2}
+  .mk-home-66>div:nth-child(2)>div:first-of-type{padding-top:20px;border-top:1px solid rgba(var(--mk-ink),0.08)}
+}
 .wsoc-instagram span{-webkit-mask-image:url(/marketing/c29d2b71c7556f8ca7caaad85838d28a.png);mask-image:url(/marketing/c29d2b71c7556f8ca7caaad85838d28a.png)}
 .wsoc-tiktok span{-webkit-mask-image:url(/marketing/f2eac10a4a90fc41314bdb5ae069b51f.png);mask-image:url(/marketing/f2eac10a4a90fc41314bdb5ae069b51f.png)}
 .wsoc-x span{-webkit-mask-image:url(/marketing/ab9cf5c4967761caccc776e7a9176ebb.png);mask-image:url(/marketing/ab9cf5c4967761caccc776e7a9176ebb.png)}

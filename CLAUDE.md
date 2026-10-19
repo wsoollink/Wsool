@@ -782,3 +782,5 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
 - Home page "Get the app" (owner, Oct 2026): App Store + Google Play badges under "Follow us" in the newsletter card
   (`.wapp` in the design files + `marketing.css`, images `public/marketing/{app-store,google-play}-badge.png` from the owner).
   Store links in `APP_LINKS` (`src/config/site.ts`); an empty link shows that badge as a plain image without a link.
+  On phones (<768px) the newsletter card reads title → description → email field, then "Follow us" + "Get the app" under a
+  divider (owner): CSS reorder in `marketing.css` (text column `display: contents`), the design files keep one structure.

@@ -44,6 +44,9 @@
 .wsoc:hover span{background:#FFFFFF}
 .wsoc:focus-visible{outline:2px solid #0060E6;outline-offset:3px}
 .nlin:focus{outline:none}
+/* Dark mode: the design's light-grey email field turned the typed text and placeholder invisible. */
+[data-theme="dark"] .nlbox{background:var(--mk-bg)!important}
+[data-theme="dark"] .nlin::placeholder{color:#7C8597}
 .nlbox:focus-within{border-color:#0060E6!important;box-shadow:0 0 0 4px rgba(0,96,230,0.12)!important}
 @media (prefers-reduced-motion: reduce){.wsoc{transition:none}}
 /* App store badges ("Get the app"): the official images; without a store link they are plain images. */

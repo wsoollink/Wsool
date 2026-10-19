@@ -117,7 +117,7 @@ export function useMarketing(lang: Locale, opts: { initialClaim?: string; source
     claimMsg,
 
     nlV: nl, nlForm: !nlDone, nlDone, nlInvalid: nlErr ? "true" : "false", nlErrMsg: nlErr ? T.nlInvalid : "",
-    nlBorder: nlErr ? "#C0362C" : "rgba(2,25,65,0.10)",
+    nlBorder: nlErr ? "#C0362C" : "rgba(var(--mk-ink),0.10)",
     onNl: (e: React.ChangeEvent<HTMLInputElement>) => { setNl(e.target.value.trim()); setNlErr(false); },
     nlGo: sendNl,
     nlKey: (e: React.KeyboardEvent) => { if (e.key === "Enter") sendNl(); },

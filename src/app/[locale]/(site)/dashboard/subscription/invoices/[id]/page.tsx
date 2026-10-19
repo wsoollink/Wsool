@@ -10,6 +10,7 @@ import { requireCreator } from "@/lib/creator";
 import { db } from "@/lib/db";
 import { formatPrice } from "@/lib/format";
 import { PrintButton } from "./PrintButton";
+import { SectionSkeleton } from "@/components/dashboard/SectionSkeleton";
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale, id: "_" }));
@@ -73,5 +74,5 @@ export default async function InvoicePage({ params }: PageProps<"/[locale]/dashb
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   setRequestLocale(toIntlLocale(locale));
-  return <Suspense fallback={null}><Invoice params={params as Promise<{ id: string }>} lang={locale} /></Suspense>;
+  return <Suspense fallback={<SectionSkeleton />}><Invoice params={params as Promise<{ id: string }>} lang={locale} /></Suspense>;
 }

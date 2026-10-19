@@ -6,6 +6,9 @@
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
+  // One SQL query per read, nested relations included (default "join"): each extra query is a
+  // network round trip to Supabase.
+  previewFeatures = ["relationJoins"]
 }
 
 datasource db {

@@ -9,6 +9,7 @@ import { db } from "@/lib/db";
 import { AppearanceEditor } from "./AppearanceEditor";
 import { PageHeader } from "@/components/dashboard/PageHeader";
 import { ACCENT_SWATCHES } from "@/lib/validation/appearance";
+import { SectionSkeleton } from "@/components/dashboard/SectionSkeleton";
 
 async function Editor() {
   const { user, page } = await requireCreator();
@@ -54,7 +55,7 @@ export default async function AppearancePage({ params }: PageProps<"/[locale]/da
   return (
     <div className="flex flex-col gap-4">
       <PageHeader title={t("appearance")} section="appearance" />
-      <Suspense fallback={null}>
+      <Suspense fallback={<SectionSkeleton />}>
         <Editor />
       </Suspense>
     </div>

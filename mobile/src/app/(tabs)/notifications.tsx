@@ -5,6 +5,7 @@ import { Bell } from "lucide-react-native";
 import { Card, Group, Row, Screen, Status, T } from "../../components/ui";
 import { useI18n } from "../../i18n";
 import { api } from "../../lib/api";
+import { useCached } from "../../lib/cached";
 import { useAuth } from "../../lib/app";
 import { appRoute } from "../../lib/push";
 import { useTheme } from "../../lib/theme";
@@ -43,7 +44,7 @@ export default function Notifications() {
   const { t } = useI18n();
   const { colors } = useTheme();
   const { refreshMe } = useAuth();
-  const [items, setItems] = useState<Item[] | null>(null);
+  const [items, setItems] = useCached<Item[]>("/notifications", (raw) => (raw as { items: Item[] }).items);
   const [error, setError] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
 

@@ -8,6 +8,7 @@ import { FREE_LIMITS, hasPro } from "@/config/plans";
 import { ProNotice } from "@/components/dashboard/ProNotice";
 import { RatesEditor } from "./RatesEditor";
 import { PageHeader } from "@/components/dashboard/PageHeader";
+import { SectionSkeleton } from "@/components/dashboard/SectionSkeleton";
 
 async function Editor() {
   const { user, page } = await requireCreator();
@@ -50,7 +51,7 @@ export default async function RatesPage({ params }: PageProps<"/[locale]/dashboa
   return (
     <div className="flex flex-col gap-4">
       <PageHeader title={t("rates")} section="rates" />
-      <Suspense fallback={null}>
+      <Suspense fallback={<SectionSkeleton />}>
         <Editor />
       </Suspense>
     </div>

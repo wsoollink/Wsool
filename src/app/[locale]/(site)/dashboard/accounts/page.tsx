@@ -9,6 +9,7 @@ import { AccountsCard } from "./AccountsCard";
 import { AudienceCard, type AudienceValue } from "./AudienceCard";
 import { ViewsCard } from "./ViewsCard";
 import { PageHeader } from "@/components/dashboard/PageHeader";
+import { SectionSkeleton } from "@/components/dashboard/SectionSkeleton";
 
 /** Whole months between a stored month (first day, UTC) and this month. */
 function monthsBetween(month: Date) {
@@ -71,7 +72,7 @@ export default async function AccountsPage({ params }: PageProps<"/[locale]/dash
   return (
     <div className="flex flex-col gap-4">
       <PageHeader title={t("accounts")} section="accounts" />
-      <Suspense fallback={null}>
+      <Suspense fallback={<SectionSkeleton />}>
         <Editor lang={locale} />
       </Suspense>
     </div>

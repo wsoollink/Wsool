@@ -6,6 +6,7 @@ import { requireCreator } from "@/lib/creator";
 import { db } from "@/lib/db";
 import { ContactForm } from "./ContactForm";
 import { PageHeader } from "@/components/dashboard/PageHeader";
+import { SectionSkeleton } from "@/components/dashboard/SectionSkeleton";
 
 async function Editor() {
   const { user, page } = await requireCreator();
@@ -31,7 +32,7 @@ export default async function ContactPage({ params }: PageProps<"/[locale]/dashb
   return (
     <div className="flex flex-col gap-4">
       <PageHeader title={t("contact")} section="contact" />
-      <Suspense fallback={null}>
+      <Suspense fallback={<SectionSkeleton />}>
         <Editor />
       </Suspense>
     </div>

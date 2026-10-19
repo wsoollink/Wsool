@@ -7,6 +7,7 @@ import { SectionScreen } from "../../../components/editor";
 import { Card, Panel, Row, Segmented, T } from "../../../components/ui";
 import { useI18n } from "../../../i18n";
 import { api } from "../../../lib/api";
+import { useCached } from "../../../lib/cached";
 import { PLATFORM_NAMES, type Platform } from "../../../lib/platforms";
 import { useTheme } from "../../../lib/theme";
 
@@ -24,7 +25,7 @@ export function AnalyticsScreen({ tab }: { tab?: boolean }) {
   const { t, num, date, lang } = useI18n();
   const { colors } = useTheme();
   const [range, setRange] = useState(30);
-  const [data, setData] = useState<Data | null>(null);
+  const [data, setData] = useCached<Data>("/section/analytics?range=30");
   const [error, setError] = useState<string | null>(null);
   const load = useCallback(async () => {
     try { setError(null); setData(await api<Data>(`/section/analytics?range=${range}`)); } catch { setError(t("common.offline")); }

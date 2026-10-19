@@ -190,6 +190,7 @@
     "cooldownNow": "You changed your link less than 30 days ago. Try again later."
   },
   "DashboardNav": {
+    "loading": "Loading…",
     "brand": "Wsool",
     "menu": "Dashboard menu",
     "home": "Home",

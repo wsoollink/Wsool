@@ -17,6 +17,7 @@ import { TagsCard } from "./TagsCard";
 import { UsernameCard } from "./UsernameCard";
 import { nextUsernameChange } from "@/lib/username";
 import { PageHeader } from "@/components/dashboard/PageHeader";
+import { SectionSkeleton } from "@/components/dashboard/SectionSkeleton";
 
 const empty = { fullName: "", specialty: "", bio: "", city: "", country: "" };
 
@@ -73,7 +74,7 @@ export default async function EditPage({ params }: PageProps<"/[locale]/dashboar
   return (
     <div className="flex flex-col gap-4">
       <PageHeader title={t("edit")} section="edit" />
-      <Suspense fallback={null}>
+      <Suspense fallback={<SectionSkeleton />}>
         <Editor lang={locale} />
       </Suspense>
     </div>

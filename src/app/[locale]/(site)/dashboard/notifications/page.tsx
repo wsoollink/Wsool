@@ -9,6 +9,7 @@ import { EmailSettings } from "./EmailSettings";
 import { NotificationList } from "./NotificationList";
 import { today } from "@/lib/analytics";
 import { PageHeader } from "@/components/dashboard/PageHeader";
+import { SectionSkeleton } from "@/components/dashboard/SectionSkeleton";
 
 async function List({ lang }: { lang: Locale }) {
   const { user } = await requireCreator();
@@ -43,7 +44,7 @@ export default async function NotificationsPage({ params }: PageProps<"/[locale]
   return (
     <div className="flex flex-col gap-4">
       <PageHeader title={nav("notifications")} section="notifications" />
-      <Suspense fallback={null}><List lang={locale} /></Suspense>
+      <Suspense fallback={<SectionSkeleton />}><List lang={locale} /></Suspense>
     </div>
   );
 }

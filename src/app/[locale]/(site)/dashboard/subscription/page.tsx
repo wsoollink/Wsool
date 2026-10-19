@@ -17,6 +17,7 @@ import { DangerZone } from "./DangerZone";
 import { ManageCard } from "./ManageCard";
 import { PlanPicker } from "./PlanPicker";
 import { PageHeader } from "@/components/dashboard/PageHeader";
+import { SectionSkeleton } from "@/components/dashboard/SectionSkeleton";
 
 type SP = Promise<Record<string, string | string[] | undefined>>;
 
@@ -128,7 +129,7 @@ export default async function SubscriptionPage({ params, searchParams }: PagePro
   return (
     <div className="flex flex-col gap-4">
       <PageHeader title={nav("subscription")} section="subscription" />
-      <Suspense fallback={null}><Subscription lang={locale} searchParams={searchParams} /></Suspense>
+      <Suspense fallback={<SectionSkeleton />}><Subscription lang={locale} searchParams={searchParams} /></Suspense>
     </div>
   );
 }

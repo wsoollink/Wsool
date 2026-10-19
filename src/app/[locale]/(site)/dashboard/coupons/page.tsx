@@ -7,6 +7,7 @@ import { isLocale, toIntlLocale } from "@/i18n/config";
 import { requireCreator } from "@/lib/creator";
 import { db } from "@/lib/db";
 import { CouponsEditor } from "./CouponsEditor";
+import { SectionSkeleton } from "@/components/dashboard/SectionSkeleton";
 
 async function Editor() {
   const { page } = await requireCreator();
@@ -35,7 +36,7 @@ export default async function CouponsPage({ params }: PageProps<"/[locale]/dashb
   return (
     <div className="flex flex-col gap-4">
       <PageHeader title={t("coupons")} section="coupons" />
-      <Suspense fallback={null}>
+      <Suspense fallback={<SectionSkeleton />}>
         <Editor />
       </Suspense>
     </div>

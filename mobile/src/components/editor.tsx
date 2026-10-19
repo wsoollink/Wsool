@@ -5,6 +5,7 @@ import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { ArrowDown, ArrowUp, Check, ChevronLeft, ChevronRight, Plus, Trash2, X } from "lucide-react-native";
 import { useI18n } from "../i18n";
 import { api, ApiError } from "../lib/api";
+import { useCached } from "../lib/cached";
 import { useTheme } from "../lib/theme";
 import { Button, Card, Row, Status, T, TAB_BAR_SPACE } from "./ui";
 
@@ -14,7 +15,7 @@ import { Button, Card, Row, Status, T, TAB_BAR_SPACE } from "./ui";
  */
 export function useSection<D>(key: string) {
   const { t } = useI18n();
-  const [data, setData] = useState<D | null>(null);
+  const [data, setData] = useCached<D>(`/section/${key}`);
   const [error, setError] = useState<string | null>(null);
   const load = useCallback(async () => {
     try { setError(null); setData(await api<D>(`/section/${key}`)); }

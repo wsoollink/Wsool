@@ -7,6 +7,7 @@ import { isLocale, toIntlLocale } from "@/i18n/config";
 import { requireCreator } from "@/lib/creator";
 import { db } from "@/lib/db";
 import { LinksEditor } from "./LinksEditor";
+import { SectionSkeleton } from "@/components/dashboard/SectionSkeleton";
 
 async function Editor() {
   const { page } = await requireCreator();
@@ -39,7 +40,7 @@ export default async function LinksPage({ params }: PageProps<"/[locale]/dashboa
   return (
     <div className="flex flex-col gap-4">
       <PageHeader title={t("links")} section="links" />
-      <Suspense fallback={null}>
+      <Suspense fallback={<SectionSkeleton />}>
         <Editor />
       </Suspense>
     </div>

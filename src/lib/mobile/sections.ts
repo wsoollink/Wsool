@@ -160,15 +160,17 @@ const LOADERS = {
     };
   },
   async analytics(page: Page, params: URLSearchParams) {
-    const isPro = await pro(page.userId);
-    if (!isPro && !FREE_LIMITS.analytics) return { locked: true as const };
     const raw = Number(params.get("range"));
     const range: Range = (RANGES as readonly number[]).includes(raw) ? (raw as Range) : 30;
     const end = today();
-    const [report, prev] = await Promise.all([
+    // The plan and the report in one wait (the report is dropped when analytics is locked).
+    const data = Promise.all([
       analyticsReport(page.id, range),
       periodTotals(page.id, new Date(end.getTime() - (2 * range - 1) * 86_400_000), new Date(end.getTime() - range * 86_400_000)),
     ]);
+    data.catch(() => {});
+    if (!(await pro(page.userId)) && !FREE_LIMITS.analytics) return { locked: true as const };
+    const [report, prev] = await data;
     return { locked: false as const, range, ranges: RANGES, report, prev };
   },
   async referrals(page: Page) {

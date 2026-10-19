@@ -6,6 +6,7 @@ import { Bell, ChevronLeft, ChevronRight, Eye, Lock, Share2, type LucideIcon, Ba
 import { Avatar, Card, Row, Screen, Status, T } from "../../components/ui";
 import { useI18n } from "../../i18n";
 import { api, ApiError } from "../../lib/api";
+import { useCached } from "../../lib/cached";
 import { useAuth } from "../../lib/app";
 import { useTheme, align } from "../../lib/theme";
 
@@ -47,7 +48,7 @@ export default function HomeScreen() {
   const { t, num, rtl } = useI18n();
   const { colors } = useTheme();
   const { refreshMe } = useAuth();
-  const [data, setData] = useState<Home | null>(null);
+  const [data, setData] = useCached<Home>("/home");
   const [error, setError] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
 

@@ -16,6 +16,7 @@ import { db } from "@/lib/db";
 import { formatNumber, formatPercent } from "@/lib/format";
 import { DailyChart } from "./DailyChart";
 import { PageHeader } from "@/components/dashboard/PageHeader";
+import { SectionSkeleton } from "@/components/dashboard/SectionSkeleton";
 
 type SP = Promise<Record<string, string | string[] | undefined>>;
 
@@ -48,6 +49,15 @@ function ShareList({ title, hint, rows, total, label, lang, empty }: { title: st
 async function Report({ lang, searchParams }: { lang: Locale; searchParams: SP }) {
   const { user, page } = await requireCreator();
   const t = await getTranslations("Analytics");
+  const raw = Number((await searchParams).range);
+  const range: Range = (RANGES as readonly number[]).includes(raw) ? (raw as Range) : 30;
+  // The plan, the report and the same number of days just before ("vs previous period") in one wait.
+  const end = today();
+  const report = Promise.all([
+    analyticsReport(page.id, range),
+    periodTotals(page.id, new Date(end.getTime() - (2 * range - 1) * 86_400_000), new Date(end.getTime() - range * 86_400_000)),
+  ]);
+  report.catch(() => {}); // unused when locked: never an unhandled rejection
   const sub = await db.subscription.findUnique({ where: { userId: user.id }, select: { status: true, trialEndsAt: true } });
 
   if (!hasPro(sub) && !FREE_LIMITS.analytics) {
@@ -61,12 +71,7 @@ async function Report({ lang, searchParams }: { lang: Locale; searchParams: SP }
     );
   }
 
-  const raw = Number((await searchParams).range);
-  const range: Range = (RANGES as readonly number[]).includes(raw) ? (raw as Range) : 30;
-  const r = await analyticsReport(page.id, range);
-  // The same number of days just before, for "vs previous period".
-  const end = today();
-  const prev = await periodTotals(page.id, new Date(end.getTime() - (2 * range - 1) * 86_400_000), new Date(end.getTime() - range * 86_400_000));
+  const [r, prev] = await report;
   const delta = (cur: number, before: number): Pick<Kpi, "delta" | "note"> => {
     if (!before) return { note: cur ? t("newPeriod") : undefined };
     const pct = Math.round(((cur - before) / before) * 100);
@@ -160,7 +165,7 @@ export default async function AnalyticsPage({ params, searchParams }: PageProps<
   return (
     <div className="flex flex-col gap-4">
       <PageHeader title={nav("analytics")} section="analytics" />
-      <Suspense fallback={null}><Report lang={locale} searchParams={searchParams} /></Suspense>
+      <Suspense fallback={<SectionSkeleton />}><Report lang={locale} searchParams={searchParams} /></Suspense>
     </div>
   );
 }

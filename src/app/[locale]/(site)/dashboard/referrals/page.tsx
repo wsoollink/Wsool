@@ -18,6 +18,7 @@ import { formatNumber, formatPrice } from "@/lib/format";
 import { maskIban, referralBalance, referralLink } from "@/lib/referrals";
 import { PayoutForm } from "./PayoutForm";
 import { RefLink } from "./RefLink";
+import { SectionSkeleton } from "@/components/dashboard/SectionSkeleton";
 
 const DAYS = 30;
 
@@ -25,11 +26,10 @@ async function Program({ lang }: { lang: Locale }) {
   const { user, page } = await requireCreator();
   const t = await getTranslations("Referrals");
   const sar = (n: number) => formatPrice(n, "SAR", lang);
-  const sub = await db.subscription.findUnique({ where: { userId: user.id }, select: { status: true, trialEndsAt: true } });
-  const pro = hasPro(sub);
-
   const since = new Date(today().getTime() - (DAYS - 1) * 86_400_000);
-  const [balance, clicksAll, clicksDays, customers, commissions, payouts, account] = await Promise.all([
+  const [sub, signups, balance, clicksAll, clicksDays, customers, commissions, payouts, account] = await Promise.all([
+    db.subscription.findUnique({ where: { userId: user.id }, select: { status: true, trialEndsAt: true } }),
+    db.user.count({ where: { referredById: user.id } }),
     referralBalance(user.id),
     db.referralClick.count({ where: { referrerId: user.id } }),
     db.referralClick.groupBy({ by: ["day"], where: { referrerId: user.id, day: { gte: since } }, _count: { _all: true } }),
@@ -45,7 +45,7 @@ async function Program({ lang }: { lang: Locale }) {
   ]);
   const earnedBy = new Map(commissions.map((c) => [c.referredUserId, Number(c._sum.amount ?? 0)]));
   const paying = commissions.filter((c) => c.referredUserId && Number(c._sum.amount ?? 0) > 0).length;
-  const signups = await db.user.count({ where: { referredById: user.id } });
+  const pro = hasPro(sub);
 
   const locale = toIntlLocale(lang);
   const dayLabel = new Intl.DateTimeFormat(locale, { day: "numeric", month: "long", timeZone: "UTC" });
@@ -180,7 +180,7 @@ export default async function ReferralsPage({ params }: PageProps<"/[locale]/das
   return (
     <div className="flex flex-col gap-4">
       <PageHeader title={nav("referrals")} section="referrals" />
-      <Suspense fallback={null}><Program lang={locale} /></Suspense>
+      <Suspense fallback={<SectionSkeleton />}><Program lang={locale} /></Suspense>
     </div>
   );
 }

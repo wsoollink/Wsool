@@ -1,4 +1,4 @@
-import { Suspense } from "react";
+import { cache, Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -17,13 +17,18 @@ import { SUPPORT_EMAIL } from "@/config/site";
 import { isLocale, toIntlLocale } from "@/i18n/config";
 import { requireCreator } from "@/lib/creator";
 import { db } from "@/lib/db";
+import type { Lang } from "@/generated/prisma/client";
 import { initials } from "@/lib/initials";
 import { signOut } from "../login/actions";
+
+// The card is drawn twice (sidebar + phone menu): one query per request.
+const primaryName = cache((pageId: string, lang: Lang) =>
+  db.pageTranslation.findFirst({ where: { pageId, lang }, select: { fullName: true } }));
 
 /** Who is signed in: photo / initial, name and page link (top of the sidebar and the phone menu). */
 async function CreatorCard() {
   const { page } = await requireCreator();
-  const tr = await db.pageTranslation.findFirst({ where: { pageId: page.id, lang: page.primaryLang }, select: { fullName: true } });
+  const tr = await primaryName(page.id, page.primaryLang);
   const name = tr?.fullName || page.username;
   return (
     <a href={`/${page.username}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 rounded-xl border border-line bg-card p-2.5 shadow-card transition-colors hover:bg-hover">

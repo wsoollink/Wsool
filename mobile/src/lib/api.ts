@@ -34,6 +34,7 @@ export async function loadSession() {
 }
 
 export async function setSession(s: Session | null) {
+  if (s?.user.id !== session?.user.id) memory.clear(); // signed out or another account: forget its screens
   session = s;
   if (s) await storage.set(KEY, JSON.stringify(s));
   else await storage.remove(KEY);
@@ -75,17 +76,29 @@ async function refresh(): Promise<Session | null> {
   return refreshing;
 }
 
+/**
+ * The last answer of every GET, kept in memory so a screen opens at once with what it showed
+ * before and refreshes in the background (useCached). Any write (POST) clears it, so a screen
+ * never opens with data from before a save.
+ */
+const memory = new Map<string, unknown>();
+export const peek = <T>(path: string) => memory.get(path) as T | undefined;
+
 /** Signed-in call: adds the token, refreshes it when needed (and once after a 401). */
 export async function api<T = Record<string, unknown>>(path: string, opts: { method?: string; body?: unknown } = {}): Promise<T> {
   if (!session) throw new ApiError("unauthorized", 401);
   if (session.expiresAt * 1000 - Date.now() < 60_000) await refresh();
   const init = { method: opts.method ?? "GET", body: opts.body === undefined ? undefined : JSON.stringify(opts.body) };
+  const send = async () => {
+    const data = (await request(path, { ...init, token: session?.accessToken })) as T;
+    if (init.method === "GET") memory.set(path, data);
+    else memory.clear();
+    return data;
+  };
   try {
-    return (await request(path, { ...init, token: session?.accessToken })) as T;
+    return await send();
   } catch (err) {
-    if (err instanceof ApiError && err.status === 401 && (await refresh())) {
-      return (await request(path, { ...init, token: session?.accessToken })) as T;
-    }
+    if (err instanceof ApiError && err.status === 401 && (await refresh())) return await send();
     throw err;
   }
 }

@@ -29,6 +29,13 @@ export async function planSummary(userId: string) {
  * verification per account. Raw values only: the app formats and translates.
  */
 export async function homeData(userId: string, page: Page) {
+  // Stats are fetched with everything else, before we know whether the plan shows them: one wait.
+  const end = today();
+  const statsData = Promise.all([
+    dailyCounts(page.id, 60),
+    db.pageView.groupBy({ by: ["country"], where: { pageId: page.id, day: { gte: new Date(end.getTime() - 29 * DAY) }, country: { not: null } }, _count: true, orderBy: { _count: { country: "desc" } }, take: 1 }),
+  ]);
+  statsData.catch(() => {}); // unused on Free pages: never an unhandled rejection
   const [plan, translations, accounts, counts, latestViews, unread] = await Promise.all([
     planSummary(userId),
     db.pageTranslation.findMany({ where: { pageId: page.id }, select: { lang: true, fullName: true, bio: true } }),
@@ -42,11 +49,9 @@ export async function homeData(userId: string, page: Page) {
 
   let stats = null;
   if (plan.pro || FREE_LIMITS.analytics) {
-    const days = await dailyCounts(page.id, 60);
+    const [days, countries] = await statsData;
     const cur = days.slice(30), before = days.slice(0, 30);
     const sum = (rows: typeof days, k: "views" | "whatsapp" | "email") => rows.reduce((s, d) => s + d[k], 0);
-    const end = today();
-    const countries = await db.pageView.groupBy({ by: ["country"], where: { pageId: page.id, day: { gte: new Date(end.getTime() - 29 * DAY) }, country: { not: null } }, _count: true, orderBy: { _count: { country: "desc" } }, take: 1 });
     const views = sum(cur, "views");
     stats = {
       views, whatsapp: sum(cur, "whatsapp"), email: sum(cur, "email"),

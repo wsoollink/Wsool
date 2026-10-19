@@ -735,6 +735,18 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   Audience reads use effort `medium` and `AUDIENCE_TASK` (pair each age label with the percent on its row, RTL apps
   swap sides, never estimate from bar length); ages not adding up to 100 ±3 show a "check the ages" warning (`agesUncertain`).
 
+### Speed (owner, Oct 2026)
+- Netlify functions run in **Frankfurt** (owner changed "Functions region"), next to Supabase (`wsool-eu`). Every database
+  query is a network round trip, so: Prisma `relationJoins` (nested reads = one query), queries that don't depend on each
+  other go in one `Promise.all` (start optional ones early and drop them, e.g. stats before the plan is known, with
+  `.catch(() => {})`), never query for an empty `in: []` list, `react` `cache()` for lookups rendered twice. The pg pool
+  keeps idle connections 2 min (`src/lib/db.ts`). App API: `guarded()` in `src/lib/mobile/api.ts` reads the suspension flag
+  and the page in one query.
+- Dashboard sections show `SectionSkeleton` while their data streams in (Suspense fallback).
+- App: every GET answer is kept in memory (`peek`, `src/lib/api.ts`); screens use `useCached()` (`mobile/src/lib/cached.ts`)
+  to open at once and refresh in the background (same data = no re-render, so forms aren't reset). Any POST clears it.
+- Local check: `scratchpad/lagproxy.mjs` (adds 50 ms each way to Postgres) + timing script; each 100 ms = one round trip.
+
 ### Agent tools (owner, Oct 2026)
 - **Context7** (`.mcp.json`, MCP server `https://mcp.context7.com/mcp`, no API key yet = lower rate limit): before writing
   or changing code that uses Next.js, Supabase, Prisma, next-intl, Resend, Sentry, Netlify or the payment gateway, look

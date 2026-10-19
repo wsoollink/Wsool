@@ -16,13 +16,14 @@ import { PLATFORM_NAMES } from "@/config/platforms";
 import { verificationDisplay } from "@/config/verification";
 import { isLocale, toIntlLocale, type Locale } from "@/i18n/config";
 import { today } from "@/lib/analytics";
-import { analyticsReport, dailyCounts, periodTotals } from "@/lib/analytics-report";
+import { analyticsReport, dailyCounts } from "@/lib/analytics-report";
 import { requireCreator } from "@/lib/creator";
 import { db } from "@/lib/db";
 import { formatNumber, formatPercent } from "@/lib/format";
 import { pageLanguages } from "@/lib/page-language";
 import { siteOrigin } from "@/lib/site-url";
 import { LinkCard, ShareButton } from "./LinkCard";
+import { SectionSkeleton } from "@/components/dashboard/SectionSkeleton";
 
 const DAY = 86_400_000;
 
@@ -33,6 +34,11 @@ async function Home({ lang }: { lang: Locale }) {
   const tpl = await getTranslations("AppearancePage.templates");
   const locale = toIntlLocale(lang);
   const now = new Date();
+
+  // Stats (last 30 days vs the 30 before, per-day numbers for the chart) are fetched together with
+  // everything else, before we know whether the plan shows them: one wait instead of three.
+  const stats = Promise.all([analyticsReport(page.id, 30), dailyCounts(page.id, 60)]);
+  stats.catch(() => {}); // unused on Free pages: never an unhandled rejection
 
   // Everything is scoped to the signed-in creator's own page / user id.
   const [sub, translations, accounts, counts, latestViews] = await Promise.all([
@@ -51,9 +57,10 @@ async function Home({ lang }: { lang: Locale }) {
 
   // Stats: last 30 days vs the 30 before (analytics is a Pro feature).
   const canStats = pro || FREE_LIMITS.analytics;
-  const end = today();
-  const report = canStats ? await analyticsReport(page.id, 30) : null;
-  const prev = canStats ? await periodTotals(page.id, new Date(end.getTime() - 59 * DAY), new Date(end.getTime() - 30 * DAY)) : null;
+  const [report, days] = canStats ? await stats : [null, []];
+  // The 30 days before: the first half of the 60 per-day numbers (no extra query).
+  const sumOf = (k: "views" | "whatsapp" | "email") => days.slice(0, 30).reduce((n, d) => n + d[k], 0);
+  const prev = report ? { views: sumOf("views"), whatsapp: sumOf("whatsapp"), email: sumOf("email") } : null;
   /** KPI delta ("+12%", kept left-to-right by KpiStrip) + "vs last month". */
   const delta = (cur: number, before: number): Pick<Kpi, "delta" | "note"> => {
     if (!before) return { note: cur ? t("new") : t("noChange") };
@@ -94,7 +101,6 @@ async function Home({ lang }: { lang: Locale }) {
   const languages = langs.length > 1 ? t("bothLangs") : langs[0] === "en" ? t("enOnly") : t("arOnly");
 
   // Per-day numbers: 60 days = this period + the one before (chart), last 14 for sparklines.
-  const days = report ? await dailyCounts(page.id, 60) : [];
   const current = days.slice(30);
   const before = days.slice(0, 30);
   const spark = (k: "views" | "whatsapp" | "email") => current.slice(-14).map((d) => d[k]);
@@ -364,7 +370,7 @@ export default async function DashboardPage({ params }: PageProps<"/[locale]/das
   setRequestLocale(toIntlLocale(locale));
 
   return (
-    <Suspense fallback={null}>
+    <Suspense fallback={<SectionSkeleton />}>
       <Home lang={locale} />
     </Suspense>
   );

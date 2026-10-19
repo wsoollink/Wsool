@@ -62,30 +62,32 @@ type Ctx = { user: CurrentUser; req: Request };
  * accounts, 500 (logged) on unexpected errors.
  */
 export function authed(handler: (ctx: Ctx) => Promise<Response>) {
+  return guarded(false, handler);
+}
+
+/** Like authed, but also requires the creator's page (else 409 "no_page" → onboarding in the app). */
+export function withPage(handler: (ctx: Ctx & { page: Page }) => Promise<Response>) {
+  return guarded(true, (ctx) => (ctx.page ? handler({ ...ctx, page: ctx.page }) : Promise.resolve(apiError("no_page", 409))));
+}
+
+type Page = NonNullable<Awaited<ReturnType<typeof db.page.findUnique>>>;
+
+// The suspension check and the page come back in one query (one round trip to the database).
+function guarded(withPageRow: boolean, handler: (ctx: Ctx & { page: Page | null }) => Promise<Response>) {
   return async (req: Request) => {
     try {
       const user = await bearerUser(req);
       if (!user) return apiError("unauthorized", 401);
-      const row = await db.user.findUnique({ where: { id: user.id }, select: { suspendedAt: true } });
+      const row = await db.user.findUnique({ where: { id: user.id }, select: { suspendedAt: true, ...(withPageRow ? { page: true } : {}) } });
       if (row?.suspendedAt) return apiError("suspended", 403);
-      return await handler({ user, req });
+      const page = withPageRow ? ((row as { page?: Page | null } | null)?.page ?? null) : null;
+      return await handler({ user, req, page });
     } catch (err) {
       console.error("[mobile-api]", req.method, new URL(req.url).pathname, err);
       return apiError("server", 500);
     }
   };
 }
-
-/** Like authed, but also requires the creator's page (else 409 "no_page" → onboarding in the app). */
-export function withPage(handler: (ctx: Ctx & { page: NonNullable<Awaited<ReturnType<typeof findPage>>> }) => Promise<Response>) {
-  return authed(async (ctx) => {
-    const page = await findPage(ctx.user.id);
-    if (!page) return apiError("no_page", 409);
-    return handler({ ...ctx, page });
-  });
-}
-
-const findPage = (userId: string) => db.page.findUnique({ where: { userId } });
 
 /** Wraps a public endpoint (sign-in): only error handling. */
 export function open(handler: (req: Request) => Promise<Response>) {

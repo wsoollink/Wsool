@@ -11,6 +11,7 @@ import { db } from "@/lib/db";
 import { toVerifyAccounts } from "./accounts";
 import { VerificationList } from "./VerificationList";
 import { PageHeader } from "@/components/dashboard/PageHeader";
+import { SectionSkeleton } from "@/components/dashboard/SectionSkeleton";
 
 async function Accounts() {
   const { user, page } = await requireCreator();
@@ -61,7 +62,7 @@ export default async function VerificationPage({ params }: PageProps<"/[locale]/
       <PageHeader title={nav("verification")} section="verification" />
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
         <div className="flex min-w-0 flex-col gap-4">
-          <Suspense fallback={null}>
+          <Suspense fallback={<SectionSkeleton />}>
             <Accounts />
           </Suspense>
         </div>

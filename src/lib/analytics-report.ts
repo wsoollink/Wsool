@@ -51,11 +51,13 @@ export async function analyticsReport(pageId: string, days: Range) {
 
 /** Adds the current title of tapped links / services / coupons (null once deleted). */
 async function withTargetNames<T extends { kind: string; targetId: string | null }>(rows: T[]) {
-  const ids = (kind: string) => rows.filter((r) => r.kind === kind && r.targetId).map((r) => r.targetId!);
+  const ids = (...kinds: string[]) => rows.filter((r) => kinds.includes(r.kind) && r.targetId).map((r) => r.targetId!);
+  const linkIds = ids("link"), serviceIds = ids("service"), couponIds = ids("coupon_copy", "coupon_open");
+  // Only ask the database when there is something to name (each query is a round trip).
   const [links, services, coupons] = await Promise.all([
-    db.pageLink.findMany({ where: { id: { in: ids("link") } }, select: { id: true, title: true } }),
-    db.service.findMany({ where: { id: { in: ids("service") } }, select: { id: true, name: true } }),
-    db.coupon.findMany({ where: { id: { in: [...ids("coupon_copy"), ...ids("coupon_open")] } }, select: { id: true, store: true } }),
+    linkIds.length ? db.pageLink.findMany({ where: { id: { in: linkIds } }, select: { id: true, title: true } }) : [],
+    serviceIds.length ? db.service.findMany({ where: { id: { in: serviceIds } }, select: { id: true, name: true } }) : [],
+    couponIds.length ? db.coupon.findMany({ where: { id: { in: couponIds } }, select: { id: true, store: true } }) : [],
   ]);
   const names = new Map([...links.map((l) => [l.id, l.title] as const), ...services.map((s) => [s.id, s.name] as const), ...coupons.map((c) => [c.id, c.store] as const)]);
   return rows.map((r) => ({ ...r, targetName: r.targetId ? names.get(r.targetId) ?? null : null }));

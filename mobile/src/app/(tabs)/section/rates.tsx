@@ -97,6 +97,16 @@ export default function Rates() {
           {data.accounts.length >= 2 && (
             <Card>
               <SwitchRow label={t("rates.bundle")} hint={t("rates.bundleHint")} value={bundle.on} onChange={(v) => { setBundle({ ...bundle, on: v }); touch(); }} />
+              {/* How a bundle works, in plain steps (owner: creators didn't get it). */}
+              <View style={{ borderRadius: 14, backgroundColor: colors.bg, padding: 12, gap: 4 }}>
+                <T weight="bold" size={13.5}>{t("rates.bundleHowTitle")}</T>
+                {(["bundleStep1", "bundleStep2", "bundleStep3"] as const).map((k, i) => (
+                  <Row key={k} style={{ alignItems: "flex-start", gap: 6 }}>
+                    <T size={13} tone="muted">{i + 1}.</T><T size={13} tone="muted" style={{ flex: 1 }}>{t(`rates.${k}`)}</T>
+                  </Row>
+                ))}
+                <T size={12.5} tone="muted" style={{ marginTop: 2 }}>{t("rates.bundleExample")}</T>
+              </View>
               {bundle.on && (
                 <>
                   <Field label={t("rates.bundleName")} value={bundle.name} onChangeText={(v) => { setBundle({ ...bundle, name: v }); touch(); }} maxLength={40} />

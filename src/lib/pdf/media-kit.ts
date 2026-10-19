@@ -393,7 +393,7 @@ export async function buildMediaKit(page: PublishedPage, lang: Locale): Promise<
     if (anyVerified) tick(rtl ? nx : nx + nameM.width + 12, cy + nameM.height / 2 - 13, 30);
     cy += nameM.height;
     if (tr?.specialty) cy += 8 + text(tr.specialty, PAD, cy + 8, { size: 22, color: P.accent, width: CONTENT, align: "center" });
-    const place = [tr?.city, tr?.country].filter(Boolean).join(t("listSep"));
+    const place = [tr?.country, tr?.city].filter(Boolean).join(t("listSep"));
     if (place) cy += 8 + text(place, PAD, cy + 8, { size: 15, color: P.muted, width: CONTENT, align: "center" });
     cy += gap;
     cy += text(t("followersAll"), PAD, cy, { size: 15, color: P.muted, width: CONTENT, align: "center" }) + 2;
@@ -452,7 +452,7 @@ export async function buildMediaKit(page: PublishedPage, lang: Locale): Promise<
       }
       y += 16;
     }
-    const place = [tr?.city, tr?.country].filter(Boolean).join(t("listSep"));
+    const place = [tr?.country, tr?.city].filter(Boolean).join(t("listSep"));
     const langs = [page.primaryLang, ...(page.enEnabled && page.primaryLang !== "en" ? (["en"] as const) : [])].map((l) => t(l === "ar" ? "langAr" : "langEn")).join(t("listSep"));
     const facts = [...(place ? [{ icon: ICONS.pin, label: t("city"), value: place }] : []), { icon: ICONS.globe, label: t("contentLanguage"), value: langs }];
     ensure(96, t("about"));

@@ -31,6 +31,8 @@ export function AreaChart({ values, prev, labels, ticks, valueText, height = 170
   const onLayout = (e: LayoutChangeEvent) => setW(e.nativeEvent.layout.width);
   const pick = (px: number) => setActive(Math.max(0, Math.min(values.length - 1, Math.round((px / w) * (values.length - 1)))));
   const line = w ? smooth(values, w, height, max) : "";
+  // A point picked on a longer period (30 days) doesn't exist after switching to 7: ignore it.
+  const shown = active !== null && active < values.length ? active : null;
   return (
     <View accessible accessibilityRole="image" accessibilityLabel={accessibilityLabel} style={{ gap: 6, direction: "ltr" }}>
       <View
@@ -49,14 +51,14 @@ export function AreaChart({ values, prev, labels, ticks, valueText, height = 170
             {prev && <Path d={smooth(prev, w, height, max)} stroke={colors.faint} strokeWidth={1.5} strokeDasharray="4 4" fill="none" />}
             <Path d={`${line} L ${w} ${height} L 0 ${height} Z`} fill="url(#fill)" />
             <Path d={line} stroke={colors.blue} strokeWidth={2.2} fill="none" />
-            {active !== null && <Line x1={(active / Math.max(1, values.length - 1)) * w} x2={(active / Math.max(1, values.length - 1)) * w} y1={0} y2={height} stroke={colors.faint} />}
+            {shown !== null && <Line x1={(shown / Math.max(1, values.length - 1)) * w} x2={(shown / Math.max(1, values.length - 1)) * w} y1={0} y2={height} stroke={colors.faint} />}
           </Svg>
         )}
       </View>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         {ticks.map((t, i) => <T key={i} size={11} tone="faint">{t}</T>)}
       </View>
-      {active !== null && <T size={12.5} tone="muted" style={{ textAlign: "center" }}>{labels[active]} · {valueText(active)}</T>}
+      {shown !== null && <T size={12.5} tone="muted" style={{ textAlign: "center" }}>{labels[shown]} · {valueText(shown)}</T>}
     </View>
   );
 }

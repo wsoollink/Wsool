@@ -108,6 +108,7 @@ export const en: typeof ar = {
     currency: "Currency", currencies: { SAR: "SAR", USD: "USD", AED: "AED", KWD: "KWD" },
     type: "Ad type", typeEn: "Type in English", price: "Price ({currency})", addRate: "Add rate", suggestions: "Video|Story|Post|Live|Mention|Event attendance",
     noAccounts: "Add your accounts first in “Accounts & numbers”.", bundle: "Bundle", bundleHint: "Two or more platforms for one price",
+    bundleHowTitle: "How does a bundle work?", bundleStep1: "Pick the platforms you want to combine into one deal (two or more).", bundleStep2: "Add the ad type and the bundle price, e.g. “Video” at one price for all.", bundleStep3: "If the same ad type has the same name on every platform, brands see what it would cost separately and how much they save.", bundleExample: "Example: a video on TikTok at 1500 and on Snapchat at 1500 = 3000. Bundle both at 2500 and brands see “instead of 3000, save 17%”.",
     bundleName: "Bundle name", bundlePlatforms: "Platforms in the bundle", bundleIncomplete: "A bundle needs at least two platforms and one rate.",
   },
   accounts: {
@@ -123,7 +124,7 @@ export const en: typeof ar = {
     },
   },
   work: {
-    subtitle: "Brand logos and videos of your work", brands: "Brands you worked with", brandsHint: "Shown as a scrolling strip on your page", brandName: "Brand name",
+    subtitle: "Brand logos and videos of your work", brands: "Brands you worked with", brandsHint: "Shown as a scrolling strip on your page",
     addBrand: "Add logo", saveBrands: "Save logos", works: "Past work", freeLimit: "The Free plan shows your first {n} works.",
     video: "Video", link: "Post link", pickVideo: "Choose video", replaceVideo: "Replace video", postLink: "Post link (TikTok / Instagram / YouTube)",
     checkLink: "Check link", cover: "Cover image", brand: "Brand", type: "Type of work", typeHint: "e.g. Ad, coverage", addWork: "Add work",

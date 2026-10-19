@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { Linking, Pressable, RefreshControl, ScrollView, Share, View } from "react-native";
+import { Linking, Pressable, RefreshControl, Share, View } from "react-native";
 import { router } from "expo-router";
 import Svg, { Circle } from "react-native-svg";
 import { Bell, ChevronLeft, ChevronRight, Eye, Lock, Share2, type LucideIcon, BadgeCheck, Camera, FileText, Hash, Briefcase, Clapperboard, Tag, MessageCircle, Users, ChartPie, RefreshCw } from "lucide-react-native";
@@ -85,13 +85,15 @@ export default function HomeScreen() {
   return (
     <Screen refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.blue} />}>
       <Row style={{ justifyContent: "space-between", paddingTop: 4 }}>
-        <Row style={{ gap: 12, flex: 1 }}>
-          <Avatar uri={data.photoUrl} name={data.name || data.username} />
-          <View style={{ flex: 1 }}>
-            <T size={13} tone="muted">{hour < 12 ? t("greeting.morning") : t("greeting.evening")}</T>
-            <T weight="black" size={22} numberOfLines={1}>{(data.name || data.username).split(" ")[0]}</T>
-          </View>
-        </Row>
+        <Pressable accessibilityRole="button" accessibilityHint={t("tabs.page")} onPress={() => router.push("/page")} style={{ flex: 1 }}>
+          <Row style={{ gap: 12 }}>
+            <Avatar uri={data.photoUrl} name={data.name || data.username} />
+            <View style={{ flex: 1 }}>
+              <T size={13} tone="muted">{hour < 12 ? t("greeting.morning") : t("greeting.evening")}</T>
+              <T weight="black" size={22} numberOfLines={1}>{(data.name || data.username).split(" ")[0]}</T>
+            </View>
+          </Row>
+        </Pressable>
         <Pressable accessibilityRole="button" accessibilityLabel={data.unread ? `${t("tabs.notifications")}, ${t("tabs.unread", { n: data.unread })}` : t("tabs.notifications")}
           onPress={() => router.push("/notifications")}
           style={{ width: 46, height: 46, borderRadius: 23, backgroundColor: colors.card, alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: colors.lineSoft }}>
@@ -137,11 +139,11 @@ export default function HomeScreen() {
           {s ? <Pressable accessibilityRole="link" onPress={() => router.push("/insights")} hitSlop={10}><T size={14} weight="bold" tone="blue">{t("home.details")}</T></Pressable> : null}
         </Row>
         {s ? (
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginHorizontal: -16 }} contentContainerStyle={{ paddingHorizontal: 16, gap: 10 }}>
+          <View style={{ flexDirection: "row", gap: 8 }}>
             {tiles.map((x) => (
-              <Card key={x.label} style={{ width: 150, padding: 14, gap: 2 }}>
-                <T size={13} tone="muted">{x.label}</T>
-                <T weight="black" size={26}>{x.value}</T>
+              <Card key={x.label} style={{ flex: 1, minWidth: 0, padding: 12, gap: 2 }}>
+                <T size={12} tone="muted" numberOfLines={2} style={{ minHeight: 32 }}>{x.label}</T>
+                <T weight="black" size={22} numberOfLines={1} adjustsFontSizeToFit>{x.value}</T>
                 {x.delta ? (
                   <View style={{ alignSelf: "flex-start", paddingHorizontal: 8, borderRadius: 999, backgroundColor: (x.delta.good ? colors.good : colors.warn) + "1F" }}>
                     <T size={12} weight="bold" style={{ color: x.delta.good ? colors.good : colors.warn, writingDirection: "ltr" }}>{x.delta.text}</T>
@@ -149,7 +151,7 @@ export default function HomeScreen() {
                 ) : <T size={12} tone="muted">{t("home.noCompare")}</T>}
               </Card>
             ))}
-          </ScrollView>
+          </View>
         ) : (
           <Card style={{ flexDirection: "row", alignItems: "center", gap: 10 }}><Lock size={18} color={colors.muted} /><T tone="muted" style={{ flex: 1 }}>{t("home.statsPro")}</T></Card>
         )}

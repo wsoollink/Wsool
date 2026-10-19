@@ -68,7 +68,7 @@ export async function CreatorProfile({ page, lang, preview = false }: ProfilePro
   const totalFollowers = page.accounts.reduce((sum, a) => sum + a.followers, 0);
   const numbersFont = "font-numbers";
   const circle = page.photoShape === "circle";
-  const location = [tr?.city, tr?.country].filter(Boolean).join(lang === "ar" ? "، " : ", ");
+  const location = [tr?.country, tr?.city].filter(Boolean).join(lang === "ar" ? "، " : ", ");
   const tags = page.tags.filter((tag) => tag.lang === lang);
   const theme = pageTheme(page.template, page.accent, page.customColors);
   const pageUrl = `${siteOrigin()}/${page.username}`;

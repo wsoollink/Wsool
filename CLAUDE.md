@@ -118,7 +118,7 @@ marketing header (desktop and phones; on phones `marketing.css` shrinks the logo
 ## 5. Creator page (public)
 
 Order (mobile): hero square photo fading into background · name + verified badge · specialty
-(accent color) · bio · city/country · licenses (only if any) · total followers (animated count-up)
+(accent color) · bio · country/city (country first everywhere: page, PDF, forms; owner) · licenses (only if any) · total followers (animated count-up)
 · social icons row · tags (3 per row, max 18 chars, no wrap) · monthly views box · platform cards
 grid (tap → audience pop-up if data exists) · brand logos (auto-scrolling marquee) · past work
 (auto-scrolling row, tap → portrait video pop-up) · **ad rates** · contact (WhatsApp + email)
@@ -445,7 +445,7 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   `saveMonthlyViews` keeps one row (first day of the month, UTC) with the total (`views`, what the page shows) and
   `by_account` ({accountId: views}); all empty hides the box, deleting an account drops its share (`dropDeletedViews`). Audience = gender, fixed age groups, top 5 countries (ISO codes) and cities, each group
   <= 100%. Number inputs go through `digitsOnly()` (turns ٠-٩ into 0-9).
-- **Brands & work** (`dashboard/work/`): `saveBrands` / `saveWorks` replace whole lists. Files use
+- **Brands & work** (`dashboard/work/`): `saveBrands` / `saveWorks` replace whole lists. Brands are logos only (owner, Oct 2026: no name field; `name` stays optional, old names kept as alt text). Files use
   `{ path, url }` refs: a fresh upload in the creator's own folder, or a URL their rows already had;
   unused files are deleted. Logos are shrunk to WebP (keeps transparency); a new video gets a cover
   grabbed from its first second in the browser (`videoCover()`), replaceable by the creator. The
@@ -459,7 +459,7 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   `hasPro()` in `src/config/plans.ts` is the one place that decides Pro vs Free.
 - **Ad rates** (`dashboard/rates/`): `saveRateSettings` (upsert), `saveRates(accountId, rates)` per
   account (ownership checked), `saveBundles` (whole list; every account id must be the creator's,
-  2+ platforms, 1+ rate). Without saved settings the public page uses defaults (shown, VAT included,
+  2+ platforms, 1+ rate). The bundle card explains itself ("How does a bundle work?" steps + example, web and app). Without saved settings the public page uses defaults (shown, VAT included,
   SAR, or USD when the primary language is English). Prices accept Arabic digits and "٫"
   (`decimalInput()`), 2 decimals. The bundle editor previews "instead of X, save Y%" with
   `bundleComparison()`, the same function the public page uses.

@@ -89,11 +89,11 @@ export default function WorkScreen() {
             <T weight="bold" size={16}>{t("work.brands")}</T>
             <T size={12.5} tone="muted">{t("work.brandsHint")}</T>
             {brands.map((b, i) => (
-              <Row key={i} style={{ alignItems: "flex-end" }}>
+              <Row key={i}>
                 <View style={{ width: 56, height: 56, borderRadius: 12, backgroundColor: "#fff", borderWidth: 1, borderColor: colors.line, overflow: "hidden" }}>
                   {b.logo.url ? <Image source={{ uri: b.logo.url }} style={{ width: 56, height: 56 }} contentFit="contain" /> : null}
                 </View>
-                <View style={{ flex: 1 }}><Field label={t("work.brandName")} value={b.name} maxLength={60} onChangeText={(v) => { setBrands(brands.map((x, j) => (j === i ? { ...x, name: v } : x))); brandsSaver.touch(); }} /></View>
+                <View style={{ flex: 1 }} />
                 <ItemTools index={i} count={brands.length} onMove={(a, c) => { setBrands(move(brands, a, c)); brandsSaver.touch(); }} onRemove={() => { setBrands(brands.filter((_, j) => j !== i)); brandsSaver.touch(); }} />
               </Row>
             ))}
@@ -101,7 +101,7 @@ export default function WorkScreen() {
             <AddButton label={t("work.addBrand")} disabled={brands.length >= MAX_BRANDS || busy === "brand"} onPress={addBrand} />
             {brandsSaver.status === "saved" || brandsSaver.status === "failed" ? <T size={13} tone={brandsSaver.status === "saved" ? "good" : "bad"}>{brandsSaver.status === "saved" ? t("editor.saved") : t("editor.failed")}</T> : null}
             <Button title={t("work.saveBrands")} variant="secondary" loading={brandsSaver.status === "saving"}
-              onPress={() => brandsSaver.save(async () => !!(await rpc<{ ok?: boolean }>("saveBrands", brands.filter((b) => b.name.trim()).map((b) => ({ name: b.name, ...ref(b.logo) })))).ok)} />
+              onPress={() => brandsSaver.save(async () => !!(await rpc<{ ok?: boolean }>("saveBrands", brands.filter((b) => b.logo.url || b.logo.path).map((b) => ({ name: b.name, ...ref(b.logo) })))).ok)} />
           </Card>
 
           <T weight="bold" size={16} style={{ marginTop: 8 }}>{t("work.works")}</T>

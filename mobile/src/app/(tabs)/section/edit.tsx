@@ -22,7 +22,7 @@ type Data = {
   tags: Record<Lang, string[]>;
   licenses: License[];
 };
-const FIELDS: (keyof Texts)[] = ["fullName", "specialty", "bio", "city", "country"];
+const FIELDS: (keyof Texts)[] = ["fullName", "specialty", "bio", "country", "city"];
 const MAX = { fullName: 80, specialty: 80, bio: 500, city: 60, country: 60 };
 const USERNAME_ERRORS = ["length", "characters", "dots", "reserved", "extension", "taken", "same", "cooldown"];
 

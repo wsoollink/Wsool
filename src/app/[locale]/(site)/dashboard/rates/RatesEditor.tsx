@@ -149,6 +149,16 @@ export function RatesEditor({ settings, accounts, bundle, lang }: { settings: Ra
               </span>
               <Switch labelHidden label={t("bundle")} checked={b.on} disabled={accounts.length < 2} onChange={(on) => { setB({ ...b, on }); dirty(); }} />
             </div>
+            {/* How a bundle works, in plain steps (owner: creators didn't get it). */}
+            <div className="rounded-xl bg-navy/[0.03] p-3 text-[13px] leading-6">
+              <p className="font-bold">{t("bundleHowTitle")}</p>
+              <ol className="list-decimal ps-5 text-muted">
+                <li>{t("bundleStep1")}</li>
+                <li>{t("bundleStep2")}</li>
+                <li>{t("bundleStep3")}</li>
+              </ol>
+              <p className="mt-1 text-xs text-muted">{t("bundleExample")}</p>
+            </div>
             {accounts.length < 2 && <p className="text-sm text-muted">{t("bundleNeedsTwo")}</p>}
             {b.on && accounts.length >= 2 && (
               <div className="flex flex-col gap-3">

@@ -10,7 +10,7 @@ import { shrinkImage, uploadFile } from "@/lib/upload-client";
 import { MAX_BRANDS } from "@/lib/validation/work";
 import { saveBrands } from "./actions";
 
-type Row = { key: string; name: string; path: string | null; url: string | null; preview: string | null; uploading?: boolean; error?: boolean };
+type Row = { key: string; name: string; path: string | null; url: string | null; preview: string | null; uploading?: boolean };
 const newKey = () => Math.random().toString(36).slice(2);
 const moveButton = "inline-flex size-11 items-center justify-center rounded-full text-muted hover:bg-navy/5 disabled:opacity-30";
 
@@ -20,7 +20,7 @@ export function BrandsCard({ initial }: { initial: { name: string; url: string }
   const e = useTranslations("EditPage");
   const fileId = useId();
   const [rows, setRows] = useState<Row[]>(initial.map((b) => ({ key: newKey(), name: b.name, path: null, url: b.url, preview: b.url })));
-  const [status, setStatus] = useState<"" | "saved" | "failed" | "incomplete" | "upload">("");
+  const [status, setStatus] = useState<"" | "saved" | "failed" | "upload">("");
   const [uploadError, setUploadError] = useState("");
   const [pending, startTransition] = useTransition();
 
@@ -41,7 +41,7 @@ export function BrandsCard({ initial }: { initial: { name: string; url: string }
     setUploadError("");
     for (const file of [...(files ?? [])].slice(0, MAX_BRANDS - rows.length)) {
       const key = newKey();
-      setRows((all) => [...all, { key, name: file.name.replace(/\.\w+$/, "").slice(0, 60), path: null, url: null, preview: URL.createObjectURL(file), uploading: true }]);
+      setRows((all) => [...all, { key, name: "", path: null, url: null, preview: URL.createObjectURL(file), uploading: true }]);
       const uploaded = await uploadFile("logo", await shrinkImage(file, 800, 0.9, "image/webp"));
       if ("error" in uploaded) {
         setRows((all) => all.filter((r) => r.key !== key));
@@ -53,10 +53,6 @@ export function BrandsCard({ initial }: { initial: { name: string; url: string }
   }
 
   const save = () => {
-    if (rows.some((r) => !r.name.trim())) {
-      setRows(rows.map((r) => ({ ...r, error: !r.name.trim() })));
-      return setStatus("incomplete");
-    }
     startTransition(async () => {
       const res = await saveBrands(rows.map((r) => ({ name: r.name, path: r.path, url: r.url })));
       setStatus(res.ok ? "saved" : "failed");
@@ -70,7 +66,7 @@ export function BrandsCard({ initial }: { initial: { name: string; url: string }
         <p className="text-xs text-muted">{t("brandsHint", { max: MAX_BRANDS })}</p>
       </div>
 
-      {/* Logo tiles as in the design; the name under each tile is the logo's text alternative. */}
+      {/* Logo tiles only (owner, Oct 2026: no brand name field; names saved earlier are kept). */}
       <ul className="grid grid-cols-3 gap-2.5">
         {rows.map((row, i) => (
           <li key={row.key} className="flex min-w-0 flex-col gap-1">
@@ -86,13 +82,6 @@ export function BrandsCard({ initial }: { initial: { name: string; url: string }
                 <span className="inline-flex size-7 items-center justify-center rounded-full bg-bg text-muted"><X aria-hidden="true" size={14} /></span>
               </button>
             </span>
-            <label htmlFor={`brand-${row.key}`} className="sr-only">{t("brandName")}</label>
-            <input
-              id={`brand-${row.key}`} value={row.name} maxLength={60} placeholder={t("brandName")}
-              aria-invalid={!!row.error}
-              onChange={(ev) => update(row.key, { name: ev.target.value, error: false })}
-              className="h-9 min-w-0 rounded-lg border border-transparent bg-transparent px-1 text-center text-xs hover:border-navy/12 focus:border-navy/16 aria-[invalid=true]:border-bad"
-            />
             {rows.length > 1 && (
               <div className="flex justify-center">
                 <button type="button" onClick={() => move(i, -1)} disabled={i === 0} aria-label={t("moveEarlier", { item: row.name || t("logoN", { n: i + 1 }) })} className={moveButton}>
@@ -122,7 +111,7 @@ export function BrandsCard({ initial }: { initial: { name: string; url: string }
 
       <div className="flex items-center justify-between gap-3">
         <p role="status" aria-live="polite" className={`text-sm ${status === "saved" ? "text-good" : "text-bad"}`}>
-          {status === "saved" ? e("saved") : status === "incomplete" ? t("brandNameRequired") : status === "failed" ? e("errors.failed") : ""}
+          {status === "saved" ? e("saved") : status === "failed" ? e("errors.failed") : ""}
         </p>
         <button type="button" onClick={save} disabled={pending || rows.some((r) => r.uploading)} aria-busy={pending} className={buttonClasses("primary")}>
           {pending ? e("saving") : e("save")}

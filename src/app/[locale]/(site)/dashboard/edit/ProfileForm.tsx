@@ -66,8 +66,8 @@ export function ProfileForm({ primaryLang: initialPrimary, enEnabled: initialEn,
               <TextField id={`${lang}.specialty`} name={`${lang}.specialty`} dir={dir} lang={lang} label={t("specialty")} defaultValue={v.specialty} maxLength={80} counter={`${counts[`${lang}.specialty`] ?? 0}/80`} onInput={count(`${lang}.specialty`)} hint={t(lang === "ar" ? "specialtyHint" : "specialtyHintEn")} error={err(`${lang}.specialty`)} />
               <TextAreaField id={`${lang}.bio`} name={`${lang}.bio`} dir={dir} lang={lang} label={t("bio")} defaultValue={v.bio} maxLength={500} counter={`${counts[`${lang}.bio`] ?? 0}/500`} onInput={count(`${lang}.bio`)} hint={t("bioHint")} error={err(`${lang}.bio`)} />
               <div className="grid grid-cols-2 gap-3">
-                <TextField id={`${lang}.city`} name={`${lang}.city`} dir={dir} lang={lang} label={t("city")} defaultValue={v.city} maxLength={60} error={err(`${lang}.city`)} />
                 <TextField id={`${lang}.country`} name={`${lang}.country`} dir={dir} lang={lang} label={t("country")} defaultValue={v.country} maxLength={60} list={`countries-${lang}`} error={err(`${lang}.country`)} />
+                <TextField id={`${lang}.city`} name={`${lang}.city`} dir={dir} lang={lang} label={t("city")} defaultValue={v.city} maxLength={60} error={err(`${lang}.city`)} />
                 <datalist id={`countries-${lang}`}>
                   {(lang === "ar" ? ["السعودية", "الإمارات", "الكويت", "قطر", "البحرين", "عُمان", "مصر", "الأردن"] : ["Saudi Arabia", "UAE", "Kuwait", "Qatar", "Bahrain", "Oman", "Egypt", "Jordan"]).map((c) => <option key={c} value={c} />)}
                 </datalist>

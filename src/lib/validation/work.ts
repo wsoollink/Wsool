@@ -8,7 +8,7 @@ export const MAX_WORKS = 30;
 const file = { path: z.string().max(200).nullable().default(null), url: z.string().max(500).nullable().default(null) };
 
 export const brandsSchema = z
-  .array(z.object({ name: z.string().trim().min(1).max(60), ...file }))
+  .array(z.object({ name: z.string().trim().max(60).default(""), ...file }))
   .max(MAX_BRANDS);
 
 const workText = z.object({ brand: z.string().trim().max(60).default(""), type: z.string().trim().max(60).default("") });

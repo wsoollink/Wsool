@@ -413,8 +413,8 @@ function Services({ page, lang, t, numbersFont }: Props & { t: T; numbersFont: s
           const href = request(name);
           return (
             <li key={s.id} className={`${glassCard} flex min-w-0 flex-col gap-2.5 rounded-[18px] p-4`}>
-              <h3 dir="auto" className="text-[16px] font-bold">{name}</h3>
-              {description && <p dir="auto" className="text-[13.5px] leading-6 text-[var(--page-muted)]">{description}</p>}
+              <h3 className="text-[16px] font-bold"><bdi>{name}</bdi></h3>
+              {description && <p className="text-[13.5px] leading-6 text-[var(--page-muted)]"><bdi>{description}</bdi></p>}
               <div className="mt-auto flex flex-wrap items-end justify-between gap-x-3 gap-y-2 border-t border-[var(--page-line)] pt-3">
                 {s.price === null ? (
                   <span className="text-[14px] font-bold">{t("onRequest")}</span>
@@ -433,7 +433,7 @@ function Services({ page, lang, t, numbersFont }: Props & { t: T; numbersFont: s
                   </a>
                 )}
               </div>
-              {s.price === null && unit && <span dir="auto" className="-mt-1 text-xs text-[var(--page-muted)]">{unit}</span>}
+              {s.price === null && unit && <span className="-mt-1 text-xs text-[var(--page-muted)]"><bdi>{unit}</bdi></span>}
             </li>
           );
         })}
@@ -461,7 +461,7 @@ function Links({ page, lang, t }: Props & { t: T }) {
                   {l.imageUrl ? <Image src={l.imageUrl} alt="" fill unoptimized sizes="56px" className="object-cover" /> : <Kind aria-hidden="true" size={24} />}
                 </span>
                 <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-                  <span dir="auto" className="truncate text-[15px] font-bold">{title}</span>
+                  <span className="truncate text-[15px] font-bold"><bdi>{title}</bdi></span>
                   <span dir="ltr" className="truncate text-xs text-[var(--page-muted)] rtl:text-end">{l.url.replace(/^https:\/\/(www\.)?/, "").replace(/\/$/, "")}</span>
                 </span>
                 <ArrowUpRight aria-hidden="true" size={18} className="shrink-0 text-[var(--page-muted)] rtl:-scale-x-100" />
@@ -493,8 +493,8 @@ function Coupons({ page, lang, t }: Props & { t: T }) {
                   {c.logoUrl ? <Image src={c.logoUrl} alt="" fill unoptimized sizes="48px" className="object-contain p-1" /> : <Store aria-hidden="true" size={22} />}
                 </span>
                 <span className="flex min-w-0 flex-1 flex-col">
-                  <h3 dir="auto" className="truncate text-[16px] font-bold">{store}</h3>
-                  {description && <span dir="auto" className="text-[13px] leading-6 text-[var(--page-muted)]">{description}</span>}
+                  <h3 className="truncate text-[16px] font-bold"><bdi>{store}</bdi></h3>
+                  {description && <span className="text-[13px] leading-6 text-[var(--page-muted)]"><bdi>{description}</bdi></span>}
                 </span>
               </div>
               <CopyCode id={c.id} code={c.code} copyLabel={t("copyCode")} copiedLabel={t("codeCopied")} codeLabel={t("couponCode", { code: c.code })} />

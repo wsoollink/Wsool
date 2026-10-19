@@ -745,7 +745,8 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
 - Dashboard sections show `SectionSkeleton` while their data streams in (Suspense fallback).
 - App: every GET answer is kept in memory (`peek`, `src/lib/api.ts`); screens use `useCached()` (`mobile/src/lib/cached.ts`)
   to open at once and refresh in the background (same data = no re-render, so forms aren't reset). Any POST clears it.
-- Local check: `scratchpad/lagproxy.mjs` (adds 50 ms each way to Postgres) + timing script; each 100 ms = one round trip.
+- Local check: put a small TCP proxy that delays each packet 50 ms in front of the local Postgres and time the pages;
+  each 100 ms = one round trip (Oct 2026: dashboard home 912 → 369 ms, app screens ~200 ms).
 
 ### Agent tools (owner, Oct 2026)
 - **Context7** (`.mcp.json`, MCP server `https://mcp.context7.com/mcp`, no API key yet = lower rate limit): before writing

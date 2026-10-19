@@ -64,6 +64,17 @@
   .mk-home-66>.mk-home-68{order:1}
   .mk-home-66>div:nth-child(2)>div{order:2}
   .mk-home-66>div:nth-child(2)>div:first-of-type{padding-top:20px;border-top:1px solid rgba(var(--mk-ink),0.08)}
+  /* Follow us + Get the app: centred, each on one row (icons and badges shrink to fit narrow phones). */
+  .mk-home-66>div:nth-child(2)>div{align-items:center}
+  .mk-home-66>div:nth-child(2)>div>div{flex-wrap:nowrap!important;justify-content:center;gap:6px!important;width:100%}
+  .mk-home-66 .wsoc{flex:0 1 42px;width:auto;height:auto;aspect-ratio:1;min-width:0}
+  .mk-home-66 .wapp{flex:0 1 151px;min-width:0}
+  .mk-home-66 .wapp img{width:100%;height:auto}
+  /* Footer: the tagline on one line, the three link columns side by side at equal widths. */
+  div:has(>:is(.mk-home-69,.mk-pricing-23))>div:first-child{max-width:none!important}
+  div:has(>:is(.mk-home-69,.mk-pricing-23))>div:first-child>p{white-space:nowrap;font-size:clamp(10.5px,3vw,14px)!important}
+  footer :is(.mk-home-69,.mk-pricing-23){display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px!important;width:100%}
+  footer :is(.mk-home-69,.mk-pricing-23)>div>*{white-space:nowrap;font-size:clamp(12px,3.5vw,14px)!important}
 }
 .wsoc-instagram span{-webkit-mask-image:url(/marketing/c29d2b71c7556f8ca7caaad85838d28a.png);mask-image:url(/marketing/c29d2b71c7556f8ca7caaad85838d28a.png)}
 .wsoc-tiktok span{-webkit-mask-image:url(/marketing/f2eac10a4a90fc41314bdb5ae069b51f.png);mask-image:url(/marketing/f2eac10a4a90fc41314bdb5ae069b51f.png)}

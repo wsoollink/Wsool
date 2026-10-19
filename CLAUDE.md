@@ -784,3 +784,5 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   Store links in `APP_LINKS` (`src/config/site.ts`); an empty link shows that badge as a plain image without a link.
   On phones (<768px) the newsletter card reads title → description → email field, then "Follow us" + "Get the app" under a
   divider (owner): CSS reorder in `marketing.css` (text column `display: contents`), the design files keep one structure.
+  Also on phones: social icons and store badges centred on one row each (they shrink to fit), the footer tagline on one
+  line (font scales with the width) and the three link columns side by side at equal widths (Home + Pricing footers).

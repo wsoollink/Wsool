@@ -377,8 +377,10 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
 - **Demo page** `/demo` (owner, Oct 2026): fictional creator "عبدالله القحطاني" (Riyadh, owner's AI photo) showing EVERY
   page feature: all 14 platforms (big five verified + audience), monthly views per account, verified license with file,
   brands, works, rates on five platforms + a bundle with savings, services, links, coupons, creator logo, categories, Pro
-  forever (`currentPeriodEnd` 2099, reminders off). Data: `src/lib/demo-page.ts` (`buildDemoPage`); **every new page
-  feature must get a sample there**. Live site: owner clicks "Refresh demo page" on the admin overview (`DemoCard`,
+  forever (`currentPeriodEnd` 2099). The page belongs to the owner's account `DEMO_EMAIL` (`src/config/site.ts`,
+  ibrahim@wsool.link, owner's choice; it replaces any page that account had), so the owner edits it from the dashboard or
+  the app; until that account exists it sits on a placeholder account (`demoUserId`, removed on the next refresh). Data: `src/lib/demo-page.ts` (`buildDemoPage`); **every new page
+  feature must get a sample there**. Live site: owner clicks "Refresh demo page" (resets it, asks first) on the admin overview (`DemoCard`,
   `refreshDemoPage`, audited `demo.refresh`); local: `DATABASE_URL=<local> npx tsx scripts/seed-demo.ts`. Images in
   `public/demo/` are PNG/JPEG (the PDF can't embed SVG); fictional brands; links go to example.com / platform home pages,
   never real accounts. The page shows a navy "Demo page · Make yours free" bar; the home hero links to it

@@ -4,6 +4,8 @@
  */
 export const SUPPORT_EMAIL = "support@wsool.link";
 export const BILLING_EMAIL = "billing@wsool.link";
+/** Owner's account that holds the demo page (wsool.link/demo), so it can be edited from the dashboard. */
+export const DEMO_EMAIL = "ibrahim@wsool.link";
 
 /**
  * Site-wide settings the owner fills in. The seller details appear on every

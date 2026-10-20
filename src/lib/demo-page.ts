@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import type { Platform, Template } from "@/generated/prisma/enums";
 import type { PrismaClient } from "@/generated/prisma/client";
+import { DEMO_EMAIL } from "@/config/site";
 
 /**
  * The demo creator page at wsool.link/demo: a fictional creator ("Abdullah") that shows
@@ -79,10 +80,9 @@ const WORKS: { platform: Platform; brand: number; type: [string, string] }[] = [
 
 export type DemoOptions = { username?: string; template?: Template; customColors?: { colors: string[]; mode: "light" | "dark" }; free?: boolean };
 
-/** Deletes and recreates the demo account + page with sample data for every feature. */
+/** Deletes and recreates the demo page (with sample data for every feature) and its Pro plan. */
 export async function buildDemoPage(db: PrismaClient, opts: DemoOptions = {}) {
   const username = opts.username ?? DEMO_USERNAME;
-  const userId = demoUserId(username);
   const categories = await db.category.findMany({ orderBy: { sort: "asc" }, select: { id: true, nameEn: true } });
   const picked = [
     ...categories.filter((c) => /lifestyle|tech/i.test(c.nameEn)),
@@ -90,79 +90,98 @@ export async function buildDemoPage(db: PrismaClient, opts: DemoOptions = {}) {
   ].filter((c, i, all) => all.findIndex((x) => x.id === c.id) === i).slice(0, 2);
   const month = new Date(Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth() - 1, 1));
 
+  // The page belongs to the owner's own account (DEMO_EMAIL) so they can edit it from the dashboard or the
+  // app; before that account exists, to a placeholder account (removed once the owner's is used).
+  const owner = username === DEMO_USERNAME ? await db.user.findUnique({ where: { email: DEMO_EMAIL }, select: { id: true } }) : null;
+  const placeholderId = demoUserId(username);
+  const userId = owner?.id ?? placeholderId;
+  const plan = opts.free
+    ? ({ plan: "free", status: "expired" } as const)
+    : ({ plan: "pro", status: "active", cycle: "yearly", currency: "SAR", currentPeriodEnd: FAR } as const);
+
   await db.$transaction(async (tx) => {
-    await tx.user.deleteMany({ where: { id: userId } });
-    await tx.user.create({
-      data: {
-        id: userId,
-        email: `${username}@demo.wsool.link`,
-        subscription: { create: opts.free ? { plan: "free", status: "expired" } : { plan: "pro", status: "active", cycle: "yearly", currency: "SAR", currentPeriodEnd: FAR } },
-        notificationSettings: { create: { emailReminders: false, emailProductNews: false } },
-        page: {
-          create: {
-            username,
-            primaryLang: "ar",
-            enEnabled: true,
-            template: opts.template ?? "white",
-            customColors: opts.customColors,
-            photoShape: "full",
-            iconStyle: "color",
-            isPublished: true,
-            photoUrl: "/demo/abdullah.jpg",
-            logoUrl: "/demo/creator-logo.png",
-            // Demo contact details: a reserved example domain and an unassigned-looking number.
-            whatsapp: "966500000000",
-            contactEmail: "abdullah@example.com",
-            translations: {
-              create: [
-                { lang: "ar", fullName: "عبدالله القحطاني", specialty: "صانع محتوى لايف ستايل وتقنية", bio: "أشارك يومياتي في الرياض، تجارب المنتجات والتقنية والسفر، وأتعاون مع البراندات بمحتوى صادق يوصل للناس. هذي صفحة تجريبية من وصول تعرض كل اللي تقدر تضيفه في صفحتك.", city: "الرياض", country: "السعودية" },
-                { lang: "en", fullName: "Abdullah Alqahtani", specialty: "Lifestyle & tech creator", bio: "I share my days in Riyadh, product and tech reviews and travel, and partner with brands on honest content people trust. This is a Wsool demo page showing everything you can add to yours.", city: "Riyadh", country: "Saudi Arabia" },
-              ],
-            },
-            tags: {
-              create: [
-                ...["لايف ستايل", "تقنية", "سفر", "قهوة", "رياضة", "مطاعم"].map((label, sort) => ({ lang: "ar" as const, label, sort })),
-                ...["Lifestyle", "Tech", "Travel", "Coffee", "Fitness", "Food"].map((label, sort) => ({ lang: "en" as const, label, sort })),
-              ],
-            },
-            licenses: {
-              create: [{ name: "رخصة موثوق", nameEn: "Mawthooq license", number: "MW-000000", fileUrl: "/demo/license.png", sort: 0, verificationStatus: "verified", submittedAt: new Date(), reviewedAt: new Date() }],
-            },
-            brandLogos: { create: BRANDS.map(([file, name], sort) => ({ name, logoUrl: `/demo/brand-${file}.png`, sort })) },
-            portfolioItems: {
-              create: WORKS.map((w, sort) => ({
-                platform: w.platform,
-                videoUrl: "/demo/sample-work.mp4",
-                thumbUrl: `/demo/work-${sort + 1}.jpg`,
-                sort,
-                translations: { create: [{ lang: "ar" as const, brand: BRANDS[w.brand][1], type: w.type[0] }, { lang: "en" as const, brand: BRANDS[w.brand][2], type: w.type[1] }] },
-              })),
-            },
-            rateSettings: { create: { showOnPage: true, showInPdf: true, currency: "SAR", vatIncluded: true } },
-            services: {
-              create: [
-                { name: "تصوير منتجات", nameEn: "Product photography", description: "جلسة تصوير لمنتجك مع 10 صور معدّلة جاهزة للنشر.", descriptionEn: "A shoot for your product with 10 edited photos ready to post.", price: 1800, unit: "للجلسة", unitEn: "per session", sort: 0 },
-                { name: "تقديم فعاليات", nameEn: "Event hosting", description: "تقديم افتتاحيات وفعاليات الشركات بالعربي والإنجليزي.", descriptionEn: "Hosting openings and company events in Arabic and English.", price: null, unit: "", sort: 1 },
-                { name: "استشارة محتوى", nameEn: "Content consulting", description: "جلسة ساعة لخطة محتوى حسابات شركتك.", descriptionEn: "A one-hour session on a content plan for your brand's accounts.", price: 750, unit: "للساعة", unitEn: "per hour", sort: 2 },
-              ],
-            },
-            links: {
-              create: [
-                { title: "متجري", titleEn: "My store", url: "https://store.example.com", sort: 0 },
-                { title: "دورة التصوير بالجوال", titleEn: "Phone photography course", url: "https://course.example.com", sort: 1 },
-                { title: "البودكاست", titleEn: "Podcast", url: "https://podcast.example.com", sort: 2 },
-              ],
-            },
-            coupons: {
-              create: [
-                { store: "عطور ريم", storeEn: "Reem Perfumes", description: "خصم 15% على كل العطور", descriptionEn: "15% off all perfumes", code: "ABDULLAH15", url: "https://reem.example.com", logoUrl: "/demo/store-reem-perfumes.png", sort: 0 },
-                { store: "قهوة نجد", storeEn: "Najd Coffee", description: "خصم 10% على أول طلب", descriptionEn: "10% off your first order", code: "ABD10", url: "https://najd.example.com", logoUrl: "/demo/store-najd-coffee.png", sort: 1 },
-                { store: "سفرات", storeEn: "Safarat", description: "خصم 200 ريال على الباقات", descriptionEn: "SAR 200 off holiday packages", code: "SAFAR200", url: "https://safarat.example.com", logoUrl: "/demo/store-safarat.png", sort: 2 },
-              ],
-            },
-            categories: { create: picked.map((c) => ({ categoryId: c.id })) },
-          },
+    await tx.user.deleteMany({ where: { id: placeholderId } });
+    if (owner) {
+      await tx.page.deleteMany({ where: { userId } });
+      await tx.subscription.upsert({
+        where: { userId },
+        create: { userId, ...plan },
+        update: { ...plan, trialEndsAt: null, cancelAtPeriodEnd: false, failedAttempts: 0, nextRetryAt: null },
+      });
+    } else {
+      await tx.user.create({
+        data: {
+          id: placeholderId,
+          email: `${username}@demo.wsool.link`,
+          subscription: { create: plan },
+          notificationSettings: { create: { emailReminders: false, emailProductNews: false } },
         },
+      });
+    }
+    await tx.page.create({
+      data: {
+        userId,
+        username,
+        primaryLang: "ar",
+        enEnabled: true,
+        template: opts.template ?? "white",
+        customColors: opts.customColors,
+        photoShape: "full",
+        iconStyle: "color",
+        isPublished: true,
+        photoUrl: "/demo/abdullah.jpg",
+        logoUrl: "/demo/creator-logo.png",
+        // Demo contact details: a reserved example domain and an unassigned-looking number.
+        whatsapp: "966500000000",
+        contactEmail: "abdullah@example.com",
+        translations: {
+          create: [
+            { lang: "ar", fullName: "عبدالله القحطاني", specialty: "صانع محتوى لايف ستايل وتقنية", bio: "أشارك يومياتي في الرياض، تجارب المنتجات والتقنية والسفر، وأتعاون مع البراندات بمحتوى صادق يوصل للناس. هذي صفحة تجريبية من وصول تعرض كل اللي تقدر تضيفه في صفحتك.", city: "الرياض", country: "السعودية" },
+            { lang: "en", fullName: "Abdullah Alqahtani", specialty: "Lifestyle & tech creator", bio: "I share my days in Riyadh, product and tech reviews and travel, and partner with brands on honest content people trust. This is a Wsool demo page showing everything you can add to yours.", city: "Riyadh", country: "Saudi Arabia" },
+          ],
+        },
+        tags: {
+          create: [
+            ...["لايف ستايل", "تقنية", "سفر", "قهوة", "رياضة", "مطاعم"].map((label, sort) => ({ lang: "ar" as const, label, sort })),
+            ...["Lifestyle", "Tech", "Travel", "Coffee", "Fitness", "Food"].map((label, sort) => ({ lang: "en" as const, label, sort })),
+          ],
+        },
+        licenses: {
+          create: [{ name: "رخصة موثوق", nameEn: "Mawthooq license", number: "MW-000000", fileUrl: "/demo/license.png", sort: 0, verificationStatus: "verified", submittedAt: new Date(), reviewedAt: new Date() }],
+        },
+        brandLogos: { create: BRANDS.map(([file, name], sort) => ({ name, logoUrl: `/demo/brand-${file}.png`, sort })) },
+        portfolioItems: {
+          create: WORKS.map((w, sort) => ({
+            platform: w.platform,
+            videoUrl: "/demo/sample-work.mp4",
+            thumbUrl: `/demo/work-${sort + 1}.jpg`,
+            sort,
+            translations: { create: [{ lang: "ar" as const, brand: BRANDS[w.brand][1], type: w.type[0] }, { lang: "en" as const, brand: BRANDS[w.brand][2], type: w.type[1] }] },
+          })),
+        },
+        rateSettings: { create: { showOnPage: true, showInPdf: true, currency: "SAR", vatIncluded: true } },
+        services: {
+          create: [
+            { name: "تصوير منتجات", nameEn: "Product photography", description: "جلسة تصوير لمنتجك مع 10 صور معدّلة جاهزة للنشر.", descriptionEn: "A shoot for your product with 10 edited photos ready to post.", price: 1800, unit: "للجلسة", unitEn: "per session", sort: 0 },
+            { name: "تقديم فعاليات", nameEn: "Event hosting", description: "تقديم افتتاحيات وفعاليات الشركات بالعربي والإنجليزي.", descriptionEn: "Hosting openings and company events in Arabic and English.", price: null, unit: "", sort: 1 },
+            { name: "استشارة محتوى", nameEn: "Content consulting", description: "جلسة ساعة لخطة محتوى حسابات شركتك.", descriptionEn: "A one-hour session on a content plan for your brand's accounts.", price: 750, unit: "للساعة", unitEn: "per hour", sort: 2 },
+          ],
+        },
+        links: {
+          create: [
+            { title: "متجري", titleEn: "My store", url: "https://store.example.com", sort: 0 },
+            { title: "دورة التصوير بالجوال", titleEn: "Phone photography course", url: "https://course.example.com", sort: 1 },
+            { title: "البودكاست", titleEn: "Podcast", url: "https://podcast.example.com", sort: 2 },
+          ],
+        },
+        coupons: {
+          create: [
+            { store: "عطور ريم", storeEn: "Reem Perfumes", description: "خصم 15% على كل العطور", descriptionEn: "15% off all perfumes", code: "ABDULLAH15", url: "https://reem.example.com", logoUrl: "/demo/store-reem-perfumes.png", sort: 0 },
+            { store: "قهوة نجد", storeEn: "Najd Coffee", description: "خصم 10% على أول طلب", descriptionEn: "10% off your first order", code: "ABD10", url: "https://najd.example.com", logoUrl: "/demo/store-najd-coffee.png", sort: 1 },
+            { store: "سفرات", storeEn: "Safarat", description: "خصم 200 ريال على الباقات", descriptionEn: "SAR 200 off holiday packages", code: "SAFAR200", url: "https://safarat.example.com", logoUrl: "/demo/store-safarat.png", sort: 2 },
+          ],
+        },
+        categories: { create: picked.map((c) => ({ categoryId: c.id })) },
       },
     });
 

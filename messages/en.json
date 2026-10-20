@@ -809,7 +809,8 @@
     },
     "overview": {
       "demoTitle": "Demo page wsool.link/demo",
-      "demoHint": "Abdullah's sample page showing every Wsool feature. “Refresh” rebuilds it with the latest sample data.",
+      "demoHint": "Abdullah's sample page, linked to your account {email}: sign in with it and edit it from the dashboard or the app. “Refresh” resets it to the original content.",
+      "demoConfirm": "This resets the demo page to its original content and removes your edits. Continue?",
       "demoOpen": "Open page",
       "demoRefresh": "Refresh demo page",
       "demoDone": "Demo page refreshed.",

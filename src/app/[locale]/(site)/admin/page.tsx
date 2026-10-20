@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { DemoCard } from "./demo/DemoCard";
 import { ArrowLeft, ArrowRight, BadgeCheck, Banknote, Clock, Download, Hourglass, Mail, Sparkles, TrendingUp, Users } from "lucide-react";
 import { AreaChart } from "@/components/charts/AreaChart";
 import { AdminHeader } from "@/components/admin/AdminHeader";
@@ -175,6 +176,8 @@ async function Overview({ lang }: { lang: Locale }) {
           </Panel>
         )}
       </div>
+
+      {isOwner && <DemoCard />}
 
       {can(admin, "users.view") && (
         <Card className="flex flex-wrap items-center justify-between gap-3">

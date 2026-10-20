@@ -374,8 +374,15 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
 - States: unknown/invalid name → creator not-found (invite to claim); unpublished or deleted →
   "not available" page with noindex; `/Ali` → 308 to `/ali`.
 - Reserved names only block claiming; staff-made pages with reserved names still render.
-- Demo page: `scripts/seed-demo.ts` creates `/demo` (reserved username) with sample data and
-  assets in `public/demo/`. Local: `DATABASE_URL=<local> npx tsx scripts/seed-demo.ts`.
+- **Demo page** `/demo` (owner, Oct 2026): fictional creator "عبدالله القحطاني" (Riyadh, owner's AI photo) showing EVERY
+  page feature: all 14 platforms (big five verified + audience), monthly views per account, verified license with file,
+  brands, works, rates on five platforms + a bundle with savings, services, links, coupons, creator logo, categories, Pro
+  forever (`currentPeriodEnd` 2099, reminders off). Data: `src/lib/demo-page.ts` (`buildDemoPage`); **every new page
+  feature must get a sample there**. Live site: owner clicks "Refresh demo page" on the admin overview (`DemoCard`,
+  `refreshDemoPage`, audited `demo.refresh`); local: `DATABASE_URL=<local> npx tsx scripts/seed-demo.ts`. Images in
+  `public/demo/` are PNG/JPEG (the PDF can't embed SVG); fictional brands; links go to example.com / platform home pages,
+  never real accounts. The page shows a navy "Demo page · Make yours free" bar; the home hero links to it
+  ("شاهد صفحة تجريبية ←", design files + `LINKS`).
 - Templates: `src/components/creator/theme.ts` turns template + accent + custom colors into CSS
   variables (`--page-bg`, `--page-surface` frosted card, `--page-solid` opaque box, `--page-soft`,
   `--page-text`, `--page-muted`, `--page-line`, `--page-accent`, `--page-on-accent`,
@@ -575,6 +582,8 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   On phones the header shows "Log in" as a round person icon next to "Start free" (CSS in `marketing.css`).
   Tablets / wide foldables (768-1199px): the home hero stacks and centres (text above, phone below), CSS in `marketing.css`.
   Text changes are made in the `design/marketing/*.dc.html` files, then the script is re-run.
+  Adding an element to a design shifts the generated `mk-home-N` numbers after it: update the numbers used in
+  `marketing.css` (check each against `generated/home.css` before and after).
 - Home "claim your link": live check (`checkLink`), then cookie `wsool_claim` → `/login`;
   onboarding pre-fills that name.
 - **Newsletter** (`src/lib/newsletter.ts`, table `newsletter_subscribers`): double opt-in, HMAC

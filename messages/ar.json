@@ -220,6 +220,9 @@
     "referrals": "العمولة"
   },
   "CreatorPage": {
+    "demoBadge": "صفحة تجريبية",
+    "demoNote": "هذا مثال يوضح شكل صفحتك في وصول.",
+    "demoCta": "سوّ صفحتك مجانًا",
     "brand": "وصول",
     "notFoundTitle": "هذا الرابط ما عليه صفحة",
     "notFoundBody": "الاسم متاح، تقدر تحجزه لصفحتك على وصول.",
@@ -805,6 +808,12 @@
       "referrals": "العمولات"
     },
     "overview": {
+      "demoTitle": "صفحة العرض wsool.link/demo",
+      "demoHint": "صفحة «عبدالله» التجريبية اللي تعرض كل إمكانيات وصول. «تحديث» يعيد بناءها بآخر البيانات التجريبية.",
+      "demoOpen": "افتح الصفحة",
+      "demoRefresh": "تحديث صفحة العرض",
+      "demoDone": "تم تحديث صفحة العرض.",
+      "demoFailed": "ما قدرنا نحدّثها، جرّب مرة ثانية.",
       "users": "المستخدمين",
       "published": "صفحات منشورة",
       "trialing": "في التجربة",
@@ -1232,6 +1241,9 @@
       "referrals": "عمولات الصناع على العملاء اللي جابوهم، والتحويلات البنكية"
     },
     "sentence": {
+      "demo": {
+        "refresh": "حدّث صفحة العرض wsool.link/demo"
+      },
       "verification": {
         "approve": "وثّق {platform} ‎@{handle}",
         "reject": "رفض توثيق ‎@{handle}",

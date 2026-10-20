@@ -7,6 +7,7 @@ import { CopyCode } from "@/components/creator/CopyCode";
 import { CountUp } from "@/components/creator/CountUp";
 import { LicenseFile } from "@/components/creator/LicenseFile";
 import { Marquee } from "@/components/creator/Marquee";
+import { DEMO_USERNAME } from "@/lib/demo-page";
 import { PageActions } from "@/components/creator/PageActions";
 import { Check, PlatformCard, type Audience } from "@/components/creator/PlatformCard";
 import { glassCard } from "@/components/creator/styles";
@@ -87,6 +88,16 @@ export async function CreatorProfile({ page, lang, preview = false }: ProfilePro
   return (
     <div style={themeStyle(theme)} className={`flex flex-1 flex-col text-[var(--page-text)] ${theme.glass ? "glass" : ""}`}>
       {!preview && <Tracker username={page.username} lang={lang} />}
+
+      {/* The sample page linked from the home page: say so, and invite the visitor to make theirs. */}
+      {page.username === DEMO_USERNAME && (
+        <div className="sticky top-0 z-30 bg-[#021941] text-white">
+          <div className="mx-auto flex max-w-[1160px] items-center justify-between gap-3 px-4 py-2 md:px-6">
+            <p className="text-[13px] leading-5"><b>{t("demoBadge")}</b> <span className="opacity-80">{t("demoNote")}</span></p>
+            <Link href="/login" className="inline-flex min-h-11 shrink-0 items-center rounded-full bg-white px-4 text-[13px] font-bold text-[#021941] md:min-h-9">{t("demoCta")}</Link>
+          </div>
+        </div>
+      )}
 
       {/* Desktop header bar */}
       <header className="hidden border-b border-[var(--page-line)] bg-[var(--page-solid)] md:block">

@@ -220,6 +220,9 @@
     "referrals": "Commission"
   },
   "CreatorPage": {
+    "demoBadge": "Demo page",
+    "demoNote": "A sample of what your Wsool page can look like.",
+    "demoCta": "Make yours free",
     "brand": "Wsool",
     "notFoundTitle": "No page at this link",
     "notFoundBody": "This name is free. You can claim it for your Wsool page.",
@@ -805,6 +808,12 @@
       "referrals": "Commissions"
     },
     "overview": {
+      "demoTitle": "Demo page wsool.link/demo",
+      "demoHint": "Abdullah's sample page showing every Wsool feature. “Refresh” rebuilds it with the latest sample data.",
+      "demoOpen": "Open page",
+      "demoRefresh": "Refresh demo page",
+      "demoDone": "Demo page refreshed.",
+      "demoFailed": "Couldn't refresh it, try again.",
       "users": "Users",
       "published": "Published pages",
       "trialing": "In trial",
@@ -1232,6 +1241,9 @@
       "referrals": "What creators earned on the customers they brought, and bank transfers"
     },
     "sentence": {
+      "demo": {
+        "refresh": "Refreshed the demo page wsool.link/demo"
+      },
       "verification": {
         "approve": "Verified {platform} @{handle}",
         "reject": "Rejected verification of @{handle}",

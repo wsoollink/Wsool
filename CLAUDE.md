@@ -598,8 +598,13 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   `newsletter_campaigns` (subject/body/button per language, status draft → sending → sent, counts) and
   `newsletter_deliveries` (one row per campaign × subscriber, written **before** sending, so a resumed
   or double-clicked send never emails anyone twice). Each subscriber gets their language's version, or
-  the other one if theirs is empty (`versionFor`). Body = plain text, blank line = new paragraph, links
-  become clickable (`rich()` in `src/lib/email/layout.ts`). The editor previews the real email, sends
+  the other one if theirs is empty (`versionFor`). Body = a small text format (owner, Oct 2026: editor with a toolbar,
+  `MarkupToolbar`): `## heading`, `**bold**`, `- list`, `[text](https://…)`, `![](https://…)` image line, `---` divider,
+  blank line = new paragraph, bare links clickable; rendered by `markupToHtml()` / `markupToText()`
+  (`src/lib/email/markup.ts`, everything escaped first; old plain-text campaigns render as before). Images: upload kind
+  `newsletterImage` (JPG/PNG/GIF, 5 MB, public `media` bucket, staff's own folder) via `requestNewsletterUpload` +
+  `newsletterImageUrl` (checks the stored file). Sandbox tests can't relay a file body from the test browser: do the signed
+  upload from Node in the route handler. The editor previews the real email, sends
   a `[TEST]` to the signed-in staff member, then the browser calls `sendBatches` in a loop (about 300
   emails per call through Resend's batch API, `sendBatch()` in `src/lib/email/send.ts`) with a progress
   bar; an interrupted send shows "Resume", failed batches can be retried. Every email has the

@@ -1327,7 +1327,27 @@
       "english": "English",
       "subject": "Subject",
       "body": "Text",
-      "bodyHint": "Leave an empty line between paragraphs. Links (https://…) become clickable.",
+      "bodyHint": "Use the buttons for headings, bold, lists, links and images. Leave an empty line between paragraphs; links (https://…) become clickable.",
+      "toolbar": {
+        "label": "Text formatting",
+        "heading": "Heading",
+        "headingText": "Subheading",
+        "bold": "Bold",
+        "boldText": "bold text",
+        "list": "List",
+        "listText": "item",
+        "link": "Link",
+        "linkPrompt": "Paste the link (starts with https://)",
+        "linkText": "link text",
+        "divider": "Divider",
+        "image": "Image",
+        "uploading": "Uploading…",
+        "upload": {
+          "type": "The image must be JPG, PNG or GIF.",
+          "size": "The image is larger than 5 MB.",
+          "failed": "Couldn't upload the image, try again."
+        }
+      },
       "cta": "Button (optional)",
       "ctaLabel": "Button text",
       "ctaUrl": "Button link",

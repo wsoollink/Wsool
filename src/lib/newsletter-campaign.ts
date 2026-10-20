@@ -5,6 +5,7 @@ import type { NewsletterCampaign } from "@/generated/prisma/client";
 import { toIntlLocale, type Locale } from "@/i18n/config";
 import { db } from "@/lib/db";
 import { renderEmail } from "@/lib/email/layout";
+import { markupToText } from "@/lib/email/markup";
 import { BATCH_SIZE, sendBatch, type Email } from "@/lib/email/send";
 import { unsubscribeUrl } from "@/lib/newsletter";
 import ar from "../../messages/ar.json";
@@ -44,12 +45,12 @@ export function renderCampaign(c: Content, lang: Locale, subscriberId: string | 
   const ctaLabel = lang === "ar" ? c.ctaLabelAr : c.ctaLabelEn;
   const t = createTranslator({ locale: toIntlLocale(lang), messages: lang === "ar" ? ar : en, namespace: "Newsletter.campaign" });
   const unsubscribe = subscriberId ? unsubscribeUrl(subscriberId) : t("unsubscribeSample");
-  const paragraphs = body.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
   const content = renderEmail({
     lang,
-    preheader: paragraphs[0]?.replace(/\s+/g, " ").slice(0, 110) ?? "",
+    preheader: markupToText(body).replace(/\s+/g, " ").trim().slice(0, 110),
     title: subject,
-    paragraphs,
+    paragraphs: [],
+    markup: body,
     cta: c.ctaUrl && ctaLabel ? { label: ctaLabel, url: c.ctaUrl } : undefined,
     footer: t("footer", { url: unsubscribe }),
   });

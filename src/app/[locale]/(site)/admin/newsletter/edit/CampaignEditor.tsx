@@ -10,6 +10,7 @@ import type { CampaignStatus } from "@/generated/prisma/enums";
 import type { CampaignInput } from "@/lib/newsletter-campaign";
 import { deleteDraft, previewCampaign, retryFailed, saveCampaign, sendBatches, sendTest, startSending } from "../actions";
 import { statusTone } from "../status";
+import { MarkupToolbar } from "./MarkupToolbar";
 
 type Fields = Required<CampaignInput>;
 type Lang = "ar" | "en";
@@ -100,6 +101,7 @@ export function CampaignEditor({ id, status, initial, audience, progress, sentOn
       await sendLoop(progress.sent, progress.sent + progress.failed);
     });
 
+  const bodyRef = useRef<HTMLTextAreaElement>(null);
   const field = (key: keyof Fields, label: string, opts: { area?: boolean; lang?: Lang; max: number; hint?: string }) => {
     const fid = `nl-${key}`;
     const common = {
@@ -111,7 +113,8 @@ export function CampaignEditor({ id, status, initial, audience, progress, sentOn
     return (
       <div className="flex flex-col gap-1.5">
         <label htmlFor={fid} className="text-[13px] font-medium">{label}</label>
-        {opts.area ? <textarea {...common} rows={12} className={`${input} h-auto min-h-56 py-3 leading-7`} /> : <input {...common} className={input} />}
+        {opts.area && <MarkupToolbar target={bodyRef} value={f[key]} onChange={(v) => set({ [key]: v } as Partial<Fields>)} disabled={!editable} />}
+        {opts.area ? <textarea ref={bodyRef} {...common} rows={12} className={`${input} h-auto min-h-56 py-3 leading-7`} /> : <input {...common} className={input} />}
         {opts.hint && <p id={`${fid}-hint`} className="text-xs text-muted">{opts.hint}</p>}
       </div>
     );

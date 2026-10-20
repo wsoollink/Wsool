@@ -5,6 +5,8 @@ import type { Locale } from "@/i18n/config";
 import { audit, requireAdmin } from "@/lib/admin";
 import { db } from "@/lib/db";
 import { sendEmail } from "@/lib/email/send";
+import { rateLimit } from "@/lib/rate-limit";
+import { createUploadTicket, isOwnUploadedFile, publicFileUrl } from "@/lib/storage";
 import { campaignSchema, remainingFor, renderCampaign, sendNextBatches, versionFor, type CampaignInput } from "@/lib/newsletter-campaign";
 
 const id = z.uuid();
@@ -116,4 +118,19 @@ export async function deleteDraft(campaignId: string): Promise<Result> {
     return res.count > 0;
   });
   return deleted ? { ok: true } : { error: "not_draft" };
+}
+
+/** One-time upload URL for an image inside the email (staff member's own folder, kind newsletterImage). */
+export async function requestNewsletterUpload(_kind: string, contentType: string, size: number) {
+  const admin = await requireAdmin("newsletter.send");
+  if (typeof contentType !== "string" || typeof size !== "number") return { error: "type" as const };
+  if (!(await rateLimit(`upload:${admin.userId}`, 150, 3600))) return { error: "type" as const };
+  return createUploadTicket(admin.userId, "newsletterImage", contentType, size);
+}
+
+/** Checks the uploaded image (path, real type and size) and returns its public link for the email. */
+export async function newsletterImageUrl(path: string): Promise<{ url?: string; error?: string }> {
+  const admin = await requireAdmin("newsletter.send");
+  if (typeof path !== "string" || !(await isOwnUploadedFile(admin.userId, "newsletterImage", path))) return { error: "invalid" };
+  return { url: publicFileUrl(path) };
 }

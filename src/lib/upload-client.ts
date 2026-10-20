@@ -31,12 +31,17 @@ export async function shrinkImage(file: File, maxSide = 1600, quality = 0.85, ou
 }
 
 /** Checks, asks the server for a signed URL, uploads, and returns the storage path. */
-export async function uploadFile(kind: UploadKind, file: File): Promise<{ path: string } | { error: ClientUploadError }> {
+export async function uploadFile(
+  kind: UploadKind,
+  file: File,
+  // Staff uploads (newsletter images) ask an admin action instead of the creator one.
+  request: typeof requestUpload = requestUpload,
+): Promise<{ path: string } | { error: ClientUploadError }> {
   const rule = UPLOAD_KINDS[kind];
   if (!(rule.types as readonly string[]).includes(file.type)) return { error: "type" };
   if (file.size > rule.maxBytes) return { error: "size" };
 
-  const ticket = await requestUpload(kind, file.type, file.size);
+  const ticket = await request(kind, file.type, file.size);
   if ("error" in ticket) return { error: ticket.error };
   const { error } = await createSupabaseBrowser()
     .storage.from(rule.bucket)

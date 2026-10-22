@@ -1327,7 +1327,7 @@
       "english": "English",
       "subject": "Subject",
       "body": "Text",
-      "bodyHint": "Use the buttons for headings, bold, lists, links and images. Leave an empty line between paragraphs; links (https://…) become clickable.",
+      "bodyHint": "Use the buttons for headings, bold, italic, colors, lists, centering, highlight boxes, links, images and emoji. Leave a blank line between paragraphs; web addresses (https://…) become clickable.",
       "toolbar": {
         "label": "Text formatting",
         "heading": "Heading",
@@ -1346,7 +1346,24 @@
           "type": "The image must be JPG, PNG or GIF.",
           "size": "The image is larger than 5 MB.",
           "failed": "Couldn't upload the image, try again."
-        }
+        },
+        "italic": "Italic",
+        "italicText": "italic text",
+        "numbered": "Numbered list",
+        "center": "Center",
+        "centerText": "Centered text",
+        "box": "Highlight box",
+        "boxText": "Important text in a box",
+        "color": "Text color",
+        "colorText": "colored text",
+        "colors": {
+          "blue": "Blue",
+          "green": "Green",
+          "red": "Red",
+          "gray": "Gray"
+        },
+        "undo": "Undo",
+        "redo": "Redo"
       },
       "cta": "Button (optional)",
       "ctaLabel": "Button text",
@@ -1380,6 +1397,26 @@
         "not_draft": "Sending has started; it can't be edited.",
         "failed": "Something went wrong. Try again.",
         "not_sending": "Sending is stopped."
+      },
+      "emoji": {
+        "open": "Emoji",
+        "title": "Pick an emoji",
+        "search": "Search (e.g. heart, laugh, قلب)",
+        "results": "Search results",
+        "none": "No emoji with that name.",
+        "loading": "Loading…",
+        "groups": {
+          "recent": "Recently used",
+          "smileys": "Smileys & emotion",
+          "people": "People & hands",
+          "nature": "Animals & nature",
+          "food": "Food & drink",
+          "travel": "Travel & places",
+          "activities": "Activities & celebrations",
+          "objects": "Objects",
+          "symbols": "Symbols & hearts",
+          "flags": "Flags"
+        }
       }
     },
     "discounts": {

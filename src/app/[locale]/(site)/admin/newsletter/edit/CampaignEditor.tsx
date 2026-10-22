@@ -1,13 +1,16 @@
 "use client";
 
 import { useEffect, useRef, useState, useTransition } from "react";
+import { flushSync } from "react-dom";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { RotateCw, Send, Trash2 } from "lucide-react";
+import { EmojiPicker } from "@/components/admin/EmojiPicker";
 import { buttonClasses } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import type { CampaignStatus } from "@/generated/prisma/enums";
 import type { CampaignInput } from "@/lib/newsletter-campaign";
+import { insertText } from "@/lib/text-insert";
 import { deleteDraft, previewCampaign, retryFailed, saveCampaign, sendBatches, sendTest, startSending } from "../actions";
 import { statusTone } from "../status";
 import { MarkupToolbar } from "./MarkupToolbar";
@@ -102,7 +105,15 @@ export function CampaignEditor({ id, status, initial, audience, progress, sentOn
     });
 
   const bodyRef = useRef<HTMLTextAreaElement>(null);
-  const field = (key: keyof Fields, label: string, opts: { area?: boolean; lang?: Lang; max: number; hint?: string }) => {
+  const subjectRef = useRef<HTMLInputElement>(null);
+  /** Puts the picked emoji where the cursor is in the subject. */
+  const subjectEmoji = (key: keyof Fields) => (emoji: string) => {
+    const el = subjectRef.current;
+    if (!el) return;
+    const at = insertText(el, emoji, (v) => flushSync(() => set({ [key]: v } as Partial<Fields>)));
+    el.setSelectionRange(at + emoji.length, at + emoji.length);
+  };
+  const field = (key: keyof Fields, label: string, opts: { area?: boolean; emoji?: boolean; lang?: Lang; max: number; hint?: string }) => {
     const fid = `nl-${key}`;
     const common = {
       id: fid, value: f[key], maxLength: opts.max, disabled: !editable,
@@ -114,7 +125,16 @@ export function CampaignEditor({ id, status, initial, audience, progress, sentOn
       <div className="flex flex-col gap-1.5">
         <label htmlFor={fid} className="text-[13px] font-medium">{label}</label>
         {opts.area && <MarkupToolbar target={bodyRef} value={f[key]} onChange={(v) => set({ [key]: v } as Partial<Fields>)} disabled={!editable} />}
-        {opts.area ? <textarea ref={bodyRef} {...common} rows={12} className={`${input} h-auto min-h-56 py-3 leading-7`} /> : <input {...common} className={input} />}
+        {opts.area ? (
+          <textarea key={fid} ref={bodyRef} {...common} rows={12} className={`${input} h-auto min-h-56 py-3 leading-7`} />
+        ) : opts.emoji ? (
+          <div className="flex items-center gap-1">
+            <input key={fid} ref={subjectRef} {...common} className={`${input} min-w-0 flex-1`} />
+            <EmojiPicker disabled={!editable} onPick={subjectEmoji(key)} className="shrink-0" />
+          </div>
+        ) : (
+          <input key={fid} {...common} className={input} />
+        )}
         {opts.hint && <p id={`${fid}-hint`} className="text-xs text-muted">{opts.hint}</p>}
       </div>
     );
@@ -138,7 +158,7 @@ export function CampaignEditor({ id, status, initial, audience, progress, sentOn
             </div>
             <span className={`rounded-full px-2.5 py-1 text-xs font-bold ${statusTone[status]}`}>{t(`status.${status}`)}</span>
           </div>
-          {field(`subject${L}` as keyof Fields, t("subject"), { lang: tab, max: 150 })}
+          {field(`subject${L}` as keyof Fields, t("subject"), { lang: tab, emoji: true, max: 150 })}
           {field(`body${L}` as keyof Fields, t("body"), { area: true, lang: tab, max: 20000, hint: t("bodyHint") })}
           <p className="text-xs text-muted">{t("langNote")}</p>
         </Card>

@@ -12,3 +12,11 @@
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
+
+# The newsletter's heading font is loaded by mail apps and the editor preview from other origins
+# (fonts need CORS). Netlify serves public/ files itself, so next.config.ts headers don't reach them.
+[[headers]]
+  for = "/brand/fonts/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Cache-Control = "public, max-age=31536000, immutable"

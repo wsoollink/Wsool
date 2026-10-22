@@ -256,7 +256,8 @@ export function CampaignEditor({ id, status, initial, audience, progress, sentOn
           </div>
         </div>
         {preview ? (
-          <iframe title={t("preview")} srcDoc={preview} sandbox="" className="h-[640px] w-full rounded-xl border border-line bg-[#F4F6FA]" />
+          // Scripts stay off; same origin lets the preview load the heading font without CORS.
+          <iframe title={t("preview")} srcDoc={preview} sandbox="allow-same-origin" className="h-[640px] w-full rounded-xl border border-line bg-[#F4F6FA]" />
         ) : (
           <p className="rounded-xl bg-navy/[0.03] p-6 text-center text-sm text-muted">{t("previewEmpty")}</p>
         )}

@@ -1,4 +1,3 @@
-import { Platform } from "react-native";
 import * as DocumentPicker from "expo-document-picker";
 import * as ImagePicker from "expo-image-picker";
 import { manipulateAsync, SaveFormat } from "expo-image-manipulator";
@@ -14,10 +13,7 @@ export type UploadError = "type" | "size" | "failed" | "permission";
 
 /** Pick a photo from the library, shrunk on the phone first (JPEG, or PNG for logos to keep transparency). */
 export async function pickImage(opts: { maxSide?: number; png?: boolean } = {}): Promise<Picked | null | { error: UploadError }> {
-  if (Platform.OS !== "web") {
-    const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (!perm.granted) return { error: "permission" };
-  }
+  // The system photo picker (iOS PHPicker, Android photo picker) needs no library permission: nothing to ask.
   const res = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ["images"], quality: 1 });
   const a = res.canceled ? null : res.assets[0];
   if (!a) return null;
@@ -32,10 +28,6 @@ export async function pickImage(opts: { maxSide?: number; png?: boolean } = {}):
 
 /** Pick a video (MP4 / MOV) and grab a cover from its first second. */
 export async function pickVideo(): Promise<{ video: Picked; cover: Picked | null } | null | { error: UploadError }> {
-  if (Platform.OS !== "web") {
-    const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (!perm.granted) return { error: "permission" };
-  }
   const res = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ["videos"], videoMaxDuration: 180 });
   const a = res.canceled ? null : res.assets[0];
   if (!a) return null;

@@ -2,13 +2,13 @@ import { useCallback, useState } from "react";
 import { Pressable, RefreshControl, StyleSheet, View } from "react-native";
 import { router, useFocusEffect } from "expo-router";
 import { Bell } from "lucide-react-native";
-import { Card, Group, Row, Screen, Status, T } from "../../components/ui";
-import { useI18n } from "../../i18n";
-import { api } from "../../lib/api";
-import { useCached } from "../../lib/cached";
-import { useAuth } from "../../lib/app";
-import { appRoute } from "../../lib/push";
-import { useTheme } from "../../lib/theme";
+import { Card, Group, Row, Screen, Status, T } from "../../../components/ui";
+import { useI18n } from "../../../i18n";
+import { api } from "../../../lib/api";
+import { useCached } from "../../../lib/cached";
+import { useAuth } from "../../../lib/app";
+import { appRoute } from "../../../lib/push";
+import { useTheme } from "../../../lib/theme";
 
 type Item = { id: string; title: string; body: string; href: string; read: boolean; createdAt: string };
 

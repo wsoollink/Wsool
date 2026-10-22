@@ -1,13 +1,13 @@
 import { useCallback, useState, type ReactNode } from "react";
 import { Alert, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, View } from "react-native";
-import { router, useFocusEffect, usePreventRemove } from "expo-router";
+import { router, Stack, useFocusEffect, usePreventRemove } from "expo-router";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Check, ChevronLeft, ChevronRight, Plus, Trash2, X } from "lucide-react-native";
 import { useI18n } from "../i18n";
 import { api, ApiError } from "../lib/api";
 import { useCached } from "../lib/cached";
 import { TOUCH, useTheme } from "../lib/theme";
-import { ANDROID, Button, Card, Row, Status, T, TAB_BAR_SPACE } from "./ui";
+import { ANDROID, Button, Card, NATIVE_BARS, Row, Status, T, TAB_BAR_SPACE } from "./ui";
 import { haptic } from "../lib/haptics";
 
 /**
@@ -51,8 +51,11 @@ export function SectionScreen({ title, subtitle, children, footer, loading, erro
   const Arrow = rtl ? ArrowRight : ArrowLeft;
   const back = () => (router.canGoBack() ? router.back() : router.replace(`/${parent}` as never));
   return (
-    <SafeAreaView edges={["top", "left", "right"]} style={{ flex: 1, backgroundColor: colors.bg }}>
-      {tab ? null : ANDROID ? (
+    <SafeAreaView edges={NATIVE_BARS ? ["left", "right"] : ["top", "left", "right"]} style={{ flex: 1, backgroundColor: colors.bg }}>
+      {NATIVE_BARS ? (
+        // iPhone: the system bar (large title on the Insights tab, back button with the tab's name on sections).
+        <Stack.Screen options={{ title, headerLargeTitle: !!tab }} />
+      ) : tab ? null : ANDROID ? (
         // Android (Material top app bar): back arrow, then the title at the start.
         <View style={{ minHeight: 56, flexDirection: "row", alignItems: "center", gap: 4, paddingHorizontal: 4, borderBottomWidth: 1, borderBottomColor: colors.lineSoft }}>
           <Pressable accessibilityRole="button" accessibilityLabel={t("common.back")} onPress={back} android_ripple={{ color: colors.line, borderless: true, radius: 24 }}
@@ -74,8 +77,8 @@ export function SectionScreen({ title, subtitle, children, footer, loading, erro
       )}
       {loading || error ? <Status loading={loading} error={error} onRetry={onRetry} /> : (
         <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
-          <ScrollView contentContainerStyle={{ padding: 16, paddingTop: tab ? 12 : 14, gap: 16, paddingBottom: footer ? TAB_BAR_SPACE + 76 : TAB_BAR_SPACE }} keyboardShouldPersistTaps="handled">
-            {tab ? <T weight="black" size={30} accessibilityRole="header">{title}</T> : null}
+          <ScrollView contentInsetAdjustmentBehavior="automatic" contentContainerStyle={{ padding: 16, paddingTop: tab ? 12 : 14, gap: 16, paddingBottom: footer ? TAB_BAR_SPACE + 76 : TAB_BAR_SPACE }} keyboardShouldPersistTaps="handled">
+            {tab && !NATIVE_BARS ? <T weight="black" size={30} accessibilityRole="header">{title}</T> : null}
             {subtitle ? <T size={13.5} tone="muted" style={{ marginTop: tab ? -10 : 0 }}>{subtitle}</T> : null}
             {children}
           </ScrollView>
@@ -94,8 +97,12 @@ export function SaveBar({ onSave, status, message, disabled }: { onSave: () => v
   const { t } = useI18n();
   const insets = useSafeAreaInsets();
   const note = status === "saved" || status === "failed" || message;
+  // iPhone: a bottom safe-area view inside the tab already includes the system tab bar's height.
+  const Wrap = NATIVE_BARS ? SafeAreaView : View;
   return (
-    <View pointerEvents="box-none" style={{ position: "absolute", left: 16, right: 16, bottom: Math.max(insets.bottom, 10) + 80, gap: 6, alignItems: "stretch" }}>
+    <Wrap pointerEvents="box-none" edges={["bottom"]} style={NATIVE_BARS
+      ? { position: "absolute", left: 16, right: 16, bottom: 12, gap: 6, alignItems: "stretch" }
+      : { position: "absolute", left: 16, right: 16, bottom: Math.max(insets.bottom, 10) + 80, gap: 6, alignItems: "stretch" }}>
       {note ? (
         <View style={{ alignSelf: "center", paddingHorizontal: 12, paddingVertical: 4, borderRadius: 999, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.line }}>
           <T size={13} tone={status === "failed" ? "bad" : "good"} accessibilityLiveRegion="polite" style={{ textAlign: "center" }}>
@@ -105,7 +112,7 @@ export function SaveBar({ onSave, status, message, disabled }: { onSave: () => v
       ) : null}
       <Button title={status === "saving" ? t("editor.saving") : t("editor.save")} onPress={onSave} loading={status === "saving"} disabled={disabled}
         style={{ minHeight: 52, shadowColor: "#0060E6", shadowOpacity: 0.28, shadowRadius: 12, shadowOffset: { width: 0, height: 6 }, elevation: 6 }} />
-    </View>
+    </Wrap>
   );
 }
 

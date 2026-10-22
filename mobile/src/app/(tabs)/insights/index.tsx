@@ -2,14 +2,14 @@ import { useCallback, useState } from "react";
 import { useFocusEffect } from "expo-router";
 import { View } from "react-native";
 import { Lock } from "lucide-react-native";
-import { AreaChart } from "../../components/AreaChart";
-import { SectionScreen } from "../../components/editor";
-import { Card, Panel, Row, Segmented, T } from "../../components/ui";
-import { useI18n } from "../../i18n";
-import { api } from "../../lib/api";
-import { useCached } from "../../lib/cached";
-import { PLATFORM_NAMES, type Platform } from "../../lib/platforms";
-import { useTheme } from "../../lib/theme";
+import { AreaChart } from "../../../components/AreaChart";
+import { SectionScreen } from "../../../components/editor";
+import { Card, Panel, Row, Segmented, T } from "../../../components/ui";
+import { useI18n } from "../../../i18n";
+import { api } from "../../../lib/api";
+import { useCached } from "../../../lib/cached";
+import { PLATFORM_NAMES, type Platform } from "../../../lib/platforms";
+import { useTheme } from "../../../lib/theme";
 
 type Count = { key: string; count: number };
 type Report = {

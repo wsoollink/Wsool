@@ -2,6 +2,7 @@ import { Children, isValidElement, cloneElement, type ReactElement, type ReactNo
 import { ActivityIndicator, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View, type PressableProps, type StyleProp, type TextInputProps, type TextProps, type TextStyle, type ViewStyle } from "react-native";
 import { Image } from "expo-image";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Stack } from "expo-router";
 import { ChevronLeft, ChevronRight, UserRound } from "lucide-react-native";
 import { useI18n } from "../i18n";
 import { FONTS, RADIUS, TOUCH, useTheme, align } from "../lib/theme";
@@ -13,8 +14,10 @@ export const ANDROID = Platform.OS === "android";
 const MIN_TEXT = 12;
 /** How far text follows the phone's larger text setting (bars and tight rows pass a lower cap). */
 export const MAX_SCALE = 1.8;
-/** Room under scrolling content for the floating tab bar. */
-export const TAB_BAR_SPACE = 120;
+/** iPhone: system tab bar and headers (iOS adds their room to scroll views itself); elsewhere our floating bar. */
+export const NATIVE_BARS = Platform.OS === "ios";
+/** Room under scrolling content for the tab bar (the floating one needs it; iOS insets scroll views by itself). */
+export const TAB_BAR_SPACE = NATIVE_BARS ? 24 : 120;
 
 type Weight = "regular" | "bold" | "black";
 
@@ -34,7 +37,11 @@ export function Screen({ children, scroll = true, refreshControl, contentStyle, 
 }) {
   const { colors } = useTheme();
   const body = [{ paddingHorizontal: 16, paddingTop: 12, gap: 16 }, contentStyle];
-  const head = title ? (
+  // iPhone: the stack's large title (shrinks on scroll) and the action in the bar.
+  const native = NATIVE_BARS && !!title;
+  const head = native ? (
+    <Stack.Screen options={{ title, headerLargeTitle: true, headerRight: action ? () => action : undefined }} />
+  ) : title ? (
     <Row style={{ justifyContent: "space-between", alignItems: "flex-end" }}>
       <View style={{ flex: 1 }}>
         <T weight="black" size={30} accessibilityRole="header">{title}</T>
@@ -44,9 +51,9 @@ export function Screen({ children, scroll = true, refreshControl, contentStyle, 
     </Row>
   ) : null;
   return (
-    <SafeAreaView edges={["top", "left", "right"]} style={{ flex: 1, backgroundColor: colors.bg }}>
+    <SafeAreaView edges={native ? ["left", "right"] : ["top", "left", "right"]} style={{ flex: 1, backgroundColor: colors.bg }}>
       {scroll ? (
-        <ScrollView contentContainerStyle={[...body, { paddingBottom: tabs ? TAB_BAR_SPACE : 32 }]} refreshControl={refreshControl} keyboardShouldPersistTaps="handled">
+        <ScrollView contentInsetAdjustmentBehavior="automatic" contentContainerStyle={[...body, { paddingBottom: tabs ? TAB_BAR_SPACE : 32 }]} refreshControl={refreshControl} keyboardShouldPersistTaps="handled">
           {head}{children}
         </ScrollView>
       ) : (

@@ -810,6 +810,13 @@ enum CampaignStatus {
 
 /// One newsletter issue written in the admin panel. Subscribers get their
 /// language's version, or the other one when theirs is empty.
+enum EmailFont {
+  wsool
+  system
+
+  @@map("email_font")
+}
+
 model NewsletterCampaign {
   id          String         @id @default(uuid()) @db.Uuid
   subjectAr   String         @default("") @map("subject_ar") @db.VarChar(150)
@@ -820,6 +827,8 @@ model NewsletterCampaign {
   ctaLabelAr  String         @default("") @map("cta_label_ar") @db.VarChar(40)
   ctaLabelEn  String         @default("") @map("cta_label_en") @db.VarChar(40)
   ctaUrl      String         @default("") @map("cta_url") @db.VarChar(500)
+  /// Font of the title and headings: Wsool's (Noto Kufi Arabic, where the mail app allows web fonts) or the system font.
+  headingFont EmailFont      @default(wsool) @map("heading_font")
   status      CampaignStatus @default(draft)
   createdBy   String         @map("created_by") @db.Uuid
   createdAt   DateTime       @default(now()) @map("created_at") @db.Timestamptz

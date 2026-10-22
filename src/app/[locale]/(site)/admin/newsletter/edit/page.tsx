@@ -24,7 +24,7 @@ async function Campaign({ lang, searchParams }: { lang: Locale; searchParams: SP
     <CampaignEditor
       id={c.id}
       status={c.status}
-      initial={{ subjectAr: c.subjectAr, bodyAr: c.bodyAr, subjectEn: c.subjectEn, bodyEn: c.bodyEn, ctaLabelAr: c.ctaLabelAr, ctaLabelEn: c.ctaLabelEn, ctaUrl: c.ctaUrl }}
+      initial={{ subjectAr: c.subjectAr, bodyAr: c.bodyAr, subjectEn: c.subjectEn, bodyEn: c.bodyEn, ctaLabelAr: c.ctaLabelAr, ctaLabelEn: c.ctaLabelEn, ctaUrl: c.ctaUrl, headingFont: c.headingFont }}
       audience={counts}
       progress={{ sent: c.sentCount, failed: c.failedCount, remaining }}
       sentOn={c.sentAt ? date.format(c.sentAt) : null}

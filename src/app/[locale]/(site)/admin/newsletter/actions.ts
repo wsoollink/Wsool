@@ -19,6 +19,7 @@ const draftSchema = z.object({
   ctaLabelAr: z.string().trim().max(40),
   ctaLabelEn: z.string().trim().max(40),
   ctaUrl: z.string().trim().max(500),
+  headingFont: z.enum(["wsool", "system"]),
 });
 
 type Result = { ok?: boolean; error?: string };

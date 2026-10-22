@@ -160,6 +160,22 @@ export function CampaignEditor({ id, status, initial, audience, progress, sentOn
           </div>
           {field(`subject${L}` as keyof Fields, t("subject"), { lang: tab, emoji: true, max: 150 })}
           {field(`body${L}` as keyof Fields, t("body"), { area: true, lang: tab, max: 20000, hint: t("bodyHint") })}
+          <fieldset className="flex flex-col gap-1.5" disabled={!editable}>
+            <legend className="mb-1.5 text-[13px] font-medium">{t("font.label")}</legend>
+            <div className="grid grid-cols-2 gap-2">
+              {(["wsool", "system"] as const).map((k) => (
+                <label
+                  key={k}
+                  className={`flex min-h-11 cursor-pointer flex-col gap-0.5 rounded-[10px] border px-3 py-2 has-[:focus-visible]:ring-3 has-[:focus-visible]:ring-blue/30 ${f.headingFont === k ? "border-blue bg-blue/5" : "border-navy/15"}`}
+                >
+                  <input type="radio" name="nl-font" value={k} checked={f.headingFont === k} onChange={() => set({ headingFont: k })} className="sr-only" />
+                  <span className="text-[15px] font-bold" style={k === "system" ? { fontFamily: "Tahoma, 'Segoe UI', Arial, sans-serif" } : undefined}>{t(`font.${k}`)}</span>
+                  <span className="text-xs text-muted">{t(`font.${k}Hint`)}</span>
+                </label>
+              ))}
+            </div>
+            <p className="text-xs text-muted">{t("font.note")}</p>
+          </fieldset>
           <p className="text-xs text-muted">{t("langNote")}</p>
         </Card>
 

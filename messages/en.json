@@ -1417,6 +1417,14 @@
           "symbols": "Symbols & hearts",
           "flags": "Flags"
         }
+      },
+      "font": {
+        "label": "Heading font",
+        "wsool": "Wsool font",
+        "wsoolHint": "Same as the site's headings",
+        "system": "Standard font",
+        "systemHint": "The device font, looks the same everywhere",
+        "note": "The Wsool font shows in Apple Mail (iPhone, Mac) and some Android apps; Gmail and Outlook show the standard font. Body text always uses the standard font so it reads well on every device."
       }
     },
     "discounts": {

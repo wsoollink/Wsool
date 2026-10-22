@@ -28,6 +28,14 @@ const nextConfig: NextConfig = {
           { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=(self)" },
         ],
       },
+      // The newsletter's heading font is loaded by mail apps from other origins (fonts need CORS).
+      {
+        source: "/brand/fonts/:file*",
+        headers: [
+          { key: "Access-Control-Allow-Origin", value: "*" },
+          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+        ],
+      },
     ];
   },
   turbopack: {

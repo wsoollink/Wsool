@@ -21,6 +21,7 @@ export const campaignSchema = z
     ctaLabelAr: z.string().trim().max(40),
     ctaLabelEn: z.string().trim().max(40),
     ctaUrl: z.union([z.literal(""), z.url({ protocol: /^https$/ }).max(500)]),
+    headingFont: z.enum(["wsool", "system"]),
   })
   .refine((c) => !!(c.subjectAr && c.bodyAr) || !!(c.subjectEn && c.bodyEn), { message: "empty" })
   // A button needs its link, and a link needs a label in every language that is filled in.
@@ -53,6 +54,7 @@ export function renderCampaign(c: Content, lang: Locale, subscriberId: string | 
     markup: body,
     cta: c.ctaUrl && ctaLabel ? { label: ctaLabel, url: c.ctaUrl } : undefined,
     footer: t("footer", { url: unsubscribe }),
+    headingFont: c.headingFont,
   });
   return { subject, ...content };
 }

@@ -92,14 +92,14 @@ function sections(body: string): Section[] {
   return out;
 }
 
-function blockHtml(b: string, center: boolean) {
+function blockHtml(b: string, center: boolean, headingFont?: string) {
   const align = center ? "text-align:center;" : "";
   const img = b.match(IMAGE);
   if (img) {
     return `<p style="margin:0 0 16px;${align}"><img src="${esc(img[2])}" alt="${esc(img[1])}" width="472" style="display:block;width:100%;max-width:472px;height:auto;border:0;border-radius:12px;${center ? "margin:0 auto;" : ""}"></p>`;
   }
   if (b === "---") return `<hr style="border:0;border-top:1px solid #E3E8EE;margin:22px 0;">`;
-  if (b.startsWith("## ")) return `<h2 style="margin:22px 0 10px;font-size:18px;line-height:1.5;color:#021941;${align}">${inline(esc(b.slice(3).replace(/\n/g, " ")))}</h2>`;
+  if (b.startsWith("## ")) return `<h2 style="margin:22px 0 10px;${headingFont ? `font-family:${headingFont};font-weight:700;` : ""}font-size:18px;line-height:1.5;color:#021941;${align}">${inline(esc(b.slice(3).replace(/\n/g, " ")))}</h2>`;
   const lines = b.split("\n");
   const list = lines.every((l) => l.startsWith("- ")) ? "ul" : lines.every((l) => NUMBERED.test(l)) ? "ol" : null;
   if (list) {
@@ -110,11 +110,11 @@ function blockHtml(b: string, center: boolean) {
   return `<p style="margin:0 0 14px;font-size:15px;line-height:1.8;color:#021941;${align}">${lines.map((l) => inline(esc(l))).join("<br>")}</p>`;
 }
 
-/** Email HTML for a body written in the format above. */
-export function markupToHtml(body: string): string {
+/** Email HTML for a body written in the format above; `headingFont` = CSS font-family for the ## headings. */
+export function markupToHtml(body: string, headingFont?: string): string {
   return sections(body)
     .map(({ text, center, box }) => {
-      const html = blocks(text).map((b) => blockHtml(b, center)).join("\n");
+      const html = blocks(text).map((b) => blockHtml(b, center, headingFont)).join("\n");
       if (!html || !box) return html;
       // A table, so Outlook keeps the background and the padding.
       return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:4px 0 18px;border-collapse:separate;"><tr><td style="background:#EEF4FF;border:1px solid #D6E4FF;border-radius:12px;padding:16px 18px 2px;">${html}</td></tr></table>`;

@@ -2,13 +2,13 @@ import { useCallback, useState } from "react";
 import { Alert, Linking, Pressable, RefreshControl, Share, View } from "react-native";
 import { router, useFocusEffect } from "expo-router";
 import { BadgeCheck, Briefcase, Link2, MessageCircle, Palette, Pencil, Share2, Tag, TicketPercent, Users } from "lucide-react-native";
-import { Toggle } from "../../components/editor";
-import { Avatar, Button, Card, Group, IconTile, ListRow, Pill, Row, Screen, Status, T } from "../../components/ui";
-import { useI18n } from "../../i18n";
-import { api, ApiError, rpc } from "../../lib/api";
-import { useCached } from "../../lib/cached";
-import { useAuth } from "../../lib/app";
-import { useTheme, align } from "../../lib/theme";
+import { Toggle } from "../../../components/editor";
+import { Avatar, Button, Card, Group, IconTile, ListRow, Pill, Row, Screen, Status, T } from "../../../components/ui";
+import { useI18n } from "../../../i18n";
+import { api, ApiError, rpc } from "../../../lib/api";
+import { useCached } from "../../../lib/cached";
+import { useAuth } from "../../../lib/app";
+import { useTheme, align } from "../../../lib/theme";
 
 type Home = {
   name: string | null; username: string; url: string; published: boolean; photoUrl: string | null;
@@ -36,7 +36,7 @@ export default function PageTab() {
   useFocusEffect(useCallback(() => { load(); }, [load]));
 
   if (!data) return <Status loading={!error} error={error} onRetry={load} />;
-  const go = (s: string) => () => router.push(`/section/${s}` as never);
+  const go = (s: string) => () => router.push(`/page/${s}` as never);
   const pending = data.accounts.filter((a) => a.verification === "in_review").length;
   const short = data.url.replace(/^https?:\/\//, "");
 
@@ -79,8 +79,8 @@ export default function PageTab() {
           <Toggle label={t("pageTab.visible")} value={data.published} onChange={setPublished} disabled={busy} />
         </Row>
         <Row>
-          <Button title={t("pageTab.preview")} variant="secondary" onPress={() => Linking.openURL(data.url)} style={{ flex: 1, minHeight: 42 }} />
-          {data.plan.pro ? <Button title={t("pageTab.pdf")} variant="secondary" onPress={() => Linking.openURL(`${data.url}/pdf`)} style={{ flex: 1, minHeight: 42 }} /> : null}
+          <Button title={t("pageTab.preview")} variant="secondary" onPress={() => Linking.openURL(data.url)} style={{ flex: 1 }} />
+          {data.plan.pro ? <Button title={t("pageTab.pdf")} variant="secondary" onPress={() => Linking.openURL(`${data.url}/pdf`)} style={{ flex: 1 }} /> : null}
         </Row>
       </Card>
 

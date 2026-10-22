@@ -1,10 +1,13 @@
 import { Children, isValidElement, cloneElement, type ReactElement, type ReactNode } from "react";
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, TextInput, View, type PressableProps, type StyleProp, type TextInputProps, type TextProps, type TextStyle, type ViewStyle } from "react-native";
+import { ActivityIndicator, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View, type PressableProps, type StyleProp, type TextInputProps, type TextProps, type TextStyle, type ViewStyle } from "react-native";
 import { Image } from "expo-image";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ChevronLeft, ChevronRight, UserRound } from "lucide-react-native";
 import { useI18n } from "../i18n";
-import { FONTS, RADIUS, useTheme, align } from "../lib/theme";
+import { FONTS, RADIUS, TOUCH, useTheme, align } from "../lib/theme";
+
+/** Android shows a ripple when a control is pressed; iOS dims it. */
+export const ANDROID = Platform.OS === "android";
 
 /** Smallest text size (design review, Oct 2026: Apple's minimum is 11 pt; 12 reads better in Arabic). */
 const MIN_TEXT = 12;
@@ -90,11 +93,11 @@ export function Button({ title, onPress, variant = "primary", loading, disabled,
   return (
     <Pressable
       accessibilityRole="button" accessibilityState={{ disabled: !!(disabled || loading), busy: !!loading }}
-      onPress={onPress} disabled={disabled || loading} {...rest}
-      style={({ pressed }) => [{
+      onPress={onPress} disabled={disabled || loading} android_ripple={{ color: variant === "primary" ? "rgba(255,255,255,0.25)" : colors.line }} {...rest}
+      style={({ pressed }) => [{ overflow: "hidden",
         minHeight: 48, borderRadius: RADIUS.button, paddingHorizontal: 20, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8,
         backgroundColor: variant === "secondary" ? colors.input : bg, borderWidth: 0,
-        opacity: disabled ? 0.5 : pressed ? 0.85 : 1,
+        opacity: disabled ? 0.5 : pressed && !ANDROID ? 0.85 : 1,
       }, style]}
     >
       {loading ? <ActivityIndicator color={fg} /> : icon}
@@ -200,7 +203,7 @@ export function ListRow({ icon, label, note, value, badge, onPress, first, dange
   );
   if (!onPress) return body;
   return (
-    <Pressable accessibilityRole="button" accessibilityLabel={accessibilityLabel} onPress={onPress} style={({ pressed }) => ({ backgroundColor: pressed ? colors.hover : "transparent" })}>
+    <Pressable accessibilityRole="button" accessibilityLabel={accessibilityLabel} onPress={onPress} android_ripple={{ color: colors.line }} style={({ pressed }) => ({ backgroundColor: pressed && !ANDROID ? colors.hover : "transparent" })}>
       {body}
     </Pressable>
   );
@@ -214,8 +217,8 @@ export function Segmented<V extends string | number>({ options, value, onChange,
       {options.map((o) => {
         const on = o.value === value;
         return (
-          <Pressable key={String(o.value)} accessibilityRole="radio" accessibilityState={{ checked: on }} onPress={() => onChange(o.value)}
-            style={{ flex: 1, minHeight: 38, borderRadius: 10, alignItems: "center", justifyContent: "center", backgroundColor: on ? (dark ? colors.hover : colors.card) : "transparent", shadowColor: "#021941", shadowOpacity: on && !dark ? 0.12 : 0, shadowRadius: 3, shadowOffset: { width: 0, height: 1 }, elevation: on && !dark ? 1 : 0 }}>
+          <Pressable key={String(o.value)} accessibilityRole="radio" accessibilityState={{ checked: on }} onPress={() => onChange(o.value)} hitSlop={3}
+            style={{ flex: 1, minHeight: TOUCH - 6, borderRadius: 10, alignItems: "center", justifyContent: "center", backgroundColor: on ? (dark ? colors.hover : colors.card) : "transparent", shadowColor: "#021941", shadowOpacity: on && !dark ? 0.12 : 0, shadowRadius: 3, shadowOffset: { width: 0, height: 1 }, elevation: on && !dark ? 1 : 0 }}>
             <T weight="bold" size={14} tone={on ? undefined : "muted"}>{o.label}</T>
           </Pressable>
         );

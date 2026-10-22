@@ -2,11 +2,11 @@ import { Linking, View } from "react-native";
 import { router } from "expo-router";
 import Constants from "expo-constants";
 import { CircleDollarSign, CreditCard, FileText, LifeBuoy, Star } from "lucide-react-native";
-import { Avatar, Button, Card, Group, IconTile, ListRow, Row, Screen, Segmented, T } from "../../components/ui";
-import { useI18n, type Lang } from "../../i18n";
-import { useAuth } from "../../lib/app";
-import { SITE_URL } from "../../lib/config";
-import { useTheme, type ThemeMode } from "../../lib/theme";
+import { Avatar, Button, Card, Group, IconTile, ListRow, Row, Screen, Segmented, T } from "../../../components/ui";
+import { useI18n, type Lang } from "../../../i18n";
+import { useAuth } from "../../../lib/app";
+import { SITE_URL } from "../../../lib/config";
+import { useTheme, type ThemeMode } from "../../../lib/theme";
 
 const TRIAL_DAYS = 14;
 
@@ -55,8 +55,8 @@ export default function AccountTab() {
       ) : null}
 
       <Group title={t("account.money")}>
-        <ListRow icon={<IconTile color="#E8590C"><CircleDollarSign size={17} color="#fff" /></IconTile>} label={t("section.referrals")} onPress={() => router.push("/section/referrals")} />
-        <ListRow icon={<IconTile color="#0060E6"><CreditCard size={17} color="#fff" /></IconTile>} label={t("section.subscription")} onPress={() => router.push("/section/subscription")} />
+        <ListRow icon={<IconTile color="#E8590C"><CircleDollarSign size={17} color="#fff" /></IconTile>} label={t("section.referrals")} onPress={() => router.push("/account/referrals")} />
+        <ListRow icon={<IconTile color="#0060E6"><CreditCard size={17} color="#fff" /></IconTile>} label={t("section.subscription")} onPress={() => router.push("/account/subscription")} />
       </Group>
 
       <View style={{ gap: 6 }}>

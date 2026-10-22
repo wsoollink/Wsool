@@ -51,5 +51,7 @@ export function appRoute(href: string | undefined | null): string {
   const section = href.match(/^\/dashboard\/([a-z]+)/)?.[1];
   if (!section) return "/";
   if (section === "notifications") return "/notifications";
-  return `/section/${section}`;
+  if (section === "analytics") return "/insights";
+  if (section === "referrals" || section === "subscription") return `/account/${section}`;
+  return `/page/${section}`;
 }

@@ -8,7 +8,7 @@ import { useI18n } from "../../../i18n";
 import { rpc } from "../../../lib/api";
 import { useAuth } from "../../../lib/app";
 import { pickDocument, pickImage, upload } from "../../../lib/media";
-import { useTheme } from "../../../lib/theme";
+import { TOUCH, useTheme } from "../../../lib/theme";
 
 type Lang = "ar" | "en";
 type Texts = { fullName: string; specialty: string; bio: string; city: string; country: string };
@@ -173,7 +173,7 @@ export default function Edit() {
             <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
               {d.tags[lang].map((tag, i) => (
                 <Pressable key={`${tag}-${i}`} accessibilityRole="button" accessibilityLabel={`${t("editor.remove")} ${tag}`} onPress={() => { set({ tags: { ...d.tags, [lang]: d.tags[lang].filter((_, j) => j !== i) } }); tags.touch(); }}
-                  style={{ minHeight: 36, paddingHorizontal: 12, borderRadius: 999, backgroundColor: colors.hover, flexDirection: "row", alignItems: "center", gap: 6 }}>
+                  style={{ minHeight: TOUCH, paddingHorizontal: 14, borderRadius: 999, backgroundColor: colors.hover, flexDirection: "row", alignItems: "center", gap: 6 }}>
                   <T size={13.5}>{tag}</T><X size={14} color={colors.muted} />
                 </Pressable>
               ))}

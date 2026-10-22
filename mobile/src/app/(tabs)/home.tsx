@@ -127,7 +127,7 @@ export default function HomeScreen() {
       </View>
 
       {data.numbersStale && (
-        <Pressable accessibilityRole="button" onPress={() => router.push("/section/accounts")}>
+        <Pressable accessibilityRole="button" onPress={() => router.push("/page/accounts")}>
           <Card style={{ flexDirection: "row", alignItems: "center", gap: 12, backgroundColor: colors.warn + "14" }}>
             <RefreshCw size={18} color={colors.warn} /><T weight="bold" style={{ color: colors.warn, flex: 1 }}>{t("home.numbersStale")}</T>
           </Card>
@@ -172,7 +172,7 @@ export default function HomeScreen() {
         {left.slice(0, 3).map((c) => {
           const { Icon, color } = TODO[c.key] ?? { Icon: BadgeCheck, color: colors.blue };
           return (
-            <Pressable key={c.key} accessibilityRole="button" onPress={() => router.push(`/section/${c.section}` as never)}>
+            <Pressable key={c.key} accessibilityRole="button" onPress={() => router.push(`/page/${c.section}` as never)}>
               <Row style={{ minHeight: 52, gap: 12, borderTopWidth: 1, borderTopColor: colors.lineSoft }}>
                 <View style={{ width: 34, height: 34, borderRadius: 10, backgroundColor: color + "1F", alignItems: "center", justifyContent: "center" }}><Icon size={18} color={color} /></View>
                 <T weight="bold" size={15} style={{ flex: 1 }}>{t(`home.todo.${c.key}`)}</T>

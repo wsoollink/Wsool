@@ -6,7 +6,7 @@ import { useAuth } from "../lib/app";
 import { useTheme } from "../lib/theme";
 import { T } from "./ui";
 
-/** The five tabs, in reading order; sections (`section/*`) live under "page". */
+/** The five tabs, in reading order; sections live in the stacks of "page" and "account". */
 export const TABS: { name: string; label: string; Icon: LucideIcon }[] = [
   { name: "home", label: "tabs.home", Icon: House },
   { name: "page", label: "tabs.page", Icon: IdCard },
@@ -29,7 +29,7 @@ export function TabBar({ state, emitter, navigateToTab }: Props) {
   const { me } = useAuth();
   const insets = useSafeAreaInsets();
   const current = state.routes[state.index]?.name ?? "home";
-  const active = current.startsWith("section/") ? (current === "section/analytics" ? "insights" : current === "section/referrals" || current === "section/subscription" ? "account" : "page") : current;
+  const active = current;
 
   return (
     <View

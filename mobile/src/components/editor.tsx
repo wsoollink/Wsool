@@ -2,12 +2,12 @@ import { useCallback, useState, type ReactNode } from "react";
 import { KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, View } from "react-native";
 import { router, useFocusEffect } from "expo-router";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
-import { ArrowDown, ArrowUp, Check, ChevronLeft, ChevronRight, Plus, Trash2, X } from "lucide-react-native";
+import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Check, ChevronLeft, ChevronRight, Plus, Trash2, X } from "lucide-react-native";
 import { useI18n } from "../i18n";
 import { api, ApiError } from "../lib/api";
 import { useCached } from "../lib/cached";
-import { useTheme } from "../lib/theme";
-import { Button, Card, Row, Status, T, TAB_BAR_SPACE } from "./ui";
+import { TOUCH, useTheme } from "../lib/theme";
+import { ANDROID, Button, Card, Row, Status, T, TAB_BAR_SPACE } from "./ui";
 
 /**
  * Loads a dashboard section's data (/section/<key>) with reload. Sections stay
@@ -26,7 +26,7 @@ export function useSection<D>(key: string) {
 }
 
 /**
- * A section page: a bar with back (to the tab it belongs to) and the title in the middle, a short
+ * A section page: a bar with back (to the tab it belongs to) and the title (iPhone: in the middle; Android: after the arrow), a short
  * description, the scrolling body, and an optional save button floating above the tab bar.
  * `tab` = the screen is itself a tab (Insights): large title, no back button.
  */
@@ -37,16 +37,27 @@ export function SectionScreen({ title, subtitle, children, footer, loading, erro
   const { colors } = useTheme();
   const { rtl, t } = useI18n();
   const Back = rtl ? ChevronRight : ChevronLeft;
+  const Arrow = rtl ? ArrowRight : ArrowLeft;
   const back = () => (router.canGoBack() ? router.back() : router.replace(`/${parent}` as never));
   return (
     <SafeAreaView edges={["top", "left", "right"]} style={{ flex: 1, backgroundColor: colors.bg }}>
-      {tab ? null : (
+      {tab ? null : ANDROID ? (
+        // Android (Material top app bar): back arrow, then the title at the start.
+        <View style={{ minHeight: 56, flexDirection: "row", alignItems: "center", gap: 4, paddingHorizontal: 4, borderBottomWidth: 1, borderBottomColor: colors.lineSoft }}>
+          <Pressable accessibilityRole="button" accessibilityLabel={t("common.back")} onPress={back} android_ripple={{ color: colors.line, borderless: true, radius: 24 }}
+            style={{ width: 48, height: 48, alignItems: "center", justifyContent: "center" }}>
+            <Arrow size={24} color={colors.navy} />
+          </Pressable>
+          <T weight="bold" size={19} numberOfLines={1} maxFontSizeMultiplier={1.3} accessibilityRole="header" style={{ flex: 1 }}>{title}</T>
+        </View>
+      ) : (
+        // iPhone: "‹ My page" back button and the title in the middle.
         <View style={{ minHeight: 48, justifyContent: "center", paddingHorizontal: 4, borderBottomWidth: 1, borderBottomColor: colors.lineSoft }}>
           <T weight="bold" size={17} numberOfLines={1} maxFontSizeMultiplier={1.3} accessibilityRole="header" style={{ position: "absolute", left: 90, right: 90, textAlign: "center" }}>{title}</T>
           <Pressable accessibilityRole="button" accessibilityLabel={t("common.back")} onPress={back} hitSlop={6}
             style={{ alignSelf: "flex-start", flexDirection: "row", alignItems: "center", minHeight: 44, paddingHorizontal: 6 }}>
             <Back size={24} color={colors.blue} strokeWidth={2.2} />
-            <T size={16} weight="bold" tone="blue">{t(`tabs.${parent}`)}</T>
+            <T size={16} weight="bold" tone="blue" maxFontSizeMultiplier={1.3}>{t(`tabs.${parent}`)}</T>
           </Pressable>
         </View>
       )}
@@ -144,8 +155,8 @@ export function Chips<V extends string>({ options, value, onChange, multi, max }
           onChange([...value, o.value]);
         };
         return (
-          <Pressable key={o.value} accessibilityRole={multi ? "checkbox" : "radio"} accessibilityState={{ checked: on, disabled: o.locked }} onPress={toggle}
-            style={{ minHeight: 40, paddingHorizontal: 14, borderRadius: 999, flexDirection: "row", alignItems: "center", gap: 6, borderWidth: 1,
+          <Pressable key={o.value} accessibilityRole={multi ? "checkbox" : "radio"} accessibilityState={{ checked: on, disabled: o.locked }} onPress={toggle} android_ripple={{ color: colors.line }}
+            style={{ minHeight: TOUCH, paddingHorizontal: 14, borderRadius: 999, overflow: "hidden", flexDirection: "row", alignItems: "center", gap: 6, borderWidth: 1,
               borderColor: on ? colors.blue : colors.line, backgroundColor: on ? colors.blue + "1A" : colors.card, opacity: o.locked ? 0.5 : 1 }}>
             {on ? <Check size={14} color={colors.blue} /> : null}
             <T size={13.5} weight="bold" style={{ color: on ? colors.blue : colors.navy }}>{o.label}</T>
@@ -160,7 +171,7 @@ export function Chips<V extends string>({ options, value, onChange, multi, max }
 export function ItemTools({ index, count, onMove, onRemove }: { index: number; count: number; onMove: (from: number, to: number) => void; onRemove: () => void }) {
   const { colors } = useTheme();
   const { t } = useI18n();
-  const btn = { width: 40, height: 40, borderRadius: 20, alignItems: "center" as const, justifyContent: "center" as const, backgroundColor: colors.hover };
+  const btn = { width: TOUCH, height: TOUCH, borderRadius: TOUCH / 2, alignItems: "center" as const, justifyContent: "center" as const, backgroundColor: colors.hover };
   return (
     <Row style={{ gap: 6 }}>
       <Pressable accessibilityRole="button" accessibilityLabel={t("editor.moveUp")} disabled={index === 0} onPress={() => onMove(index, index - 1)} style={[btn, index === 0 && { opacity: 0.35 }]}><ArrowUp size={17} color={colors.navy} /></Pressable>
@@ -181,8 +192,8 @@ export const move = <T,>(list: T[], from: number, to: number) => {
 export function AddButton({ label, onPress, disabled }: { label: string; onPress: () => void; disabled?: boolean }) {
   const { colors } = useTheme();
   return (
-    <Pressable accessibilityRole="button" onPress={onPress} disabled={disabled}
-      style={{ minHeight: 48, borderRadius: 14, borderWidth: 1.5, borderStyle: "dashed", borderColor: colors.line, alignItems: "center", justifyContent: "center", flexDirection: "row", gap: 6, opacity: disabled ? 0.5 : 1 }}>
+    <Pressable accessibilityRole="button" onPress={onPress} disabled={disabled} android_ripple={{ color: colors.line }}
+      style={{ minHeight: 48, borderRadius: 14, overflow: "hidden", borderWidth: 1.5, borderStyle: "dashed", borderColor: colors.line, alignItems: "center", justifyContent: "center", flexDirection: "row", gap: 6, opacity: disabled ? 0.5 : 1 }}>
       <Plus size={18} color={colors.blue} /><T weight="bold" tone="blue">{label}</T>
     </Pressable>
   );
@@ -204,7 +215,7 @@ export function PickerSheet<V extends string>({ visible, title, options, onPick,
         </Row>
         <ScrollView>
           {options.map((o) => (
-            <Pressable key={o.value} accessibilityRole="button" onPress={() => { onPick(o.value); onClose(); }}
+            <Pressable key={o.value} accessibilityRole="button" onPress={() => { onPick(o.value); onClose(); }} android_ripple={{ color: colors.line }}
               style={{ minHeight: 52, paddingHorizontal: 16, flexDirection: "row", alignItems: "center", gap: 12, borderTopWidth: 1, borderTopColor: colors.lineSoft }}>
               {o.icon}<T>{o.label}</T>
             </Pressable>
@@ -227,8 +238,8 @@ export function LangTabs({ value, onChange }: { value: "ar" | "en"; onChange: (l
   return (
     <View accessibilityRole="tablist" style={{ flexDirection: "row", gap: 4, padding: 4, borderRadius: 12, backgroundColor: colors.hover }}>
       {(["ar", "en"] as const).map((l) => (
-        <Pressable key={l} accessibilityRole="tab" accessibilityState={{ selected: value === l }} onPress={() => onChange(l)}
-          style={{ flex: 1, minHeight: 40, borderRadius: 9, alignItems: "center", justifyContent: "center", backgroundColor: value === l ? colors.card : "transparent" }}>
+        <Pressable key={l} accessibilityRole="tab" accessibilityState={{ selected: value === l }} onPress={() => onChange(l)} hitSlop={4}
+          style={{ flex: 1, minHeight: TOUCH - 4, borderRadius: 9, alignItems: "center", justifyContent: "center", backgroundColor: value === l ? colors.card : "transparent" }}>
           <T weight="bold" size={13.5} tone={value === l ? undefined : "muted"}>{l === "ar" ? "العربية" : "English"}</T>
         </Pressable>
       ))}

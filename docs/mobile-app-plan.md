@@ -89,4 +89,10 @@
 - البناء: Expo مربوط بالمستودع مباشرة (expo.dev → المشروع → GitHub، Base directory = `/mobile`). البناء من expo.dev →
   Builds → Build from GitHub (اختيار الفرع والمنصة و`preview`/`production`). بدون `EXPO_TOKEN` ولا GitHub Actions.
 - الآيفون (TestFlight) ينتظر حساب Apple Developer للمؤسسة (السجل التجاري + D-U-N-S).
+- **تجهيز الآيفون (أكتوبر 2026)**: شريط التبويبات الأصلي (`app/(tabs)/_layout.ios.tsx`، `NativeTabs`، Liquid Glass في iOS 26، رموز SF)
+  وعناوين النظام الكبيرة (`TabStack` + `Screen`/`SectionScreen` عبر `Stack.Screen` على iOS فقط؛ أندرويد والويب على شريطنا).
+  أيقونات iOS فاتحة/داكنة/ملونة (`assets/icon-dark.png`، `icon-tinted.png`)، Privacy Manifest في `app.json`، نصوص الإذن مترجمة
+  (`locales/ar.json`، `en.json`)، الصور بمنتقي النظام بدون طلب إذن المكتبة. دخول مراجع المتاجر: `REVIEW_EMAIL` + `REVIEW_CODE`
+  (`src/lib/mobile/review-login.ts`). صفحة المتجر وإجابات الخصوصية وملاحظات المراجع: `docs/app-store.md`، والصور في
+  `docs/app-store/screenshots/` (مؤقتة من نسخة الويب؛ تنعاد من TestFlight). شريط iOS الأصلي ما ينجرب إلا على آيفون حقيقي.
 

@@ -829,6 +829,11 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   pressables. Edit page: one `SaveBar` for about/categories/tags/licenses (publish, photo, logo save on tap; username has
   its own button). Haptics via `src/lib/haptics.ts` (switch tap, save success/error). The app never mentions where to buy or
   manage the plan (App Store 3.1.3).
+- **iPhone (Oct 2026)**: system tab bar on iOS (`app/(tabs)/_layout.ios.tsx`, `NativeTabs`) and system headers with large titles
+  (`TabStack`; `Screen` / `SectionScreen` set `Stack.Screen` options when `NATIVE_BARS`); Android/web keep `TabBar` + our bars.
+  Store reviewers sign in with `REVIEW_EMAIL` + `REVIEW_CODE` (Netlify secrets, app endpoints only). Store listing, privacy answers
+  and review notes: `docs/app-store.md`. Demo page files are stored as full URLs (`asset()`), because the app can't open
+  site-relative paths: after deploying, the owner presses "Refresh demo page" once.
 - Home page "Get the app" (owner, Oct 2026): App Store + Google Play badges under "Follow us" in the newsletter card
   (`.wapp` in the design files + `marketing.css`, images `public/marketing/{app-store,google-play}-badge.png` from the owner).
   Store links in `APP_LINKS` (`src/config/site.ts`); an empty link shows that badge as a plain image without a link.

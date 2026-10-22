@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import type { Platform, Template } from "@/generated/prisma/enums";
 import type { PrismaClient } from "@/generated/prisma/client";
 import { DEMO_EMAIL } from "@/config/site";
+import { siteOrigin } from "@/lib/site-url";
 
 /**
  * The demo creator page at wsool.link/demo: a fictional creator ("Abdullah") that shows
@@ -12,6 +13,9 @@ import { DEMO_EMAIL } from "@/config/site";
  * scripts/seed-demo.ts locally. Images live in public/demo/ (PNG/JPEG: the PDF can't embed SVG).
  * Links point to example.com and platform home pages, never to real people's accounts.
  */
+/** Full URL of a file in public/demo/: the app can't open site-relative paths, the website and PDF take both. */
+const asset = (path: string) => `${siteOrigin()}${path}`;
+
 export const DEMO_USERNAME = "demo";
 
 /** Stable user id per username, so a refresh replaces the same demo account. */
@@ -129,8 +133,8 @@ export async function buildDemoPage(db: PrismaClient, opts: DemoOptions = {}) {
         photoShape: "full",
         iconStyle: "color",
         isPublished: true,
-        photoUrl: "/demo/abdullah.jpg",
-        logoUrl: "/demo/creator-logo.png",
+        photoUrl: asset("/demo/abdullah.jpg"),
+        logoUrl: asset("/demo/creator-logo.png"),
         // Demo contact details: a reserved example domain and an unassigned-looking number.
         whatsapp: "966500000000",
         contactEmail: "abdullah@example.com",
@@ -147,14 +151,14 @@ export async function buildDemoPage(db: PrismaClient, opts: DemoOptions = {}) {
           ],
         },
         licenses: {
-          create: [{ name: "رخصة موثوق", nameEn: "Mawthooq license", number: "MW-000000", fileUrl: "/demo/license.png", sort: 0, verificationStatus: "verified", submittedAt: new Date(), reviewedAt: new Date() }],
+          create: [{ name: "رخصة موثوق", nameEn: "Mawthooq license", number: "MW-000000", fileUrl: asset("/demo/license.png"), sort: 0, verificationStatus: "verified", submittedAt: new Date(), reviewedAt: new Date() }],
         },
-        brandLogos: { create: BRANDS.map(([file, name], sort) => ({ name, logoUrl: `/demo/brand-${file}.png`, sort })) },
+        brandLogos: { create: BRANDS.map(([file, name], sort) => ({ name, logoUrl: asset(`/demo/brand-${file}.png`), sort })) },
         portfolioItems: {
           create: WORKS.map((w, sort) => ({
             platform: w.platform,
-            videoUrl: "/demo/sample-work.mp4",
-            thumbUrl: `/demo/work-${sort + 1}.jpg`,
+            videoUrl: asset("/demo/sample-work.mp4"),
+            thumbUrl: asset(`/demo/work-${sort + 1}.jpg`),
             sort,
             translations: { create: [{ lang: "ar" as const, brand: BRANDS[w.brand][1], type: w.type[0] }, { lang: "en" as const, brand: BRANDS[w.brand][2], type: w.type[1] }] },
           })),
@@ -176,9 +180,9 @@ export async function buildDemoPage(db: PrismaClient, opts: DemoOptions = {}) {
         },
         coupons: {
           create: [
-            { store: "عطور ريم", storeEn: "Reem Perfumes", description: "خصم 15% على كل العطور", descriptionEn: "15% off all perfumes", code: "ABDULLAH15", url: "https://reem.example.com", logoUrl: "/demo/store-reem-perfumes.png", sort: 0 },
-            { store: "قهوة نجد", storeEn: "Najd Coffee", description: "خصم 10% على أول طلب", descriptionEn: "10% off your first order", code: "ABD10", url: "https://najd.example.com", logoUrl: "/demo/store-najd-coffee.png", sort: 1 },
-            { store: "سفرات", storeEn: "Safarat", description: "خصم 200 ريال على الباقات", descriptionEn: "SAR 200 off holiday packages", code: "SAFAR200", url: "https://safarat.example.com", logoUrl: "/demo/store-safarat.png", sort: 2 },
+            { store: "عطور ريم", storeEn: "Reem Perfumes", description: "خصم 15% على كل العطور", descriptionEn: "15% off all perfumes", code: "ABDULLAH15", url: "https://reem.example.com", logoUrl: asset("/demo/store-reem-perfumes.png"), sort: 0 },
+            { store: "قهوة نجد", storeEn: "Najd Coffee", description: "خصم 10% على أول طلب", descriptionEn: "10% off your first order", code: "ABD10", url: "https://najd.example.com", logoUrl: asset("/demo/store-najd-coffee.png"), sort: 1 },
+            { store: "سفرات", storeEn: "Safarat", description: "خصم 200 ريال على الباقات", descriptionEn: "SAR 200 off holiday packages", code: "SAFAR200", url: "https://safarat.example.com", logoUrl: asset("/demo/store-safarat.png"), sort: 2 },
           ],
         },
         categories: { create: picked.map((c) => ({ categoryId: c.id })) },

@@ -387,7 +387,7 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   `refreshDemoPage`, audited `demo.refresh`); local: `DATABASE_URL=<local> npx tsx scripts/seed-demo.ts`. Images in
   `public/demo/` are PNG/JPEG (the PDF can't embed SVG); fictional brands; links go to example.com / platform home pages,
   never real accounts. The page shows a navy "Demo page · Make yours free" bar; the home hero links to it
-  ("شاهد صفحة تجريبية ←", design files + `LINKS`).
+  ("شاهد صفحة تجريبية ←", design files + `LINKS`) and the footer's Product column has "صفحة تجريبية" / "Demo page".
 - Templates: `src/components/creator/theme.ts` turns template + accent + custom colors into CSS
   variables (`--page-bg`, `--page-surface` frosted card, `--page-solid` opaque box, `--page-soft`,
   `--page-text`, `--page-muted`, `--page-line`, `--page-accent`, `--page-on-accent`,

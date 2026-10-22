@@ -58,7 +58,7 @@ export const en: typeof ar = {
   },
   plan: {
     pro: "Pro", trial: "Free trial", free: "Free", trialLeft: "{days} days left in your trial",
-    renews: "Renews on {date}", ends: "Ends on {date}", manageOnWeb: "Manage your plan on wsool.link",
+    renews: "Renews on {date}", ends: "Ends on {date}",
   },
   notifications: { title: "Notifications", empty: "No notifications yet.", markAll: "Mark all read", today: "Today", earlier: "Earlier" },
   more: {

@@ -56,7 +56,7 @@ export const ar = {
   },
   plan: {
     pro: "الاحترافية", trial: "تجربة مجانية", free: "مجانية", trialLeft: "باقي {days} يوم على التجربة",
-    renews: "يتجدد في {date}", ends: "ينتهي في {date}", manageOnWeb: "إدارة الاشتراك من الموقع wsool.link",
+    renews: "يتجدد في {date}", ends: "ينتهي في {date}",
   },
   notifications: { title: "التنبيهات", empty: "ما عندك تنبيهات للحين.", markAll: "قراءة الكل", today: "اليوم", earlier: "قبل كذا" },
   more: {

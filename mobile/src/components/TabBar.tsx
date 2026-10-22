@@ -36,7 +36,7 @@ export function TabBar({ state, emitter, navigateToTab }: Props) {
       accessibilityRole="tablist"
       style={{
         position: "absolute", left: 14, right: 14, bottom: Math.max(insets.bottom, 10) + (Platform.OS === "web" ? 6 : 4),
-        height: 66, borderRadius: 33, backgroundColor: colors.tabBar, flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 7,
+        minHeight: 66, paddingVertical: 7, borderRadius: 33, backgroundColor: colors.tabBar, flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 7,
         borderWidth: dark ? 1 : 0, borderColor: colors.line,
         shadowColor: "#021941", shadowOpacity: dark ? 0.5 : 0.14, shadowRadius: 16, shadowOffset: { width: 0, height: 8 }, elevation: 10,
       }}
@@ -55,13 +55,13 @@ export function TabBar({ state, emitter, navigateToTab }: Props) {
             key={name} accessibilityRole="tab" accessibilityState={{ selected: on }}
             accessibilityLabel={badge ? `${t(label)}, ${t("tabs.unread", { n: me?.unread ?? 0 })}` : t(label)}
             onPress={press}
-            style={{ height: 52, minWidth: on ? 64 : 56, paddingHorizontal: on ? 12 : 4, borderRadius: 26, alignItems: "center", justifyContent: "center", backgroundColor: on ? colors.blueSoft : "transparent" }}
+            style={{ minHeight: 52, flex: 1, maxWidth: 84, paddingHorizontal: 4, borderRadius: 26, alignItems: "center", justifyContent: "center", backgroundColor: on ? colors.blueSoft : "transparent" }}
           >
             <View>
               <Icon size={21} color={on ? colors.blue : colors.muted} strokeWidth={on ? 2.2 : 1.8} />
               {badge ? <View style={{ position: "absolute", top: -1, right: -3, width: 9, height: 9, borderRadius: 5, backgroundColor: colors.bad, borderWidth: 2, borderColor: colors.card }} /> : null}
             </View>
-            <T size={11.5} weight="bold" style={{ color: on ? colors.blue : colors.muted, textAlign: "center", lineHeight: 15 }} numberOfLines={1}>{t(label)}</T>
+            <T size={12} weight="bold" maxFontSizeMultiplier={1.3} adjustsFontSizeToFit minimumFontScale={0.85} style={{ color: on ? colors.blue : colors.muted, textAlign: "center" }} numberOfLines={1}>{t(label)}</T>
           </Pressable>
         );
       })}

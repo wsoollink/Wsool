@@ -6,20 +6,22 @@ import { ChevronLeft, ChevronRight, UserRound } from "lucide-react-native";
 import { useI18n } from "../i18n";
 import { FONTS, RADIUS, useTheme, align } from "../lib/theme";
 
-/** The app design (Oct 2026) sets every text about 12% smaller than the sizes the screens pass. */
-const TEXT_SCALE = 0.88;
+/** Smallest text size (design review, Oct 2026: Apple's minimum is 11 pt; 12 reads better in Arabic). */
+const MIN_TEXT = 12;
+/** How far text follows the phone's larger text setting (bars and tight rows pass a lower cap). */
+export const MAX_SCALE = 1.8;
 /** Room under scrolling content for the floating tab bar. */
 export const TAB_BAR_SPACE = 120;
 
 type Weight = "regular" | "bold" | "black";
 
 /** Text in Noto Kufi Arabic (the brand font); `black` = the big-number cut. */
-export function T({ weight = "regular", tone, size = 15, style, ...props }: TextProps & { weight?: Weight; tone?: "muted" | "faint" | "blue" | "good" | "warn" | "bad" | "onBlue"; size?: number }) {
+export function T({ weight = "regular", tone, size = 15, style, maxFontSizeMultiplier = MAX_SCALE, ...props }: TextProps & { weight?: Weight; tone?: "muted" | "faint" | "blue" | "good" | "warn" | "bad" | "onBlue"; size?: number }) {
   const { colors } = useTheme();
   const { rtl } = useI18n();
   const color = tone ? colors[tone] : colors.navy;
-  const px = size * TEXT_SCALE;
-  return <Text {...props} style={[{ fontFamily: FONTS[weight], fontSize: px, color, lineHeight: Math.round(px * (weight === "black" ? 1.25 : 1.55)), textAlign: align(rtl ? "right" : "left"), writingDirection: rtl ? "rtl" : "ltr" }, style]} />;
+  const px = Math.max(size, MIN_TEXT);
+  return <Text maxFontSizeMultiplier={maxFontSizeMultiplier} {...props} style={[{ fontFamily: FONTS[weight], fontSize: px, color, lineHeight: Math.round(px * (weight === "black" ? 1.25 : 1.55)), textAlign: align(rtl ? "right" : "left"), writingDirection: rtl ? "rtl" : "ltr" }, style]} />;
 }
 
 /** Page wrapper: safe area, app background, optional large title (iOS style), scroll and pull to refresh. */
@@ -109,9 +111,9 @@ export function Field({ label, error, hint, style, ...props }: TextInputProps & 
     <View style={{ gap: 6 }}>
       <T weight="bold" size={14}>{label}</T>
       <TextInput
-        accessibilityLabel={label} placeholderTextColor={colors.faint}
+        accessibilityLabel={label} placeholderTextColor={colors.faint} maxFontSizeMultiplier={MAX_SCALE}
         {...props}
-        style={[{ minHeight: 50, borderRadius: RADIUS.input, borderWidth: 1.5, borderColor: error ? colors.bad : colors.line, backgroundColor: colors.input, paddingHorizontal: 14, fontSize: 15, fontFamily: FONTS.regular, color: colors.navy, textAlign: rtl ? "right" : "left" }, style]}
+        style={[{ minHeight: 50, borderRadius: RADIUS.input, borderWidth: 1.5, borderColor: error ? colors.bad : colors.line, backgroundColor: colors.input, paddingHorizontal: 14, fontSize: 16, fontFamily: FONTS.regular, color: colors.navy, textAlign: rtl ? "right" : "left" }, style]}
       />
       {hint ? <T size={12.5} tone="muted">{hint}</T> : null}
       {error ? <T size={13} tone="bad" accessibilityLiveRegion="polite">{error}</T> : null}
@@ -127,7 +129,7 @@ export function Pill({ tone = "grey", children }: { tone?: keyof typeof PILL; ch
   return (
     <View style={{ flexDirection: "row", alignItems: "center", gap: 5, borderRadius: 999, paddingHorizontal: 9, paddingVertical: 2, backgroundColor: c + "1A" }}>
       <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: c }} />
-      <T size={11.5} weight="bold" style={{ color: c, lineHeight: 18 }}>{children}</T>
+      <T size={12} weight="bold" maxFontSizeMultiplier={1.4} style={{ color: c }}>{children}</T>
     </View>
   );
 }

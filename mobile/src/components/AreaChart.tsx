@@ -56,7 +56,7 @@ export function AreaChart({ values, prev, labels, ticks, valueText, height = 170
         )}
       </View>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        {ticks.map((t, i) => <T key={i} size={11} tone="faint">{t}</T>)}
+        {ticks.map((t, i) => <T key={i} size={12} tone="faint" maxFontSizeMultiplier={1.3}>{t}</T>)}
       </View>
       {shown !== null && <T size={12.5} tone="muted" style={{ textAlign: "center" }}>{labels[shown]} · {valueText(shown)}</T>}
     </View>

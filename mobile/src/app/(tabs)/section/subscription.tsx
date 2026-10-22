@@ -51,7 +51,6 @@ export default function Subscription() {
             {data.plan === "pro" && data.periodEnd && <T tone="muted">{data.cancelAtPeriodEnd ? t("plan.ends", { date: long(data.periodEnd) }) : t("plan.renews", { date: long(data.periodEnd) })}</T>}
             {data.plan === "pro" && data.cycle && <T size={13} tone="muted">{t(`sub.${data.cycle}`)}{data.paymentMethod ? ` · ${data.paymentMethod}` : ""}</T>}
             {data.plan === "free" && <T tone="muted">{t("sub.freeText")}</T>}
-            <T size={12.5} tone="muted">{t("plan.manageOnWeb")}</T>
           </Card>
 
           {data.invoices.length > 0 && (

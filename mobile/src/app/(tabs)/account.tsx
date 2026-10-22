@@ -51,7 +51,6 @@ export default function AccountTab() {
               </View>
             </>
           ) : null}
-          <T size={12.5} tone="muted">{t("plan.manageOnWeb")}</T>
         </Card>
       ) : null}
 

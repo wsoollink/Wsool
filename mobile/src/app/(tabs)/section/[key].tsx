@@ -10,7 +10,7 @@ import { useTheme } from "../../../lib/theme";
  * Dashboard sections that arrive in later phases (docs/mobile-app-plan.md):
  * for now a "coming soon" card with a link to the same section on the website.
  * Subscription gets no link or button at all: store rules forbid pointing to
- * purchases outside the app, so it only says the plan is managed on the website.
+ * purchases outside the app, so it shows nothing more.
  */
 export default function Section() {
   const { key } = useLocalSearchParams<{ key: string }>();
@@ -29,9 +29,7 @@ export default function Section() {
           <Hammer size={24} color={colors.blue} />
         </View>
         <T weight="bold" style={{ textAlign: "center" }}>{t("common.soon")}</T>
-        {key === "subscription" ? (
-          <T tone="muted" style={{ textAlign: "center" }}>{t("plan.manageOnWeb")}</T>
-        ) : (
+        {key === "subscription" ? null : (
           <Button title={t("common.openOnWeb")} variant="secondary" onPress={() => Linking.openURL(`${SITE_URL}/dashboard/${key}`)} />
         )}
       </Card>

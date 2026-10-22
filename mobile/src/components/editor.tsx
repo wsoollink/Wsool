@@ -41,8 +41,8 @@ export function SectionScreen({ title, subtitle, children, footer, loading, erro
   return (
     <SafeAreaView edges={["top", "left", "right"]} style={{ flex: 1, backgroundColor: colors.bg }}>
       {tab ? null : (
-        <View style={{ height: 48, justifyContent: "center", paddingHorizontal: 4, borderBottomWidth: 1, borderBottomColor: colors.lineSoft }}>
-          <T weight="bold" size={17} numberOfLines={1} accessibilityRole="header" style={{ position: "absolute", left: 90, right: 90, textAlign: "center" }}>{title}</T>
+        <View style={{ minHeight: 48, justifyContent: "center", paddingHorizontal: 4, borderBottomWidth: 1, borderBottomColor: colors.lineSoft }}>
+          <T weight="bold" size={17} numberOfLines={1} maxFontSizeMultiplier={1.3} accessibilityRole="header" style={{ position: "absolute", left: 90, right: 90, textAlign: "center" }}>{title}</T>
           <Pressable accessibilityRole="button" accessibilityLabel={t("common.back")} onPress={back} hitSlop={6}
             style={{ alignSelf: "flex-start", flexDirection: "row", alignItems: "center", minHeight: 44, paddingHorizontal: 6 }}>
             <Back size={24} color={colors.blue} strokeWidth={2.2} />
@@ -108,7 +108,7 @@ export function Toggle({ value, onChange, label, disabled }: { value: boolean; o
   const { colors } = useTheme();
   return (
     <Pressable accessibilityRole="switch" accessibilityLabel={label} accessibilityState={{ checked: value, disabled }} disabled={disabled} onPress={() => onChange(!value)}
-      hitSlop={8} style={{ width: 50, height: 30, borderRadius: 15, padding: 3, backgroundColor: value ? colors.blue : colors.line, alignItems: value ? "flex-end" : "flex-start", opacity: disabled ? 0.5 : 1, direction: "ltr" }}>
+      hitSlop={8} style={{ width: 50, height: 30, borderRadius: 15, padding: 3, backgroundColor: value ? colors.blue : colors.switchOff, alignItems: value ? "flex-end" : "flex-start", opacity: disabled ? 0.5 : 1, direction: "ltr" }}>
       <View style={{ width: 24, height: 24, borderRadius: 12, backgroundColor: "#fff", shadowColor: "#000", shadowOpacity: 0.15, shadowRadius: 2, shadowOffset: { width: 0, height: 1 } }} />
     </Pressable>
   );

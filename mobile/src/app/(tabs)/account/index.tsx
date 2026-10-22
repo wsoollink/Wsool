@@ -25,7 +25,7 @@ export default function AccountTab() {
         <Avatar uri={me?.page?.photoUrl} name={name} size={58} />
         <View style={{ flex: 1 }}>
           <T weight="black" size={20} numberOfLines={1}>{name}</T>
-          <T size={13} tone="muted" numberOfLines={1}>{me?.user.email}</T>
+          <T size={13} tone="muted" numberOfLines={1} ellipsizeMode="middle" style={{ writingDirection: "ltr" }}>{me?.user.email}</T>
         </View>
       </Row>
 

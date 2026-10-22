@@ -15,7 +15,7 @@ export default function Contact() {
   const { t, num } = useI18n();
   const { colors } = useTheme();
   const { data, error, reload } = useSection<Data>("contact");
-  const { status, message, save, touch } = useSaver();
+  const { status, message, save, touch, dirty } = useSaver();
   const [form, setForm] = useState<Omit<Data, "taps"> | null>(null);
   const [errors, setErrors] = useState<{ whatsapp?: boolean; email?: boolean }>({});
   useEffect(() => { if (data) setForm({ whatsapp: data.whatsapp ? `+${data.whatsapp}` : "", email: data.email, whatsappVisible: data.whatsappVisible, emailVisible: data.emailVisible }); }, [data]);
@@ -29,7 +29,7 @@ export default function Contact() {
   });
 
   return (
-    <SectionScreen title={t("section.contact")} subtitle={t("contact.subtitle")} loading={!form && !error} error={error} onRetry={reload}
+    <SectionScreen title={t("section.contact")} dirty={dirty} subtitle={t("contact.subtitle")} loading={!form && !error} error={error} onRetry={reload}
       footer={form && <SaveBar onSave={onSave} status={status} message={message} />}>
       {form && data && (
         <>

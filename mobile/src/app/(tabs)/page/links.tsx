@@ -23,7 +23,7 @@ export default function Links() {
   const { t, num } = useI18n();
   const { colors } = useTheme();
   const { data, error, reload } = useSection<Data>("links");
-  const { status, message, save, touch } = useSaver();
+  const { status, message, save, touch, dirty } = useSaver();
   const [links, setLinks] = useState<Link[] | null>(null);
   const [services, setServices] = useState<Service[]>([]);
   const [uploading, setUploading] = useState<number | null>(null);
@@ -51,7 +51,7 @@ export default function Links() {
   });
 
   return (
-    <SectionScreen title={t("section.links")} subtitle={t("links.subtitle")} loading={!links && !error} error={error} onRetry={reload}
+    <SectionScreen title={t("section.links")} dirty={dirty} subtitle={t("links.subtitle")} loading={!links && !error} error={error} onRetry={reload}
       footer={links && <SaveBar onSave={onSave} status={status} message={message} />}>
       {links && data && (
         <>

@@ -42,7 +42,7 @@ export const ar = {
     hello: "أهلًا {name}", yourLink: "رابط صفحتك", published: "منشورة", hidden: "مخفية", share: "شارك الرابط", copy: "انسخ", copied: "تم النسخ",
     view: "عرض الصفحة", last30: "آخر 30 يوم", vsPrev: "عن الشهر السابق", noCompare: "ما فيه بيانات للمقارنة",
     stat: { views: "زيارات الصفحة", whatsapp: "ضغطات WhatsApp", email: "ضغطات الإيميل", country: "أكثر دولة" },
-    statsPro: "إحصائيات صفحتك متاحة في الخطة المدفوعة.", visits: "زيارات الصفحة", previous: "الفترة السابقة",
+    statsPro: "إحصائيات صفحتك متاحة في الخطة المدفوعة.", statsEmpty: "ما فيه زيارات للحين. شارك رابطك وبتشوف زوارك وضغطاتهم هنا.", visits: "زيارات الصفحة", previous: "الفترة السابقة",
     completion: "اكتمال صفحتك", complete: "صفحتك مكتملة، ممتاز!", stepsDone: "{done} من {total}",
     todo: {
       photo: "أضف صورتك", bio: "اكتب نبذة عنك", accounts: "أضف حساباتك وأرقامك", tags: "أضف تصنيفات لمحتواك",
@@ -72,6 +72,7 @@ export const ar = {
   editor: {
     save: "احفظ", saving: "جاري الحفظ…", saved: "تم الحفظ", failed: "ما انحفظ، راجع البيانات وجرّب مرة ثانية.",
     uploading: "جاري الرفع…", moveUp: "حرّك لفوق", moveDown: "حرّك لتحت", remove: "احذف", close: "إغلاق",
+    unsavedTitle: "عندك تغييرات ما انحفظت", unsavedText: "لو طلعت الحين بتضيع التغييرات.", keepEditing: "ارجع للتعديل", discard: "اطلع بدون حفظ",
   },
   contact: {
     subtitle: "كيف يوصل لك البراند من صفحتك", show: "يظهر في صفحتي", whatsapp: "رقم WhatsApp", whatsappHint: "مع رمز الدولة، مثل \u2066+966 5X XXX XXXX\u2069",

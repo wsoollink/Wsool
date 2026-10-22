@@ -2,7 +2,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { Linking, Pressable, View } from "react-native";
 import { Image } from "expo-image";
 import { Camera, FileText, X } from "lucide-react-native";
-import { AddButton, Chips, ItemTools, LangTabs, move, SectionScreen, SwitchRow, useSaver, useSection, type SaveStatus } from "../../../components/editor";
+import { AddButton, Chips, ItemTools, LangTabs, move, SaveBar, SectionScreen, SwitchRow, useSaver, useSection, type SaveStatus } from "../../../components/editor";
 import { Button, Card, Field, Pill, Row, T } from "../../../components/ui";
 import { useI18n } from "../../../i18n";
 import { rpc } from "../../../lib/api";
@@ -27,14 +27,15 @@ const MAX = { fullName: 80, specialty: 80, bio: 500, city: 60, country: 60 };
 const USERNAME_ERRORS = ["length", "characters", "dots", "reserved", "extension", "taken", "same", "cooldown"];
 
 /** Section card with its own save button and status (each part saves on its own, like the website). */
-function Part({ title, hint, children, onSave, status, message, saveLabel }: { title: string; hint?: string; children: ReactNode; onSave?: () => void; status?: SaveStatus; message?: string | null; saveLabel?: string }) {
+function Part({ title, hint, children, onSave, status, message, saveLabel, footerSaved }: { title: string; hint?: string; children: ReactNode; onSave?: () => void; status?: SaveStatus; message?: string | null; saveLabel?: string; footerSaved?: boolean }) {
   const { t } = useI18n();
   return (
     <Card>
       <T weight="bold" size={16}>{title}</T>
       {hint ? <T size={12.5} tone="muted">{hint}</T> : null}
       {children}
-      {status === "saved" || status === "failed" || message ? <T size={13} tone={status === "failed" ? "bad" : "good"} accessibilityLiveRegion="polite">{message ?? (status === "saved" ? t("editor.saved") : t("editor.failed"))}</T> : null}
+      {/* Parts saved by the bottom Save bar only show their errors here; the bar says "Saved". */}
+      {(status === "saved" && !footerSaved) || status === "failed" || message ? <T size={13} tone={status === "failed" ? "bad" : "good"} accessibilityLiveRegion="polite">{message ?? (status === "saved" ? t("editor.saved") : t("editor.failed"))}</T> : null}
       {onSave ? <Button title={status === "saving" ? t("editor.saving") : saveLabel ?? t("editor.save")} variant="secondary" onPress={onSave} loading={status === "saving"} /> : null}
     </Card>
   );
@@ -99,6 +100,20 @@ export default function Edit() {
     const res = await rpc<{ ok?: boolean }>("saveLicenses", d.licenses.filter((l) => l.name.trim() && l.number.trim()).map((l) => ({ name: l.name, nameEn: l.nameEn, number: l.number, filePath: l.filePath, fileUrl: l.filePath ? null : l.fileUrl })));
     return !!res.ok;
   });
+  const saveCategories = () => cats.save(async () => !!d && !!(await rpc<{ ok?: boolean }>("saveCategories", d.pickedCategories)).ok);
+  const saveTags = () => tags.save(async () => !!d && (await Promise.all(langs.map((l) => rpc<{ ok?: boolean }>("saveTags", l, d.tags[l])))).every((r) => r.ok));
+  // One Save for the form parts (about, categories, tags, licenses): only the changed ones are sent.
+  // Publishing, the photo and the logo save on tap; the username keeps its own button (30-day rule).
+  const formParts = [texts, cats, tags, lic];
+  const formDirty = formParts.some((s) => s.dirty);
+  const saveAll = async () => {
+    if (texts.dirty) await saveTexts();
+    if (cats.dirty) await saveCategories();
+    if (tags.dirty) await saveTags();
+    if (lic.dirty) await saveLicenses();
+  };
+  const formStatus: SaveStatus = formParts.some((s) => s.status === "saving") ? "saving" : formParts.some((s) => s.status === "failed") ? "failed" : formParts.some((s) => s.status === "saved") ? "saved" : "";
+
   const addLicenseFile = async (i: number) => {
     const file = await pickDocument();
     if (!file || !d) return;
@@ -112,7 +127,8 @@ export default function Edit() {
   const langs: Lang[] = !d ? ["ar"] : d.primary === "ar" ? (d.enEnabled ? ["ar", "en"] : ["ar"]) : ["en"];
   const lang: Lang = langs.includes(tab) ? tab : langs[0];
   return (
-    <SectionScreen title={t("section.edit")} subtitle={t("edit.subtitle")} loading={!d && !error} error={error} onRetry={reload}>
+    <SectionScreen title={t("section.edit")} subtitle={t("edit.subtitle")} loading={!d && !error} error={error} onRetry={reload}
+      dirty={formDirty || user.dirty} footer={d && <SaveBar onSave={saveAll} status={formStatus} disabled={!formDirty && formStatus !== "failed"} />}>
       {d && (
         <>
           <Part title={t("edit.publishTitle")} status={pub.status} message={pub.message}>
@@ -148,7 +164,7 @@ export default function Edit() {
             </Row>
           </Part>
 
-          <Part title={t("edit.about")} onSave={saveTexts} status={texts.status} message={texts.message}>
+          <Part title={t("edit.about")} footerSaved status={texts.status} message={texts.message}>
             <T weight="bold" size={14}>{t("edit.primaryLang")}</T>
             <Chips value={[d.primary]} onChange={([l]) => { set({ primary: l }); texts.touch(); }} options={[{ value: "ar", label: "العربية" }, { value: "en", label: "English" }]} />
             {d.primary === "ar" && <SwitchRow label={t("edit.enEnabled")} hint={t("edit.secondLangHint")} value={d.enEnabled} onChange={(v) => { set({ enEnabled: v }); texts.touch(); }} />}
@@ -162,13 +178,12 @@ export default function Edit() {
             ))}
           </Part>
 
-          <Part title={t("edit.categories")} hint={t("edit.categoriesHint")} onSave={() => cats.save(async () => !!(await rpc<{ ok?: boolean }>("saveCategories", d.pickedCategories)).ok)} status={cats.status} message={cats.message}>
+          <Part title={t("edit.categories")} hint={t("edit.categoriesHint")} footerSaved status={cats.status} message={cats.message}>
             <Chips multi max={2} value={d.pickedCategories} onChange={(ids) => { set({ pickedCategories: ids }); cats.touch(); }}
               options={d.categories.map((c) => ({ value: c.id, label: uiLang === "ar" ? c.nameAr : c.nameEn }))} />
           </Part>
 
-          <Part title={t("edit.tags")} hint={t("edit.tagsHint")} status={tags.status} message={tags.message}
-            onSave={() => tags.save(async () => (await Promise.all(langs.map((l) => rpc<{ ok?: boolean }>("saveTags", l, d.tags[l])))).every((r) => r.ok))}>
+          <Part title={t("edit.tags")} hint={t("edit.tagsHint")} footerSaved status={tags.status} message={tags.message}>
             {langs.length > 1 && <LangTabs value={lang} onChange={setTab} />}
             <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
               {d.tags[lang].map((tag, i) => (
@@ -185,7 +200,7 @@ export default function Edit() {
             )}
           </Part>
 
-          <Part title={t("edit.licenses")} hint={t("edit.licensesHint")} onSave={saveLicenses} status={lic.status} message={lic.message}>
+          <Part title={t("edit.licenses")} hint={t("edit.licensesHint")} footerSaved status={lic.status} message={lic.message}>
             {d.licenses.map((l, i) => {
               const setL = (patch: Partial<License>) => { set({ licenses: d.licenses.map((x, j) => (j === i ? { ...x, ...patch } : x)) }); lic.touch(); };
               return (

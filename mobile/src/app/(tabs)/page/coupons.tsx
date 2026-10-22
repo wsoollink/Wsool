@@ -23,7 +23,7 @@ export default function Coupons() {
   const { t, num } = useI18n();
   const { colors } = useTheme();
   const { data, error, reload } = useSection<Data>("coupons");
-  const { status, message, save, touch } = useSaver();
+  const { status, message, save, touch, dirty } = useSaver();
   const [coupons, setCoupons] = useState<Coupon[] | null>(null);
   const [uploading, setUploading] = useState<number | null>(null);
   useEffect(() => {
@@ -49,7 +49,7 @@ export default function Coupons() {
   });
 
   return (
-    <SectionScreen title={t("section.coupons")} subtitle={t("coupons.subtitle")} loading={!coupons && !error} error={error} onRetry={reload}
+    <SectionScreen title={t("section.coupons")} dirty={dirty} subtitle={t("coupons.subtitle")} loading={!coupons && !error} error={error} onRetry={reload}
       footer={coupons && <SaveBar onSave={onSave} status={status} message={message} />}>
       {coupons && data && (
         <>

@@ -78,7 +78,7 @@ export default function WorkScreen() {
   };
 
   return (
-    <SectionScreen title={t("section.work")} subtitle={t("work.subtitle")} loading={!brands && !error} error={error} onRetry={reload}
+    <SectionScreen title={t("section.work")} dirty={brandsSaver.dirty || worksSaver.dirty} subtitle={t("work.subtitle")} loading={!brands && !error} error={error} onRetry={reload}
       footer={brands && <SaveBar onSave={() => worksSaver.save(async () => {
         const res = await rpc<{ ok?: boolean; error?: string }>("saveWorks", works.map((w) => ({ platform: w.platform, link: w.link, video: ref(w.video), thumb: ref(w.thumb), ar: w.ar, en: w.en })));
         return res.ok ? true : res.error === "bad_link" ? t("work.badLink") : res.error === "missing_file" ? t("work.missingFile") : false;

@@ -1,6 +1,6 @@
 import { useCallback, useState, type ReactNode } from "react";
-import { KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, View } from "react-native";
-import { router, useFocusEffect } from "expo-router";
+import { Alert, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, View } from "react-native";
+import { router, useFocusEffect, usePreventRemove } from "expo-router";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Check, ChevronLeft, ChevronRight, Plus, Trash2, X } from "lucide-react-native";
 import { useI18n } from "../i18n";
@@ -8,6 +8,7 @@ import { api, ApiError } from "../lib/api";
 import { useCached } from "../lib/cached";
 import { TOUCH, useTheme } from "../lib/theme";
 import { ANDROID, Button, Card, Row, Status, T, TAB_BAR_SPACE } from "./ui";
+import { haptic } from "../lib/haptics";
 
 /**
  * Loads a dashboard section's data (/section/<key>) with reload. Sections stay
@@ -30,12 +31,22 @@ export function useSection<D>(key: string) {
  * description, the scrolling body, and an optional save button floating above the tab bar.
  * `tab` = the screen is itself a tab (Insights): large title, no back button.
  */
-export function SectionScreen({ title, subtitle, children, footer, loading, error, onRetry, tab, parent = "page" }: {
+export function SectionScreen({ title, subtitle, children, footer, loading, error, onRetry, tab, parent = "page", dirty = false }: {
   title: string; subtitle?: string; children?: ReactNode; footer?: ReactNode; loading?: boolean; error?: string | null; onRetry?: () => void;
   tab?: boolean; parent?: "page" | "account" | "home";
+  /** Unsaved edits: going back (button, edge swipe, Android back) asks first. */
+  dirty?: boolean;
 }) {
   const { colors } = useTheme();
   const { rtl, t } = useI18n();
+  const [leaving, setLeaving] = useState(false);
+  usePreventRemove(dirty && !leaving, ({ repeat }) => {
+    Alert.alert(t("editor.unsavedTitle"), t("editor.unsavedText"), [
+      { text: t("editor.keepEditing"), style: "cancel" },
+      // Let the screen go once the guard is off (after the re-render), then repeat the blocked "back".
+      { text: t("editor.discard"), style: "destructive", onPress: () => { setLeaving(true); setTimeout(repeat, 60); } },
+    ]);
+  });
   const Back = rtl ? ChevronRight : ChevronLeft;
   const Arrow = rtl ? ArrowRight : ArrowLeft;
   const back = () => (router.canGoBack() ? router.back() : router.replace(`/${parent}` as never));
@@ -98,27 +109,31 @@ export function SaveBar({ onSave, status, message, disabled }: { onSave: () => v
   );
 }
 
-/** Saves through an action and tracks its status; `run` returns true when it worked. */
+/**
+ * Saves through an action and tracks its status; `run` returns true when it worked.
+ * `touch()` marks an edit, so `dirty` stays true until a save works (SectionScreen warns before leaving).
+ */
 export function useSaver() {
   const [status, setStatus] = useState<SaveStatus>("");
   const [message, setMessage] = useState<string | null>(null);
+  const [dirty, setDirty] = useState(false);
   const save = useCallback(async (run: () => Promise<boolean | string>) => {
     setStatus("saving"); setMessage(null);
     try {
       const res = await run();
-      if (res === true) setStatus("saved");
-      else { setStatus("failed"); if (typeof res === "string") setMessage(res); }
-    } catch { setStatus("failed"); }
+      if (res === true) { setStatus("saved"); setDirty(false); haptic("success"); }
+      else { setStatus("failed"); if (typeof res === "string") setMessage(res); haptic("error"); }
+    } catch { setStatus("failed"); haptic("error"); }
   }, []);
-  const touch = useCallback(() => { setStatus((s) => (s === "saving" ? s : "")); setMessage(null); }, []);
-  return { status, message, save, touch };
+  const touch = useCallback(() => { setStatus((s) => (s === "saving" ? s : "")); setMessage(null); setDirty(true); }, []);
+  return { status, message, save, touch, dirty };
 }
 
 /** On/off switch (our own drawing, so it looks the same on iOS, Android and in RTL). */
 export function Toggle({ value, onChange, label, disabled }: { value: boolean; onChange: (v: boolean) => void; label: string; disabled?: boolean }) {
   const { colors } = useTheme();
   return (
-    <Pressable accessibilityRole="switch" accessibilityLabel={label} accessibilityState={{ checked: value, disabled }} disabled={disabled} onPress={() => onChange(!value)}
+    <Pressable accessibilityRole="switch" accessibilityLabel={label} accessibilityState={{ checked: value, disabled }} disabled={disabled} onPress={() => { haptic("tap"); onChange(!value); }}
       hitSlop={8} style={{ width: 50, height: 30, borderRadius: 15, padding: 3, backgroundColor: value ? colors.blue : colors.switchOff, alignItems: value ? "flex-end" : "flex-start", opacity: disabled ? 0.5 : 1, direction: "ltr" }}>
       <View style={{ width: 24, height: 24, borderRadius: 12, backgroundColor: "#fff", shadowColor: "#000", shadowOpacity: 0.15, shadowRadius: 2, shadowOffset: { width: 0, height: 1 } }} />
     </Pressable>

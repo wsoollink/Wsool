@@ -44,7 +44,7 @@ export const en: typeof ar = {
     hello: "Hi {name}", yourLink: "Your page link", published: "Published", hidden: "Hidden", share: "Share link", copy: "Copy", copied: "Copied",
     view: "View page", last30: "Last 30 days", vsPrev: "vs previous month", noCompare: "Nothing to compare yet",
     stat: { views: "Page visits", whatsapp: "WhatsApp taps", email: "Email taps", country: "Top country" },
-    statsPro: "Page analytics are available on the paid plan.", visits: "Page visits", previous: "Previous period",
+    statsPro: "Page analytics are available on the paid plan.", statsEmpty: "No visits yet. Share your link and your visitors and taps will show up here.", visits: "Page visits", previous: "Previous period",
     completion: "Page completion", complete: "Your page is complete. Great!", stepsDone: "{done} of {total}",
     todo: {
       photo: "Add your photo", bio: "Write a short bio", accounts: "Add your accounts and numbers", tags: "Add content tags",
@@ -74,6 +74,7 @@ export const en: typeof ar = {
   editor: {
     save: "Save", saving: "Saving…", saved: "Saved", failed: "Not saved. Check your entries and try again.",
     uploading: "Uploading…", moveUp: "Move up", moveDown: "Move down", remove: "Remove", close: "Close",
+    unsavedTitle: "You have unsaved changes", unsavedText: "If you leave now, your changes will be lost.", keepEditing: "Keep editing", discard: "Leave without saving",
   },
   contact: {
     subtitle: "How brands reach you from your page", show: "Show on my page", whatsapp: "WhatsApp number", whatsappHint: "With the country code, e.g. +966 5X XXX XXXX",

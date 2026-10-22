@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Linking, Pressable, RefreshControl, Share, View } from "react-native";
 import { router } from "expo-router";
 import Svg, { Circle } from "react-native-svg";
-import { Bell, ChevronLeft, ChevronRight, Eye, Lock, Share2, type LucideIcon, BadgeCheck, Camera, FileText, Hash, Briefcase, Clapperboard, Tag, MessageCircle, Users, ChartPie, RefreshCw } from "lucide-react-native";
+import { ChevronLeft, ChevronRight, Eye, Lock, Share2, type LucideIcon, BadgeCheck, Camera, FileText, Hash, Briefcase, Clapperboard, Tag, MessageCircle, Users, ChartPie, RefreshCw } from "lucide-react-native";
 import { Avatar, Card, Row, Screen, Status, T } from "../../components/ui";
 import { useI18n } from "../../i18n";
 import { api, ApiError } from "../../lib/api";
@@ -95,12 +95,6 @@ export default function HomeScreen() {
             </View>
           </Row>
         </Pressable>
-        <Pressable accessibilityRole="button" accessibilityLabel={data.unread ? `${t("tabs.notifications")}, ${t("tabs.unread", { n: data.unread })}` : t("tabs.notifications")}
-          onPress={() => router.push("/notifications")}
-          style={{ width: 46, height: 46, borderRadius: 23, backgroundColor: colors.card, alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: colors.lineSoft }}>
-          <Bell size={21} color={colors.navy} strokeWidth={1.8} />
-          {data.unread ? <View style={{ position: "absolute", top: 11, right: 12, width: 9, height: 9, borderRadius: 5, backgroundColor: colors.bad, borderWidth: 2, borderColor: colors.card }} /> : null}
-        </Pressable>
       </Row>
 
       <View style={{ borderRadius: 24, backgroundColor: colors.hero, padding: 18, gap: 12, overflow: "hidden" }}>
@@ -139,7 +133,12 @@ export default function HomeScreen() {
           <T weight="bold" size={18}>{t("home.last30")}</T>
           {s ? <Pressable accessibilityRole="link" onPress={() => router.push("/insights")} hitSlop={10}><T size={14} weight="bold" tone="blue">{t("home.details")}</T></Pressable> : null}
         </Row>
-        {s ? (
+        {s && s.views + s.whatsapp + s.email + s.prev.views + s.prev.whatsapp + s.prev.email === 0 ? (
+          <Card style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
+            <View style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: colors.blueSoft, alignItems: "center", justifyContent: "center" }}><Share2 size={18} color={colors.blue} /></View>
+            <T tone="muted" style={{ flex: 1 }}>{t("home.statsEmpty")}</T>
+          </Card>
+        ) : s ? (
           <View style={{ flexDirection: "row", gap: 8 }}>
             {tiles.map((x) => (
               <Card key={x.label} style={{ flex: 1, minWidth: 0, padding: 12, gap: 2 }}>

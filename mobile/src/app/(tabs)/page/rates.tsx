@@ -50,7 +50,7 @@ export default function Rates() {
   const { t } = useI18n();
   const { colors } = useTheme();
   const { data, error, reload } = useSection<Data>("rates");
-  const { status, message, save, touch } = useSaver();
+  const { status, message, save, touch, dirty } = useSaver();
   const [settings, setSettings] = useState<Settings | null>(null);
   const [rates, setRates] = useState<Record<string, Rate[]>>({});
   const [bundle, setBundle] = useState<{ on: boolean; name: string; nameEn: string; accountIds: string[]; rates: Rate[] }>({ on: false, name: "", nameEn: "", accountIds: [], rates: [] });
@@ -74,7 +74,7 @@ export default function Rates() {
   });
 
   return (
-    <SectionScreen title={t("section.rates")} subtitle={t("rates.subtitle")} loading={!settings && !error} error={error} onRetry={reload}
+    <SectionScreen title={t("section.rates")} dirty={dirty} subtitle={t("rates.subtitle")} loading={!settings && !error} error={error} onRetry={reload}
       footer={settings && <SaveBar onSave={onSave} status={status} message={message} />}>
       {settings && data && (
         <>

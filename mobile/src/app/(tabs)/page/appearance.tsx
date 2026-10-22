@@ -26,7 +26,7 @@ export default function Appearance() {
   const { t } = useI18n();
   const { colors } = useTheme();
   const { data, error, reload } = useSection<Data>("appearance");
-  const { status, message, save, touch } = useSaver();
+  const { status, message, save, touch, dirty } = useSaver();
   const [form, setForm] = useState<Data | null>(null);
   useEffect(() => { if (data) setForm(data); }, [data]);
   const set = (patch: Partial<Data>) => { setForm((f) => (f ? { ...f, ...patch } : f)); touch(); };
@@ -43,7 +43,7 @@ export default function Appearance() {
   });
 
   return (
-    <SectionScreen title={t("section.appearance")} subtitle={t("appearance.subtitle")} loading={!form && !error} error={error} onRetry={reload}
+    <SectionScreen title={t("section.appearance")} dirty={dirty} subtitle={t("appearance.subtitle")} loading={!form && !error} error={error} onRetry={reload}
       footer={form && <SaveBar onSave={onSave} status={status} message={message} />}>
       {form && (
         <>

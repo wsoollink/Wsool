@@ -819,6 +819,16 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   Shared logic goes in `src/lib/*` (e.g. `claimPage`), never duplicated. `notify()` also pushes to phones (`src/lib/push.ts`,
   table `push_tokens`). App: `mobile/` (Expo SDK 58, own package.json; excluded from the root tsc/eslint; CI job `mobile`).
   Changes only in `mobile/` or `docs/` don't trigger a Netlify deploy (`ignore` in `netlify.toml`).
+- **Design review (owner, Oct 2026, against Apple's HIG + Material)**: text is never under 12 (`MIN_TEXT`, no global shrink) and
+  follows the phone's larger-text setting up to `MAX_SCALE` 1.8 (bars and tab labels 1.3; no fixed heights around text);
+  small grey `faint` ≥ 4.5:1, an "off" switch uses `switchOff` (≥ 3:1). Touch targets `TOUCH` = 44 (iOS) / 48 (Android).
+  Sections live in native stacks per tab (`app/(tabs)/page/*`, `app/(tabs)/account/*`, each with a `_layout` Stack), so edge
+  swipe / Android back work and the bar stays; routes are `/page/<section>`, `/account/{referrals,subscription}`, analytics =
+  `/insights` (`appRoute()` maps web hrefs). `SectionScreen`: iPhone bar (‹ tab name, centred title) or Android top app bar
+  (arrow + title at the start); `dirty` asks before leaving (`usePreventRemove`; `useSaver().dirty`). Android ripples on
+  pressables. Edit page: one `SaveBar` for about/categories/tags/licenses (publish, photo, logo save on tap; username has
+  its own button). Haptics via `src/lib/haptics.ts` (switch tap, save success/error). The app never mentions where to buy or
+  manage the plan (App Store 3.1.3).
 - Home page "Get the app" (owner, Oct 2026): App Store + Google Play badges under "Follow us" in the newsletter card
   (`.wapp` in the design files + `marketing.css`, images `public/marketing/{app-store,google-play}-badge.png` from the owner).
   Store links in `APP_LINKS` (`src/config/site.ts`); an empty link shows that badge as a plain image without a link.

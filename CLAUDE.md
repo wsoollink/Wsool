@@ -307,6 +307,9 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   `*_page_content` migration, also for future tables). All writes go through the server, which
   enforces ownership, verification rules and plan limits (otherwise a creator could self-verify
   or enable Pro settings via the public API).
+- Since Supabase's Oct 30, 2026 change, new `public` tables get **no** Data API grants at all. That's fine: no code
+  reads tables through supabase-js/PostgREST (only Storage signed uploads). Don't add GRANTs for anon/authenticated
+  in migrations unless a feature really needs the Data API (then SELECT only, with RLS).
 - Reserved usernames: `src/config/usernames.ts` (code, all site routes) + `reserved_usernames`
   table (extra names staff add).
 

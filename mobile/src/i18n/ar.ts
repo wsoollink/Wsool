@@ -112,7 +112,7 @@ export const ar = {
   },
   accounts: {
     subtitle: "حدّث أرقامك أول كل شهر", accounts: "حساباتي", platform: "المنصة", handle: "اسم المستخدم", followers: "المتابعين", members: "الأعضاء",
-    link: "رابط الحساب", add: "أضف حساب", resetHint: "تغيير اسم المستخدم أو عدد المتابعين لحساب موثّق يلغي توثيقه.", saveAccounts: "احفظ الحسابات",
+    link: "رابط الحساب", serverLink: "رابط السيرفر", add: "أضف حساب", resetHint: "تغيير اسم المستخدم أو عدد المتابعين لحساب موثّق يلغي توثيقه.", saveAccounts: "احفظ الحسابات",
     views: "المشاهدات الشهرية", viewsHint: "مجموع المشاهدات اللي تظهر في صفحتك", viewsLabel: "مشاهدات {platform}", saveViews: "احفظ المشاهدات",
     audience: "بيانات الجمهور", audiencePro: "بيانات الجمهور تظهر في صفحتك مع الباقة الاحترافية.", fromShot: "عبّي من صورة الإحصائيات", reading: "جاري قراءة الصورة…",
     gender: "الجنس", female: "إناث", male: "ذكور", ages: "الأعمار", countries: "أكثر الدول (5)", cities: "أكثر المدن", city: "المدينة", saveAudience: "احفظ بيانات الجمهور",

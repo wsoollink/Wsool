@@ -114,7 +114,7 @@ export const en: typeof ar = {
   },
   accounts: {
     subtitle: "Update your numbers at the start of each month", accounts: "My accounts", platform: "Platform", handle: "Username", followers: "Followers", members: "Members",
-    link: "Profile link", add: "Add account", resetHint: "Changing the username or followers of a verified account removes its verification.", saveAccounts: "Save accounts",
+    link: "Profile link", serverLink: "Server link", add: "Add account", resetHint: "Changing the username or followers of a verified account removes its verification.", saveAccounts: "Save accounts",
     views: "Monthly views", viewsHint: "Total views shown on your page", viewsLabel: "{platform} views", saveViews: "Save views",
     audience: "Audience data", audiencePro: "Audience data shows on your page with Pro.", fromShot: "Fill from a stats screenshot", reading: "Reading the screenshot…",
     gender: "Gender", female: "Female", male: "Male", ages: "Ages", countries: "Top countries (5)", cities: "Top cities", city: "City", saveAudience: "Save audience",

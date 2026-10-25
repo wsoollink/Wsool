@@ -502,7 +502,9 @@
     },
     "members": "Members",
     "profileLink": "Profile link",
+    "serverLink": "Server link",
     "linkError": "Paste your {platform} profile link (from the app's share button).",
+    "serverLinkError": "Paste your Discord server invite link (like discord.gg/…).",
     "linkHint": {
       "spotify": "Open your Spotify page (podcast or artist), tap Share → Copy link.",
       "discord": "Your server invite link, like discord.gg/… (preferably one that never expires). Followers here = server members.",

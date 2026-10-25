@@ -183,7 +183,7 @@ export default function Accounts() {
                 {a.verificationStatus === "verified" ? <Pill tone="good">{t("home.vstatus.verified")}</Pill> : a.verificationStatus === "in_review" ? <Pill tone="blue">{t("home.vstatus.in_review")}</Pill> : null}
               </Row>
               {LINK_PLATFORMS.includes(a.platform) && (
-                <Field label={t("accounts.link")} value={a.link} onChangeText={(v) => setItem(i, { link: v })} editable={!linked} keyboardType="url" autoCapitalize="none" placeholder="https://" style={{ textAlign: "left", writingDirection: "ltr" }} />
+                <Field label={t(a.platform === "discord" ? "accounts.serverLink" : "accounts.link")} value={a.link} onChangeText={(v) => setItem(i, { link: v })} editable={!linked} keyboardType="url" autoCapitalize="none" placeholder="https://" style={{ textAlign: "left", writingDirection: "ltr" }} />
               )}
               <Row style={{ alignItems: "flex-start" }}>
                 <View style={{ flex: 1.2 }}><Field label={t("accounts.handle")} value={a.handle} onChangeText={(v) => setItem(i, { handle: v })} editable={!linked} autoCapitalize="none" placeholder="@username" style={{ textAlign: "left", writingDirection: "ltr" }} /></View>

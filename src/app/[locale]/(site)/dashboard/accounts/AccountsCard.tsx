@@ -229,7 +229,7 @@ export function AccountsCard({ initial, connectable = [] }: { initial: AccountRo
                       {linked && <p id={`linked-${row.key}`} className="-mt-1 text-xs text-muted">{t("connect.locked")}</p>}
                       {needsLink(row.platform) && (
                         <div className="flex flex-col gap-1.5">
-                          <label htmlFor={`link-${row.key}`} className="text-[13px] font-medium">{t("profileLink")}</label>
+                          <label htmlFor={`link-${row.key}`} className="text-[13px] font-medium">{t(row.platform === "discord" ? "serverLink" : "profileLink")}</label>
                           <input
                             id={`link-${row.key}`} dir="ltr" type="url" inputMode="url" value={row.link} placeholder={LINK_PLACEHOLDERS[row.platform]} autoComplete="off" spellCheck={false}
                             aria-invalid={row.error && !linkProfileUrl(row.platform, row.link)}
@@ -241,7 +241,7 @@ export function AccountsCard({ initial, connectable = [] }: { initial: AccountRo
                           <p id={`link-hint-${row.key}`} className="text-xs text-muted">{t(`linkHint.${row.platform as "spotify" | "discord" | "jaco"}`)}</p>
                         </div>
                       )}
-                      {row.error && <p className="text-sm text-bad">{needsLink(row.platform) && !linkProfileUrl(row.platform, row.link) ? t("linkError", { platform: name }) : t("rowError")}</p>}
+                      {row.error && <p className="text-sm text-bad">{needsLink(row.platform) && !linkProfileUrl(row.platform, row.link) ? (row.platform === "discord" ? t("serverLinkError") : t("linkError", { platform: name })) : t("rowError")}</p>}
                       {verifiedish && isChanged(row) && <p className="text-sm text-warn">{t("verificationWarning")}</p>}
                       {row.id && (
                         <a href="#audience" className="flex min-h-11 items-center gap-3 rounded-[10px] border border-line bg-card px-3 text-[13px] font-semibold shadow-card hover:bg-hover">

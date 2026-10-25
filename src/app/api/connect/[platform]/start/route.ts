@@ -1,8 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
-import { callbackUrl, newNonce, NONCE_COOKIE, ownAccount, providerFor, seal, unseal, type Flow } from "@/lib/connect";
+import { callbackUrl, newNonce, NONCE_COOKIE, ownAccount, providerFor, requestOrigin, seal, unseal, type Flow } from "@/lib/connect";
 import { rateLimit } from "@/lib/rate-limit";
-import { siteOrigin } from "@/lib/site-url";
 
 /**
  * Starts linking a platform account (src/lib/connect). Web: ?account=<id> with the signed-in session.
@@ -12,7 +11,8 @@ import { siteOrigin } from "@/lib/site-url";
 export async function GET(req: NextRequest, { params }: { params: Promise<{ platform: string }> }) {
   const { platform } = await params;
   const provider = providerFor(platform);
-  const back = (code: string) => NextResponse.redirect(`${siteOrigin()}/dashboard/accounts?connect_error=${code}`);
+  const origin = requestOrigin(req);
+  const back = (code: string) => NextResponse.redirect(`${origin}/dashboard/accounts?connect_error=${code}`);
   if (!provider) return back("unavailable");
 
   const q = req.nextUrl.searchParams;
@@ -26,14 +26,14 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ plat
   else {
     const user = await getCurrentUser();
     const accountId = q.get("account") ?? "";
-    if (!user) return NextResponse.redirect(`${siteOrigin()}/login`);
+    if (!user) return NextResponse.redirect(`${origin}/login`);
     flow = { userId: user.id, accountId, platform: provider.platform, source: "web" };
   }
   const account = await ownAccount(flow.userId, flow.accountId);
   if (!account || account.platform !== provider.platform) return back("gone");
 
   const nonce = newNonce();
-  const res = NextResponse.redirect(provider.authUrl(seal({ ...flow, nonce }, 900), callbackUrl(provider.platform)));
+  const res = NextResponse.redirect(provider.authUrl(seal({ ...flow, nonce }, 900), callbackUrl(origin, provider.platform)));
   res.cookies.set(NONCE_COOKIE, nonce, { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "lax", path: "/api/connect", maxAge: 900 });
   return res;
 }

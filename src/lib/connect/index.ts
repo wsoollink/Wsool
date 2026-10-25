@@ -29,7 +29,18 @@ export const providerFor = (platform: string) => {
   return p && p.configured() && canEncryptTokens() ? p : null;
 };
 
-export const callbackUrl = (platform: Platform) => `${siteOrigin()}/api/connect/${platform}/callback`;
+/**
+ * The site address the request came to (wsool.link, or a Netlify branch deploy while testing), so the platform
+ * sends the creator back to the same site. Safe: platforms only accept redirect URIs registered with them.
+ */
+export function requestOrigin(req: Request) {
+  const host = req.headers.get("x-forwarded-host") ?? req.headers.get("host");
+  if (!host) return siteOrigin();
+  const proto = req.headers.get("x-forwarded-proto") ?? (host.startsWith("localhost") || host.startsWith("127.") ? "http" : "https");
+  return `${proto}://${host}`;
+}
+
+export const callbackUrl = (origin: string, platform: Platform) => `${origin}/api/connect/${platform}/callback`;
 export const NONCE_COOKIE = "wsool_connect";
 
 // ---- signed values (state for the platform, ticket for the app) ----
@@ -75,12 +86,12 @@ export type ConnectError = "denied" | "failed" | "no_channel" | "taken" | "gone"
 const verifiedUntil = () => new Date(Date.now() + VERIFICATION_DAYS * 86_400_000);
 
 /** Code from the platform → tokens → profile → link saved, account updated and verified. */
-export async function completeConnection(flow: Flow, code: string): Promise<{ ok: true } | { error: ConnectError }> {
+export async function completeConnection(flow: Flow, code: string, redirectUri: string): Promise<{ ok: true } | { error: ConnectError }> {
   const provider = providerFor(flow.platform);
   const account = provider && (await ownAccount(flow.userId, flow.accountId));
   if (!provider || !account || account.platform !== flow.platform) return { error: "gone" };
 
-  const tokens = await provider.exchange(code, callbackUrl(flow.platform)).catch(() => null);
+  const tokens = await provider.exchange(code, redirectUri).catch(() => null);
   if (!tokens) return { error: "failed" };
   const profile = await provider.profile(tokens.accessToken).catch(() => null);
   if (!profile) {

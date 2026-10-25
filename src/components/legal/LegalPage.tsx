@@ -15,6 +15,11 @@ const UI = {
   en: { effective: "Effective date:", home: "Home", other: { terms: "Privacy Policy", privacy: "Terms of Use" }, contents: "Contents" },
 };
 
+/** Bare (https://…) addresses become links, e.g. the YouTube / Google pages Google requires us to cite. */
+const links = (text: string) =>
+  text.split(/(https:\/\/[^\s)]+)/).map((part, i) =>
+    i % 2 ? <a key={i} href={part} target="_blank" rel="noopener noreferrer" dir="ltr" className="text-blue underline underline-offset-2">{part.replace(/^https:\/\//, "")}</a> : part);
+
 /** Fills {placeholders}; the official email becomes a mailto link. */
 function fill(text: string, lang: Locale) {
   const b = BLANKS[lang];
@@ -27,7 +32,7 @@ function fill(text: string, lang: Locale) {
   };
   return text.split(/(\{\w+\})/).map((part, i) => {
     const key = part.match(/^\{(\w+)\}$/)?.[1];
-    if (!key) return <Fragment key={i}>{part}</Fragment>;
+    if (!key) return <Fragment key={i}>{links(part)}</Fragment>;
     if (key === "email") return <a key={i} href={`mailto:${LEGAL.email}`} dir="ltr" className="font-semibold text-blue underline underline-offset-2">{LEGAL.email}</a>;
     return <Fragment key={i}>{values[key] ?? part}</Fragment>;
   });

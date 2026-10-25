@@ -811,6 +811,16 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   CSV `/api/admin/referrals` (audited `referral.export`). Finance counts commissions as expense category `affiliate` (and in
   marketing for CAC). Terms section 7 + privacy (data row, 30-day cookie) describe it. Data export includes it.
 
+### Platform connections (owner, Oct 2026)
+- Creators link an account through the platform's own sign-in (OAuth); followers + audience then update daily and the account
+  counts as verified while linked. Plan, platform order and the owner's Google setup: **`docs/platform-connections.md`**.
+- Code: `src/lib/connect/` (`Provider` per platform, `PROVIDERS`; YouTube built), table `platform_connections` (server only, one
+  platform account per Wsool account), refresh tokens sealed with `TOKEN_ENCRYPTION_KEY` (`src/lib/token-box.ts`). Routes
+  `/api/connect/<platform>/start|callback` (web: session + nonce cookie; app: 2-minute one-time ticket from
+  `POST /api/mobile/v1/connect/<platform>`, returns to `wsool://connect`). Daily `syncConnections()` in the billing cron; revoked
+  = status `error` + `connection_lost`. Linked accounts keep platform/handle/followers in `saveAccounts`; `disconnectAccount`.
+  The Connect button shows only when the platform's keys are set. Privacy policy cites YouTube ToS / Google privacy (Google rule).
+
 ### Mobile app (owner, Oct 2026 — phases 1-3 built)
 - Native React Native (Expo) app for creators, before the official launch, published as "وصول" (organization accounts).
   Decisions, store rules (no in-app subscription sales, Sign in with Apple, in-app account deletion), architecture

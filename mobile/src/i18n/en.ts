@@ -118,6 +118,18 @@ export const en: typeof ar = {
     views: "Monthly views", viewsHint: "Total views shown on your page", viewsLabel: "{platform} views", saveViews: "Save views",
     audience: "Audience data", audiencePro: "Audience data shows on your page with Pro.", fromShot: "Fill from a stats screenshot", reading: "Reading the screenshot…",
     gender: "Gender", female: "Female", male: "Male", ages: "Ages", countries: "Top countries (5)", cities: "Top cities", city: "City", saveAudience: "Save audience",
+    connect: {
+      title: "Connect your {platform} account", stoppedTitle: "{platform} connection stopped", why: "Once connected, your followers and audience update by themselves every day, and the account is verified without a screenshot.",
+      button: "Connect {platform}", again: "Reconnect", saveFirst: "Save the account first, then you can connect it.", linked: "Connected", stopped: "Connection stopped",
+      linkedTo: "Connected to {name}", lastSync: "Last update: {date}", auto: "Updates every day", unlink: "Disconnect", cancel: "Cancel",
+      confirmUnlink: "Disconnect {platform}? Your numbers stop updating by themselves; the verification stays until it expires.", locked: "Username and followers come straight from the platform and update by themselves.",
+      done: "{platform} connected ✓ Your numbers and audience are up to date, and the account is verified.",
+      errors: {
+        denied: "Not connected: you need to allow access on the platform's page.", taken: "This account is connected to another Wsool page.",
+        no_channel: "We found no channel on this account. Pick the account that has your channel.", expired: "The connection timed out. Try again.",
+        gone: "We couldn't find this account on your page. Refresh and try again.", unavailable: "Connecting this platform isn't available right now.", failed: "Something went wrong while connecting. Try again.",
+      },
+    },
     status: {
       saving: "Saving…", saved: "Saved", failed: "Not saved. Check your entries.", over: "A group adds up to more than 100%.",
       reading: "Reading the screenshot…", filled: "Filled from the screenshot. Check it and save.", uncertain: "Filled, but check the ages before saving.",

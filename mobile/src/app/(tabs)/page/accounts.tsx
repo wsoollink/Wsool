@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { Pressable, View } from "react-native";
-import { ChevronDown, Sparkles } from "lucide-react-native";
+import { Alert, Pressable, View } from "react-native";
+import * as WebBrowser from "expo-web-browser";
+import { ChevronDown, Link2, Sparkles } from "lucide-react-native";
 import { PlatformIcon } from "../../../components/PlatformIcon";
 import { AddButton, Chips, ItemTools, move, PickerSheet, ProNote, SectionScreen, useSection } from "../../../components/editor";
 import { Button, Card, Field, Pill, Row, T } from "../../../components/ui";
 import { useI18n } from "../../../i18n";
-import { rpc } from "../../../lib/api";
+import { api, rpc } from "../../../lib/api";
 import { pickImage, upload } from "../../../lib/media";
 import { LINK_PLATFORMS, PLATFORM_NAMES, PLATFORMS, type Platform } from "../../../lib/platforms";
 import { useTheme } from "../../../lib/theme";
@@ -13,9 +14,12 @@ import { useTheme } from "../../../lib/theme";
 type Share = { label: string; percent: number };
 type Audience = { gender: Share[]; ages: Share[]; countries: Share[]; cities: Share[] };
 type Account = { id: string | null; platform: Platform; handle: string; followers: string; link: string; verificationStatus?: string };
+type Connection = { status: "active" | "error"; lastSyncAt: string | null; name: string | null };
 type Data = {
-  accounts: { id: string; platform: Platform; handle: string; followers: number; link: string; verificationStatus: string; views: number | null; audience: Audience | null }[];
+  accounts: { id: string; platform: Platform; handle: string; followers: number; link: string; verificationStatus: string; views: number | null; audience: Audience | null; connection: Connection | null }[];
   viewsMonth: string | null; audienceLocked: boolean;
+  /** Platforms the creator can link (their keys are set on the server). */
+  connectable: Platform[];
 };
 const AGES = ["13-17", "18-24", "25-34", "35-44", "45+"];
 const COUNTRIES = ["SA", "AE", "KW", "QA", "BH", "OM", "EG", "JO", "IQ", "MA", "DZ", "TN", "LB", "YE", "SY", "PS", "SD", "LY", "TR", "US", "GB", "DE", "FR", "CA", "IN", "PK", "ID", "MY"];
@@ -99,6 +103,61 @@ export default function Accounts() {
     mark(`aud:${id}`, read.agesUncertain ? "uncertain" : "filled");
   };
 
+  // Platform sign-in in the phone's browser; the server sends it back to wsool://connect?status=ok|error&code=.
+  const connect = async (id: string, platform: Platform) => {
+    mark(`conn:${id}`, "busy");
+    try {
+      const { url } = await api<{ url: string }>(`/connect/${platform}`, { method: "POST", body: { accountId: id } });
+      const res = await WebBrowser.openAuthSessionAsync(url, "wsool://connect");
+      if (res.type !== "success") return mark(`conn:${id}`, "");
+      const q = new URL(res.url.replace(/^wsool:\/\//, "https://app/")).searchParams;
+      mark(`conn:${id}`, q.get("status") === "ok" ? "done" : `error:${q.get("code") ?? "failed"}`);
+      reload();
+    } catch { mark(`conn:${id}`, "error:failed"); }
+  };
+  const unlink = (id: string, platform: Platform) =>
+    Alert.alert(t("accounts.connect.unlink"), t("accounts.connect.confirmUnlink", { platform: PLATFORM_NAMES[platform] }), [
+      { text: t("accounts.connect.cancel"), style: "cancel" },
+      { text: t("accounts.connect.unlink"), style: "destructive", onPress: async () => {
+        mark(`conn:${id}`, "busy");
+        try { await rpc("disconnectAccount", id); mark(`conn:${id}`, ""); reload(); } catch { mark(`conn:${id}`, "error:failed"); }
+      } },
+    ]);
+  const connectBox = (a: Account) => {
+    const saved = a.id ? data?.accounts.find((x) => x.id === a.id) : undefined;
+    const conn = saved?.connection ?? null;
+    if (!data?.connectable.includes(a.platform) && !conn) return null;
+    const name = PLATFORM_NAMES[a.platform];
+    const s = a.id ? state[`conn:${a.id}`] : undefined;
+    const note = s === "done" ? <T size={13} tone="good" accessibilityLiveRegion="polite">{t("accounts.connect.done", { platform: name })}</T>
+      : s?.startsWith("error:") ? <T size={13} tone="bad" accessibilityLiveRegion="polite">{t(`accounts.connect.errors.${s.slice(6)}`)}</T> : null;
+    if (conn && saved?.platform === a.platform) {
+      return (
+        <View style={{ gap: 6, padding: 12, borderRadius: 10, backgroundColor: colors.blueSoft }}>
+          <Row style={{ justifyContent: "space-between" }}>
+            <Pill tone={conn.status === "active" ? "good" : "bad"}>{t(conn.status === "active" ? "accounts.connect.linked" : "accounts.connect.stopped")}</Pill>
+            <T size={13} tone="blue" accessibilityRole="button" onPress={() => unlink(a.id!, a.platform)} style={{ paddingVertical: 10 }}>{t("accounts.connect.unlink")}</T>
+          </Row>
+          {conn.name ? <T size={13}>{t("accounts.connect.linkedTo", { name: conn.name })}</T> : null}
+          <T size={12.5} tone="muted">{conn.status === "active" ? `${t("accounts.connect.auto")}${conn.lastSyncAt ? ` · ${t("accounts.connect.lastSync", { date: date(conn.lastSyncAt) })}` : ""}` : t("accounts.connect.stoppedTitle", { platform: name })}</T>
+          {conn.status === "error" ? <Button title={t("accounts.connect.again")} variant="secondary" loading={s === "busy"} onPress={() => connect(a.id!, a.platform)} /> : null}
+          {note}
+        </View>
+      );
+    }
+    if (!data?.connectable.includes(a.platform)) return null;
+    return (
+      <View style={{ gap: 8, padding: 12, borderRadius: 10, backgroundColor: colors.blueSoft }}>
+        <T weight="bold" size={14}>{t("accounts.connect.title", { platform: name })}</T>
+        <T size={12.5} tone="muted">{a.id && saved?.platform === a.platform ? t("accounts.connect.why") : t("accounts.connect.saveFirst")}</T>
+        {a.id && saved?.platform === a.platform
+          ? <Button title={t("accounts.connect.button", { platform: name })} icon={<Link2 size={16} color={colors.onBlue} />} loading={s === "busy"} onPress={() => connect(a.id!, a.platform)} />
+          : null}
+        {note}
+      </View>
+    );
+  };
+
   const status = (key: string) => {
     const s = state[key];
     if (!s) return null;
@@ -112,10 +171,12 @@ export default function Accounts() {
       {list && data && (
         <>
           <T weight="bold" size={16}>{t("accounts.accounts")}</T>
-          {list.map((a, i) => (
+          {list.map((a, i) => {
+            const linked = !!a.id && !!data.accounts.find((x) => x.id === a.id && x.platform === a.platform)?.connection;
+            return (
             <Card key={a.id ?? `new-${i}`}>
               <Row style={{ justifyContent: "space-between" }}>
-                <Pressable accessibilityRole="button" accessibilityLabel={t("accounts.platform")} onPress={() => setPicker(i)}
+                <Pressable accessibilityRole="button" accessibilityLabel={t("accounts.platform")} onPress={() => setPicker(i)} disabled={linked}
                   style={{ minHeight: 44, flexDirection: "row", alignItems: "center", gap: 8, paddingHorizontal: 12, borderRadius: 10, borderWidth: 1, borderColor: colors.line }}>
                   <PlatformIcon platform={a.platform} size={18} color={colors.navy} /><T weight="bold">{PLATFORM_NAMES[a.platform]}</T><ChevronDown size={16} color={colors.muted} />
                 </Pressable>
@@ -125,13 +186,16 @@ export default function Accounts() {
                 <Field label={t("accounts.link")} value={a.link} onChangeText={(v) => setItem(i, { link: v })} keyboardType="url" autoCapitalize="none" placeholder="https://" style={{ textAlign: "left", writingDirection: "ltr" }} />
               )}
               <Row style={{ alignItems: "flex-start" }}>
-                <View style={{ flex: 1.2 }}><Field label={t("accounts.handle")} value={a.handle} onChangeText={(v) => setItem(i, { handle: v })} autoCapitalize="none" placeholder="@username" style={{ textAlign: "left", writingDirection: "ltr" }} /></View>
-                <View style={{ flex: 1 }}><Field label={a.platform === "discord" ? t("accounts.members") : t("accounts.followers")} value={a.followers} onChangeText={(v) => setItem(i, { followers: digits(v, 10) })} keyboardType="number-pad" style={{ textAlign: "left", writingDirection: "ltr" }} /></View>
+                <View style={{ flex: 1.2 }}><Field label={t("accounts.handle")} value={a.handle} onChangeText={(v) => setItem(i, { handle: v })} editable={!linked} autoCapitalize="none" placeholder="@username" style={{ textAlign: "left", writingDirection: "ltr" }} /></View>
+                <View style={{ flex: 1 }}><Field label={a.platform === "discord" ? t("accounts.members") : t("accounts.followers")} value={a.followers} onChangeText={(v) => setItem(i, { followers: digits(v, 10) })} editable={!linked} keyboardType="number-pad" style={{ textAlign: "left", writingDirection: "ltr" }} /></View>
               </Row>
               {a.followers ? <T size={12.5} tone="muted">{num(Number(a.followers))}</T> : null}
+              {linked ? <T size={12.5} tone="muted">{t("accounts.connect.locked")}</T> : null}
+              {connectBox(a)}
               <ItemTools index={i} count={list.length} onMove={(x, y) => { setList(move(list, x, y)); mark("accounts", ""); }} onRemove={() => { setList(list.filter((_, j) => j !== i)); mark("accounts", ""); }} />
             </Card>
-          ))}
+            );
+          })}
           <AddButton label={t("accounts.add")} disabled={list.length >= MAX_ACCOUNTS} onPress={() => { setList([...list, { id: null, platform: "tiktok", handle: "", followers: "", link: "" }]); mark("accounts", ""); }} />
           <T size={12.5} tone="muted">{t("accounts.resetHint")}</T>
           {status("accounts")}

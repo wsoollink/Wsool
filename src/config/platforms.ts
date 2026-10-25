@@ -26,6 +26,8 @@ export const PLATFORMS = Object.keys(PLATFORM_NAMES) as Platform[];
  * Discord = a server invite (followers = members), Spotify = artist/podcast/user.
  */
 export const LINK_PLATFORMS: readonly Platform[] = ["spotify", "discord", "jaco"];
+/** Linked platforms whose API also gives audience data (src/lib/connect); the others update followers only. */
+export const CONNECT_AUDIENCE: readonly Platform[] = ["youtube"];
 export const needsLink = (platform: Platform) => LINK_PLATFORMS.includes(platform);
 
 /** Profile URL built on the server from platform + handle (no free-form links). */

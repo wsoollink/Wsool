@@ -106,7 +106,7 @@ export const youtube: Provider = {
     const body = (await res.json().catch(() => ({}))) as { access_token?: string; error?: string };
     if (body.error === "invalid_grant" || body.error === "unauthorized_client") throw new RevokedError();
     if (!res.ok || !body.access_token) throw new Error(`google token ${res.status}`);
-    return body.access_token;
+    return { accessToken: body.access_token };
   },
 
   async profile(token): Promise<ProviderProfile | null> {

@@ -120,10 +120,11 @@ export const en: typeof ar = {
     gender: "Gender", female: "Female", male: "Male", ages: "Ages", countries: "Top countries (5)", cities: "Top cities", city: "City", saveAudience: "Save audience",
     connect: {
       title: "Connect your {platform} account", stoppedTitle: "{platform} connection stopped", why: "Once connected, your followers and audience update by themselves every day, and the account is verified without a screenshot.",
+      whyFollowers: "Once connected, your followers update by themselves every day, and the account is verified without a screenshot. You still fill in the audience data yourself.",
       button: "Connect {platform}", again: "Reconnect", saveFirst: "Save the account first, then you can connect it.", linked: "Connected", stopped: "Connection stopped",
       linkedTo: "Connected to {name}", lastSync: "Last update: {date}", auto: "Updates every day", unlink: "Disconnect", cancel: "Cancel",
       confirmUnlink: "Disconnect {platform}? Your numbers stop updating by themselves; the verification stays until it expires.", locked: "Username and followers come straight from the platform and update by themselves.",
-      done: "{platform} connected ✓ Your numbers and audience are up to date, and the account is verified.",
+      done: "{platform} connected ✓ Your numbers are up to date and update by themselves, and the account is verified.",
       errors: {
         denied: "Not connected: you need to allow access on the platform's page.", taken: "This account is connected to another Wsool page.",
         no_channel: "We found no channel on this account. Pick the account that has your channel.", expired: "The connection timed out. Try again.",

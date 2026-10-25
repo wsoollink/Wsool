@@ -10,6 +10,7 @@ import { siteOrigin } from "@/lib/site-url";
 import { canEncryptTokens, openToken, sealToken } from "@/lib/token-box";
 import { RevokedError } from "./errors";
 import type { Provider } from "./types";
+import { tiktok } from "./tiktok";
 import { youtube } from "./youtube";
 
 /**
@@ -19,7 +20,7 @@ import { youtube } from "./youtube";
  *   start (web: session cookie; app: a 5-minute ticket) → sets a nonce cookie → platform consent screen
  *   → /api/connect/<platform>/callback (state signed + nonce cookie) → saveConnection → back to the dashboard or the app.
  */
-export const PROVIDERS: Partial<Record<Platform, Provider>> = { youtube };
+export const PROVIDERS: Partial<Record<Platform, Provider>> = { youtube, tiktok };
 
 export const connectablePlatforms = () =>
   canEncryptTokens() ? (Object.values(PROVIDERS).filter((p) => p!.configured()).map((p) => p!.platform) as Platform[]) : [];
@@ -144,7 +145,9 @@ export async function syncConnections(limit = 40) {
     const refresh = openToken(c.refreshToken);
     if (!provider || !refresh) { failed++; continue; }
     try {
-      const access = await provider.refresh(refresh);
+      const { accessToken: access, refreshToken: rotated } = await provider.refresh(refresh);
+      // Some platforms (TikTok) hand out a new refresh token: keep it before anything else can fail.
+      if (rotated && rotated !== refresh) await db.platformConnection.update({ where: { id: c.id }, data: { refreshToken: sealToken(rotated) } });
       const profile = await provider.profile(access);
       // The platform now returns another account (or none): treat it as lost.
       if (!profile || profile.externalId !== c.externalId) throw new RevokedError();

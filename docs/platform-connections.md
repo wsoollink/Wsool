@@ -8,7 +8,7 @@
 | --- | --- |
 | YouTube | منشور. Google Cloud جاهز، الهوية موثّقة، وطلب مراجعة الصلاحيات أُرسل 25 أكتوبر 2026 (قيد المراجعة) |
 | Instagram | التالي: يحتاج توثيق نشاط تجاري ومراجعة تطبيق في Meta (ابدأها مبكر) |
-| TikTok | بعده |
+| TikTok | مبني (المتابعين فقط، TikTok ما يعطي بيانات الجمهور). ينتظر تجهيز TikTok for Developers (الخطوات تحت) |
 | Facebook / Threads | بعده |
 | Twitch / Spotify / Telegram / Discord | سهلة، بعدها |
 | Snapchat / X | مؤجلة |
@@ -33,9 +33,24 @@
    الصفحة، وشرح ليش نحتاج كل صلاحية. تاخذ أيام لأسابيع.
    - قبل الموافقة: يقدر يربط بس الـ Test users (حد 100)، والربط ينتهي بعد 7 أيام (لازم يعيد الربط).
 
+## تجهيز TikTok (المالك، مرة وحدة)
+
+1. **developers.tiktok.com** ← Log in (بحساب TikTok حق وصول) ← **Manage apps** ← **Connect an app**.
+2. **App details**: الأيقونة (`mobile/assets/icon.png`، 1024×1024)، الاسم `Wsool`، الوصف، رابط الشروط
+   `https://wsool.link/terms` والخصوصية `https://wsool.link/privacy`، Platforms: **Web** ورابطه `https://wsool.link`
+   (يطلب إثبات ملكية الرابط: سجل TXT في Cloudflare مثل Google).
+3. **Add products** ← **Login Kit**، و Redirect URI (Web):
+   `https://wsool.link/api/connect/tiktok/callback`
+   (وللتجربة: `https://claude-new-session-r5ze7y--graceful-fox-a6c2f5.netlify.app/api/connect/tiktok/callback`).
+4. **Scopes**: `user.info.basic` و `user.info.profile` و `user.info.stats`.
+5. **Netlify**: `TIKTOK_CLIENT_KEY` و `TIKTOK_CLIENT_SECRET` («Contains secret values»).
+   - قبل الموافقة: التجربة من **Sandbox** (له مفاتيح خاصة فيه، ويُضاف حسابك في Target users).
+6. **Submit for review** مع فيديو للربط (مثل فيديو Google) وشرح لكل صلاحية. تاخذ أيام لأسبوعين.
+
 ## ملاحظات تقنية
 - مفتاح التحديث (refresh token) محفوظ مشفّر AES-256-GCM (`src/lib/token-box.ts`)، ولا يطلع للمتصفح أو التطبيق أبداً.
 - حساب المنصة الواحد يُربط بصفحة وحدة بس (`platform` + `externalId` فريد).
+- TikTok: مفتاح التحديث يتغير مع كل تحديث (يُحفظ الجديد أول بأول)، وصلاحيته سنة؛ بعدها «الربط متوقف» + تنبيه لإعادة الربط.
 - التحديث: `syncConnections()` في الجوب كل ساعة، كل ربط مرة في اليوم. إذا سحب الصانع الصلاحية: الحالة «متوقف» + تنبيه
   `connection_lost`. فك الربط يسحب الصلاحية من المنصة ويحذف المفتاح، والتوثيق يبقى لين ينتهي.
 - سياسة YouTube API: البيانات تتحدث يومياً (الحد 30 يوم)، والخصوصية فيها روابط شروط YouTube وخصوصية Google وصفحة سحب الصلاحية.

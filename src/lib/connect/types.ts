@@ -26,8 +26,8 @@ export type Provider = {
   configured: () => boolean;
   authUrl: (state: string, redirectUri: string) => string;
   exchange: (code: string, redirectUri: string) => Promise<{ accessToken: string; refreshToken: string; scopes: string } | null>;
-  /** A fresh access token; throws RevokedError when the platform refuses the saved one. */
-  refresh: (refreshToken: string) => Promise<string>;
+  /** A fresh access token (+ a new refresh token when the platform rotates it); throws RevokedError when refused. */
+  refresh: (refreshToken: string) => Promise<{ accessToken: string; refreshToken?: string }>;
   profile: (accessToken: string) => Promise<ProviderProfile | null>;
   audience?: (accessToken: string) => Promise<Audience | null>;
   revoke: (refreshToken: string) => Promise<void>;

@@ -513,6 +513,7 @@
       "title": "Connect your {platform} account",
       "stoppedTitle": "Your {platform} link stopped",
       "why": "Once connected, your followers and audience update by themselves every day, and your account is verified without a screenshot.",
+      "whyFollowers": "Once connected, your followers update by themselves every day, and your account is verified without a screenshot. You still fill in the audience data yourself.",
       "button": "Connect {platform}",
       "again": "Connect again",
       "saveFirst": "Save the account first, then you can connect it.",
@@ -524,7 +525,7 @@
       "unlink": "Disconnect",
       "confirmUnlink": "Disconnect {platform}? Your numbers will stop updating by themselves; the verification stays until it expires.",
       "locked": "The username and followers come straight from the platform and update by themselves.",
-      "done": "{platform} connected ✓ Your numbers and audience are up to date, and your account is verified.",
+      "done": "{platform} connected ✓ Your numbers are up to date and update by themselves, and your account is verified.",
       "errors": {
         "denied": "Not connected: you need to allow access on the platform's page.",
         "taken": "This account is already connected to another Wsool page.",

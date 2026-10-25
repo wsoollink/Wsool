@@ -8,7 +8,7 @@ import { Button, Card, Field, Pill, Row, T } from "../../../components/ui";
 import { useI18n } from "../../../i18n";
 import { api, rpc } from "../../../lib/api";
 import { pickImage, upload } from "../../../lib/media";
-import { LINK_PLATFORMS, PLATFORM_NAMES, PLATFORMS, type Platform } from "../../../lib/platforms";
+import { CONNECT_AUDIENCE, LINK_PLATFORMS, PLATFORM_NAMES, PLATFORMS, type Platform } from "../../../lib/platforms";
 import { useTheme } from "../../../lib/theme";
 
 type Share = { label: string; percent: number };
@@ -149,7 +149,7 @@ export default function Accounts() {
     return (
       <View style={{ gap: 8, padding: 12, borderRadius: 10, backgroundColor: colors.blueSoft }}>
         <T weight="bold" size={14}>{t("accounts.connect.title", { platform: name })}</T>
-        <T size={12.5} tone="muted">{a.id && saved?.platform === a.platform ? t("accounts.connect.why") : t("accounts.connect.saveFirst")}</T>
+        <T size={12.5} tone="muted">{a.id && saved?.platform === a.platform ? t(CONNECT_AUDIENCE.includes(a.platform) ? "accounts.connect.why" : "accounts.connect.whyFollowers") : t("accounts.connect.saveFirst")}</T>
         {a.id && saved?.platform === a.platform
           ? <Button title={t("accounts.connect.button", { platform: name })} icon={<Link2 size={16} color={colors.onBlue} />} loading={s === "busy"} onPress={() => connect(a.id!, a.platform)} />
           : null}

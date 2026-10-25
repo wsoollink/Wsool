@@ -23,6 +23,8 @@ export type Platform = keyof typeof PLATFORM_NAMES;
 export const PLATFORMS = Object.keys(PLATFORM_NAMES) as Platform[];
 /** The creator pastes the profile link for these (no URL can be built from a username). */
 export const LINK_PLATFORMS: readonly Platform[] = ["spotify","discord","jaco"];
+/** Linked platforms whose API also gives audience data (server: src/lib/connect); the others update followers only. */
+export const CONNECT_AUDIENCE: readonly Platform[] = ["youtube"];
 export const BRAND_COLORS: Record<Platform, string> = {
   "tiktok": "#000000",
   "instagram": "#E1306C",

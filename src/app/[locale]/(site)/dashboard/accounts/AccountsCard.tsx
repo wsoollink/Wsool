@@ -9,7 +9,7 @@ import { buttonClasses } from "@/components/ui/Button";
 import { PlatformIcon } from "@/components/creator/PlatformIcon";
 import { Panel } from "@/components/ui/Card";
 import { Pill } from "@/components/ui/Pill";
-import { HANDLE_PATTERN, linkProfileUrl, needsLink, normalizeHandle, PLATFORM_NAMES, PLATFORMS } from "@/config/platforms";
+import { CONNECT_AUDIENCE, HANDLE_PATTERN, linkProfileUrl, needsLink, normalizeHandle, PLATFORM_NAMES, PLATFORMS } from "@/config/platforms";
 import type { Platform, VerificationStatus } from "@/generated/prisma/enums";
 import type { Locale } from "@/i18n/config";
 import { digitsOnly, formatNumber } from "@/lib/format";
@@ -183,7 +183,7 @@ export function AccountsCard({ initial, connectable = [] }: { initial: AccountRo
                           ) : (
                             <>
                               <p className="text-sm font-bold">{row.connection ? t("connect.stoppedTitle", { platform: name }) : t("connect.title", { platform: name })}</p>
-                              <p className="text-xs text-muted">{t("connect.why")}</p>
+                              <p className="text-xs text-muted">{t(CONNECT_AUDIENCE.includes(row.platform) ? "connect.why" : "connect.whyFollowers")}</p>
                               {row.id ? (
                                 <a href={`/api/connect/${row.platform}/start?account=${row.id}`} className={buttonClasses("primary", "w-fit gap-2")}>
                                   {row.connection ? <RefreshCw aria-hidden="true" size={16} /> : <Link2 aria-hidden="true" size={16} />} {row.connection ? t("connect.again") : t("connect.button", { platform: name })}

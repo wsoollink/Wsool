@@ -10,6 +10,7 @@ import { siteOrigin } from "@/lib/site-url";
 import { canEncryptTokens, openToken, sealToken } from "@/lib/token-box";
 import { RevokedError } from "./errors";
 import type { Provider } from "./types";
+import { discord } from "./discord";
 import { tiktok } from "./tiktok";
 import { twitch } from "./twitch";
 import { youtube } from "./youtube";
@@ -21,7 +22,7 @@ import { youtube } from "./youtube";
  *   start (web: session cookie; app: a 5-minute ticket) → sets a nonce cookie → platform consent screen
  *   → /api/connect/<platform>/callback (state signed + nonce cookie) → saveConnection → back to the dashboard or the app.
  */
-export const PROVIDERS: Partial<Record<Platform, Provider>> = { youtube, tiktok, twitch };
+export const PROVIDERS: Partial<Record<Platform, Provider>> = { youtube, tiktok, twitch, discord };
 
 export const connectablePlatforms = () =>
   canEncryptTokens() ? (Object.values(PROVIDERS).filter((p) => p!.configured()).map((p) => p!.platform) as Platform[]) : [];
@@ -76,14 +77,14 @@ export const newNonce = () => randomBytes(16).toString("base64url");
 export async function ownAccount(userId: string, accountId: string) {
   const account = await db.socialAccount.findFirst({
     where: { id: accountId, page: { userId, deletedAt: null } },
-    select: { id: true, platform: true, page: { select: { username: true } } },
+    select: { id: true, platform: true, url: true, page: { select: { username: true } } },
   });
   return account && providerFor(account.platform) ? account : null;
 }
 
 // ---- saving and updating ----
 
-export type ConnectError = "denied" | "failed" | "no_channel" | "taken" | "gone";
+export type ConnectError = "denied" | "failed" | "no_channel" | "no_server" | "taken" | "gone";
 
 const verifiedUntil = () => new Date(Date.now() + VERIFICATION_DAYS * 86_400_000);
 
@@ -95,10 +96,10 @@ export async function completeConnection(flow: Flow, code: string, redirectUri: 
 
   const tokens = await provider.exchange(code, redirectUri).catch(() => null);
   if (!tokens) return { error: "failed" };
-  const profile = await provider.profile(tokens.accessToken).catch(() => null);
+  const profile = await provider.profile(tokens.accessToken, { url: account.url, externalId: null }).catch(() => null);
   if (!profile) {
     await provider.revoke(tokens.refreshToken);
-    return { error: "no_channel" };
+    return { error: provider.notFound ?? "no_channel" };
   }
   // One Wsool account per platform account: someone else can't claim this channel.
   const other = await db.platformConnection.findUnique({ where: { platform_externalId: { platform: flow.platform, externalId: profile.externalId } }, select: { accountId: true } });
@@ -138,7 +139,7 @@ export async function syncConnections(limit = 40) {
     where: { status: "active", OR: [{ lastSyncAt: null }, { lastSyncAt: { lt: new Date(Date.now() - 20 * 3_600_000) } }] },
     orderBy: { lastSyncAt: { sort: "asc", nulls: "first" } },
     take: limit,
-    select: { id: true, accountId: true, platform: true, externalId: true, refreshToken: true, account: { select: { followers: true, platform: true, handle: true, page: { select: { userId: true, username: true } } } } },
+    select: { id: true, accountId: true, platform: true, externalId: true, refreshToken: true, account: { select: { followers: true, platform: true, handle: true, url: true, page: { select: { userId: true, username: true } } } } },
   });
   let synced = 0, lost = 0, failed = 0;
   for (const c of due) {
@@ -149,7 +150,7 @@ export async function syncConnections(limit = 40) {
       const { accessToken: access, refreshToken: rotated } = await provider.refresh(refresh);
       // Some platforms (TikTok) hand out a new refresh token: keep it before anything else can fail.
       if (rotated && rotated !== refresh) await db.platformConnection.update({ where: { id: c.id }, data: { refreshToken: sealToken(rotated) } });
-      const profile = await provider.profile(access);
+      const profile = await provider.profile(access, { url: c.account.url, externalId: c.externalId });
       // The platform now returns another account (or none): treat it as lost.
       if (!profile || profile.externalId !== c.externalId) throw new RevokedError();
       const audience = await provider.audience?.(access).catch(() => null);

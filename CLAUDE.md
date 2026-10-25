@@ -814,7 +814,7 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
 ### Platform connections (owner, Oct 2026)
 - Creators link an account through the platform's own sign-in (OAuth); followers + audience then update daily and the account
   counts as verified while linked. Plan, platform order and the owner's Google setup: **`docs/platform-connections.md`**.
-- Code: `src/lib/connect/` (`Provider` per platform, `PROVIDERS`; YouTube = followers + audience, TikTok + Twitch = followers only (`CONNECT_AUDIENCE` in
+- Code: `src/lib/connect/` (`Provider` per platform, `PROVIDERS`; YouTube = followers + audience, TikTok + Twitch = followers only, Discord = members of the server behind the saved invite, linked only when the creator owns/manages it (`profile(token, {url, externalId})`, `notFound: "no_server"`) (`CONNECT_AUDIENCE` in
   `src/config/platforms.ts` + app picks the hint text); `refresh()` may return a rotated refresh token, saved before reading), table `platform_connections` (server only, one
   platform account per Wsool account), refresh tokens sealed with `TOKEN_ENCRYPTION_KEY` (`src/lib/token-box.ts`). Routes
   `/api/connect/<platform>/start|callback` (redirects use the request's own origin (`requestOrigin`), so branch deploys work; web: session + nonce cookie; app: 2-minute one-time ticket from

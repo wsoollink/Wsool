@@ -28,7 +28,10 @@ export type Provider = {
   exchange: (code: string, redirectUri: string) => Promise<{ accessToken: string; refreshToken: string; scopes: string } | null>;
   /** A fresh access token (+ a new refresh token when the platform rotates it); throws RevokedError when refused. */
   refresh: (refreshToken: string) => Promise<{ accessToken: string; refreshToken?: string }>;
-  profile: (accessToken: string) => Promise<ProviderProfile | null>;
+  /** The account on the platform; `account` = the Wsool account being linked (externalId once linked). null = not found. */
+  profile: (accessToken: string, account: { url: string; externalId: string | null }) => Promise<ProviderProfile | null>;
+  /** Error shown when profile() finds nothing (default no_channel). */
+  notFound?: "no_channel" | "no_server";
   audience?: (accessToken: string) => Promise<Audience | null>;
   revoke: (refreshToken: string) => Promise<void>;
 };

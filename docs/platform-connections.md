@@ -10,8 +10,9 @@
 | Instagram | التالي: يحتاج توثيق نشاط تجاري ومراجعة تطبيق في Meta (ابدأها مبكر) |
 | TikTok | منشور (المتابعين فقط). مفاتيح Sandbox في Netlify، وطلب المراجعة أُرسل 25 أكتوبر 2026؛ بعد الموافقة تُبدّل لمفاتيح Production |
 | Facebook / Threads | بعده |
-| Twitch | مبني (المتابعين فقط، بدون مراجعة). ينتظر تطبيق dev.twitch.tv (الخطوات تحت) |
-| Spotify / Telegram / Discord | بعدها |
+| Twitch | منشور (المتابعين فقط، بدون مراجعة). شغّال لكل الصناع |
+| Discord | مبني (أعضاء السيرفر، بدون مراجعة). يتأكد إن الصانع مالك أو مدير السيرفر حق رابط الدعوة. ينتظر تطبيق Discord (الخطوات تحت) |
+| Spotify / Telegram | بعدها |
 | Snapchat / X | مؤجلة |
 | LinkedIn / Pinterest / Jaco | يدوي |
 
@@ -59,10 +60,19 @@
 3. **Manage** ← انسخ **Client ID**، واضغط **New Secret** وانسخ الـ Secret.
 4. **Netlify**: `TWITCH_CLIENT_ID` و `TWITCH_CLIENT_SECRET` («Contains secret values»)، ثم انشر.
 
+## تجهيز Discord (المالك، مرة وحدة، بدون مراجعة)
+
+1. **discord.com/developers/applications** (بحساب Discord حق وصول) ← **New Application** ← الاسم `Wsool`.
+2. **General Information**: الأيقونة، الوصف، Privacy Policy URL `https://wsool.link/privacy`، Terms `https://wsool.link/terms` ← Save.
+3. **OAuth2**: انسخ **Client ID**، و **Reset Secret** وانسخ الـ Secret. تحت **Redirects** ← Add Redirect:
+   `https://wsool.link/api/connect/discord/callback` ← **Save Changes**.
+4. **Netlify**: `DISCORD_CLIENT_ID` و `DISCORD_CLIENT_SECRET` («Contains secret values»)، ثم انشر.
+
 ## ملاحظات تقنية
 - مفتاح التحديث (refresh token) محفوظ مشفّر AES-256-GCM (`src/lib/token-box.ts`)، ولا يطلع للمتصفح أو التطبيق أبداً.
 - حساب المنصة الواحد يُربط بصفحة وحدة بس (`platform` + `externalId` فريد).
 - TikTok: مفتاح التحديث يتغير مع كل تحديث (يُحفظ الجديد أول بأول)، وصلاحيته سنة؛ بعدها «الربط متوقف» + تنبيه لإعادة الربط.
+- Discord: الحساب = سيرفر (رابط دعوة). الربط يحوّل رابط الدعوة لرقم السيرفر ويقبله بس إذا الصانع مالكه أو عنده Administrator / Manage Server، والعدد = أعضاء السيرفر. إذا فقد الصلاحية: «الربط متوقف» + تنبيه.
 - التحديث: `syncConnections()` في الجوب كل ساعة، كل ربط مرة في اليوم. إذا سحب الصانع الصلاحية: الحالة «متوقف» + تنبيه
   `connection_lost`. فك الربط يسحب الصلاحية من المنصة ويحذف المفتاح، والتوثيق يبقى لين ينتهي.
 - سياسة YouTube API: البيانات تتحدث يومياً (الحد 30 يوم)، والخصوصية فيها روابط شروط YouTube وخصوصية Google وصفحة سحب الصلاحية.

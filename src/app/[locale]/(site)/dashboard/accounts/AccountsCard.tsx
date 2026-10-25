@@ -135,7 +135,7 @@ export function AccountsCard({ initial, connectable = [] }: { initial: AccountRo
     >
       {(connectedNow || connectError) && (
         <p role="status" className={`mx-5 mt-3 rounded-[10px] px-3 py-2 text-sm ${connectedNow ? "bg-good/10 text-good" : "bg-bad/10 text-bad"}`}>
-          {connectedNow ? t("connect.done", { platform: PLATFORM_NAMES[connectedNow as Platform] ?? connectedNow }) : t(`connect.errors.${["denied", "taken", "no_channel", "expired", "gone", "unavailable"].includes(connectError!) ? connectError : "failed"}`)}
+          {connectedNow ? t("connect.done", { platform: PLATFORM_NAMES[connectedNow as Platform] ?? connectedNow }) : t(`connect.errors.${["denied", "taken", "no_channel", "no_server", "expired", "gone", "unavailable"].includes(connectError!) ? connectError : "failed"}`)}
         </p>
       )}
       <p className="px-5 pt-3 text-xs text-muted">{t("orderHint")}</p>
@@ -185,9 +185,17 @@ export function AccountsCard({ initial, connectable = [] }: { initial: AccountRo
                               <p className="text-sm font-bold">{row.connection ? t("connect.stoppedTitle", { platform: name }) : t("connect.title", { platform: name })}</p>
                               <p className="text-xs text-muted">{t(CONNECT_AUDIENCE.includes(row.platform) ? "connect.why" : "connect.whyFollowers")}</p>
                               {row.id ? (
-                                <a href={`/api/connect/${row.platform}/start?account=${row.id}`} className={buttonClasses("primary", "w-fit gap-2")}>
-                                  {row.connection ? <RefreshCw aria-hidden="true" size={16} /> : <Link2 aria-hidden="true" size={16} />} {row.connection ? t("connect.again") : t("connect.button", { platform: name })}
-                                </a>
+                                <div className="flex flex-wrap items-center gap-2">
+                                  <a href={`/api/connect/${row.platform}/start?account=${row.id}`} className={buttonClasses("primary", "w-fit gap-2")}>
+                                    {row.connection ? <RefreshCw aria-hidden="true" size={16} /> : <Link2 aria-hidden="true" size={16} />} {row.connection ? t("connect.again") : t("connect.button", { platform: name })}
+                                  </a>
+                                  {/* A stopped link can also be removed (then the numbers are edited by hand again). */}
+                                  {row.connection && (
+                                    <button type="button" onClick={() => unlink(row)} disabled={unlinking === row.id} className="inline-flex min-h-11 w-fit items-center gap-2 rounded-full px-3 text-[13px] font-semibold text-bad hover:bg-bad/8 md:min-h-9">
+                                      <Unlink aria-hidden="true" size={15} /> {t("connect.unlink")}
+                                    </button>
+                                  )}
+                                </div>
                               ) : (
                                 <p className="text-xs font-semibold text-warn">{t("connect.saveFirst")}</p>
                               )}
@@ -227,7 +235,8 @@ export function AccountsCard({ initial, connectable = [] }: { initial: AccountRo
                             aria-invalid={row.error && !linkProfileUrl(row.platform, row.link)}
                             aria-describedby={`link-hint-${row.key}`}
                             onChange={(ev) => update(row.key, { link: ev.target.value })}
-                            className={control}
+                            readOnly={linked}
+                            className={`${control} read-only:bg-navy/[0.03] read-only:text-muted`}
                           />
                           <p id={`link-hint-${row.key}`} className="text-xs text-muted">{t(`linkHint.${row.platform as "spotify" | "discord" | "jaco"}`)}</p>
                         </div>

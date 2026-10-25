@@ -127,7 +127,8 @@ export const en: typeof ar = {
       done: "{platform} connected ✓ Your numbers are up to date and update by themselves, and the account is verified.",
       errors: {
         denied: "Not connected: you need to allow access on the platform's page.", taken: "This account is connected to another Wsool page.",
-        no_channel: "We found no channel on this account. Pick the account that has your channel.", expired: "The connection timed out. Try again.",
+        no_channel: "We found no channel on this account. Pick the account that has your channel.",
+        no_server: "The server from your invite link isn't one you own or manage. Check the link and sign in with the server owner's account.", expired: "The connection timed out. Try again.",
         gone: "We couldn't find this account on your page. Refresh and try again.", unavailable: "Connecting this platform isn't available right now.", failed: "Something went wrong while connecting. Try again.",
       },
     },

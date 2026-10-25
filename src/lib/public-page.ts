@@ -1,6 +1,7 @@
 import "server-only";
 import { cacheLife, cacheTag, revalidateTag, updateTag } from "next/cache";
 import { FREE_LIMITS, hasPro } from "@/config/plans";
+import { autoFilled } from "@/config/platforms";
 import type { Prisma } from "@/generated/prisma/client";
 import { db } from "@/lib/db";
 import type { Locale } from "@/i18n/config";
@@ -42,7 +43,7 @@ const PAGE_SELECT = {
   licenses: { orderBy: { sort: "asc" } },
   socialAccounts: {
     orderBy: { sort: "asc" },
-    include: { audience: true, rates: { orderBy: { sort: "asc" } } },
+    include: { audience: true, rates: { orderBy: { sort: "asc" } }, connection: { select: { status: true } } },
   },
   monthlyViews: { orderBy: { month: "desc" }, take: 1 },
   brandLogos: { orderBy: { sort: "asc" } },
@@ -152,6 +153,8 @@ function shapePage(page: PageRow, now: number) {
         // The badge is a Pro feature (CLAUDE.md section 6).
         verified: verified && isPro,
         audience: showAudience ? a.audience : null,
+        /** The audience comes from the platform itself (a linked account), not typed by the creator. */
+        audienceLinked: autoFilled("audience", a.platform, a.connection),
         rates: (showRates ? a.rates : []).map((r) => ({ id: r.id, name: r.name, nameEn: r.nameEn, price: Number(r.price) })),
       };
     }),

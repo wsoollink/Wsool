@@ -12,11 +12,15 @@ export type ProviderProfile = {
   followers: number | null;
 };
 
-/** Audience shares in the same shape as `audience_data` (whole percents, each group ≤ 100). Cities aren't touched. */
+/**
+ * Audience shares in the same shape as `audience_data` (whole percents, each group ≤ 100), in the platform's own
+ * groups and order (YouTube: 13-17 … 65+). Cities only when the platform names them; otherwise the creator's stay.
+ */
 export type Audience = {
   gender: { label: "female" | "male"; percent: number }[];
   ages: { label: string; percent: number }[];
   countries: { label: string; percent: number }[];
+  cities?: { label: string; percent: number }[];
 };
 
 /** One platform's sign-in (OAuth) and readers. Add a platform = one file like ./youtube.ts + an entry in PROVIDERS. */
@@ -33,5 +37,7 @@ export type Provider = {
   /** Error shown when profile() finds nothing (default no_channel). */
   notFound?: "no_channel" | "no_server";
   audience?: (accessToken: string) => Promise<Audience | null>;
+  /** Views of the last complete month (`month` = its first day, UTC), for the monthly views box. */
+  monthlyViews?: (accessToken: string) => Promise<{ month: Date; views: number } | null>;
   revoke: (refreshToken: string) => Promise<void>;
 };

@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 import type { Platform } from "@/generated/prisma/enums";
-import { linkProfileUrl, profileUrl } from "@/config/platforms";
+import { autoFilled, linkProfileUrl, profileUrl } from "@/config/platforms";
 import { disconnect } from "@/lib/connect";
 import { requireCreator } from "@/lib/creator";
 import { db } from "@/lib/db";
@@ -112,8 +112,18 @@ export async function saveMonthlyViews(input: MonthlyViewsInput): Promise<{ ok?:
   const parsed = monthlyViewsSchema.safeParse(input);
   if (!parsed.success) return { error: "failed" };
   // Ownership check: only the creator's own accounts count.
-  const own = new Set((await db.socialAccount.findMany({ where: { pageId: page.id }, select: { id: true } })).map((a) => a.id));
-  const filled = parsed.data.byAccount.filter((r) => r.views !== null && own.has(r.accountId));
+  const [accounts, current] = await Promise.all([
+    db.socialAccount.findMany({ where: { pageId: page.id }, select: { id: true, platform: true, connection: { select: { status: true } } } }),
+    db.monthlyView.findFirst({ where: { pageId: page.id }, orderBy: { month: "desc" } }),
+  ]);
+  const own = new Set(accounts.map((a) => a.id));
+  // Linked accounts keep the views their platform gave (src/lib/connect), whatever the form sent.
+  const auto = new Set(accounts.filter((a) => autoFilled("views", a.platform, a.connection)).map((a) => a.id));
+  const kept = (current?.byAccount ?? {}) as Record<string, number>;
+  const filled = [
+    ...parsed.data.byAccount.filter((r) => r.views !== null && own.has(r.accountId) && !auto.has(r.accountId)),
+    ...[...auto].filter((id) => typeof kept[id] === "number").map((id) => ({ accountId: id, views: kept[id] })),
+  ];
   const now = currentMonth();
   const month = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - parsed.data.monthsAgo, 1));
   await db.$transaction(async (tx) => {
@@ -135,8 +145,9 @@ export async function saveAudience(accountId: string, input: AudienceInput): Pro
     return { error: parsed.error.issues.some((i) => i.message === "over_100") ? "over_100" : "failed" };
   }
   // Ownership check: the account must be on this creator's page.
-  const account = await db.socialAccount.findFirst({ where: { id: String(accountId), pageId: page.id }, select: { id: true } });
-  if (!account) return { error: "failed" };
+  const account = await db.socialAccount.findFirst({ where: { id: String(accountId), pageId: page.id }, select: { id: true, platform: true, connection: { select: { status: true } } } });
+  // A linked account's audience comes from its platform (src/lib/connect).
+  if (!account || autoFilled("audience", account.platform, account.connection)) return { error: "failed" };
 
   const data = parsed.data;
   const empty = Object.values(data).every((list) => list.length === 0);
@@ -162,8 +173,8 @@ export async function readAudienceShot(accountId: string, path: string): Promise
   try {
     if (!owned) return { error: "failed" };
     if (!aiEnabled()) return { error: "off" };
-    const account = await db.socialAccount.findFirst({ where: { id: String(accountId), pageId: page.id }, select: { id: true } });
-    if (!account) return { error: "failed" };
+    const account = await db.socialAccount.findFirst({ where: { id: String(accountId), pageId: page.id }, select: { id: true, platform: true, connection: { select: { status: true } } } });
+    if (!account || autoFilled("audience", account.platform, account.connection)) return { error: "failed" };
     if (!(await underDailyLimit(user.id))) return { error: "limit" };
     let read = null;
     try {

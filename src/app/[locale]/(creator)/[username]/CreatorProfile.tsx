@@ -246,6 +246,7 @@ export async function CreatorProfile({ page, lang, preview = false }: ProfilePro
                         verified={a.verified}
                         icon={<PlatformIcon platform={a.platform} size={20} />}
                         audience={a.audience as Audience | null}
+                        audienceLinked={a.audienceLinked}
                         numbersClass={numbersFont}
                       />
                     </li>

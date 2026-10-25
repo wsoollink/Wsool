@@ -17,7 +17,11 @@ import { readAudienceShot, saveAudience } from "./actions";
 
 type Share = { label: string; percent: number };
 export type AudienceValue = { gender: Share[]; ages: Share[]; countries: Share[]; cities: Share[] };
-export type AudienceAccount = { id: string; platform: Platform; handle: string; audience: AudienceValue | null };
+export type AudienceAccount = {
+  id: string; platform: Platform; handle: string; audience: AudienceValue | null;
+  /** Linked: the platform fills the audience (src/lib/connect); shown read-only in the platform's own groups. */
+  auto?: boolean;
+};
 
 /** Countries offered in the picker (Gulf and Arab countries first). */
 const COUNTRIES = [
@@ -58,12 +62,12 @@ export function AudienceCard({ accounts, notice }: { accounts: AudienceAccount[]
                   <PlatformIcon platform={a.platform} className="shrink-0" />
                   <span className="font-medium">{PLATFORM_NAMES[a.platform]}</span>
                   <span dir="ltr" className="min-w-0 truncate text-sm text-muted">@{a.handle}</span>
-                  <Pill tone={a.audience ? "good" : "grey"} className="ms-auto">{a.audience ? t("audienceAdded") : t("audienceEmpty")}</Pill>
+                  <Pill tone={a.auto ? "blue" : a.audience ? "good" : "grey"} className="ms-auto">{a.auto ? t("audienceAuto") : a.audience ? t("audienceAdded") : t("audienceEmpty")}</Pill>
                   <ChevronDown aria-hidden="true" size={16} className={`shrink-0 text-faint transition-transform ${open ? "rotate-180" : ""}`} />
                 </button>
                 {/* Kept mounted while closed so unsaved edits survive collapsing. */}
                 <div id={`aud-${a.id}`} hidden={!open} className="border-t border-line-soft bg-bg/60 p-3">
-                  <AudienceForm account={a} />
+                  {a.auto ? <AudienceSummary account={a} /> : <AudienceForm account={a} />}
                 </div>
               </li>
             );
@@ -72,6 +76,52 @@ export function AudienceCard({ accounts, notice }: { accounts: AudienceAccount[]
       )}
     </Card>
   );
+}
+
+/** Read-only view of a linked account's audience, in the platform's own groups and order. */
+function AudienceSummary({ account }: { account: AudienceAccount }) {
+  const t = useTranslations("AccountsPage");
+  const locale = useLocale();
+  const lang = locale.slice(0, 2) as Locale;
+  const regions = useMemo(() => new Intl.DisplayNames([locale], { type: "region" }), [locale]);
+  const au = account.audience;
+  const groups: { title: string; list: Share[]; label: (s: string) => string; ltr?: boolean }[] = [
+    { title: t("gender"), list: au?.gender ?? [], label: (s) => t(s === "male" ? "male" : "female") },
+    // Age ranges read left to right ("65+", not "+65") in both languages.
+    { title: t("ages"), list: au?.ages ?? [], label: (s) => s, ltr: true },
+    { title: t("countries"), list: au?.countries ?? [], label: (s) => (/^[A-Z]{2}$/.test(s) ? regions.of(s) ?? s : s) },
+    { title: t("cities"), list: au?.cities ?? [], label: (s) => s },
+  ];
+  return (
+    <div className="flex flex-col gap-3">
+      <p className="rounded-[10px] border border-good/25 bg-good/5 px-3 py-2.5 text-[13px] text-good">{t("audienceAutoHint", { platform: PLATFORM_NAMES[account.platform] })}</p>
+      {groups.filter((g) => g.list.length).map((g) => (
+        <section key={g.title} className="flex flex-col gap-1.5">
+          <h3 className="text-[13px] font-semibold">{g.title}</h3>
+          <ul className="flex flex-col gap-1">
+            {g.list.map((s) => (
+              <li key={s.label} className="flex items-center gap-3 text-sm">
+                <span className="w-36 shrink-0 truncate">{g.ltr ? <bdi dir="ltr">{s.label}</bdi> : g.label(s.label)}</span>
+                <span className="h-2 flex-1 overflow-hidden rounded-full bg-navy/8" aria-hidden="true"><span className="block h-full rounded-full bg-blue" style={{ width: `${Math.min(100, s.percent)}%` }} /></span>
+                <span dir="ltr" className="w-12 shrink-0 text-end text-muted">{formatPercent(s.percent, lang)}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+      {groups.every((g) => !g.list.length) && <p className="text-sm text-muted">{t("audienceAutoEmpty")}</p>}
+    </div>
+  );
+}
+
+/** A platform's finer age groups (YouTube 45-54, 55-64, 65+) folded into the manual form's 45+. */
+function manualAges(list: Share[] | undefined): Share[] {
+  const all = list ?? [];
+  if (all.every((s) => (AGE_GROUPS as readonly string[]).includes(s.label))) return all;
+  const older = all.filter((s) => !(AGE_GROUPS as readonly string[]).includes(s.label)).reduce((sum, s) => sum + s.percent, 0);
+  const rest = all.filter((s) => (AGE_GROUPS as readonly string[]).includes(s.label) && s.label !== "45+");
+  const kept = all.find((s) => s.label === "45+")?.percent ?? 0;
+  return [...rest, { label: "45+", percent: Math.min(100, kept + older) }];
 }
 
 type Rows = { label: string; percent: string }[];
@@ -90,7 +140,7 @@ function AudienceForm({ account }: { account: AudienceAccount }) {
     labels.map((label) => ({ label, percent: String(list?.find((s) => s.label === label)?.percent ?? "") }));
 
   const [gender, setGender] = useState(fixed(["female", "male"], account.audience?.gender));
-  const [ages, setAges] = useState(fixed(AGE_GROUPS, account.audience?.ages));
+  const [ages, setAges] = useState(fixed(AGE_GROUPS, manualAges(account.audience?.ages)));
   const [countries, setCountries] = useState(toRows(account.audience?.countries));
   const [cities, setCities] = useState(toRows(account.audience?.cities));
   const [status, setStatus] = useState<"" | "saved" | "failed" | "over_100">("");

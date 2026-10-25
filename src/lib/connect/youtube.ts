@@ -42,7 +42,15 @@ function shares<L extends string>(parts: [L, number][], total: number, max: numb
     .slice(0, max);
 }
 
-const AGE: Record<string, string> = { "age13-17": "13-17", "age18-24": "18-24", "age25-34": "25-34", "age35-44": "35-44" };
+/** YouTube's own age groups, in its order (shown as they are, not merged into Wsool's manual groups). */
+const AGES = [["age13-17", "13-17"], ["age18-24", "18-24"], ["age25-34", "25-34"], ["age35-44", "35-44"], ["age45-54", "45-54"], ["age55-64", "55-64"], ["age65-", "65+"]] as const;
+const AGE = Object.fromEntries(AGES) as Record<string, string>;
+
+/** A city as YouTube returns it, kept only when it reads as a place name (not an id). */
+const cityName = (v: unknown) => {
+  const s = String(v ?? "").trim();
+  return s && s.length <= 40 && /\p{L}/u.test(s) && !/^[/\d]/.test(s) && !/^[A-Za-z0-9_-]{16,}$/.test(s) ? s : null;
+};
 
 async function audience(token: string): Promise<Audience | null> {
   const day = (d: number) => new Date(Date.now() - d * 86_400_000).toISOString().slice(0, 10);
@@ -58,15 +66,26 @@ async function audience(token: string): Promise<Audience | null> {
   for (const [age, g, pct] of demo.rows ?? []) {
     const p = Number(pct) || 0;
     if (g === "female" || g === "male") gender[g] = (gender[g] ?? 0) + p;
-    const group = AGE[String(age)] ?? "45+";
-    ages[group] = (ages[group] ?? 0) + p;
+    const group = AGE[String(age)];
+    if (group) ages[group] = (ages[group] ?? 0) + p;
   }
   const views = Number(total.rows?.[0]?.[0]) || 0;
+  const countries = shares((byCountry.rows ?? []).map(([c, v]) => [String(c).toUpperCase(), Number(v) || 0] as [string, number]), views, 5);
+  // Ages keep YouTube's order (youngest first), not biggest first.
+  const order = AGES.map(([, label]) => label as string);
   const result: Audience = {
     gender: shares(Object.entries(gender) as ["female" | "male", number][], 100, 2),
-    ages: shares(Object.entries(ages), 100, 5),
-    countries: shares((byCountry.rows ?? []).map(([c, v]) => [String(c).toUpperCase(), Number(v) || 0] as [string, number]), views, 5),
+    ages: shares(Object.entries(ages), 100, AGES.length).sort((a, b) => order.indexOf(a.label) - order.indexOf(b.label)),
+    countries,
   };
+  // Cities: YouTube reports them per country (top country here), as a share of all views.
+  const top = countries[0]?.label;
+  if (top && views > 0) {
+    const byCity = await getJson<Report>(`${URLS.analytics}/reports?${range}&metrics=views&dimensions=city&filters=country%3D%3D${top}&sort=-views&maxResults=5`, token).catch(() => null);
+    const rows = (byCity?.rows ?? []).map(([c, v]) => [cityName(c), Number(v) || 0] as const).filter((r): r is [string, number] => !!r[0]);
+    const cities = shares(rows, views, 5);
+    if (cities.length) result.cities = cities;
+  }
   return result.gender.length || result.ages.length || result.countries.length ? result : null;
 }
 
@@ -126,6 +145,18 @@ export const youtube: Provider = {
   },
 
   audience,
+
+  async monthlyViews(token) {
+    // Analytics lag a couple of days: from the 3rd, the month before is complete.
+    const now = new Date();
+    if (now.getUTCDate() < 3) return null;
+    const start = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 1, 1));
+    const end = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 0));
+    const day = (d: Date) => d.toISOString().slice(0, 10);
+    const report = await getJson<{ rows?: (string | number)[][] }>(`${URLS.analytics}/reports?ids=channel%3D%3DMINE&startDate=${day(start)}&endDate=${day(end)}&metrics=views`, token);
+    const views = Number(report.rows?.[0]?.[0]);
+    return Number.isFinite(views) && views >= 0 ? { month: start, views: Math.round(views) } : null;
+  },
 
   async revoke(refreshToken) {
     await fetch(`${URLS.revoke}?token=${encodeURIComponent(refreshToken)}`, { method: "POST", signal: AbortSignal.timeout(TIMEOUT) }).catch(() => {});

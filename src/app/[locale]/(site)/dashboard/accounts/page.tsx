@@ -7,6 +7,7 @@ import { CONNECTION_SELECT, connectionInfo } from "@/lib/connect/info";
 import { requireCreator } from "@/lib/creator";
 import { db } from "@/lib/db";
 import { FREE_LIMITS, hasPro } from "@/config/plans";
+import { autoFilled } from "@/config/platforms";
 import { AccountsCard } from "./AccountsCard";
 import { AudienceCard, type AudienceValue } from "./AudienceCard";
 import { ViewsCard } from "./ViewsCard";
@@ -49,7 +50,7 @@ async function Editor({ lang }: { lang: Locale }) {
       <ViewsCard
         // Remount when the list changes so the rows match the saved accounts.
         key={`views-${accounts.map((a) => a.id).join()}`}
-        accounts={accounts.map((a) => ({ id: a.id, platform: a.platform, handle: a.handle, views: viewsOf(a.id) }))}
+        accounts={accounts.map((a) => ({ id: a.id, platform: a.platform, handle: a.handle, views: viewsOf(a.id), auto: autoFilled("views", a.platform, a.connection) }))}
         initialMonthsAgo={views ? monthsBetween(views.month) : 0}
         monthLabels={[0, 1, 2].map((ago) => {
           const now = new Date();
@@ -59,7 +60,7 @@ async function Editor({ lang }: { lang: Locale }) {
       <AudienceCard
         // Remount when the list changes so each form starts from saved data.
         key={accounts.map((a) => a.id).join()}
-        accounts={accounts.map((a) => ({ id: a.id, platform: a.platform, handle: a.handle, audience: audienceOf(a) }))}
+        accounts={accounts.map((a) => ({ id: a.id, platform: a.platform, handle: a.handle, audience: audienceOf(a), auto: autoFilled("audience", a.platform, a.connection) }))}
         notice={!hasPro(sub) && !FREE_LIMITS.audience ? t("audienceProOnly") : undefined}
       />
     </div>

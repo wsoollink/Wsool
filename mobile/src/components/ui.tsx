@@ -93,10 +93,10 @@ export function Row({ children, style }: { children: ReactNode; style?: StylePro
 }
 
 /** Pill button: primary (blue), secondary (card + border) or ghost. 48px high (44px+ touch target). */
-export function Button({ title, onPress, variant = "primary", loading, disabled, icon, style, ...rest }: PressableProps & { title: string; variant?: "primary" | "secondary" | "ghost" | "danger"; loading?: boolean; icon?: ReactNode; style?: StyleProp<ViewStyle> }) {
+export function Button({ title, onPress, variant = "primary", loading, disabled, icon, style, titleColor, ...rest }: PressableProps & { title: string; variant?: "primary" | "secondary" | "ghost" | "danger"; loading?: boolean; icon?: ReactNode; style?: StyleProp<ViewStyle>; /** Text colour on a custom background (e.g. a platform's brand colour). */ titleColor?: string }) {
   const { colors } = useTheme();
   const bg = variant === "primary" ? colors.blue : variant === "secondary" ? colors.card : "transparent";
-  const fg = variant === "primary" ? colors.onBlue : variant === "danger" ? colors.bad : colors.navy;
+  const fg = titleColor ?? (variant === "primary" ? colors.onBlue : variant === "danger" ? colors.bad : colors.navy);
   return (
     <Pressable
       accessibilityRole="button" accessibilityState={{ disabled: !!(disabled || loading), busy: !!loading }}

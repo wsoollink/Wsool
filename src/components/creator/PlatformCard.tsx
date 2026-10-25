@@ -16,12 +16,14 @@ type Props = {
   verified: boolean;
   icon: ReactNode;
   audience: Audience | null;
+  /** Audience from the platform itself (a linked account): the note says so. */
+  audienceLinked?: boolean;
   numbersClass: string;
 };
 
 
 /** Platform card; opens the audience pop-up when the creator added audience data. */
-export function PlatformCard({ name, followers, handle, verified, icon, audience, numbersClass }: Props) {
+export function PlatformCard({ name, followers, handle, verified, icon, audience, audienceLinked, numbersClass }: Props) {
   const t = useTranslations("CreatorPage");
   const locale = useLocale();
   const [open, setOpen] = useState(false);
@@ -53,7 +55,7 @@ export function PlatformCard({ name, followers, handle, verified, icon, audience
         {body}
       </button>
       <Modal open={open} onClose={() => setOpen(false)} title={t("audienceOf", { platform: name })} closeLabel={t("close")} variant="panel">
-        <AudiencePanel name={name} icon={icon} followers={followers} audience={audience!} numbersClass={numbersClass} />
+        <AudiencePanel name={name} icon={icon} followers={followers} audience={audience!} linked={!!audienceLinked} numbersClass={numbersClass} />
       </Modal>
     </>
   );
@@ -70,7 +72,7 @@ export function Check({ size }: { size: number }) {
 
 const flag = (code: string) => String.fromCodePoint(...[...code.toUpperCase()].map((c) => 0x1f1e6 + c.charCodeAt(0) - 65));
 
-function AudiencePanel({ name, icon, followers, audience, numbersClass }: { name: string; icon: ReactNode; followers: number; audience: Audience; numbersClass: string }) {
+function AudiencePanel({ name, icon, followers, audience, linked, numbersClass }: { name: string; icon: ReactNode; followers: number; audience: Audience; linked: boolean; numbersClass: string }) {
   const t = useTranslations("CreatorPage");
   const locale = useLocale();
   const regions = new Intl.DisplayNames([locale], { type: "region" });
@@ -123,7 +125,8 @@ function AudiencePanel({ name, icon, followers, audience, numbersClass }: { name
             <ul className="flex flex-col gap-2.5">
               {list.map((share) => (
                 <li key={share.label} className="grid grid-cols-[128px_1fr_40px] items-center gap-2.5 text-[13px]">
-                  <span className="truncate">{label(share.label)}</span>
+                  {/* Age ranges read left to right ("65+", not "+65") in both languages. */}
+                  <span className="truncate">{key === "ages" ? <bdi dir="ltr">{share.label}</bdi> : label(share.label)}</span>
                   <span className="h-2 overflow-hidden rounded-full bg-[var(--page-soft)]" aria-hidden="true">
                     <span className="block h-full rounded-full bg-[var(--page-accent)]" style={{ width: `${pct(share.percent)}%` }} />
                   </span>
@@ -134,7 +137,7 @@ function AudiencePanel({ name, icon, followers, audience, numbersClass }: { name
           </section>
         );
       })}
-      <p className="text-center text-xs text-[var(--page-muted)]">{t("audienceNote")}</p>
+      <p className="text-center text-xs text-[var(--page-muted)]">{linked ? t("audienceNoteLinked", { platform: name }) : t("audienceNote")}</p>
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import "server-only";
 import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
+import type { Prisma } from "@/generated/prisma/client";
 import type { Platform } from "@/generated/prisma/enums";
 import { PLATFORM_NAMES } from "@/config/platforms";
 import { VERIFICATION_DAYS } from "@/config/verification";
@@ -77,7 +78,7 @@ export const newNonce = () => randomBytes(16).toString("base64url");
 export async function ownAccount(userId: string, accountId: string) {
   const account = await db.socialAccount.findFirst({
     where: { id: accountId, page: { userId, deletedAt: null } },
-    select: { id: true, platform: true, url: true, page: { select: { username: true } } },
+    select: { id: true, platform: true, url: true, pageId: true, page: { select: { username: true } } },
   });
   return account && providerFor(account.platform) ? account : null;
 }
@@ -107,7 +108,10 @@ export async function completeConnection(flow: Flow, code: string, redirectUri: 
     await provider.revoke(tokens.refreshToken);
     return { error: "taken" };
   }
-  const audience = await provider.audience?.(tokens.accessToken).catch(() => null);
+  const [audience, views] = await Promise.all([
+    provider.audience?.(tokens.accessToken).catch(() => null),
+    provider.monthlyViews?.(tokens.accessToken).catch(() => null),
+  ]);
 
   const now = new Date();
   await db.$transaction(async (tx) => {
@@ -128,9 +132,24 @@ export async function completeConnection(flow: Flow, code: string, redirectUri: 
     // Linking replaces the screenshot: nothing left for staff to review.
     await tx.verificationRequest.updateMany({ where: { accountId: account.id, status: "pending" }, data: { status: "cancelled" } });
     if (audience) await tx.audienceData.upsert({ where: { accountId: account.id }, create: { accountId: account.id, ...audience }, update: audience });
+    if (views) await setAccountViews(tx, account.pageId, account.id, views);
   });
   expirePage(account.page.username);
   return { ok: true };
+}
+
+/**
+ * Puts a linked account's monthly views into the page's monthly views box (one row per page, see saveMonthlyViews):
+ * its share is replaced, the total recomputed, and the box moves to the newer month. The creator's own numbers for
+ * other accounts stay as they are.
+ */
+export async function setAccountViews(tx: Prisma.TransactionClient, pageId: string, accountId: string, { month, views }: { month: Date; views: number }) {
+  const row = await tx.monthlyView.findFirst({ where: { pageId }, orderBy: { month: "desc" } });
+  const byAccount = { ...((row?.byAccount ?? {}) as Record<string, number>), [accountId]: views };
+  const total = Object.values(byAccount).reduce((sum, v) => sum + BigInt(Math.round(Number(v) || 0)), BigInt(0));
+  const newer = !row || row.month < month ? month : row.month;
+  await tx.monthlyView.deleteMany({ where: { pageId } });
+  await tx.monthlyView.create({ data: { pageId, month: newer, views: total, byAccount } });
 }
 
 /** Daily update of every link not refreshed in the last 20 hours (a batch per hourly run). */
@@ -139,7 +158,7 @@ export async function syncConnections(limit = 40) {
     where: { status: "active", OR: [{ lastSyncAt: null }, { lastSyncAt: { lt: new Date(Date.now() - 20 * 3_600_000) } }] },
     orderBy: { lastSyncAt: { sort: "asc", nulls: "first" } },
     take: limit,
-    select: { id: true, accountId: true, platform: true, externalId: true, refreshToken: true, account: { select: { followers: true, platform: true, handle: true, url: true, page: { select: { userId: true, username: true } } } } },
+    select: { id: true, accountId: true, platform: true, externalId: true, refreshToken: true, account: { select: { followers: true, platform: true, handle: true, url: true, pageId: true, page: { select: { userId: true, username: true } } } } },
   });
   let synced = 0, lost = 0, failed = 0;
   for (const c of due) {
@@ -153,7 +172,10 @@ export async function syncConnections(limit = 40) {
       const profile = await provider.profile(access, { url: c.account.url, externalId: c.externalId });
       // The platform now returns another account (or none): treat it as lost.
       if (!profile || profile.externalId !== c.externalId) throw new RevokedError();
-      const audience = await provider.audience?.(access).catch(() => null);
+      const [audience, views] = await Promise.all([
+        provider.audience?.(access).catch(() => null),
+        provider.monthlyViews?.(access).catch(() => null),
+      ]);
       const now = new Date();
       await db.$transaction(async (tx) => {
         await tx.platformConnection.update({ where: { id: c.id }, data: { lastSyncAt: now, lastError: null } });
@@ -167,6 +189,7 @@ export async function syncConnections(limit = 40) {
           },
         });
         if (audience) await tx.audienceData.upsert({ where: { accountId: c.accountId }, create: { accountId: c.accountId, ...audience }, update: audience });
+        if (views) await setAccountViews(tx, c.account.pageId, c.accountId, views);
       });
       expirePage(c.account.page.username);
       synced++;

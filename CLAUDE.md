@@ -821,6 +821,14 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   `POST /api/mobile/v1/connect/<platform>`, returns to `wsool://connect`). Daily `syncConnections()` in the billing cron; revoked
   = status `error` + `connection_lost`. Linked accounts keep platform/handle/followers in `saveAccounts`; `disconnectAccount`.
   The Connect button shows only when the platform's keys are set. Privacy policy cites YouTube ToS / Google privacy (Google rule).
+- Owner polish (Oct 2026): Connect buttons in the platform's colour with its logo (`BRAND_COLORS`, web + app). `autoFilled(kind, platform,
+  connection)` (`src/config/platforms.ts`, app copy in `mobile/src/lib/platforms.ts`): an active link on a `CONNECT_AUDIENCE` platform
+  locks the audience (read-only summary, no screenshot reading; `saveAudience` / `readAudienceShot` refuse), on a `CONNECT_VIEWS`
+  platform it locks that account's monthly views (`saveMonthlyViews` keeps the stored value). Audience is stored in the platform's own
+  groups and order (YouTube ages 13-17 … 65+, not merged; cities only when YouTube names them, else the creator's stay); the manual
+  form folds finer groups into 45+ (`manualAges`). Age labels are shown left to right (`<bdi dir="ltr">`). YouTube monthly views =
+  last complete month (from the 3rd), written by `setAccountViews()` into the page's one monthly views row. Public pop-up note says
+  "updates automatically from {platform}" for linked accounts (`audienceLinked`).
 
 ### Mobile app (owner, Oct 2026 — phases 1-3 built)
 - Native React Native (Expo) app for creators, before the official launch, published as "وصول" (organization accounts).

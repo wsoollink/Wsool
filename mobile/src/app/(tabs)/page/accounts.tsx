@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { Alert, Pressable, View } from "react-native";
 import * as WebBrowser from "expo-web-browser";
-import { ChevronDown, Link2, Sparkles } from "lucide-react-native";
+import { ChevronDown, Sparkles } from "lucide-react-native";
 import { PlatformIcon } from "../../../components/PlatformIcon";
 import { AddButton, Chips, ItemTools, move, PickerSheet, ProNote, SectionScreen, useSection } from "../../../components/editor";
 import { Button, Card, Field, Pill, Row, T } from "../../../components/ui";
 import { useI18n } from "../../../i18n";
 import { api, rpc } from "../../../lib/api";
 import { pickImage, upload } from "../../../lib/media";
-import { CONNECT_AUDIENCE, LINK_PLATFORMS, PLATFORM_NAMES, PLATFORMS, type Platform } from "../../../lib/platforms";
+import { autoFilled, BRAND_COLORS, CONNECT_AUDIENCE, LINK_PLATFORMS, PLATFORM_NAMES, PLATFORMS, type Platform } from "../../../lib/platforms";
 import { useTheme } from "../../../lib/theme";
 
 type Share = { label: string; percent: number };
@@ -26,6 +26,13 @@ const COUNTRIES = ["SA", "AE", "KW", "QA", "BH", "OM", "EG", "JO", "IQ", "MA", "
 const MAX_ACCOUNTS = 12;
 const digits = (v: string, max = 11) => v.replace(/[٠-٩]/g, (d) => String("٠١٢٣٤٥٦٧٨٩".indexOf(d))).replace(/\D/g, "").slice(0, max);
 const emptyAudience = (): Audience => ({ gender: [], ages: [], countries: [], cities: [] });
+/** A platform's finer age groups (YouTube 45-54, 55-64, 65+) folded into the manual form's 45+. */
+const manualAges = (list: Share[]): Share[] => {
+  if (list.every((s) => AGES.includes(s.label))) return list;
+  const older = list.filter((s) => !AGES.includes(s.label)).reduce((sum, s) => sum + s.percent, 0);
+  const kept = list.find((s) => s.label === "45+")?.percent ?? 0;
+  return [...list.filter((s) => AGES.includes(s.label) && s.label !== "45+"), { label: "45+", percent: Math.min(100, kept + older) }];
+};
 const pct = (list: Share[], label: string) => String(list.find((s) => s.label === label)?.percent ?? "");
 const setPct = (list: Share[], label: string, v: string) => {
   const n = Number(digits(v, 3));
@@ -37,7 +44,7 @@ const monthStart = (ago: number) => { const n = new Date(); return new Date(Date
 
 /** Accounts & followers, monthly views per account, and audience data (Pro on the page). */
 export default function Accounts() {
-  const { t, num, date, lang } = useI18n();
+  const { t, num, date, lang, rtl } = useI18n();
   const { colors } = useTheme();
   const { data, error, reload } = useSection<Data>("accounts");
   const [list, setList] = useState<Account[] | null>(null);
@@ -52,7 +59,7 @@ export default function Accounts() {
     if (!data) return;
     setList(data.accounts.map((a) => ({ id: a.id, platform: a.platform, handle: a.handle, followers: String(a.followers), link: a.link, verificationStatus: a.verificationStatus })));
     setViews(Object.fromEntries(data.accounts.map((a) => [a.id, a.views === null ? "" : String(a.views)])));
-    setAudience(Object.fromEntries(data.accounts.map((a) => [a.id, a.audience ?? emptyAudience()])));
+    setAudience(Object.fromEntries(data.accounts.map((a) => [a.id, a.audience ? (autoFilled("audience", a.platform, a.connection) ? a.audience : { ...a.audience, ages: manualAges(a.audience.ages) }) : emptyAudience()])));
     if (data.viewsMonth) {
       const m = new Date(data.viewsMonth), n = new Date();
       setMonthsAgo(Math.min(2, Math.max(0, (n.getUTCFullYear() - m.getUTCFullYear()) * 12 + n.getUTCMonth() - m.getUTCMonth())));
@@ -123,6 +130,14 @@ export default function Accounts() {
         try { await rpc("disconnectAccount", id); mark(`conn:${id}`, ""); reload(); } catch { mark(`conn:${id}`, "error:failed"); }
       } },
     ]);
+  // In the platform's own colour, with its logo and name (owner, Oct 2026).
+  const brandButton = (a: Account, title: string, busy: boolean) => {
+    const fg = a.platform === "snapchat" ? "#000000" : "#FFFFFF";
+    return (
+      <Button title={title} loading={busy} onPress={() => connect(a.id!, a.platform)} icon={<PlatformIcon platform={a.platform} size={18} color={fg} />}
+        style={{ backgroundColor: BRAND_COLORS[a.platform] }} titleColor={fg} />
+    );
+  };
   const connectBox = (a: Account) => {
     const saved = a.id ? data?.accounts.find((x) => x.id === a.id) : undefined;
     const conn = saved?.connection ?? null;
@@ -140,7 +155,7 @@ export default function Accounts() {
           </Row>
           {conn.name ? <T size={13}>{t("accounts.connect.linkedTo", { name: conn.name })}</T> : null}
           <T size={12.5} tone="muted">{conn.status === "active" ? `${t("accounts.connect.auto")}${conn.lastSyncAt ? ` · ${t("accounts.connect.lastSync", { date: date(conn.lastSyncAt) })}` : ""}` : t("accounts.connect.stoppedTitle", { platform: name })}</T>
-          {conn.status === "error" ? <Button title={t("accounts.connect.again")} variant="secondary" loading={s === "busy"} onPress={() => connect(a.id!, a.platform)} /> : null}
+          {conn.status === "error" ? brandButton(a, t("accounts.connect.againOn", { platform: name }), s === "busy") : null}
           {note}
         </View>
       );
@@ -151,7 +166,7 @@ export default function Accounts() {
         <T weight="bold" size={14}>{t("accounts.connect.title", { platform: name })}</T>
         <T size={12.5} tone="muted">{a.id && saved?.platform === a.platform ? t(CONNECT_AUDIENCE.includes(a.platform) ? "accounts.connect.why" : "accounts.connect.whyFollowers") : t("accounts.connect.saveFirst")}</T>
         {a.id && saved?.platform === a.platform
-          ? <Button title={t("accounts.connect.button", { platform: name })} icon={<Link2 size={16} color={colors.onBlue} />} loading={s === "busy"} onPress={() => connect(a.id!, a.platform)} />
+          ? brandButton(a, t("accounts.connect.button", { platform: name }), s === "busy")
           : null}
         {note}
       </View>
@@ -207,12 +222,15 @@ export default function Accounts() {
               <T size={12.5} tone="muted">{t("accounts.viewsHint")}</T>
               <Chips value={[String(monthsAgo)]} onChange={([v]) => { setMonthsAgo(Number(v)); mark("views", ""); }}
                 options={[0, 1, 2].map((ago) => ({ value: String(ago), label: date(monthStart(ago), { month: "long", year: "numeric", timeZone: "UTC" }) }))} />
-              {data.accounts.map((a) => (
-                <Row key={a.id}>
-                  <Row style={{ width: 120 }}><PlatformIcon platform={a.platform} size={16} color={colors.navy} /><T size={13.5}>{PLATFORM_NAMES[a.platform]}</T></Row>
-                  <View style={{ flex: 1 }}><Field label={t("accounts.viewsLabel", { platform: PLATFORM_NAMES[a.platform] })} value={views[a.id] ?? ""} onChangeText={(v) => { setViews({ ...views, [a.id]: digits(v, 11) }); mark("views", ""); }} keyboardType="number-pad" style={{ textAlign: "left", writingDirection: "ltr" }} /></View>
-                </Row>
-              ))}
+              {data.accounts.map((a) => {
+                const auto = autoFilled("views", a.platform, a.connection);
+                return (
+                  <Row key={a.id}>
+                    <Row style={{ width: 120 }}><PlatformIcon platform={a.platform} size={16} color={colors.navy} /><T size={13.5}>{PLATFORM_NAMES[a.platform]}</T></Row>
+                    <View style={{ flex: 1 }}><Field label={t("accounts.viewsLabel", { platform: PLATFORM_NAMES[a.platform] })} value={views[a.id] ?? ""} editable={!auto} hint={auto ? t("accounts.viewsAuto", { platform: PLATFORM_NAMES[a.platform] }) : null} onChangeText={(v) => { setViews({ ...views, [a.id]: digits(v, 11) }); mark("views", ""); }} keyboardType="number-pad" style={{ textAlign: "left", writingDirection: "ltr" }} /></View>
+                  </Row>
+                );
+              })}
               {status("views")}
               <Button title={t("accounts.saveViews")} variant="secondary" onPress={saveViews} loading={state.views === "saving"} />
             </Card>
@@ -231,7 +249,28 @@ export default function Accounts() {
                     <ChevronDown size={18} color={colors.muted} style={{ transform: [{ rotate: isOpen ? "180deg" : "0deg" }] }} />
                   </Row>
                 </Pressable>
-                {isOpen && (
+                {isOpen && autoFilled("audience", a.platform, a.connection) && (
+                  <View style={{ gap: 10 }}>
+                    <T size={13} tone="good">{t("accounts.audienceAutoHint", { platform: PLATFORM_NAMES[a.platform] })}</T>
+                    {([["gender", t("accounts.gender"), (s: string) => t(`accounts.${s}`)], ["ages", t("accounts.ages"), (s: string) => `\u2066${s}\u2069`], ["countries", t("accounts.countries"), region], ["cities", t("accounts.cities"), (s: string) => s]] as const)
+                      .filter(([k]) => au[k].length)
+                      .map(([k, title, label]) => (
+                        <View key={k} style={{ gap: 6 }}>
+                          <T weight="bold" size={14}>{title}</T>
+                          {au[k].map((s) => (
+                            <Row key={s.label}>
+                              {/* Age ranges read left to right ("65+", not "+65"). */}
+                              <T size={13.5} style={[{ width: 110 }, k === "ages" && { writingDirection: "ltr", textAlign: rtl ? "right" : "left" }]} numberOfLines={1}>{label(s.label)}</T>
+                              <View style={{ flex: 1, height: 8, borderRadius: 4, backgroundColor: colors.track, overflow: "hidden" }}><View style={{ width: `${Math.min(100, s.percent)}%`, height: 8, backgroundColor: colors.blue }} /></View>
+                              <T size={13} tone="muted" style={{ width: 44, textAlign: "right" }}>{num(s.percent)}%</T>
+                            </Row>
+                          ))}
+                        </View>
+                      ))}
+                    {(["gender", "ages", "countries", "cities"] as const).every((k) => !au[k].length) ? <T size={13} tone="muted">{t("accounts.audienceAutoEmpty")}</T> : null}
+                  </View>
+                )}
+                {isOpen && !autoFilled("audience", a.platform, a.connection) && (
                   <View style={{ gap: 12 }}>
                     <Button title={state[`aud:${a.id}`] === "reading" ? t("accounts.reading") : t("accounts.fromShot")} variant="secondary" icon={<Sparkles size={16} color={colors.blue} />} onPress={() => readShot(a.id)} loading={state[`aud:${a.id}`] === "reading"} />
                     <T weight="bold" size={14}>{t("accounts.gender")}</T>

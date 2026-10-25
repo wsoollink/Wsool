@@ -11,7 +11,11 @@ import { fromIntlLocale } from "@/i18n/config";
 import { digitsOnly, formatNumber } from "@/lib/format";
 import { saveMonthlyViews } from "./actions";
 
-export type ViewsAccount = { id: string; platform: Platform; handle: string; views: number | null };
+export type ViewsAccount = {
+  id: string; platform: Platform; handle: string; views: number | null;
+  /** Linked: the platform fills the views (src/lib/connect), the field is read-only. */
+  auto?: boolean;
+};
 
 /**
  * Monthly views: the month is picked once at the top, then one row per added
@@ -70,12 +74,14 @@ export function ViewsCard({ accounts, initialMonthsAgo, monthLabels }: {
                   <span className="flex min-w-0 flex-col">
                     <span className="text-sm font-medium">{PLATFORM_NAMES[a.platform]}</span>
                     <span dir="ltr" className="truncate text-xs text-muted">@{a.handle}</span>
+                    {a.auto && <span id={`views-auto-${a.id}`} className="text-xs font-semibold text-good">{t("viewsAuto", { platform: PLATFORM_NAMES[a.platform] })}</span>}
                   </span>
                 </label>
                 <input
                   id={`views-${a.id}`} dir="ltr" inputMode="numeric" value={values[a.id]} placeholder="0" autoComplete="off"
                   onChange={(ev) => { const v = digitsOnly(ev.target.value, 11); setValues((cur) => ({ ...cur, [a.id]: v })); setStatus(""); }}
-                  className={`${control} max-w-[50%] sm:max-w-56`}
+                  readOnly={a.auto} aria-describedby={a.auto ? `views-auto-${a.id}` : undefined}
+                  className={`${control} max-w-[50%] read-only:bg-navy/[0.03] read-only:text-muted sm:max-w-56`}
                 />
               </li>
             ))}

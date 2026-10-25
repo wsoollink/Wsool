@@ -115,13 +115,14 @@ export const en: typeof ar = {
   accounts: {
     subtitle: "Update your numbers at the start of each month", accounts: "My accounts", platform: "Platform", handle: "Username", followers: "Followers", members: "Members",
     link: "Profile link", serverLink: "Server link", add: "Add account", resetHint: "Changing the username or followers of a verified account removes its verification.", saveAccounts: "Save accounts",
-    views: "Monthly views", viewsHint: "Total views shown on your page", viewsLabel: "{platform} views", saveViews: "Save views",
+    views: "Monthly views", viewsHint: "Total views shown on your page", viewsAuto: "From {platform}, automatically", viewsLabel: "{platform} views", saveViews: "Save views",
     audience: "Audience data", audiencePro: "Audience data shows on your page with Pro.", fromShot: "Fill from a stats screenshot", reading: "Reading the screenshot…",
     gender: "Gender", female: "Female", male: "Male", ages: "Ages", countries: "Top countries (5)", cities: "Top cities", city: "City", saveAudience: "Save audience",
+    audienceAutoHint: "Updates from {platform} every day, in the platform's own groups. Disconnect to edit it by hand.", audienceAutoEmpty: "No audience data from the platform yet (it needs enough views in the last 90 days).",
     connect: {
       title: "Connect your {platform} account", stoppedTitle: "{platform} connection stopped", why: "Once connected, your followers and audience update by themselves every day, and the account is verified without a screenshot.",
       whyFollowers: "Once connected, your followers update by themselves every day, and the account is verified without a screenshot. You still fill in the audience data yourself.",
-      button: "Connect {platform}", again: "Reconnect", saveFirst: "Save the account first, then you can connect it.", linked: "Connected", stopped: "Connection stopped",
+      button: "Connect {platform}", again: "Reconnect", againOn: "Reconnect {platform}", saveFirst: "Save the account first, then you can connect it.", linked: "Connected", stopped: "Connection stopped",
       linkedTo: "Connected to {name}", lastSync: "Last update: {date}", auto: "Updates every day", unlink: "Disconnect", cancel: "Cancel",
       confirmUnlink: "Disconnect {platform}? Your numbers stop updating by themselves; the verification stays until it expires.", locked: "Username and followers come straight from the platform and update by themselves.",
       done: "{platform} connected ✓ Your numbers are up to date and update by themselves, and the account is verified.",

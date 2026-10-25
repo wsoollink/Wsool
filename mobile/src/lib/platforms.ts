@@ -25,6 +25,10 @@ export const PLATFORMS = Object.keys(PLATFORM_NAMES) as Platform[];
 export const LINK_PLATFORMS: readonly Platform[] = ["spotify","discord","jaco"];
 /** Linked platforms whose API also gives audience data (server: src/lib/connect); the others update followers only. */
 export const CONNECT_AUDIENCE: readonly Platform[] = ["youtube"];
+/** Linked platforms whose monthly views fill in by themselves. */
+export const CONNECT_VIEWS: readonly Platform[] = ["youtube"];
+export const autoFilled = (kind: "audience" | "views", platform: Platform, connection: { status: string } | null | undefined) =>
+  connection?.status === "active" && (kind === "audience" ? CONNECT_AUDIENCE : CONNECT_VIEWS).includes(platform);
 export const BRAND_COLORS: Record<Platform, string> = {
   "tiktok": "#000000",
   "instagram": "#E1306C",

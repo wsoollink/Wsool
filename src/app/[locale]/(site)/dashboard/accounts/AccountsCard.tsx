@@ -4,8 +4,9 @@ import { useState, useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
-import { ArrowDown, ArrowUp, BadgeCheck, ChevronDown, Link2, Plus, RefreshCw, Trash2, Unlink, Users } from "lucide-react";
+import { ArrowDown, ArrowUp, BadgeCheck, ChevronDown, Link2, Plus, Trash2, Unlink, Users } from "lucide-react";
 import { buttonClasses } from "@/components/ui/Button";
+import { BRAND_COLORS } from "@/components/creator/icon-styles";
 import { PlatformIcon } from "@/components/creator/PlatformIcon";
 import { Panel } from "@/components/ui/Card";
 import { Pill } from "@/components/ui/Pill";
@@ -186,8 +187,13 @@ export function AccountsCard({ initial, connectable = [] }: { initial: AccountRo
                               <p className="text-xs text-muted">{t(CONNECT_AUDIENCE.includes(row.platform) ? "connect.why" : "connect.whyFollowers")}</p>
                               {row.id ? (
                                 <div className="flex flex-wrap items-center gap-2">
-                                  <a href={`/api/connect/${row.platform}/start?account=${row.id}`} className={buttonClasses("primary", "w-fit gap-2")}>
-                                    {row.connection ? <RefreshCw aria-hidden="true" size={16} /> : <Link2 aria-hidden="true" size={16} />} {row.connection ? t("connect.again") : t("connect.button", { platform: name })}
+                                  {/* In the platform's own colour, with its logo and name (owner, Oct 2026). */}
+                                  <a
+                                    href={`/api/connect/${row.platform}/start?account=${row.id}`}
+                                    style={{ background: BRAND_COLORS[row.platform].bg, color: BRAND_COLORS[row.platform].fg ?? "#FFFFFF" }}
+                                    className={buttonClasses("primary", "w-fit gap-2 ring-1 ring-white/15 hover:opacity-90")}
+                                  >
+                                    <PlatformIcon platform={row.platform} size={18} /> {row.connection ? t("connect.againOn", { platform: name }) : t("connect.button", { platform: name })}
                                   </a>
                                   {/* A stopped link can also be removed (then the numbers are edited by hand again). */}
                                   {row.connection && (

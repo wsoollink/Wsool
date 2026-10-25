@@ -9,6 +9,8 @@ import { pageLanguages } from "@/lib/page-language";
 import { nextUsernameChange } from "@/lib/username";
 import { ACCENT_SWATCHES } from "@/lib/validation/appearance";
 import { siteOrigin } from "@/lib/site-url";
+import { connectablePlatforms } from "@/lib/connect";
+import { CONNECTION_SELECT, connectionInfo } from "@/lib/connect/info";
 import { toVerifyAccounts } from "@/app/[locale]/(site)/dashboard/verification/accounts";
 import { analyticsReport, periodTotals, RANGES, type Range } from "@/lib/analytics-report";
 import { today } from "@/lib/analytics";
@@ -56,14 +58,16 @@ const LOADERS = {
   },
   async accounts(page: Page) {
     const [accounts, views, isPro] = await Promise.all([
-      db.socialAccount.findMany({ where: { pageId: page.id }, orderBy: { sort: "asc" }, include: { audience: true } }),
+      db.socialAccount.findMany({ where: { pageId: page.id }, orderBy: { sort: "asc" }, include: { audience: true, connection: CONNECTION_SELECT } }),
       db.monthlyView.findFirst({ where: { pageId: page.id }, orderBy: { month: "desc" } }),
       pro(page.userId),
     ]);
     const byAccount = (views?.byAccount ?? {}) as Record<string, number>;
     return {
+      connectable: connectablePlatforms(),
       accounts: accounts.map((a) => ({
         id: a.id, platform: a.platform, handle: a.handle, followers: a.followers, link: a.url, verificationStatus: a.verificationStatus,
+        connection: connectionInfo(a.connection),
         views: typeof byAccount[a.id] === "number" ? byAccount[a.id] : null,
         audience: a.audience ? { gender: a.audience.gender ?? [], ages: a.audience.ages ?? [], countries: a.audience.countries ?? [], cities: a.audience.cities ?? [] } : null,
       })),

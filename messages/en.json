@@ -508,7 +508,33 @@
       "discord": "Your server invite link, like discord.gg/… (preferably one that never expires). Followers here = server members.",
       "jaco": "Open your Jaco profile, tap Share → Copy link."
     },
-    "audienceProOnly": "Your audience data is saved, but it shows on your page with Pro only."
+    "audienceProOnly": "Your audience data is saved, but it shows on your page with Pro only.",
+    "connect": {
+      "title": "Connect your {platform} account",
+      "stoppedTitle": "Your {platform} link stopped",
+      "why": "Once connected, your followers and audience update by themselves every day, and your account is verified without a screenshot.",
+      "button": "Connect {platform}",
+      "again": "Connect again",
+      "saveFirst": "Save the account first, then you can connect it.",
+      "linked": "Connected",
+      "stopped": "Link stopped",
+      "linkedTo": "Connected to {name}",
+      "lastSync": "Last update: {date}",
+      "auto": "Updates by itself every day",
+      "unlink": "Disconnect",
+      "confirmUnlink": "Disconnect {platform}? Your numbers will stop updating by themselves; the verification stays until it expires.",
+      "locked": "The username and followers come straight from the platform and update by themselves.",
+      "done": "{platform} connected ✓ Your numbers and audience are up to date, and your account is verified.",
+      "errors": {
+        "denied": "Not connected: you need to allow access on the platform's page.",
+        "taken": "This account is already connected to another Wsool page.",
+        "no_channel": "We found no channel on that account. Pick the account that has your channel.",
+        "expired": "The connection timed out. Please try again.",
+        "gone": "We couldn't find this account on your page. Refresh and try again.",
+        "unavailable": "Connecting this platform isn't available right now.",
+        "failed": "Something went wrong while connecting. Please try again."
+      }
+    }
   },
   "WorkPage": {
     "brands": "Brands you worked with",
@@ -1940,6 +1966,12 @@
       "title": "Your commission paid your renewal",
       "body": "{amount} from your commission balance was used on renewal invoice {invoice}.",
       "cta": "See the invoice"
+    },
+    "connection_lost": {
+      "subject": "Your {platform} link stopped",
+      "title": "Connect your account again",
+      "body": "We couldn't update your {platform} account {handle} because the link stopped (for example, the password changed or access was removed).\nConnect it again from Accounts & numbers so your numbers keep updating by themselves.",
+      "cta": "Connect again"
     }
   },
   "Notifications": {

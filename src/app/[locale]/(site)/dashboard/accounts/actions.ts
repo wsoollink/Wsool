@@ -1,7 +1,9 @@
 "use server";
 
+import { z } from "zod";
 import type { Platform } from "@/generated/prisma/enums";
 import { linkProfileUrl, profileUrl } from "@/config/platforms";
+import { disconnect } from "@/lib/connect";
 import { requireCreator } from "@/lib/creator";
 import { db } from "@/lib/db";
 import { pageChanged } from "@/lib/public-page";
@@ -26,7 +28,7 @@ export async function saveAccounts(items: AccountInput[]): Promise<AccountsResul
   if (!parsed.success) return { error: "failed" };
 
   // Only ids that belong to this creator's page are accepted.
-  const current = await db.socialAccount.findMany({ where: { pageId: page.id } });
+  const current = await db.socialAccount.findMany({ where: { pageId: page.id }, include: { connection: { select: { status: true } } } });
   const byId = new Map(current.map((a) => [a.id, a]));
   if (parsed.data.some((a) => a.id && !byId.has(a.id))) return { error: "failed" };
   const ids = parsed.data.map((a) => a.id).filter(Boolean);
@@ -44,15 +46,19 @@ export async function saveAccounts(items: AccountInput[]): Promise<AccountsResul
     await dropDeletedViews(tx, page.id, kept as Set<string>);
     const saved = [];
     for (const [sort, item] of parsed.data.entries()) {
-      const platform = item.platform as Platform;
-      const data = { platform, handle: item.handle, url: urls[sort]!, followers: item.followers, sort };
       const old = item.id ? byId.get(item.id) : undefined;
+      // A linked account's platform, handle, link and followers come from the platform (src/lib/connect), not the form.
+      const linked = old?.connection?.status === "active";
+      const platform = linked ? old.platform : (item.platform as Platform);
+      const data = linked
+        ? { platform, handle: old.handle, url: old.url, followers: old.followers, sort }
+        : { platform, handle: item.handle, url: urls[sort]!, followers: item.followers, sort };
       if (!old) {
         saved.push(await tx.socialAccount.create({ data: { ...data, pageId: page.id, followersUpdatedAt: now } }));
         continue;
       }
-      const followersChanged = old.followers !== item.followers;
-      const changed = followersChanged || old.platform !== platform || old.handle !== item.handle || old.url !== data.url;
+      const followersChanged = old.followers !== data.followers;
+      const changed = followersChanged || old.platform !== platform || old.handle !== data.handle || old.url !== data.url;
       const reset = changed && old.verificationStatus !== "none" && old.verificationStatus !== "rejected";
       if (reset) resets.add(old.id);
       // The screenshot under review no longer matches the account.
@@ -173,4 +179,11 @@ export async function readAudienceShot(accountId: string, path: string): Promise
   } finally {
     if (owned) await removeVerificationFiles([path]).catch(() => {});
   }
+}
+
+/** Unlink a platform account (the creator's own): the platform's token is revoked and deleted. */
+export async function disconnectAccount(accountId: string): Promise<{ ok: boolean }> {
+  const { user } = await requireCreator();
+  if (!z.uuid().safeParse(accountId).success) return { ok: false };
+  return { ok: await disconnect(user.id, accountId) };
 }

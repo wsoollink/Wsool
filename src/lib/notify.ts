@@ -40,6 +40,7 @@ export const NOTIFICATIONS = {
   commission_earned: { href: "/dashboard/referrals", reminder: false },
   commission_paid: { href: "/dashboard/referrals", reminder: false, billing: true },
   commission_credit: { href: "/dashboard/subscription", reminder: false, billing: true },
+  connection_lost: { href: "/dashboard/accounts", reminder: false },
 } as const;
 export type NotificationType = keyof typeof NOTIFICATIONS;
 

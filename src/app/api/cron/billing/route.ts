@@ -1,11 +1,12 @@
 import { timingSafeEqual } from "node:crypto";
 import { purgeDeletedAccounts } from "@/lib/account-deletion";
 import { runBillingJob } from "@/lib/billing";
+import { syncConnections } from "@/lib/connect";
 import { purgeRateLimits } from "@/lib/rate-limit";
 import { runReminders } from "@/lib/reminders";
 
 /**
- * Hourly job (billing, reminders, permanent deletion after the 30-day undo window), called by the Netlify scheduled function
+ * Hourly job (billing, reminders, permanent deletion after the 30-day undo window, platform link updates), called by the Netlify scheduled function
  * (netlify/functions/billing-cron.mts) with "Authorization: Bearer CRON_SECRET".
  */
 export async function POST(req: Request) {
@@ -18,5 +19,7 @@ export async function POST(req: Request) {
   const purged = await purgeDeletedAccounts();
   await purgeRateLimits();
   const reminders = await runReminders();
-  return Response.json({ ...report, purged, reminders });
+  // Linked platform accounts (YouTube…): followers + audience, once a day each.
+  const connections = await syncConnections().catch((err) => ({ error: String(err) }));
+  return Response.json({ ...report, purged, reminders, connections });
 }

@@ -298,9 +298,42 @@ model SocialAccount {
   rates                Rate[]
   bundles              BundlePlatform[]
   verificationRequests VerificationRequest[]
+  connection           PlatformConnection?
 
   @@index([pageId, sort])
   @@map("social_accounts")
+}
+
+enum ConnectionStatus {
+  active
+  /// The platform refused the saved token (revoked, password change…): the creator must connect again.
+  error
+
+  @@map("connection_status")
+}
+
+/// A creator's own platform account linked through the platform's sign-in (OAuth): followers and audience
+/// update by themselves, and the account counts as verified while linked. Server only; the refresh token is
+/// encrypted (src/lib/token-box.ts).
+model PlatformConnection {
+  id           String           @id @default(uuid()) @db.Uuid
+  accountId    String           @unique @map("account_id") @db.Uuid
+  platform     Platform
+  /// The platform's id for the account (YouTube channel id); one Wsool page per platform account.
+  externalId   String           @map("external_id") @db.VarChar(100)
+  externalName String?          @map("external_name") @db.VarChar(200)
+  refreshToken String           @map("refresh_token")
+  scopes       String           @default("")
+  status       ConnectionStatus @default(active)
+  lastSyncAt   DateTime?        @map("last_sync_at") @db.Timestamptz
+  lastError    String?          @map("last_error") @db.VarChar(200)
+  createdAt    DateTime         @default(now()) @map("created_at") @db.Timestamptz
+
+  account SocialAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@unique([platform, externalId])
+  @@index([status, lastSyncAt])
+  @@map("platform_connections")
 }
 
 /// Audience breakdown shown in the platform pop-up. Each field is a list of

@@ -2,6 +2,8 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { isLocale, toIntlLocale, type Locale } from "@/i18n/config";
+import { connectablePlatforms } from "@/lib/connect";
+import { CONNECTION_SELECT, connectionInfo } from "@/lib/connect/info";
 import { requireCreator } from "@/lib/creator";
 import { db } from "@/lib/db";
 import { FREE_LIMITS, hasPro } from "@/config/plans";
@@ -22,7 +24,7 @@ async function Editor({ lang }: { lang: Locale }) {
   const t = await getTranslations("AccountsPage");
   // Scoped to the creator's own page from the verified session.
   const [accounts, views, sub] = await Promise.all([
-    db.socialAccount.findMany({ where: { pageId: page.id }, orderBy: { sort: "asc" }, include: { audience: true } }),
+    db.socialAccount.findMany({ where: { pageId: page.id }, orderBy: { sort: "asc" }, include: { audience: true, connection: CONNECTION_SELECT } }),
     db.monthlyView.findFirst({ where: { pageId: page.id }, orderBy: { month: "desc" } }),
     db.subscription.findUnique({ where: { userId: user.id }, select: { status: true, trialEndsAt: true } }),
   ]);
@@ -41,7 +43,8 @@ async function Editor({ lang }: { lang: Locale }) {
   return (
     <div className="flex flex-col gap-4">
       <AccountsCard
-        initial={accounts.map((a) => ({ id: a.id, platform: a.platform, handle: a.handle, followers: a.followers, verificationStatus: a.verificationStatus, link: a.url }))}
+        initial={accounts.map((a) => ({ id: a.id, platform: a.platform, handle: a.handle, followers: a.followers, verificationStatus: a.verificationStatus, link: a.url, connection: connectionInfo(a.connection) }))}
+        connectable={connectablePlatforms()}
       />
       <ViewsCard
         // Remount when the list changes so the rows match the saved accounts.

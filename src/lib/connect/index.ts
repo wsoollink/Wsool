@@ -10,8 +10,9 @@ import { expirePage } from "@/lib/public-page";
 import { siteOrigin } from "@/lib/site-url";
 import { canEncryptTokens, openToken, sealToken } from "@/lib/token-box";
 import { RevokedError } from "./errors";
-import type { Provider } from "./types";
+import type { Audience, Provider, ProviderProfile } from "./types";
 import { discord } from "./discord";
+import { telegram } from "./telegram";
 import { tiktok } from "./tiktok";
 import { twitch } from "./twitch";
 import { youtube } from "./youtube";
@@ -23,7 +24,7 @@ import { youtube } from "./youtube";
  *   start (web: session cookie; app: a 5-minute ticket) → sets a nonce cookie → platform consent screen
  *   → /api/connect/<platform>/callback (state signed + nonce cookie) → saveConnection → back to the dashboard or the app.
  */
-export const PROVIDERS: Partial<Record<Platform, Provider>> = { youtube, tiktok, twitch, discord };
+export const PROVIDERS: Partial<Record<Platform, Provider>> = { youtube, tiktok, twitch, discord, telegram };
 
 export const connectablePlatforms = () =>
   canEncryptTokens() ? (Object.values(PROVIDERS).filter((p) => p!.configured()).map((p) => p!.platform) as Platform[]) : [];
@@ -113,10 +114,23 @@ export async function completeConnection(flow: Flow, code: string, redirectUri: 
     provider.monthlyViews?.(tokens.accessToken).catch(() => null),
   ]);
 
+  await saveLink(account, flow.platform, profile, tokens, audience ?? null, views ?? null);
+  return { ok: true };
+}
+
+/** Stores a link (connection + account numbers + verification + audience/views) and refreshes the public page. */
+export async function saveLink(
+  account: { id: string; pageId: string; page: { username: string } },
+  platform: Platform,
+  profile: ProviderProfile,
+  tokens: { refreshToken: string; scopes: string },
+  audience: Audience | null,
+  views: { month: Date; views: number } | null,
+) {
   const now = new Date();
   await db.$transaction(async (tx) => {
     const data = {
-      platform: flow.platform, externalId: profile.externalId, externalName: profile.name?.slice(0, 200) ?? null,
+      platform, externalId: profile.externalId, externalName: profile.name?.slice(0, 200) ?? null,
       refreshToken: sealToken(tokens.refreshToken), scopes: tokens.scopes, status: "active" as const, lastSyncAt: now, lastError: null,
     };
     await tx.platformConnection.upsert({ where: { accountId: account.id }, create: { ...data, accountId: account.id }, update: data });
@@ -126,7 +140,7 @@ export async function completeConnection(flow: Flow, code: string, redirectUri: 
         ...(profile.handle && { handle: profile.handle.slice(0, 60) }),
         url: profile.url,
         ...(profile.followers !== null && { followers: profile.followers, followersUpdatedAt: now }),
-        verificationStatus: "verified", verifiedUntil: verifiedUntil(),
+        verificationStatus: "verified", verifiedUntil: verifiedUntil(), connectRequestedAt: null,
       },
     });
     // Linking replaces the screenshot: nothing left for staff to review.
@@ -135,7 +149,6 @@ export async function completeConnection(flow: Flow, code: string, redirectUri: 
     if (views) await setAccountViews(tx, account.pageId, account.id, views);
   });
   expirePage(account.page.username);
-  return { ok: true };
 }
 
 /**

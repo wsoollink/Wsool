@@ -2,6 +2,8 @@ import { timingSafeEqual } from "node:crypto";
 import { purgeDeletedAccounts } from "@/lib/account-deletion";
 import { runBillingJob } from "@/lib/billing";
 import { syncConnections } from "@/lib/connect";
+import { ensureTelegramWebhook } from "@/lib/connect/telegram";
+import { siteOrigin } from "@/lib/site-url";
 import { purgeRateLimits } from "@/lib/rate-limit";
 import { runReminders } from "@/lib/reminders";
 
@@ -21,5 +23,7 @@ export async function POST(req: Request) {
   const reminders = await runReminders();
   // Linked platform accounts (YouTube…): followers + audience, once a day each.
   const connections = await syncConnections().catch((err) => ({ error: String(err) }));
+  // Telegram's bot sends channel updates to this site (set once, checked hourly).
+  await ensureTelegramWebhook(siteOrigin()).catch((err) => console.error("[telegram] webhook", err));
   return Response.json({ ...report, purged, reminders, connections });
 }

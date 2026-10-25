@@ -10,7 +10,7 @@ import { BRAND_COLORS } from "@/components/creator/icon-styles";
 import { PlatformIcon } from "@/components/creator/PlatformIcon";
 import { Panel } from "@/components/ui/Card";
 import { Pill } from "@/components/ui/Pill";
-import { CONNECT_AUDIENCE, HANDLE_PATTERN, linkProfileUrl, needsLink, normalizeHandle, PLATFORM_NAMES, PLATFORMS } from "@/config/platforms";
+import { BOT_PLATFORMS, CONNECT_AUDIENCE, HANDLE_PATTERN, linkProfileUrl, needsLink, normalizeHandle, PLATFORM_NAMES, PLATFORMS } from "@/config/platforms";
 import type { Platform, VerificationStatus } from "@/generated/prisma/enums";
 import type { Locale } from "@/i18n/config";
 import { digitsOnly, formatNumber } from "@/lib/format";
@@ -185,16 +185,26 @@ export function AccountsCard({ initial, connectable = [] }: { initial: AccountRo
                             <>
                               <p className="text-sm font-bold">{row.connection ? t("connect.stoppedTitle", { platform: name }) : t("connect.title", { platform: name })}</p>
                               <p className="text-xs text-muted">{t(CONNECT_AUDIENCE.includes(row.platform) ? "connect.why" : "connect.whyFollowers")}</p>
+                              {BOT_PLATFORMS.includes(row.platform) && row.id && (
+                                <ol className="list-decimal ps-5 text-xs leading-6 text-navy">
+                                  {(["1", "2", "3"] as const).map((n) => <li key={n}>{t(`connect.botSteps.${n}`, { handle: `\u2066@${row.handle}\u2069` })}</li>)}
+                                </ol>
+                              )}
                               {row.id ? (
                                 <div className="flex flex-wrap items-center gap-2">
                                   {/* In the platform's own colour, with its logo and name (owner, Oct 2026). */}
                                   <a
                                     href={`/api/connect/${row.platform}/start?account=${row.id}`}
+                                    // Telegram opens the bot's "add to channel" screen; the dashboard stays open to check after.
+                                    {...(BOT_PLATFORMS.includes(row.platform) && { target: "_blank", rel: "noopener noreferrer" })}
                                     style={{ background: BRAND_COLORS[row.platform].bg, color: BRAND_COLORS[row.platform].fg ?? "#FFFFFF" }}
                                     className={buttonClasses("primary", "w-fit gap-2 ring-1 ring-white/15 hover:opacity-90")}
                                   >
                                     <PlatformIcon platform={row.platform} size={18} /> {row.connection ? t("connect.againOn", { platform: name }) : t("connect.button", { platform: name })}
                                   </a>
+                                  {BOT_PLATFORMS.includes(row.platform) && (
+                                    <button type="button" onClick={() => router.refresh()} className={buttonClasses("secondary", "w-fit")}>{t("connect.check")}</button>
+                                  )}
                                   {/* A stopped link can also be removed (then the numbers are edited by hand again). */}
                                   {row.connection && (
                                     <button type="button" onClick={() => unlink(row)} disabled={unlinking === row.id} className="inline-flex min-h-11 w-fit items-center gap-2 rounded-full px-3 text-[13px] font-semibold text-bad hover:bg-bad/8 md:min-h-9">

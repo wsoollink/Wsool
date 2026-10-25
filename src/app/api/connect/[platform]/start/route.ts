@@ -1,6 +1,9 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
 import { callbackUrl, newNonce, NONCE_COOKIE, ownAccount, providerFor, requestOrigin, seal, unseal, type Flow } from "@/lib/connect";
+import { ensureTelegramWebhook } from "@/lib/connect/telegram";
+import { db } from "@/lib/db";
+import { siteOrigin } from "@/lib/site-url";
 import { rateLimit } from "@/lib/rate-limit";
 
 /**
@@ -31,6 +34,16 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ plat
   }
   const account = await ownAccount(flow.userId, flow.accountId);
   if (!account || account.platform !== provider.platform) return back("gone");
+
+  // Bot platforms (Telegram): remember the request, then open the bot's "add to channel" screen; its webhook links.
+  if (provider.bot) {
+    const link = await provider.botLink?.().catch(() => null);
+    if (!link) return back("unavailable");
+    // The bot must already send its updates to the live site (the hourly job also checks this).
+    if (provider.platform === "telegram") await ensureTelegramWebhook(siteOrigin()).catch(() => {});
+    await db.socialAccount.update({ where: { id: account.id }, data: { connectRequestedAt: new Date() } });
+    return NextResponse.redirect(link);
+  }
 
   const nonce = newNonce();
   const res = NextResponse.redirect(provider.authUrl(seal({ ...flow, nonce }, 900), callbackUrl(origin, provider.platform)));

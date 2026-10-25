@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Alert, Pressable, View } from "react-native";
+import { Alert, Linking, Pressable, View } from "react-native";
 import * as WebBrowser from "expo-web-browser";
 import { ChevronDown, Sparkles } from "lucide-react-native";
 import { PlatformIcon } from "../../../components/PlatformIcon";
@@ -8,7 +8,7 @@ import { Button, Card, Field, Pill, Row, T } from "../../../components/ui";
 import { useI18n } from "../../../i18n";
 import { api, rpc } from "../../../lib/api";
 import { pickImage, upload } from "../../../lib/media";
-import { autoFilled, BRAND_COLORS, CONNECT_AUDIENCE, LINK_PLATFORMS, PLATFORM_NAMES, PLATFORMS, type Platform } from "../../../lib/platforms";
+import { autoFilled, BOT_PLATFORMS, BRAND_COLORS, CONNECT_AUDIENCE, LINK_PLATFORMS, PLATFORM_NAMES, PLATFORMS, type Platform } from "../../../lib/platforms";
 import { useTheme } from "../../../lib/theme";
 
 type Share = { label: string; percent: number };
@@ -115,6 +115,11 @@ export default function Accounts() {
     mark(`conn:${id}`, "busy");
     try {
       const { url } = await api<{ url: string }>(`/connect/${platform}`, { method: "POST", body: { accountId: id } });
+      // Telegram: open the bot's "add to channel" screen in Telegram, then the creator comes back and checks.
+      if (BOT_PLATFORMS.includes(platform)) {
+        await Linking.openURL(url);
+        return mark(`conn:${id}`, "waiting");
+      }
       const res = await WebBrowser.openAuthSessionAsync(url, "wsool://connect");
       if (res.type !== "success") return mark(`conn:${id}`, "");
       const q = new URL(res.url.replace(/^wsool:\/\//, "https://app/")).searchParams;
@@ -168,6 +173,12 @@ export default function Accounts() {
         {a.id && saved?.platform === a.platform
           ? brandButton(a, t("accounts.connect.button", { platform: name }), s === "busy")
           : null}
+        {a.id && saved?.platform === a.platform && BOT_PLATFORMS.includes(a.platform) && (
+          <View style={{ gap: 4 }}>
+            {[1, 2, 3].map((n) => <T key={n} size={12.5}>{`${n}. ${t(`accounts.connect.botStep${n}`, { handle: `\u2066@${a.handle}\u2069` })}`}</T>)}
+            <Button title={t("accounts.connect.check")} variant="secondary" onPress={() => { mark(`conn:${a.id}`, ""); reload(); }} />
+          </View>
+        )}
         {note}
       </View>
     );

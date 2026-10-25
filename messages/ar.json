@@ -524,6 +524,8 @@
       "button": "اربط {platform}",
       "again": "أعد الربط",
       "againOn": "أعد الربط مع {platform}",
+      "check": "تحقق من الربط",
+      "botSteps": {"1": "اضغط الزر، وبيفتح Telegram.", "2": "اختر قناتك {handle} وأضف بوت وصول كمشرف (ما يحتاج أي صلاحية إضافية).", "3": "ارجع هنا واضغط «تحقق من الربط». القناة لازم تكون عامة وبنفس اسم المستخدم."},
       "saveFirst": "احفظ الحساب أول، بعدين تقدر تربطه.",
       "linked": "مربوط",
       "stopped": "الربط متوقف",
@@ -812,7 +814,7 @@
     "step3Body": "التوثيق صالح 90 يوم، ونذكرك قبل انتهائه بأسبوع.",
     "ai": {
       "reading": "الذكاء الاصطناعي يقرأ صورتك… ثواني بس.",
-      "match": "قرأنا @{handle} و {followers} متابع على {platform}. مطابق لبيانات حسابك، أرسله للتوثيق.",
+      "match": "قرأنا {handle} و {followers} متابع على {platform}. مطابق لبيانات حسابك، أرسله للتوثيق.",
       "checkTitle": "راجع قبل الإرسال",
       "platformMismatch": "الصورة من {seen}، وهذا الحساب على {expected}.",
       "usernameMismatch": "اليوزر في الصورة @{seen} مو نفس حسابك @{expected}. تأكد إنك رفعت صورة الحساب الصحيح.",
@@ -905,7 +907,7 @@
       "count": "معروض {shown} من {total}",
       "zoom": "كبّر الصورة",
       "close": "إغلاق",
-      "screenshotOf": "صورة شاشة حساب @{handle}",
+      "screenshotOf": "صورة شاشة حساب {handle}",
       "noScreenshot": "ما قدرنا نجيب الصورة.",
       "renewal": "تجديد",
       "claimedFollowers": "المتابعين حسب الصانع",
@@ -1282,9 +1284,9 @@
         "refresh": "حدّث صفحة العرض wsool.link/demo"
       },
       "verification": {
-        "approve": "وثّق {platform} ‎@{handle}",
-        "reject": "رفض توثيق ‎@{handle}",
-        "ai_read": "قرأ صورة توثيق @{handle} بالذكاء الاصطناعي"
+        "approve": "وثّق {platform} {handle}",
+        "reject": "رفض توثيق {handle}",
+        "ai_read": "قرأ صورة توثيق {handle} بالذكاء الاصطناعي"
       },
       "license": {
         "approve": "وثّق رخصة «{name}» لـ {username}",

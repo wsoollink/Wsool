@@ -34,6 +34,9 @@ export type Provider = {
   refresh: (refreshToken: string) => Promise<{ accessToken: string; refreshToken?: string }>;
   /** The account on the platform; `account` = the Wsool account being linked (externalId once linked). null = not found. */
   profile: (accessToken: string, account: { url: string; externalId: string | null }) => Promise<ProviderProfile | null>;
+  /** Linked through a bot instead of OAuth (Telegram): "Connect" opens `botLink()`, a webhook finishes the link. */
+  bot?: boolean;
+  botLink?: () => Promise<string | null>;
   /** Error shown when profile() finds nothing (default no_channel). */
   notFound?: "no_channel" | "no_server";
   audience?: (accessToken: string) => Promise<Audience | null>;

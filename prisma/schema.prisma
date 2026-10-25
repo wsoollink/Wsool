@@ -292,6 +292,8 @@ model SocialAccount {
   verificationStatus VerificationStatus @default(none) @map("verification_status")
   verifiedUntil      DateTime?          @map("verified_until") @db.Timestamptz
   sort               Int                @default(0)
+  /// Last "Connect" tap for a bot-linked platform (Telegram); the bot links only accounts that asked recently.
+  connectRequestedAt DateTime?          @map("connect_requested_at") @db.Timestamptz
 
   page                 Page                  @relation(fields: [pageId], references: [id], onDelete: Cascade)
   audience             AudienceData?

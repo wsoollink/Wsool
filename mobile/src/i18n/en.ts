@@ -122,7 +122,8 @@ export const en: typeof ar = {
     connect: {
       title: "Connect your {platform} account", stoppedTitle: "{platform} connection stopped", why: "Once connected, your followers and audience update by themselves every day, and the account is verified without a screenshot.",
       whyFollowers: "Once connected, your followers update by themselves every day, and the account is verified without a screenshot. You still fill in the audience data yourself.",
-      button: "Connect {platform}", again: "Reconnect", againOn: "Reconnect {platform}", saveFirst: "Save the account first, then you can connect it.", linked: "Connected", stopped: "Connection stopped",
+      button: "Connect {platform}", again: "Reconnect", againOn: "Reconnect {platform}", check: "Check the link",
+      botStep1: "Tap the button; Telegram opens.", botStep2: "Pick your channel {handle} and add the Wsool bot as an admin (no extra rights needed).", botStep3: "Come back and tap “Check the link”. The channel must be public, with the same username.", saveFirst: "Save the account first, then you can connect it.", linked: "Connected", stopped: "Connection stopped",
       linkedTo: "Connected to {name}", lastSync: "Last update: {date}", auto: "Updates every day", unlink: "Disconnect", cancel: "Cancel",
       confirmUnlink: "Disconnect {platform}? Your numbers stop updating by themselves; the verification stays until it expires.", locked: "Username and followers come straight from the platform and update by themselves.",
       done: "{platform} connected ✓ Your numbers are up to date and update by themselves, and the account is verified.",

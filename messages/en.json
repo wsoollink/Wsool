@@ -524,6 +524,8 @@
       "button": "Connect {platform}",
       "again": "Connect again",
       "againOn": "Reconnect {platform}",
+      "check": "Check the link",
+      "botSteps": {"1": "Tap the button; Telegram opens.", "2": "Pick your channel {handle} and add the Wsool bot as an admin (no extra rights needed).", "3": "Come back and tap “Check the link”. The channel must be public, with the same username."},
       "saveFirst": "Save the account first, then you can connect it.",
       "linked": "Connected",
       "stopped": "Link stopped",
@@ -812,7 +814,7 @@
     "step3Body": "Verification lasts 90 days; we remind you a week before it ends.",
     "ai": {
       "reading": "AI is reading your screenshot… just a few seconds.",
-      "match": "We read @{handle} with {followers} followers on {platform}. It matches your account, send it for verification.",
+      "match": "We read {handle} with {followers} followers on {platform}. It matches your account, send it for verification.",
       "checkTitle": "Check before sending",
       "platformMismatch": "The screenshot is from {seen}, but this account is on {expected}.",
       "usernameMismatch": "The username in the screenshot (@{seen}) isn't your account (@{expected}). Make sure you uploaded the right account.",
@@ -905,7 +907,7 @@
       "count": "Showing {shown} of {total}",
       "zoom": "Enlarge screenshot",
       "close": "Close",
-      "screenshotOf": "Screenshot of @{handle}",
+      "screenshotOf": "Screenshot of {handle}",
       "noScreenshot": "Couldn't load the screenshot.",
       "renewal": "Renewal",
       "claimedFollowers": "Followers (creator's number)",
@@ -1282,9 +1284,9 @@
         "refresh": "Refreshed the demo page wsool.link/demo"
       },
       "verification": {
-        "approve": "Verified {platform} @{handle}",
-        "reject": "Rejected verification of @{handle}",
-        "ai_read": "Read @{handle}'s verification screenshot with AI"
+        "approve": "Verified {platform} {handle}",
+        "reject": "Rejected verification of {handle}",
+        "ai_read": "Read {handle}'s verification screenshot with AI"
       },
       "license": {
         "approve": "Verified license “{name}” for {username}",

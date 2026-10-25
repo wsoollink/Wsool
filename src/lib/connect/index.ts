@@ -11,6 +11,7 @@ import { canEncryptTokens, openToken, sealToken } from "@/lib/token-box";
 import { RevokedError } from "./errors";
 import type { Provider } from "./types";
 import { tiktok } from "./tiktok";
+import { twitch } from "./twitch";
 import { youtube } from "./youtube";
 
 /**
@@ -20,7 +21,7 @@ import { youtube } from "./youtube";
  *   start (web: session cookie; app: a 5-minute ticket) → sets a nonce cookie → platform consent screen
  *   → /api/connect/<platform>/callback (state signed + nonce cookie) → saveConnection → back to the dashboard or the app.
  */
-export const PROVIDERS: Partial<Record<Platform, Provider>> = { youtube, tiktok };
+export const PROVIDERS: Partial<Record<Platform, Provider>> = { youtube, tiktok, twitch };
 
 export const connectablePlatforms = () =>
   canEncryptTokens() ? (Object.values(PROVIDERS).filter((p) => p!.configured()).map((p) => p!.platform) as Platform[]) : [];

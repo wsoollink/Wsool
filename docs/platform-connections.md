@@ -8,9 +8,10 @@
 | --- | --- |
 | YouTube | منشور. Google Cloud جاهز، الهوية موثّقة، وطلب مراجعة الصلاحيات أُرسل 25 أكتوبر 2026 (قيد المراجعة) |
 | Instagram | التالي: يحتاج توثيق نشاط تجاري ومراجعة تطبيق في Meta (ابدأها مبكر) |
-| TikTok | مبني (المتابعين فقط، TikTok ما يعطي بيانات الجمهور). ينتظر تجهيز TikTok for Developers (الخطوات تحت) |
+| TikTok | منشور (المتابعين فقط). مفاتيح Sandbox في Netlify، وطلب المراجعة أُرسل 25 أكتوبر 2026؛ بعد الموافقة تُبدّل لمفاتيح Production |
 | Facebook / Threads | بعده |
-| Twitch / Spotify / Telegram / Discord | سهلة، بعدها |
+| Twitch | مبني (المتابعين فقط، بدون مراجعة). ينتظر تطبيق dev.twitch.tv (الخطوات تحت) |
+| Spotify / Telegram / Discord | بعدها |
 | Snapchat / X | مؤجلة |
 | LinkedIn / Pinterest / Jaco | يدوي |
 
@@ -46,6 +47,17 @@
 5. **Netlify**: `TIKTOK_CLIENT_KEY` و `TIKTOK_CLIENT_SECRET` («Contains secret values»).
    - قبل الموافقة: التجربة من **Sandbox** (له مفاتيح خاصة فيه، ويُضاف حسابك في Target users).
 6. **Submit for review** مع فيديو للربط (مثل فيديو Google) وشرح لكل صلاحية. تاخذ أيام لأسبوعين.
+
+## تجهيز Twitch (المالك، مرة وحدة، بدون مراجعة)
+
+1. فعّل التحقق بخطوتين (2FA) في حساب Twitch (شرط عندهم لتسجيل تطبيق).
+2. **dev.twitch.tv/console** ← **Register Your Application**:
+   - Name: `Wsool`
+   - OAuth Redirect URLs: `https://wsool.link/api/connect/twitch/callback`
+     (وللتجربة: `https://claude-new-session-r5ze7y--graceful-fox-a6c2f5.netlify.app/api/connect/twitch/callback`)
+   - Category: **Website Integration**، Client Type: **Confidential**.
+3. **Manage** ← انسخ **Client ID**، واضغط **New Secret** وانسخ الـ Secret.
+4. **Netlify**: `TWITCH_CLIENT_ID` و `TWITCH_CLIENT_SECRET` («Contains secret values»)، ثم انشر.
 
 ## ملاحظات تقنية
 - مفتاح التحديث (refresh token) محفوظ مشفّر AES-256-GCM (`src/lib/token-box.ts`)، ولا يطلع للمتصفح أو التطبيق أبداً.

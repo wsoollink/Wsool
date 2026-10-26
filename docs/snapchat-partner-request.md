@@ -13,7 +13,7 @@
    - انسخ **Client ID** (و Client Secret، يروح Netlify لاحقاً باسم `SNAPCHAT_CLIENT_SECRET`، لا ترسله لأحد).
 3. **الطلب:** أرسل الإيميل اللي تحت مع الـ Client ID:
    - إذا عندك شخص تواصل في Snap (مدير حساب إعلاني، فريق Snap في الرياض/دبي) أرسله له.
-   - إذا لا: من **Business Help Center** ← Contact Us ← اختر API / Partnerships، والصق الرسالة.
+   - إذا لا: أرسله إلى **dev-support@snap.com** (الإيميل المذكور في مرجع Snap Marketing API لطلبات الوصول). الـ Client ID بس، **بدون الـ Secret**.
 4. لما يردون بالموافقة قل لـ Claude، ويبني الربط ويختبره (نفس نظام YouTube).
 
 ## نص الإيميل (انسخه)

@@ -23,5 +23,5 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ plat
   if (q.get("error")) return finish({ error: "denied" });
   const code = q.get("code");
   if (!code) return finish({ error: "failed" });
-  return finish(await completeConnection(flow, code, callbackUrl(origin, flow.platform)));
+  return finish(await completeConnection(flow, code, callbackUrl(origin, flow.platform), q.get("state") ?? undefined));
 }

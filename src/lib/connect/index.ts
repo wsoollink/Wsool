@@ -15,6 +15,7 @@ import { discord } from "./discord";
 import { botIsAdmin, channelProfile, CONNECT_WINDOW_MS, telegram } from "./telegram";
 import { tiktok } from "./tiktok";
 import { twitch } from "./twitch";
+import { x } from "./x";
 import { youtube } from "./youtube";
 
 /**
@@ -24,7 +25,7 @@ import { youtube } from "./youtube";
  *   start (web: session cookie; app: a 5-minute ticket) → sets a nonce cookie → platform consent screen
  *   → /api/connect/<platform>/callback (state signed + nonce cookie) → saveConnection → back to the dashboard or the app.
  */
-export const PROVIDERS: Partial<Record<Platform, Provider>> = { youtube, tiktok, twitch, discord, telegram };
+export const PROVIDERS: Partial<Record<Platform, Provider>> = { youtube, tiktok, twitch, discord, telegram, x };
 
 export const connectablePlatforms = () =>
   canEncryptTokens() ? (Object.values(PROVIDERS).filter((p) => p!.configured()).map((p) => p!.platform) as Platform[]) : [];
@@ -91,12 +92,12 @@ export type ConnectError = "denied" | "failed" | "no_channel" | "no_server" | "t
 const verifiedUntil = () => new Date(Date.now() + VERIFICATION_DAYS * 86_400_000);
 
 /** Code from the platform → tokens → profile → link saved, account updated and verified. */
-export async function completeConnection(flow: Flow, code: string, redirectUri: string): Promise<{ ok: true } | { error: ConnectError }> {
+export async function completeConnection(flow: Flow, code: string, redirectUri: string, state?: string): Promise<{ ok: true } | { error: ConnectError }> {
   const provider = providerFor(flow.platform);
   const account = provider && (await ownAccount(flow.userId, flow.accountId));
   if (!provider || !account || account.platform !== flow.platform) return { error: "gone" };
 
-  const tokens = await provider.exchange(code, redirectUri).catch(() => null);
+  const tokens = await provider.exchange(code, redirectUri, state).catch(() => null);
   if (!tokens) return { error: "failed" };
   const profile = await provider.profile(tokens.accessToken, { url: account.url, externalId: null }).catch(() => null);
   if (!profile) {

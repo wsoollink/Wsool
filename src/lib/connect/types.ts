@@ -29,7 +29,8 @@ export type Provider = {
   /** Its keys are set (else the Connect button stays hidden). */
   configured: () => boolean;
   authUrl: (state: string, redirectUri: string) => string;
-  exchange: (code: string, redirectUri: string) => Promise<{ accessToken: string; refreshToken: string; scopes: string } | null>;
+  /** `state` = the signed state of this sign-in (X derives its PKCE verifier from it). */
+  exchange: (code: string, redirectUri: string, state?: string) => Promise<{ accessToken: string; refreshToken: string; scopes: string } | null>;
   /** A fresh access token (+ a new refresh token when the platform rotates it); throws RevokedError when refused. */
   refresh: (refreshToken: string) => Promise<{ accessToken: string; refreshToken?: string }>;
   /** The account on the platform; `account` = the Wsool account being linked (externalId once linked). null = not found. */

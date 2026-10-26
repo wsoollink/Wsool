@@ -127,6 +127,15 @@ export default function Accounts() {
       reload();
     } catch { mark(`conn:${id}`, "error:failed"); }
   };
+  // Telegram "Check the link": asks the server, which asks Telegram whether the bot is an admin of the channel.
+  const checkLink = async (id: string) => {
+    mark(`conn:${id}`, "checking");
+    try {
+      const res = await rpc<{ ok?: true; error?: string }>("checkBotConnection", id);
+      if (res.ok) { mark(`conn:${id}`, "done"); reload(); }
+      else mark(`conn:${id}`, `check:${res.error ?? "gone"}`);
+    } catch { mark(`conn:${id}`, "check:gone"); }
+  };
   const unlink = (id: string, platform: Platform) =>
     Alert.alert(t("accounts.connect.unlink"), t("accounts.connect.confirmUnlink", { platform: PLATFORM_NAMES[platform] }), [
       { text: t("accounts.connect.cancel"), style: "cancel" },
@@ -176,7 +185,8 @@ export default function Accounts() {
         {a.id && saved?.platform === a.platform && BOT_PLATFORMS.includes(a.platform) && (
           <View style={{ gap: 4 }}>
             {[1, 2, 3].map((n) => <T key={n} size={12.5}>{`${n}. ${t(`accounts.connect.botStep${n}`, { handle: `\u2066@${a.handle}\u2069` })}`}</T>)}
-            <Button title={t("accounts.connect.check")} variant="secondary" onPress={() => { mark(`conn:${a.id}`, ""); reload(); }} />
+            <Button title={t("accounts.connect.check")} variant="secondary" loading={s === "checking"} onPress={() => checkLink(a.id!)} />
+            {s?.startsWith("check:") ? <T size={13} tone="bad" accessibilityLiveRegion="polite">{t(`accounts.connect.checkErrors.${s.slice(6)}`, { handle: `\u2066@${a.handle}\u2069` })}</T> : null}
           </View>
         )}
         {note}

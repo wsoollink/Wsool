@@ -525,6 +525,7 @@
       "again": "Connect again",
       "againOn": "Reconnect {platform}",
       "check": "Check the link",
+      "checkErrors": {"not_admin": "The bot isn't an admin of {handle} yet. Add it as an admin of the channel with that exact username, then try again in a few seconds.", "expired": "Tap “Connect Telegram” first, then add the bot and tap “Check the link” within 30 minutes.", "taken": "This channel is linked to another Wsool page.", "gone": "We couldn't find this account on your page. Refresh and try again."},
       "botSteps": {"1": "Tap the button; Telegram opens.", "2": "Pick your channel {handle} and add the Wsool bot as an admin (no extra rights needed).", "3": "Come back and tap “Check the link”. The channel must be public, with the same username."},
       "saveFirst": "Save the account first, then you can connect it.",
       "linked": "Connected",

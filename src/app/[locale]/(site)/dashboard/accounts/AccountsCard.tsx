@@ -16,7 +16,7 @@ import type { Locale } from "@/i18n/config";
 import { digitsOnly, formatNumber } from "@/lib/format";
 import { MAX_ACCOUNTS, MAX_FOLLOWERS } from "@/lib/validation/accounts";
 import type { ConnectionInfo } from "@/lib/connect/info";
-import { disconnectAccount, saveAccounts } from "./actions";
+import { checkBotConnection, disconnectAccount, saveAccounts } from "./actions";
 
 export type AccountRow = {
   id: string | null; platform: Platform; handle: string; followers: number; verificationStatus: VerificationStatus;
@@ -58,6 +58,16 @@ export function AccountsCard({ initial, connectable = [] }: { initial: AccountRo
   const search = useSearchParams();
   const connectedNow = search.get("connected"), connectError = search.get("connect_error");
   const [unlinking, setUnlinking] = useState<string | null>(null);
+  // Telegram "Check the link": result per account (ok reloads the page so every card shows the link).
+  const [checking, setChecking] = useState<string | null>(null);
+  const [checkError, setCheckError] = useState<Record<string, string>>({});
+  const checkLink = async (id: string) => {
+    setChecking(id);
+    const res = await checkBotConnection(id);
+    if ("ok" in res) return window.location.reload();
+    setChecking(null);
+    setCheckError((cur) => ({ ...cur, [id]: res.error }));
+  };
   const unlink = (row: Row) => {
     if (!row.id || !window.confirm(t("connect.confirmUnlink", { platform: PLATFORM_NAMES[row.platform] }))) return;
     setUnlinking(row.id);
@@ -203,8 +213,9 @@ export function AccountsCard({ initial, connectable = [] }: { initial: AccountRo
                                     <PlatformIcon platform={row.platform} size={18} /> {row.connection ? t("connect.againOn", { platform: name }) : t("connect.button", { platform: name })}
                                   </a>
                                   {BOT_PLATFORMS.includes(row.platform) && (
-                                    <button type="button" onClick={() => router.refresh()} className={buttonClasses("secondary", "w-fit")}>{t("connect.check")}</button>
+                                    <button type="button" onClick={() => checkLink(row.id!)} disabled={checking === row.id} aria-busy={checking === row.id} className={buttonClasses("secondary", "w-fit")}>{t("connect.check")}</button>
                                   )}
+                                  {row.id && checkError[row.id] && <p role="status" className="w-full text-xs font-semibold text-bad">{t(`connect.checkErrors.${checkError[row.id]}`, { handle: `\u2066@${row.handle}\u2069` })}</p>}
                                   {/* A stopped link can also be removed (then the numbers are edited by hand again). */}
                                   {row.connection && (
                                     <button type="button" onClick={() => unlink(row)} disabled={unlinking === row.id} className="inline-flex min-h-11 w-fit items-center gap-2 rounded-full px-3 text-[13px] font-semibold text-bad hover:bg-bad/8 md:min-h-9">

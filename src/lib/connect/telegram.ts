@@ -67,6 +67,20 @@ export async function channelProfile(chatId: string): Promise<ProviderProfile | 
   };
 }
 
+/**
+ * "Check the link": when Telegram sent no update (the bot was already an admin, so re-adding it changed nothing),
+ * ask Telegram directly whether the bot is an admin of @handle. Only for an account that tapped "Connect" in the
+ * last 30 minutes; a channel linked to another account is refused. The bot leaves channels nobody asked for, so
+ * an unlinked channel where it is still admin was added by that channel's admin.
+ */
+export async function botIsAdmin(handle: string): Promise<string | null> {
+  const me = (await bot<{ id: number }>("getMe")).result?.id;
+  const chat = await bot<{ id: number; type: string }>("getChat", { chat_id: `@${handle}` });
+  if (!me || !chat.ok || !chat.result) return null;
+  const member = await bot<{ status: string }>("getChatMember", { chat_id: chat.result.id, user_id: me });
+  return member.result?.status === "administrator" ? String(chat.result.id) : null;
+}
+
 export const telegram: Provider = {
   platform: "telegram",
   configured: () => !!botToken(),

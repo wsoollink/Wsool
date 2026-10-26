@@ -3,7 +3,7 @@
 import { z } from "zod";
 import type { Platform } from "@/generated/prisma/enums";
 import { autoFilled, linkProfileUrl, profileUrl } from "@/config/platforms";
-import { disconnect } from "@/lib/connect";
+import { checkBotLink, disconnect } from "@/lib/connect";
 import { requireCreator } from "@/lib/creator";
 import { db } from "@/lib/db";
 import { pageChanged } from "@/lib/public-page";
@@ -193,6 +193,13 @@ export async function readAudienceShot(accountId: string, path: string): Promise
 }
 
 /** Unlink a platform account (the creator's own): the platform's token is revoked and deleted. */
+/** "Check the link" for Telegram (src/lib/connect checkBotLink). */
+export async function checkBotConnection(accountId: string) {
+  const { user } = await requireCreator();
+  if (!z.uuid().safeParse(accountId).success) return { error: "gone" as const };
+  return checkBotLink(user.id, accountId);
+}
+
 export async function disconnectAccount(accountId: string): Promise<{ ok: boolean }> {
   const { user } = await requireCreator();
   if (!z.uuid().safeParse(accountId).success) return { ok: false };

@@ -40,6 +40,7 @@ const ACTIONS: Record<string, (...args: never[]) => Promise<unknown>> = {
   // Accounts & numbers
   saveAccounts: accounts.saveAccounts,
   disconnectAccount: accounts.disconnectAccount,
+  checkBotConnection: accounts.checkBotConnection,
   saveMonthlyViews: accounts.saveMonthlyViews,
   saveAudience: accounts.saveAudience,
   readAudienceShot: accounts.readAudienceShot,

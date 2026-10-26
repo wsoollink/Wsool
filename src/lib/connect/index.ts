@@ -12,7 +12,7 @@ import { canEncryptTokens, openToken, sealToken } from "@/lib/token-box";
 import { RevokedError } from "./errors";
 import type { Audience, Provider, ProviderProfile } from "./types";
 import { discord } from "./discord";
-import { telegram } from "./telegram";
+import { botIsAdmin, channelProfile, CONNECT_WINDOW_MS, telegram } from "./telegram";
 import { tiktok } from "./tiktok";
 import { twitch } from "./twitch";
 import { youtube } from "./youtube";
@@ -219,6 +219,28 @@ export async function syncConnections(limit = 40) {
     }
   }
   return { synced, lost, failed };
+}
+
+/**
+ * Bot platforms (Telegram): links the creator's own account when the bot is already an admin of its channel and
+ * the creator tapped "Connect" in the last 30 minutes (see botIsAdmin). ok = linked (or already linked).
+ */
+export async function checkBotLink(userId: string, accountId: string): Promise<{ ok: true } | { error: "not_admin" | "taken" | "expired" | "gone" }> {
+  const account = await db.socialAccount.findFirst({
+    where: { id: accountId, platform: "telegram", page: { userId, deletedAt: null } },
+    select: { id: true, pageId: true, handle: true, connectRequestedAt: true, page: { select: { username: true } }, connection: { select: { status: true } } },
+  });
+  if (!account || !providerFor("telegram")) return { error: "gone" };
+  if (account.connection?.status === "active") return { ok: true };
+  if (!account.connectRequestedAt || account.connectRequestedAt.getTime() < Date.now() - CONNECT_WINDOW_MS) return { error: "expired" };
+  const chatId = await botIsAdmin(account.handle).catch(() => null);
+  if (!chatId) return { error: "not_admin" };
+  const taken = await db.platformConnection.findUnique({ where: { platform_externalId: { platform: "telegram", externalId: chatId } }, select: { accountId: true } });
+  if (taken && taken.accountId !== account.id) return { error: "taken" };
+  const profile = await channelProfile(chatId).catch(() => null);
+  if (!profile) return { error: "not_admin" };
+  await saveLink(account, "telegram", profile, { refreshToken: chatId, scopes: "" }, null, null);
+  return { ok: true };
 }
 
 /** Unlink (the creator's own account only): the token is revoked at the platform and deleted here. Verification stays until it expires. */

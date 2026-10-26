@@ -65,6 +65,8 @@ const LOADERS = {
     const byAccount = (views?.byAccount ?? {}) as Record<string, number>;
     return {
       connectable: connectablePlatforms(),
+      /** Linking and the daily update are Pro (the trial counts); on Free, links pause. */
+      connectPro: isPro || FREE_LIMITS.connections,
       accounts: accounts.map((a) => ({
         id: a.id, platform: a.platform, handle: a.handle, followers: a.followers, link: a.url, verificationStatus: a.verificationStatus,
         connection: connectionInfo(a.connection),

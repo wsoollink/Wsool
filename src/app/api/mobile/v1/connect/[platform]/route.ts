@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { newNonce, ownAccount, providerFor, requestOrigin, seal } from "@/lib/connect";
+import { canConnect, newNonce, ownAccount, providerFor, requestOrigin, seal } from "@/lib/connect";
 import { apiError, json, preflight, readBody, withPage } from "@/lib/mobile/api";
 
 const body = z.object({ accountId: z.uuid() });
@@ -12,6 +12,7 @@ export const POST = withPage(async ({ user, req }) => {
   if (!provider || !data) return apiError("unavailable");
   const account = await ownAccount(user.id, data.accountId);
   if (!account || account.platform !== provider.platform) return apiError("not_found", 404);
+  if (!(await canConnect(user.id))) return apiError("pro_only", 403);
   // One use, 2 minutes: a link someone else is lured into opening can't tie their channel to this account later.
   const ticket = seal({ userId: user.id, accountId: account.id, platform: provider.platform, source: "app", id: newNonce() }, 120);
   return json({ url: `${requestOrigin(req)}/api/connect/${provider.platform}/start?t=${encodeURIComponent(ticket)}` });

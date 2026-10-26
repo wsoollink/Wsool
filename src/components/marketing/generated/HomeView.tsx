@@ -926,6 +926,12 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
                   </svg>
                   {t(161)}
                 </li>
+                <li style={{"display": "flex", "alignItems": "center", "gap": "10px", "minHeight": "38px", "fontSize": "14.5px"}}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7EE2B8" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M5 12l5 5 9-10" />
+                  </svg>
+                  {t(162)}
+                </li>
               </ul>
             </div>
           </div>
@@ -936,17 +942,17 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
           <div style={{"display": "flex", "flexDirection": "column", "gap": "14px", "alignItems": "flex-start", "textAlign": v.en ? "left" : "right", "maxWidth": "760px"}} className="ws-reveal mk-home-55">
             <span style={{"display": "inline-flex", "alignItems": "center", "gap": "8px", "fontSize": "13.5px", "fontWeight": "700", "color": "var(--mk-logo-blue-text)"}}>
               <span style={{"width": "18px", "height": "2px", "background": "#0A6CFF", "borderRadius": "2px"}}></span>
-              {t(162)}
+              {t(163)}
             </span>
             <h2 style={{"margin": "0", "fontSize": "48px", "lineHeight": "1.2", "fontWeight": "900", "letterSpacing": "-0.015em", "color": "var(--mk-text)"}} className="mk-home-56">
-              {t(163)}
+              {t(164)}
             </h2>
             <p style={{"margin": "0", "fontSize": "18px", "lineHeight": "1.8", "color": "var(--mk-muted)"}} className="mk-home-57">
-              {t(164)}
+              {t(165)}
             </p>
           </div>
           <a href="mailto:support@wsool.link" style={{"height": "52px", "padding": "0 24px", "borderRadius": "999px", "border": "1px solid rgba(var(--mk-ink),0.09)", "background": "var(--mk-card)", "color": "var(--mk-text)", "fontFamily": "inherit", "fontSize": "15px", "fontWeight": "500", "display": "inline-flex", "alignItems": "center", "justifyContent": "center", "gap": "8px", "cursor": "pointer", "textDecoration": "none", "alignSelf": "flex-start"}} className="mk-home-58">
-            {t(165)}
+            {t(166)}
           </a>
         </div>
         <div style={{"display": "flex", "flexDirection": "column", "gap": "10px", "flex": "1 1 480px", "minWidth": "0"}}>
@@ -980,23 +986,23 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
           <div aria-hidden="true" style={{"position": "absolute", "top": "-160px", "left": "-120px", "width": "460px", "height": "460px", "borderRadius": "50%", "background": "radial-gradient(closest-side, rgba(34,184,240,0.45), transparent)"}}></div>
           <div aria-hidden="true" style={{"position": "absolute", "bottom": "-200px", "right": "-140px", "width": "480px", "height": "480px", "borderRadius": "50%", "background": "radial-gradient(closest-side, rgba(10,108,255,0.40), transparent)"}}></div>
           <h2 style={{"position": "relative", "margin": "0", "fontSize": "56px", "lineHeight": "1.15", "fontWeight": "900", "letterSpacing": "-0.02em"}} className="mk-home-61">
-            {t(166)}
+            {t(167)}
           </h2>
           <p style={{"position": "relative", "margin": "0", "fontSize": "18px", "lineHeight": "1.8", "color": "rgba(255,255,255,0.75)", "maxWidth": "520px"}} className="mk-home-62">
-            {t(167)}
+            {t(168)}
           </p>
           <div style={{"position": "relative", "width": "100%", "display": "flex", "justifyContent": "center"}}>
             <div style={{"display": "flex", "flexDirection": "column", "gap": "10px", "width": "100%", "maxWidth": "520px"}}>
               <label htmlFor="claim2" style={{"position": "absolute", "width": "1px", "height": "1px", "overflow": "hidden", "clip": "rect(0 0 0 0)"}}>
-                {t(168)}
+                {t(169)}
               </label>
               <div dir="ltr" style={{"display": "flex", "alignItems": "center", "gap": "6px", "padding": "7px", "borderRadius": "999px", "background": "#FFFFFF", "border": `1.5px solid ${v.claimBorder}`, "boxShadow": "0 18px 40px rgba(2,25,65,0.10)"}}>
                 <span style={{"paddingLeft": "16px", "fontSize": "17px", "fontWeight": "500", "color": "#56607A"}} className="mk-home-63">
-                  {t(169)}
+                  {t(170)}
                 </span>
                 <input id="claim2" type="text" autoComplete="off" spellCheck="false" placeholder="yourname" value={v.claimV} onChange={v.onClaim} style={{"flex": "1", "minWidth": "0", "height": "48px", "border": "none", "background": "transparent", "fontFamily": "inherit", "fontSize": "17px", "fontWeight": "700", "color": "#021941", "outline": "none"}} className="mk-home-64" />
                 <button type="button" onClick={v.claimGo} style={{"height": "48px", "padding": "0 22px", "borderRadius": "999px", "border": "none", "background": "#0A6CFF", "color": "#FFFFFF", "fontFamily": "inherit", "fontSize": "14.5px", "fontWeight": "700", "display": "inline-flex", "alignItems": "center", "justifyContent": "center", "gap": "10px", "cursor": "pointer", "textDecoration": "none", "boxShadow": "none", "flexShrink": "0"}} className="mk-home-65">
-                  <span className="mk-dsk">{t(170)}</span><span className="mk-mob">{t(171)}</span>
+                  <span className="mk-dsk">{t(171)}</span><span className="mk-mob">{t(172)}</span>
                 </button>
               </div>
               <span style={{"fontSize": "13px", "color": v.claimColorD, "padding": "0 8px"}}>
@@ -1017,14 +1023,14 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
               </svg>
             </span>
             <h2 id="nl-title" style={{"margin": "0", "fontSize": "28px", "lineHeight": "1.3", "fontWeight": "900", "color": "var(--mk-text)"}} className="mk-home-68">
-              {t(172)}
+              {t(173)}
             </h2>
             <p style={{"margin": "0", "fontSize": "14.5px", "lineHeight": "1.8", "color": "var(--mk-muted)"}}>
-              {t(173)}
+              {t(174)}
             </p>
             <div style={{"display": "flex", "flexDirection": "column", "gap": "10px"}}>
               <span style={{"fontSize": "13px", "fontWeight": "700", "color": "var(--mk-text)"}}>
-                {t(174)}
+                {t(175)}
               </span>
               <div style={{"display": "flex", "flexWrap": "wrap", "gap": "8px"}}>
                 {(v.socialList as any[]).map((s: any) => (
@@ -1036,7 +1042,7 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
             </div>
             <div style={{"display": "flex", "flexDirection": "column", "gap": "10px"}}>
               <span style={{"fontSize": "13px", "fontWeight": "700", "color": "var(--mk-text)"}}>
-                {t(175)}
+                {t(176)}
               </span>
               <div style={{"display": "flex", "flexWrap": "wrap", "gap": "8px"}}>
                 <a href={v.appIosHref} target="_blank" rel="noopener" aria-label={v.appIosLabel} className="wapp">
@@ -1052,21 +1058,21 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
             {v.nlForm && (
               <>
                 <label htmlFor="nl-email" style={{"position": "absolute", "width": "1px", "height": "1px", "overflow": "hidden", "clip": "rect(0 0 0 0)"}}>
-                  {t(176)}
+                  {t(177)}
                 </label>
                 <div style={{"display": "flex", "alignItems": "center", "gap": "6px", "padding": "6px", "borderRadius": "999px", "background": "#F4F6FA", "border": `1.5px solid ${v.nlBorder}`, "transition": "border-color .2s ease, box-shadow .2s ease"}} className="nlbox">
                   <input id="nl-email" dir="ltr" type="email" inputMode="email" autoComplete="email" placeholder="name@email.com" value={v.nlV} onChange={v.onNl} onKeyDown={v.nlKey} aria-invalid={v.nlInvalid} aria-describedby="nl-msg" style={{"flex": "1", "minWidth": "0", "height": "46px", "padding": "0 16px", "border": "none", "background": "transparent", "fontFamily": "inherit", "fontSize": "15px", "color": "var(--mk-text)", "textAlign": v.en ? "left" : "right"}} className="nlin" />
                   <button type="button" onClick={v.nlGo} style={{"height": "46px", "padding": "0 24px", "borderRadius": "999px", "border": "none", "background": "#0060E6", "color": "#FFFFFF", "fontFamily": "inherit", "fontSize": "15px", "fontWeight": "700", "cursor": "pointer", "flexShrink": "0"}}>
-                    {t(177)}
+                    {t(178)}
                   </button>
                 </div>
                 <span id="nl-msg" role="status" style={{"minHeight": "18px", "fontSize": "13px", "color": "var(--mk-bad)", "padding": "0 12px"}}>
                   {v.nlErrMsg}
                 </span>
                 <span style={{"fontSize": "12.5px", "color": "var(--mk-muted)", "padding": "0 12px"}}>
-                  {t(178)}{" "}
+                  {t(179)}{" "}
                   <Link href="/privacy" style={{"color": "var(--mk-text)", "textDecoration": "underline"}}>
-                    {t(179)}
+                    {t(180)}
                   </Link>
                 </span>
               </>
@@ -1081,16 +1087,16 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
                   </span>
                   <div style={{"display": "flex", "flexDirection": "column", "gap": "4px"}}>
                     <span style={{"fontSize": "14.5px", "lineHeight": "1.7", "color": "var(--mk-text)"}}>
-                      {t(180)}{" "}
+                      {t(181)}{" "}
                       <b dir="ltr">
                         {v.nlV}
                       </b>
                     </span>
                     <span style={{"fontSize": "13.5px", "color": "var(--mk-muted)"}}>
-                      {t(181)}
+                      {t(182)}
                     </span>
                     <button type="button" onClick={v.nlReset} style={{"alignSelf": "flex-start", "marginTop": "4px", "padding": "0", "border": "none", "background": "none", "fontFamily": "inherit", "fontSize": "13px", "fontWeight": "700", "color": "var(--mk-blue-text)", "cursor": "pointer", "textDecoration": "underline"}}>
-                      {t(182)}
+                      {t(183)}
                     </button>
                   </div>
                 </div>
@@ -1100,59 +1106,59 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
         </section>
         <div style={{"display": "flex", "flexWrap": "wrap", "justifyContent": "space-between", "gap": "36px"}}>
           <div style={{"display": "flex", "flexDirection": "column", "gap": "14px", "whiteSpace": "nowrap"}}>
-            <img className="mk-logo-light" src={v.en ? "/marketing/a841426bbb5bd28188577aa5bd4b74da.png" : "/marketing/84a13f503b73bc5552ed2fb6c15e33e3.png"} alt={t(183)} style={{"height": "38px", "width": "auto", "display": "block", "alignSelf": "flex-start"}} /><img className="mk-logo-dark" src={v.en ? "/brand/logo-en-dark.png" : "/brand/logo-ar-dark.png"} alt={t(183)} style={{"height": "38px", "width": "auto", "display": "block", "alignSelf": "flex-start"}} />
+            <img className="mk-logo-light" src={v.en ? "/marketing/a841426bbb5bd28188577aa5bd4b74da.png" : "/marketing/84a13f503b73bc5552ed2fb6c15e33e3.png"} alt={t(184)} style={{"height": "38px", "width": "auto", "display": "block", "alignSelf": "flex-start"}} /><img className="mk-logo-dark" src={v.en ? "/brand/logo-en-dark.png" : "/brand/logo-ar-dark.png"} alt={t(184)} style={{"height": "38px", "width": "auto", "display": "block", "alignSelf": "flex-start"}} />
             <p style={{"margin": "0", "fontSize": "14px", "lineHeight": "1.8", "color": "var(--mk-muted)"}}>
-              {t(184)}
+              {t(185)}
             </p>
           </div>
           <div style={{"display": "flex", "flexWrap": "wrap", "gap": "72px"}} className="mk-home-70">
             <div style={{"display": "flex", "flexDirection": "column", "gap": "12px"}}>
               <span style={{"fontSize": "13px", "fontWeight": "700", "color": "var(--mk-text)"}}>
-                {t(185)}
+                {t(186)}
               </span>
               <Link href="/#features" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
-                {t(186)}
-              </Link>
-              <Link href="/#templates" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
                 {t(187)}
               </Link>
-              <Link href="/pricing" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
+              <Link href="/#templates" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
                 {t(188)}
               </Link>
-              <Link href="/demo" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
+              <Link href="/pricing" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
                 {t(189)}
+              </Link>
+              <Link href="/demo" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
+                {t(190)}
               </Link>
             </div>
             <div style={{"display": "flex", "flexDirection": "column", "gap": "12px"}}>
               <span style={{"fontSize": "13px", "fontWeight": "700", "color": "var(--mk-text)"}}>
-                {t(190)}
+                {t(191)}
               </span>
               <Link href="/#faq" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
-                {t(191)}
+                {t(192)}
               </Link>
               <a href="mailto:support@wsool.link" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
-                {t(192)}
+                {t(193)}
               </a>
             </div>
             <div style={{"display": "flex", "flexDirection": "column", "gap": "12px"}}>
               <span style={{"fontSize": "13px", "fontWeight": "700", "color": "var(--mk-text)"}}>
-                {t(193)}
+                {t(194)}
               </span>
               <Link href="/terms" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
-                {t(194)}
+                {t(195)}
               </Link>
               <Link href="/privacy" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
-                {t(195)}
+                {t(196)}
               </Link>
             </div>
           </div>
         </div>
         <div style={{"display": "flex", "flexWrap": "wrap", "justifyContent": "space-between", "gap": "12px", "paddingTop": "24px", "borderTop": "1px solid rgba(var(--mk-ink),0.09)", "fontSize": "13px", "color": "var(--mk-muted)"}}>
           <span dir="ltr">
-            {t(196)}
+            {t(197)}
           </span>
           <span>
-            {t(197)}
+            {t(198)}
           </span>
         </div>
       </footer>

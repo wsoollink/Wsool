@@ -20,6 +20,8 @@ export const FREE_LIMITS = {
   rates: false,
   /** Audience pop-ups on the platform cards: Pro only (owner, Oct 2026). Saved data is kept. */
   audience: false,
+  /** Linking accounts (followers/audience update by themselves): Pro only (owner, Oct 2026). Links on Free pages pause. */
+  connections: false,
   verifiedBadge: false,
   analytics: false,
   pdf: false,

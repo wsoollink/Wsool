@@ -34,7 +34,7 @@ export const MARKETING_TEXT = {
     faq: [
       ["هل التسجيل مجاني؟", "نعم. تسجّل وتبني صفحتك مجانًا، وتبدأ تلقائيًا بتجربة كل مزايا الخطة المدفوعة 14 يوم بدون بطاقة دفع."],
       ["وش يصير بعد التجربة المجانية؟", "نذكّرك قبل نهايتها، وتختار الباقة الشهرية أو السنوية. لو ما اشتركت، ترجع صفحتك للخطة المجانية وتبقى كل بياناتك محفوظة."],
-      ["كيف يتم توثيق أرقامي؟", "ترفع لقطة شاشة لصفحة كل حساب يبان فيها عدد المتابعين، ونراجعها خلال 48 ساعة، وتظهر الشارة لمدة 90 يوم."],
+      ["كيف يتم توثيق أرقامي؟", "ترفع لقطة شاشة لصفحة كل حساب يبان فيها عدد المتابعين، ونراجعها خلال 48 ساعة، وتظهر الشارة لمدة 90 يوم. وفي الخطة الاحترافية تقدر تربط حساباتك (مثل YouTube وTikTok وX) فتتوثّق وتتحدث أرقامها تلقائياً كل يوم."],
       ["هل أقدر أخفي أسعاري؟", "أكيد. تحدد أسعارك وتختار تظهرها في صفحتك أو ملف PDF أو تخفيها، ويظهر بدالها \"الأسعار عند التواصل\"."],
       ["أقدر أحذف حسابي؟", "نعم، من لوحة التحكم بنفسك في أي وقت، مع مهلة 30 يوم للتراجع."],
     ],
@@ -61,7 +61,7 @@ export const MARKETING_TEXT = {
     faq: [
       ["Is signing up free?", "Yes. Sign up and build your page for free, and you automatically get a 14-day trial of every paid feature, no card required."],
       ["What happens after the free trial?", "We remind you before it ends so you can pick a monthly or yearly plan. If you don’t subscribe, your page moves to the free plan and all your data stays safe."],
-      ["How are my numbers verified?", "Upload a screenshot of each account showing your follower count. We review it within 48 hours and the badge stays for 90 days."],
+      ["How are my numbers verified?", "Upload a screenshot of each account showing your follower count. We review it within 48 hours and the badge stays for 90 days. On Pro you can also link your accounts (like YouTube, TikTok and X) so they are verified and their numbers update by themselves every day."],
       ["Can I hide my rates?", "Absolutely. Set your rates and choose to show them on your page, in your PDF, or hide them and show \"Rates on request\"."],
       ["Can I delete my account?", "Yes, yourself from the dashboard at any time, with a 30-day window to change your mind."],
     ],

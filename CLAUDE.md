@@ -154,7 +154,7 @@ show in PDF, currency, VAT included or not. Hidden → show "الأسعار عن
   day 10, day 13, and day 14. If not subscribed, the page drops to Free; **no data is deleted**.
 - Free plan (owner, Oct 2026): page + link, 2 templates (White, Black), brand logos strip, 6 past works, contact,
   3 links + 3 services. Pro only: **ad rates and audience data** (hidden on Free pages, saved data kept; Free creators
-  see a `ProNotice` in those sections), verified badge, analytics, PDF, hiding the Wsool footer, all templates,
+  see a `ProNotice` in those sections), **platform connections** (linking + daily auto-update), verified badge, analytics, PDF, hiding the Wsool footer, all templates,
   unlimited works. All limits live in `FREE_LIMITS` (`src/config/plans.ts`), applied in `shapePage()`; the
   Subscription page comparison (`PlanPicker`) reads the same config.
 
@@ -814,6 +814,11 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
 ### Platform connections (owner, Oct 2026)
 - Creators link an account through the platform's own sign-in (OAuth); followers + audience then update daily and the account
   counts as verified while linked. Plan, platform order and the owner's Google setup: **`docs/platform-connections.md`**.
+- **Pro only** (owner, Oct 2026; trial counts; `FREE_LIMITS.connections`): `canConnect(userId)` guards start (web + app ticket,
+  error `pro`), the callback (`completeConnection`), Telegram's webhook and `checkBotLink`; `syncConnections` only picks links
+  whose owner is Pro (`proSubscription()`, same rule as `hasPro`). On Free a link is kept with its last numbers but paused
+  (dashboard/app note `connect.paused`) and resumes by itself with Pro; Free creators see `connect.proOnly` instead of the
+  button (web: "Upgrade" link; the app never says where to buy). Plan comparison row `cmp.connections`, pricing/home lists.
 - Code: `src/lib/connect/` (`Provider` per platform, `PROVIDERS`; YouTube = followers + audience, TikTok + Twitch = followers only, Discord = members of the server behind the saved invite, linked only when the creator owns/manages it (`profile(token, {url, externalId})`, `notFound: "no_server"`), X = followers via OAuth 2.0 + PKCE (verifier = HMAC of the signed state, `exchange(code, uri, state)`), paid per call so daily syncs are capped by `X_DAILY_SYNC_LIMIT` (default 500) and 402/429 are retried, not "lost", Telegram = channel subscribers through a bot (`bot: true`, `BOT_PLATFORMS`): Connect stamps `social_accounts.connect_requested_at` and opens t.me/<bot>?startchannel; the bot's `my_chat_member` webhook (`/api/telegram/webhook`, secret header) links the one account that asked in 30 min with the same @handle; stored "token" = chat id; webhook set by `ensureTelegramWebhook` (hourly + on Connect); "Check the link" (`checkBotConnection` → `checkBotLink`) asks Telegram directly whether the bot is an admin of @handle (Telegram sends no update when the bot already was one) and reloads the page (`CONNECT_AUDIENCE` in
   `src/config/platforms.ts` + app picks the hint text); `refresh()` may return a rotated refresh token, saved before reading), table `platform_connections` (server only, one
   platform account per Wsool account), refresh tokens sealed with `TOKEN_ENCRYPTION_KEY` (`src/lib/token-box.ts`). Routes

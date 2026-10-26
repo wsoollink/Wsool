@@ -46,6 +46,7 @@ async function Editor({ lang }: { lang: Locale }) {
       <AccountsCard
         initial={accounts.map((a) => ({ id: a.id, platform: a.platform, handle: a.handle, followers: a.followers, verificationStatus: a.verificationStatus, link: a.url, connection: connectionInfo(a.connection) }))}
         connectable={connectablePlatforms()}
+        pro={FREE_LIMITS.connections || hasPro(sub)}
       />
       <ViewsCard
         // Remount when the list changes so the rows match the saved accounts.

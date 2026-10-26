@@ -1,6 +1,6 @@
 import { timingSafeEqual } from "node:crypto";
 import { NextResponse, type NextRequest } from "next/server";
-import { providerFor, saveLink } from "@/lib/connect";
+import { canConnect, providerFor, saveLink } from "@/lib/connect";
 import { channelProfile, CONNECT_WINDOW_MS, webhookSecret } from "@/lib/connect/telegram";
 import { db } from "@/lib/db";
 
@@ -40,12 +40,14 @@ export async function POST(req: NextRequest) {
           platform: "telegram", handle: { equals: handle, mode: "insensitive" },
           connectRequestedAt: { gt: new Date(Date.now() - CONNECT_WINDOW_MS) }, page: { deletedAt: null },
         },
-        select: { id: true, pageId: true, page: { select: { username: true } } },
+        select: { id: true, pageId: true, page: { select: { username: true, userId: true } } },
       })
     : [];
   const taken = await db.platformConnection.findUnique({ where: { platform_externalId: { platform: "telegram", externalId: chatId } }, select: { accountId: true } });
   // Exactly one account asked for this channel, and no other account holds it.
-  const account = candidates.length === 1 && (!taken || taken.accountId === candidates[0].id) ? candidates[0] : null;
+  const one = candidates.length === 1 && (!taken || taken.accountId === candidates[0].id) ? candidates[0] : null;
+  // Linking is Pro (the trial counts): otherwise the bot leaves like for any other channel.
+  const account = one && (await canConnect(one.page.userId)) ? one : null;
   if (!account) {
     if (!taken) await provider.revoke(chatId);
     return NextResponse.json({ ok: true });

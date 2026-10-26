@@ -20,6 +20,8 @@ type Data = {
   viewsMonth: string | null; audienceLocked: boolean;
   /** Platforms the creator can link (their keys are set on the server). */
   connectable: Platform[];
+  /** Linking and the daily update are Pro (the trial counts); on Free, existing links pause. */
+  connectPro?: boolean;
 };
 const AGES = ["13-17", "18-24", "25-34", "35-44", "45+"];
 const COUNTRIES = ["SA", "AE", "KW", "QA", "BH", "OM", "EG", "JO", "IQ", "MA", "DZ", "TN", "LB", "YE", "SY", "PS", "SD", "LY", "TR", "US", "GB", "DE", "FR", "CA", "IN", "PK", "ID", "MY"];
@@ -160,6 +162,7 @@ export default function Accounts() {
     const s = a.id ? state[`conn:${a.id}`] : undefined;
     const note = s === "done" ? <T size={13} tone="good" accessibilityLiveRegion="polite">{t("accounts.connect.done", { platform: name })}</T>
       : s?.startsWith("error:") ? <T size={13} tone="bad" accessibilityLiveRegion="polite">{t(`accounts.connect.errors.${s.slice(6)}`)}</T> : null;
+    const pro = data?.connectPro !== false;
     if (conn && saved?.platform === a.platform) {
       return (
         <View style={{ gap: 6, padding: 12, borderRadius: 10, backgroundColor: colors.blueSoft }}>
@@ -168,8 +171,9 @@ export default function Accounts() {
             <T size={13} tone="blue" accessibilityRole="button" onPress={() => unlink(a.id!, a.platform)} style={{ paddingVertical: 10 }}>{t("accounts.connect.unlink")}</T>
           </Row>
           {conn.name ? <T size={13}>{t("accounts.connect.linkedTo", { name: conn.name })}</T> : null}
+          {!pro ? <T size={12.5} tone="warn">{t("accounts.connect.paused")}</T> : null}
           <T size={12.5} tone="muted">{conn.status === "active" ? `${t("accounts.connect.auto")}${conn.lastSyncAt ? ` · ${t("accounts.connect.lastSync", { date: date(conn.lastSyncAt) })}` : ""}` : t("accounts.connect.stoppedTitle", { platform: name })}</T>
-          {conn.status === "error" ? brandButton(a, t("accounts.connect.againOn", { platform: name }), s === "busy") : null}
+          {conn.status === "error" && pro ? brandButton(a, t("accounts.connect.againOn", { platform: name }), s === "busy") : null}
           {note}
         </View>
       );
@@ -178,6 +182,7 @@ export default function Accounts() {
     return (
       <View style={{ gap: 8, padding: 12, borderRadius: 10, backgroundColor: colors.blueSoft }}>
         <T weight="bold" size={14}>{t("accounts.connect.title", { platform: name })}</T>
+        {!pro ? <T size={12.5} tone="blue">{t("accounts.connect.proOnly")}</T> : <>
         <T size={12.5} tone="muted">{a.id && saved?.platform === a.platform ? t(CONNECT_AUDIENCE.includes(a.platform) ? "accounts.connect.why" : "accounts.connect.whyFollowers") : t("accounts.connect.saveFirst")}</T>
         {a.id && saved?.platform === a.platform
           ? brandButton(a, t("accounts.connect.button", { platform: name }), s === "busy")
@@ -189,6 +194,7 @@ export default function Accounts() {
             {s?.startsWith("check:") ? <T size={13} tone="bad" accessibilityLiveRegion="polite">{t(`accounts.connect.checkErrors.${s.slice(6)}`, { handle: `\u2066@${a.handle}\u2069` })}</T> : null}
           </View>
         )}
+        </>}
         {note}
       </View>
     );

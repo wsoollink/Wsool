@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
-import { ArrowDown, ArrowUp, BadgeCheck, ChevronDown, Link2, Plus, Trash2, Unlink, Users } from "lucide-react";
+import { ArrowDown, ArrowUp, BadgeCheck, ChevronDown, Link2, Plus, Sparkles, Trash2, Unlink, Users } from "lucide-react";
 import { buttonClasses } from "@/components/ui/Button";
 import { BRAND_COLORS } from "@/components/creator/icon-styles";
 import { PlatformIcon } from "@/components/creator/PlatformIcon";
@@ -45,7 +45,7 @@ function isChanged(row: Row) {
 }
 
 /** Social accounts: platform, handle, followers; reorder, add, delete; link (YouTube…) so numbers update by themselves. */
-export function AccountsCard({ initial, connectable = [] }: { initial: AccountRow[]; connectable?: Platform[] }) {
+export function AccountsCard({ initial, connectable = [], pro = true }: { initial: AccountRow[]; connectable?: Platform[]; pro?: boolean }) {
   const t = useTranslations("AccountsPage");
   const e = useTranslations("EditPage");
   const lang = useLocale().slice(0, 2) as Locale;
@@ -146,7 +146,7 @@ export function AccountsCard({ initial, connectable = [] }: { initial: AccountRo
     >
       {(connectedNow || connectError) && (
         <p role="status" className={`mx-5 mt-3 rounded-[10px] px-3 py-2 text-sm ${connectedNow ? "bg-good/10 text-good" : "bg-bad/10 text-bad"}`}>
-          {connectedNow ? t("connect.done", { platform: PLATFORM_NAMES[connectedNow as Platform] ?? connectedNow }) : t(`connect.errors.${["denied", "taken", "no_channel", "no_server", "expired", "gone", "unavailable"].includes(connectError!) ? connectError : "failed"}`)}
+          {connectedNow ? t("connect.done", { platform: PLATFORM_NAMES[connectedNow as Platform] ?? connectedNow }) : t(`connect.errors.${["denied", "taken", "no_channel", "no_server", "expired", "gone", "unavailable", "pro"].includes(connectError!) ? connectError : "failed"}`)}
         </p>
       )}
       <p className="px-5 pt-3 text-xs text-muted">{t("orderHint")}</p>
@@ -186,6 +186,7 @@ export function AccountsCard({ initial, connectable = [] }: { initial: AccountRo
                           {linked ? (
                             <>
                               <p className="flex items-center gap-2 text-sm font-bold text-good"><Link2 aria-hidden="true" size={16} /> {t("connect.linkedTo", { name: row.connection!.name ?? `@${row.handle}` })}</p>
+                              {!pro && <p className="text-xs font-semibold text-warn">{t("connect.paused")}</p>}
                               <p className="text-xs text-muted">{row.connection!.lastSyncAt ? t("connect.lastSync", { date: new Intl.DateTimeFormat(lang === "ar" ? "ar-u-nu-latn" : "en", { dateStyle: "medium", timeStyle: "short" }).format(new Date(row.connection!.lastSyncAt)) }) : t("connect.auto")}</p>
                               <button type="button" onClick={() => unlink(row)} disabled={unlinking === row.id} className="inline-flex min-h-11 w-fit items-center gap-2 rounded-full px-3 text-[13px] font-semibold text-bad hover:bg-bad/8 md:min-h-9">
                                 <Unlink aria-hidden="true" size={15} /> {t("connect.unlink")}
@@ -195,6 +196,17 @@ export function AccountsCard({ initial, connectable = [] }: { initial: AccountRo
                             <>
                               <p className="text-sm font-bold">{row.connection ? t("connect.stoppedTitle", { platform: name }) : t("connect.title", { platform: name })}</p>
                               <p className="text-xs text-muted">{t(CONNECT_AUDIENCE.includes(row.platform) ? "connect.why" : "connect.whyFollowers")}</p>
+                              {!pro ? (
+                                <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                                  <p className="flex min-w-0 flex-1 items-center gap-2 text-xs font-semibold text-blue"><Sparkles aria-hidden="true" size={15} className="shrink-0" /> {t("connect.proOnly")}</p>
+                                  <Link href="/dashboard/subscription" className={buttonClasses("primary", "w-fit")}>{t("connect.upgrade")}</Link>
+                                  {row.connection && (
+                                    <button type="button" onClick={() => unlink(row)} disabled={unlinking === row.id} className="inline-flex min-h-11 w-fit items-center gap-2 rounded-full px-3 text-[13px] font-semibold text-bad hover:bg-bad/8 md:min-h-9">
+                                      <Unlink aria-hidden="true" size={15} /> {t("connect.unlink")}
+                                    </button>
+                                  )}
+                                </div>
+                              ) : <>
                               {BOT_PLATFORMS.includes(row.platform) && row.id && (
                                 <ol className="list-decimal ps-5 text-xs leading-6 text-navy">
                                   {(["1", "2", "3"] as const).map((n) => <li key={n}>{t(`connect.botSteps.${n}`, { handle: `\u2066@${row.handle}\u2069` })}</li>)}
@@ -226,6 +238,7 @@ export function AccountsCard({ initial, connectable = [] }: { initial: AccountRo
                               ) : (
                                 <p className="text-xs font-semibold text-warn">{t("connect.saveFirst")}</p>
                               )}
+                              </>}
                             </>
                           )}
                         </div>

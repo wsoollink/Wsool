@@ -2,6 +2,7 @@ import "server-only";
 import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 import type { Prisma } from "@/generated/prisma/client";
 import type { Platform } from "@/generated/prisma/enums";
+import { FREE_LIMITS, hasPro } from "@/config/plans";
 import { PLATFORM_NAMES } from "@/config/platforms";
 import { VERIFICATION_DAYS } from "@/config/verification";
 import { db } from "@/lib/db";
@@ -87,7 +88,20 @@ export async function ownAccount(userId: string, accountId: string) {
 
 // ---- saving and updating ----
 
-export type ConnectError = "denied" | "failed" | "no_channel" | "no_server" | "taken" | "gone";
+export type ConnectError = "denied" | "failed" | "no_channel" | "no_server" | "taken" | "gone" | "pro";
+
+/**
+ * Linking and the daily update are Pro (the trial counts), owner Oct 2026: a page on Free keeps its links and last
+ * numbers, but nothing new is linked and the sync pauses until the plan is Pro again. Same rule as hasPro().
+ */
+const proSubscription = (now = new Date()) => ({
+  OR: [{ status: { in: ["active", "past_due"] } }, { status: "trialing", trialEndsAt: { gt: now } }],
+}) satisfies Prisma.SubscriptionWhereInput;
+
+export async function canConnect(userId: string) {
+  if (FREE_LIMITS.connections) return true;
+  return hasPro(await db.subscription.findUnique({ where: { userId }, select: { status: true, trialEndsAt: true } }));
+}
 
 const verifiedUntil = () => new Date(Date.now() + VERIFICATION_DAYS * 86_400_000);
 
@@ -96,6 +110,7 @@ export async function completeConnection(flow: Flow, code: string, redirectUri: 
   const provider = providerFor(flow.platform);
   const account = provider && (await ownAccount(flow.userId, flow.accountId));
   if (!provider || !account || account.platform !== flow.platform) return { error: "gone" };
+  if (!(await canConnect(flow.userId))) return { error: "pro" };
 
   const tokens = await provider.exchange(code, redirectUri, state).catch(() => null);
   if (!tokens) return { error: "failed" };
@@ -169,7 +184,11 @@ export async function setAccountViews(tx: Prisma.TransactionClient, pageId: stri
 /** Daily update of every link not refreshed in the last 20 hours (a batch per hourly run). */
 export async function syncConnections(limit = 40) {
   const due = await db.platformConnection.findMany({
-    where: { status: "active", OR: [{ lastSyncAt: null }, { lastSyncAt: { lt: new Date(Date.now() - 20 * 3_600_000) } }] },
+    where: {
+      status: "active", OR: [{ lastSyncAt: null }, { lastSyncAt: { lt: new Date(Date.now() - 20 * 3_600_000) } }],
+      // Paused while the page is on Free (kept, resumes with Pro).
+      ...(!FREE_LIMITS.connections && { account: { page: { user: { subscription: proSubscription() } } } }),
+    },
     orderBy: { lastSyncAt: { sort: "asc", nulls: "first" } },
     take: limit,
     select: { id: true, accountId: true, platform: true, externalId: true, refreshToken: true, account: { select: { followers: true, platform: true, handle: true, url: true, pageId: true, page: { select: { userId: true, username: true } } } } },
@@ -226,13 +245,14 @@ export async function syncConnections(limit = 40) {
  * Bot platforms (Telegram): links the creator's own account when the bot is already an admin of its channel and
  * the creator tapped "Connect" in the last 30 minutes (see botIsAdmin). ok = linked (or already linked).
  */
-export async function checkBotLink(userId: string, accountId: string): Promise<{ ok: true } | { error: "not_admin" | "taken" | "expired" | "gone" }> {
+export async function checkBotLink(userId: string, accountId: string): Promise<{ ok: true } | { error: "not_admin" | "taken" | "expired" | "gone" | "pro" }> {
   const account = await db.socialAccount.findFirst({
     where: { id: accountId, platform: "telegram", page: { userId, deletedAt: null } },
     select: { id: true, pageId: true, handle: true, connectRequestedAt: true, page: { select: { username: true } }, connection: { select: { status: true } } },
   });
   if (!account || !providerFor("telegram")) return { error: "gone" };
   if (account.connection?.status === "active") return { ok: true };
+  if (!(await canConnect(userId))) return { error: "pro" };
   if (!account.connectRequestedAt || account.connectRequestedAt.getTime() < Date.now() - CONNECT_WINDOW_MS) return { error: "expired" };
   const chatId = await botIsAdmin(account.handle).catch(() => null);
   if (!chatId) return { error: "not_admin" };

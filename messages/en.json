@@ -525,9 +525,12 @@
       "again": "Connect again",
       "againOn": "Reconnect {platform}",
       "check": "Check the link",
-      "checkErrors": {"not_admin": "The bot isn't an admin of {handle} yet. Add it as an admin of the channel with that exact username, then try again in a few seconds.", "expired": "Tap “Connect Telegram” first, then add the bot and tap “Check the link” within 30 minutes.", "taken": "This channel is linked to another Wsool page.", "gone": "We couldn't find this account on your page. Refresh and try again."},
+      "checkErrors": {"not_admin": "The bot isn't an admin of {handle} yet. Add it as an admin of the channel with that exact username, then try again in a few seconds.", "expired": "Tap “Connect Telegram” first, then add the bot and tap “Check the link” within 30 minutes.", "taken": "This channel is linked to another Wsool page.", "gone": "We couldn't find this account on your page. Refresh and try again.", "pro": "Linking accounts is available on Pro only."},
       "botSteps": {"1": "Tap the button; Telegram opens.", "2": "Pick your channel {handle} and add the Wsool bot as an admin (no extra rights needed).", "3": "Come back and tap “Check the link”. The channel must be public, with the same username."},
       "saveFirst": "Save the account first, then you can connect it.",
+      "paused": "Automatic updates are paused because your page is on the Free plan. Your numbers stay as last updated, and updates resume by themselves with Pro.",
+      "proOnly": "Linking accounts so their numbers update by themselves is part of Pro. You can still type your numbers and verify them with a screenshot.",
+      "upgrade": "Upgrade to Pro",
       "linked": "Connected",
       "stopped": "Link stopped",
       "linkedTo": "Connected to {name}",
@@ -545,6 +548,7 @@
         "expired": "The connection timed out. Please try again.",
         "gone": "We couldn't find this account on your page. Refresh and try again.",
         "unavailable": "Connecting this platform isn't available right now.",
+        "pro": "Linking accounts is available on Pro only.",
         "failed": "Something went wrong while connecting. Please try again."
       }
     }
@@ -1767,6 +1771,7 @@
       "unlimited": "Unlimited",
       "rates": "Ad rates",
       "audience": "Audience data",
+      "connections": "Linked accounts: followers and audience update by themselves",
       "badge": "Verified badge",
       "analytics": "Analytics",
       "pdf": "PDF media kit",

@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
-import { callbackUrl, newNonce, NONCE_COOKIE, ownAccount, providerFor, requestOrigin, seal, unseal, type Flow } from "@/lib/connect";
+import { callbackUrl, canConnect, newNonce, NONCE_COOKIE, ownAccount, providerFor, requestOrigin, seal, unseal, type Flow } from "@/lib/connect";
 import { ensureTelegramWebhook } from "@/lib/connect/telegram";
 import { db } from "@/lib/db";
 import { siteOrigin } from "@/lib/site-url";
@@ -34,6 +34,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ plat
   }
   const account = await ownAccount(flow.userId, flow.accountId);
   if (!account || account.platform !== provider.platform) return back("gone");
+  if (!(await canConnect(flow.userId))) return back("pro");
 
   // Bot platforms (Telegram): remember the request, then open the bot's "add to channel" screen; its webhook links.
   if (provider.bot) {

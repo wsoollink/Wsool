@@ -232,6 +232,12 @@ export function PricingView({ v, t }: { v: any; t: (i: number) => string }) {
                     </svg>
                     {t(43)}
                   </li>
+                  <li style={{"display": "flex", "alignItems": "center", "gap": "10px", "minHeight": "38px", "fontSize": "14.5px"}}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7EE2B8" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d="M5 12l5 5 9-10" />
+                    </svg>
+                    {t(44)}
+                  </li>
                 </ul>
               </div>
             </div>
@@ -242,10 +248,10 @@ export function PricingView({ v, t }: { v: any; t: (i: number) => string }) {
         <div style={{"display": "flex", "flexDirection": "column", "gap": "14px", "alignItems": "center", "textAlign": "center", "maxWidth": "760px", "margin": "0 auto"}} className="ws-reveal">
           <span style={{"display": "inline-flex", "alignItems": "center", "gap": "8px", "fontSize": "13.5px", "fontWeight": "700", "color": "var(--mk-logo-blue-text)"}}>
             <span style={{"width": "18px", "height": "2px", "background": "#0A6CFF", "borderRadius": "2px"}}></span>
-            {t(44)}
+            {t(45)}
           </span>
           <h2 style={{"margin": "0", "fontSize": "48px", "lineHeight": "1.2", "fontWeight": "900", "letterSpacing": "-0.015em", "color": "var(--mk-text)"}} className="mk-pricing-9">
-            {t(45)}
+            {t(46)}
           </h2>
         </div>
         <div style={{"maxWidth": "900px", "width": "100%", "margin": "0 auto"}}>
@@ -254,169 +260,180 @@ export function PricingView({ v, t }: { v: any; t: (i: number) => string }) {
               <thead>
                 <tr>
                   <th scope="col" style={{"padding": "20px", "textAlign": v.en ? "left" : "right", "fontSize": "13px", "color": "var(--mk-muted)"}}>
-                    {t(46)}
-                  </th>
-                  <th scope="col" style={{"padding": "20px 10px", "fontSize": "15px"}}>
                     {t(47)}
                   </th>
-                  <th scope="col" style={{"padding": "20px 10px", "fontSize": "15px", "color": "var(--mk-logo-blue-text)"}}>
+                  <th scope="col" style={{"padding": "20px 10px", "fontSize": "15px"}}>
                     {t(48)}
+                  </th>
+                  <th scope="col" style={{"padding": "20px 10px", "fontSize": "15px", "color": "var(--mk-logo-blue-text)"}}>
+                    {t(49)}
                   </th>
                 </tr>
               </thead>
               <tbody>
                 <tr style={{"borderTop": "1px solid rgba(var(--mk-ink),0.09)"}}>
                   <th scope="row" style={{"padding": "16px 20px", "textAlign": v.en ? "left" : "right", "fontWeight": "500", "fontSize": "15px"}}>
-                    {t(49)}
+                    {t(50)}
                   </th>
                   <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "color": "var(--mk-text)"}}>
-                    {t(50)}
-                  </td>
-                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "var(--mk-good)"}}>
                     {t(51)}
                   </td>
+                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "var(--mk-good)"}}>
+                    {t(52)}
+                  </td>
                 </tr>
                 <tr style={{"borderTop": "1px solid rgba(var(--mk-ink),0.09)"}}>
                   <th scope="row" style={{"padding": "16px 20px", "textAlign": v.en ? "left" : "right", "fontWeight": "500", "fontSize": "15px"}}>
-                    {t(52)}
+                    {t(53)}
                   </th>
                   <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "color": "var(--mk-text)"}}>
-                    {t(53)}
-                  </td>
-                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "var(--mk-good)"}}>
                     {t(54)}
                   </td>
+                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "var(--mk-good)"}}>
+                    {t(55)}
+                  </td>
                 </tr>
                 <tr style={{"borderTop": "1px solid rgba(var(--mk-ink),0.09)"}}>
                   <th scope="row" style={{"padding": "16px 20px", "textAlign": v.en ? "left" : "right", "fontWeight": "500", "fontSize": "15px"}}>
-                    {t(55)}
+                    {t(56)}
                   </th>
                   <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "color": "var(--mk-text)"}}>
-                    {t(56)}
-                  </td>
-                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "var(--mk-good)"}}>
                     {t(57)}
                   </td>
+                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "var(--mk-good)"}}>
+                    {t(58)}
+                  </td>
                 </tr>
                 <tr style={{"borderTop": "1px solid rgba(var(--mk-ink),0.09)"}}>
                   <th scope="row" style={{"padding": "16px 20px", "textAlign": v.en ? "left" : "right", "fontWeight": "500", "fontSize": "15px"}}>
-                    {t(58)}
+                    {t(59)}
                   </th>
                   <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "color": "var(--mk-text)"}}>
-                    {t(59)}
-                  </td>
-                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "var(--mk-good)"}}>
                     {t(60)}
                   </td>
+                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "var(--mk-good)"}}>
+                    {t(61)}
+                  </td>
                 </tr>
                 <tr style={{"borderTop": "1px solid rgba(var(--mk-ink),0.09)"}}>
                   <th scope="row" style={{"padding": "16px 20px", "textAlign": v.en ? "left" : "right", "fontWeight": "500", "fontSize": "15px"}}>
-                    {t(61)}
+                    {t(62)}
                   </th>
                   <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "color": "var(--mk-text)"}}>
-                    {t(62)}
-                  </td>
-                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "var(--mk-good)"}}>
                     {t(63)}
                   </td>
+                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "var(--mk-good)"}}>
+                    {t(64)}
+                  </td>
                 </tr>
                 <tr style={{"borderTop": "1px solid rgba(var(--mk-ink),0.09)"}}>
                   <th scope="row" style={{"padding": "16px 20px", "textAlign": v.en ? "left" : "right", "fontWeight": "500", "fontSize": "15px"}}>
-                    {t(64)}
+                    {t(65)}
                   </th>
                   <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "color": "var(--mk-text)"}}>
-                    {t(65)}
-                  </td>
-                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "var(--mk-logo-blue-text)"}}>
                     {t(66)}
                   </td>
+                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "var(--mk-logo-blue-text)"}}>
+                    {t(67)}
+                  </td>
                 </tr>
                 <tr style={{"borderTop": "1px solid rgba(var(--mk-ink),0.09)"}}>
                   <th scope="row" style={{"padding": "16px 20px", "textAlign": v.en ? "left" : "right", "fontWeight": "500", "fontSize": "15px"}}>
-                    {t(67)}
+                    {t(68)}
                   </th>
                   <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "color": "var(--mk-text)"}}>
-                    {t(68)}
-                  </td>
-                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "var(--mk-logo-blue-text)"}}>
                     {t(69)}
                   </td>
+                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "var(--mk-logo-blue-text)"}}>
+                    {t(70)}
+                  </td>
                 </tr>
                 <tr style={{"borderTop": "1px solid rgba(var(--mk-ink),0.09)"}}>
                   <th scope="row" style={{"padding": "16px 20px", "textAlign": v.en ? "left" : "right", "fontWeight": "500", "fontSize": "15px"}}>
-                    {t(70)}
+                    {t(71)}
                   </th>
                   <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "color": "var(--mk-text)"}}>
-                    {t(71)}
-                  </td>
-                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "var(--mk-logo-blue-text)"}}>
                     {t(72)}
                   </td>
+                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "var(--mk-logo-blue-text)"}}>
+                    {t(73)}
+                  </td>
                 </tr>
                 <tr style={{"borderTop": "1px solid rgba(var(--mk-ink),0.09)"}}>
                   <th scope="row" style={{"padding": "16px 20px", "textAlign": v.en ? "left" : "right", "fontWeight": "500", "fontSize": "15px"}}>
-                    {t(73)}
+                    {t(74)}
                   </th>
                   <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "color": "var(--mk-muted)"}}>
-                    {t(74)}
-                  </td>
-                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "var(--mk-good)"}}>
                     {t(75)}
                   </td>
+                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "var(--mk-good)"}}>
+                    {t(76)}
+                  </td>
                 </tr>
                 <tr style={{"borderTop": "1px solid rgba(var(--mk-ink),0.09)"}}>
                   <th scope="row" style={{"padding": "16px 20px", "textAlign": v.en ? "left" : "right", "fontWeight": "500", "fontSize": "15px"}}>
-                    {t(76)}
+                    {t(77)}
                   </th>
                   <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "color": "var(--mk-muted)"}}>
-                    {t(77)}
-                  </td>
-                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "var(--mk-good)"}}>
                     {t(78)}
                   </td>
+                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "var(--mk-good)"}}>
+                    {t(79)}
+                  </td>
                 </tr>
                 <tr style={{"borderTop": "1px solid rgba(var(--mk-ink),0.09)"}}>
                   <th scope="row" style={{"padding": "16px 20px", "textAlign": v.en ? "left" : "right", "fontWeight": "500", "fontSize": "15px"}}>
-                    {t(79)}
+                    {t(80)}
                   </th>
                   <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "color": "var(--mk-muted)"}}>
-                    {t(80)}
-                  </td>
-                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "var(--mk-good)"}}>
                     {t(81)}
                   </td>
+                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "var(--mk-good)"}}>
+                    {t(82)}
+                  </td>
                 </tr>
                 <tr style={{"borderTop": "1px solid rgba(var(--mk-ink),0.09)"}}>
                   <th scope="row" style={{"padding": "16px 20px", "textAlign": v.en ? "left" : "right", "fontWeight": "500", "fontSize": "15px"}}>
-                    {t(82)}
+                    {t(83)}
                   </th>
                   <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "color": "var(--mk-muted)"}}>
-                    {t(83)}
-                  </td>
-                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "var(--mk-good)"}}>
                     {t(84)}
                   </td>
+                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "var(--mk-good)"}}>
+                    {t(85)}
+                  </td>
                 </tr>
                 <tr style={{"borderTop": "1px solid rgba(var(--mk-ink),0.09)"}}>
                   <th scope="row" style={{"padding": "16px 20px", "textAlign": v.en ? "left" : "right", "fontWeight": "500", "fontSize": "15px"}}>
-                    {t(85)}
+                    {t(86)}
                   </th>
                   <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "color": "var(--mk-muted)"}}>
-                    {t(86)}
-                  </td>
-                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "var(--mk-good)"}}>
                     {t(87)}
                   </td>
+                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "var(--mk-good)"}}>
+                    {t(88)}
+                  </td>
                 </tr>
                 <tr style={{"borderTop": "1px solid rgba(var(--mk-ink),0.09)"}}>
                   <th scope="row" style={{"padding": "16px 20px", "textAlign": v.en ? "left" : "right", "fontWeight": "500", "fontSize": "15px"}}>
-                    {t(88)}
+                    {t(89)}
                   </th>
                   <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "color": "var(--mk-muted)"}}>
-                    {t(89)}
+                    {t(90)}
                   </td>
                   <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "var(--mk-good)"}}>
-                    {t(90)}
+                    {t(91)}
+                  </td>
+                </tr>
+                <tr style={{"borderTop": "1px solid rgba(var(--mk-ink),0.09)"}}>
+                  <th scope="row" style={{"padding": "16px 20px", "textAlign": v.en ? "left" : "right", "fontWeight": "500", "fontSize": "15px"}}>
+                    {t(92)}
+                  </th>
+                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "color": "var(--mk-muted)"}}>
+                    {t(93)}
+                  </td>
+                  <td style={{"padding": "16px 10px", "textAlign": "center", "fontSize": "14.5px", "fontWeight": "700", "color": "var(--mk-good)"}}>
+                    {t(94)}
                   </td>
                 </tr>
               </tbody>
@@ -429,17 +446,17 @@ export function PricingView({ v, t }: { v: any; t: (i: number) => string }) {
           <div style={{"display": "flex", "flexDirection": "column", "gap": "14px", "alignItems": "flex-start", "textAlign": v.en ? "left" : "right", "maxWidth": "760px"}} className="ws-reveal mk-pricing-11">
             <span style={{"display": "inline-flex", "alignItems": "center", "gap": "8px", "fontSize": "13.5px", "fontWeight": "700", "color": "var(--mk-logo-blue-text)"}}>
               <span style={{"width": "18px", "height": "2px", "background": "#0A6CFF", "borderRadius": "2px"}}></span>
-              {t(91)}
+              {t(95)}
             </span>
             <h2 style={{"margin": "0", "fontSize": "48px", "lineHeight": "1.2", "fontWeight": "900", "letterSpacing": "-0.015em", "color": "var(--mk-text)"}} className="mk-pricing-12">
-              {t(92)}
+              {t(96)}
             </h2>
             <p style={{"margin": "0", "fontSize": "18px", "lineHeight": "1.8", "color": "var(--mk-muted)"}} className="mk-pricing-13">
-              {t(93)}
+              {t(97)}
             </p>
           </div>
           <a href="mailto:support@wsool.link" style={{"height": "52px", "padding": "0 24px", "borderRadius": "999px", "border": "1px solid rgba(var(--mk-ink),0.09)", "background": "var(--mk-card)", "color": "var(--mk-text)", "fontFamily": "inherit", "fontSize": "15px", "fontWeight": "500", "display": "inline-flex", "alignItems": "center", "justifyContent": "center", "gap": "8px", "cursor": "pointer", "textDecoration": "none", "alignSelf": "flex-start"}} className="mk-pricing-14">
-            {t(94)}
+            {t(98)}
           </a>
         </div>
         <div style={{"display": "flex", "flexDirection": "column", "gap": "10px", "flex": "1 1 480px", "minWidth": "0"}}>
@@ -473,23 +490,23 @@ export function PricingView({ v, t }: { v: any; t: (i: number) => string }) {
           <div aria-hidden="true" style={{"position": "absolute", "top": "-160px", "left": "-120px", "width": "460px", "height": "460px", "borderRadius": "50%", "background": "radial-gradient(closest-side, rgba(34,184,240,0.45), transparent)"}}></div>
           <div aria-hidden="true" style={{"position": "absolute", "bottom": "-200px", "right": "-140px", "width": "480px", "height": "480px", "borderRadius": "50%", "background": "radial-gradient(closest-side, rgba(10,108,255,0.40), transparent)"}}></div>
           <h2 style={{"position": "relative", "margin": "0", "fontSize": "56px", "lineHeight": "1.15", "fontWeight": "900", "letterSpacing": "-0.02em"}} className="mk-pricing-17">
-            {t(95)}
+            {t(99)}
           </h2>
           <p style={{"position": "relative", "margin": "0", "fontSize": "18px", "lineHeight": "1.8", "color": "rgba(255,255,255,0.75)", "maxWidth": "520px"}} className="mk-pricing-18">
-            {t(96)}
+            {t(100)}
           </p>
           <div style={{"position": "relative", "width": "100%", "display": "flex", "justifyContent": "center"}}>
             <div style={{"display": "flex", "flexDirection": "column", "gap": "10px", "width": "100%", "maxWidth": "520px"}}>
               <label htmlFor="claim2" style={{"position": "absolute", "width": "1px", "height": "1px", "overflow": "hidden", "clip": "rect(0 0 0 0)"}}>
-                {t(97)}
+                {t(101)}
               </label>
               <div dir="ltr" style={{"display": "flex", "alignItems": "center", "gap": "6px", "padding": "7px", "borderRadius": "999px", "background": "#FFFFFF", "border": `1.5px solid ${v.claimBorder}`, "boxShadow": "0 18px 40px rgba(2,25,65,0.10)"}}>
                 <span style={{"paddingLeft": "16px", "fontSize": "17px", "fontWeight": "500", "color": "#56607A"}} className="mk-pricing-19">
-                  {t(98)}
+                  {t(102)}
                 </span>
                 <input id="claim2" type="text" autoComplete="off" spellCheck="false" placeholder="yourname" value={v.claimV} onChange={v.onClaim} style={{"flex": "1", "minWidth": "0", "height": "48px", "border": "none", "background": "transparent", "fontFamily": "inherit", "fontSize": "17px", "fontWeight": "700", "color": "#021941", "outline": "none"}} className="mk-pricing-20" />
                 <button type="button" onClick={v.claimGo} style={{"height": "48px", "padding": "0 22px", "borderRadius": "999px", "border": "none", "background": "#0A6CFF", "color": "#FFFFFF", "fontFamily": "inherit", "fontSize": "14.5px", "fontWeight": "700", "display": "inline-flex", "alignItems": "center", "justifyContent": "center", "gap": "10px", "cursor": "pointer", "textDecoration": "none", "boxShadow": "none", "flexShrink": "0"}} className="mk-pricing-21">
-                  <span className="mk-dsk">{t(99)}</span><span className="mk-mob">{t(100)}</span>
+                  <span className="mk-dsk">{t(103)}</span><span className="mk-mob">{t(104)}</span>
                 </button>
               </div>
               <span style={{"fontSize": "13px", "color": v.claimColorD, "padding": "0 8px"}}>
@@ -502,59 +519,59 @@ export function PricingView({ v, t }: { v: any; t: (i: number) => string }) {
       <footer style={{"maxWidth": "1200px", "margin": "0 auto", "padding": "96px 32px 40px", "display": "flex", "flexDirection": "column", "gap": "36px"}} className="mk-pricing-22">
         <div style={{"display": "flex", "flexWrap": "wrap", "justifyContent": "space-between", "gap": "36px"}}>
           <div style={{"display": "flex", "flexDirection": "column", "gap": "14px", "whiteSpace": "nowrap"}}>
-            <img className="mk-logo-light" src={v.en ? "/marketing/a841426bbb5bd28188577aa5bd4b74da.png" : "/marketing/84a13f503b73bc5552ed2fb6c15e33e3.png"} alt={t(101)} style={{"height": "38px", "width": "auto", "display": "block", "alignSelf": "flex-start"}} /><img className="mk-logo-dark" src={v.en ? "/brand/logo-en-dark.png" : "/brand/logo-ar-dark.png"} alt={t(101)} style={{"height": "38px", "width": "auto", "display": "block", "alignSelf": "flex-start"}} />
+            <img className="mk-logo-light" src={v.en ? "/marketing/a841426bbb5bd28188577aa5bd4b74da.png" : "/marketing/84a13f503b73bc5552ed2fb6c15e33e3.png"} alt={t(105)} style={{"height": "38px", "width": "auto", "display": "block", "alignSelf": "flex-start"}} /><img className="mk-logo-dark" src={v.en ? "/brand/logo-en-dark.png" : "/brand/logo-ar-dark.png"} alt={t(105)} style={{"height": "38px", "width": "auto", "display": "block", "alignSelf": "flex-start"}} />
             <p style={{"margin": "0", "fontSize": "14px", "lineHeight": "1.8", "color": "var(--mk-muted)"}}>
-              {t(102)}
+              {t(106)}
             </p>
           </div>
           <div style={{"display": "flex", "flexWrap": "wrap", "gap": "72px"}} className="mk-pricing-23">
             <div style={{"display": "flex", "flexDirection": "column", "gap": "12px"}}>
               <span style={{"fontSize": "13px", "fontWeight": "700", "color": "var(--mk-text)"}}>
-                {t(103)}
+                {t(107)}
               </span>
               <Link href="/#features" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
-                {t(104)}
+                {t(108)}
               </Link>
               <Link href="/#templates" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
-                {t(105)}
+                {t(109)}
               </Link>
               <Link href="/pricing" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
-                {t(106)}
+                {t(110)}
               </Link>
               <Link href="/demo" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
-                {t(107)}
+                {t(111)}
               </Link>
             </div>
             <div style={{"display": "flex", "flexDirection": "column", "gap": "12px"}}>
               <span style={{"fontSize": "13px", "fontWeight": "700", "color": "var(--mk-text)"}}>
-                {t(108)}
+                {t(112)}
               </span>
               <Link href="/#faq" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
-                {t(109)}
+                {t(113)}
               </Link>
               <a href="mailto:support@wsool.link" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
-                {t(110)}
+                {t(114)}
               </a>
             </div>
             <div style={{"display": "flex", "flexDirection": "column", "gap": "12px"}}>
               <span style={{"fontSize": "13px", "fontWeight": "700", "color": "var(--mk-text)"}}>
-                {t(111)}
+                {t(115)}
               </span>
               <Link href="/terms" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
-                {t(112)}
+                {t(116)}
               </Link>
               <Link href="/privacy" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
-                {t(113)}
+                {t(117)}
               </Link>
             </div>
           </div>
         </div>
         <div style={{"display": "flex", "flexWrap": "wrap", "justifyContent": "space-between", "gap": "12px", "paddingTop": "24px", "borderTop": "1px solid rgba(var(--mk-ink),0.09)", "fontSize": "13px", "color": "var(--mk-muted)"}}>
           <span dir="ltr">
-            {t(114)}
+            {t(118)}
           </span>
           <span>
-            {t(115)}
+            {t(119)}
           </span>
         </div>
       </footer>

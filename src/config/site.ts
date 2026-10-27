@@ -22,7 +22,9 @@ export const SELLER = {
   vatNumber: "",
   /** Unified national number of the commercial registration. */
   crNumber: "7055476373",
-  address: "",
+  /** National address (may move when the company gets an office): update both languages. */
+  address: "طريق الأمير متعب بن عبدالعزيز، حي الشعلة، الدمام، المملكة العربية السعودية",
+  addressEn: "Prince Mutaib bin Abdulaziz Rd, Al Shulah, Dammam, Saudi Arabia",
   email: BILLING_EMAIL,
 };
 

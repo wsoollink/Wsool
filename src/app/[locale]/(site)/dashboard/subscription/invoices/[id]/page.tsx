@@ -47,7 +47,7 @@ async function Invoice({ params, lang }: { params: Promise<{ id: string }>; lang
         <div><dt className="text-xs text-muted">{t("seller")}</dt><dd className="font-medium">{lang === "en" ? SELLER.nameEn : SELLER.name}</dd>
           {SELLER.vatNumber && <dd className="text-muted">{t("vatNumber")}: <span dir="ltr">{SELLER.vatNumber}</span></dd>}
           {SELLER.crNumber && <dd className="text-muted">{t("crNumber")}: <span dir="ltr">{SELLER.crNumber}</span></dd>}
-          {SELLER.address && <dd className="text-muted">{SELLER.address}</dd>}
+          {SELLER.address && <dd className="text-muted">{lang === "en" ? SELLER.addressEn : SELLER.address}</dd>}
         </div>
         <div><dt className="text-xs text-muted">{t("customer")}</dt><dd className="font-medium" dir="ltr">{user.email}</dd></div>
         <div><dt className="text-xs text-muted">{t("date")}</dt><dd>{date.format(inv.paidAt ?? inv.createdAt)}</dd></div>

@@ -561,7 +561,8 @@
         "pro": "Linking accounts is available on Pro only.",
         "failed": "Something went wrong while connecting. Please try again."
       }
-    }
+    },
+    "audienceNotFromPlatform": "{platform} doesn't share audience data when linked, so you still fill it in: tap “Fill from a stats screenshot” and upload a screenshot of your account's stats."
   },
   "WorkPage": {
     "brands": "Brands you worked with",

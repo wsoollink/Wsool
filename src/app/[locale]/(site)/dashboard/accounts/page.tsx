@@ -61,7 +61,7 @@ async function Editor({ lang }: { lang: Locale }) {
       <AudienceCard
         // Remount when the list changes so each form starts from saved data.
         key={accounts.map((a) => a.id).join()}
-        accounts={accounts.map((a) => ({ id: a.id, platform: a.platform, handle: a.handle, audience: audienceOf(a), auto: autoFilled("audience", a.platform, a.connection) }))}
+        accounts={accounts.map((a) => ({ id: a.id, platform: a.platform, handle: a.handle, audience: audienceOf(a), auto: autoFilled("audience", a.platform, a.connection), linked: a.connection?.status === "active" }))}
         notice={!hasPro(sub) && !FREE_LIMITS.audience ? t("audienceProOnly") : undefined}
       />
     </div>

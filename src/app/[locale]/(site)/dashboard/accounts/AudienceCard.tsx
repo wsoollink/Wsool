@@ -21,6 +21,8 @@ export type AudienceAccount = {
   id: string; platform: Platform; handle: string; audience: AudienceValue | null;
   /** Linked: the platform fills the audience (src/lib/connect); shown read-only in the platform's own groups. */
   auto?: boolean;
+  /** Linked, but the platform gives no audience (X, TikTok…): the creator still fills it in (screenshot or by hand). */
+  linked?: boolean;
 };
 
 /** Countries offered in the picker (Gulf and Arab countries first). */
@@ -67,6 +69,7 @@ export function AudienceCard({ accounts, notice }: { accounts: AudienceAccount[]
                 </button>
                 {/* Kept mounted while closed so unsaved edits survive collapsing. */}
                 <div id={`aud-${a.id}`} hidden={!open} className="border-t border-line-soft bg-bg/60 p-3">
+                  {!a.auto && a.linked && <p className="mb-3 text-[13px] text-muted">{t("audienceNotFromPlatform", { platform: PLATFORM_NAMES[a.platform] })}</p>}
                   {a.auto ? <AudienceSummary account={a} /> : <AudienceForm account={a} />}
                 </div>
               </li>

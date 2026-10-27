@@ -299,6 +299,7 @@ export default function Accounts() {
                 )}
                 {isOpen && !autoFilled("audience", a.platform, a.connection) && (
                   <View style={{ gap: 12 }}>
+                    {a.connection?.status === "active" ? <T size={13} tone="muted">{t("accounts.audienceNotFromPlatform", { platform: PLATFORM_NAMES[a.platform] })}</T> : null}
                     <Button title={state[`aud:${a.id}`] === "reading" ? t("accounts.reading") : t("accounts.fromShot")} variant="secondary" icon={<Sparkles size={16} color={colors.blue} />} onPress={() => readShot(a.id)} loading={state[`aud:${a.id}`] === "reading"} />
                     <T weight="bold" size={14}>{t("accounts.gender")}</T>
                     <Row>

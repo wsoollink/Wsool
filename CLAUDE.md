@@ -573,6 +573,14 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   invoices spread over 12 months while their period covers the month), customers, churn (3-month
   average), ARPU, LTV = ARPU / churn, CAC = marketing spend / new paying customers (3 months).
   `FinanceView` renders it for the admin page and investor links.
+- **VAT** (owner, Oct 2026: Safhat Wsool Company For Information Technology, CR 7055476373; prices always include 15% VAT):
+  Finance page `VatSection` (`src/components/finance/VatSection.tsx`) from `vatReport(months)` (`src/lib/vat.ts`): current quarter
+  KPIs (sales incl./excl. VAT, VAT collected, VAT on refunds, owed to ZATCA), last 4 quarters and per month. Sales count in the
+  Saudi-time month paid, refunds take their VAT back in the month refunded, USD × 3.75. CSV for the accountant `/api/admin/vat?months=`
+  (`revenue.view`, audited `vat.export`, one row per invoice). Not in investor links. Invoices = "simplified tax invoice" with seller
+  name/CR/address from `SELLER` and, once `SELLER.vatNumber` (15 digits) is set, the ZATCA phase-1 QR (`zatcaQrPayload`: TLV of seller,
+  VAT number, time, total, VAT in SAR, base64). The ZATCA "distinguished number" (10 digits) never goes on invoices. Phase-2 e-invoicing
+  integration (Fatoora API) is built only when ZATCA notifies the company.
 - **Investor links** (owner only): table `investor_links` stores only the token hash, chosen
   sections (`INVESTOR_SECTIONS`), period, expiry, optional scrypt password. Public page
   `/invest/<token>` (noindex, no personal data, Print/PDF); password unlock = httpOnly cookie

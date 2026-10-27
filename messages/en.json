@@ -525,8 +525,18 @@
       "again": "Connect again",
       "againOn": "Reconnect {platform}",
       "check": "Check the link",
-      "checkErrors": {"not_admin": "The bot isn't an admin of {handle} yet. Add it as an admin of the channel with that exact username, then try again in a few seconds.", "expired": "Tap “Connect Telegram” first, then add the bot and tap “Check the link” within 30 minutes.", "taken": "This channel is linked to another Wsool page.", "gone": "We couldn't find this account on your page. Refresh and try again.", "pro": "Linking accounts is available on Pro only."},
-      "botSteps": {"1": "Tap the button; Telegram opens.", "2": "Pick your channel {handle} and add the Wsool bot as an admin (no extra rights needed).", "3": "Come back and tap “Check the link”. The channel must be public, with the same username."},
+      "checkErrors": {
+        "not_admin": "The bot isn't an admin of {handle} yet. Add it as an admin of the channel with that exact username, then try again in a few seconds.",
+        "expired": "Tap “Connect Telegram” first, then add the bot and tap “Check the link” within 30 minutes.",
+        "taken": "This channel is linked to another Wsool page.",
+        "gone": "We couldn't find this account on your page. Refresh and try again.",
+        "pro": "Linking accounts is available on Pro only."
+      },
+      "botSteps": {
+        "1": "Tap the button; Telegram opens.",
+        "2": "Pick your channel {handle} and add the Wsool bot as an admin (no extra rights needed).",
+        "3": "Come back and tap “Check the link”. The channel must be public, with the same username."
+      },
       "saveFirst": "Save the account first, then you can connect it.",
       "paused": "Automatic updates are paused because your page is on the Free plan. Your numbers stay as last updated, and updates resume by themselves with Pro.",
       "proOnly": "Linking accounts so their numbers update by themselves is part of Pro. You can still type your numbers and verify them with a screenshot.",
@@ -1345,6 +1355,9 @@
       "referral": {
         "payout": "Recorded a SAR {amount} commission transfer to {username}",
         "export": "Downloaded commissions ({count})"
+      },
+      "vat": {
+        "export": "Downloaded the VAT report ({count} invoices)"
       }
     },
     "newsletter": {
@@ -1727,7 +1740,8 @@
       "refunded": "This invoice was refunded.",
       "discount": "Discount (promo code)",
       "credit": "Paid from commission balance",
-      "charged": "Charged to card"
+      "charged": "Charged to card",
+      "qr": "Invoice QR code (ZATCA)"
     },
     "mock": {
       "badge": "Test payment",
@@ -2115,7 +2129,25 @@
     "byCategory": "Expenses by category",
     "readOnly": "Read only",
     "exportPdf": "Export PDF",
-    "printedOn": "Wsool financial report: last {months} months, made on {date}. Amounts in SAR, VAT excluded."
+    "printedOn": "Wsool financial report: last {months} months, made on {date}. Amounts in SAR, VAT excluded.",
+    "vat": {
+      "title": "VAT · {quarter}",
+      "quarter": "Q{q} {year}",
+      "export": "Export for the accountant (CSV)",
+      "period": "Period",
+      "sales": "Sales incl. VAT",
+      "net": "Sales excl. VAT",
+      "vat": "VAT collected",
+      "refundVat": "VAT refunded",
+      "due": "Owed to ZATCA",
+      "invoices": "Invoices",
+      "invoicesCount": "{n} invoices",
+      "minusRefunds": "{amount} refunded comes off",
+      "dueHint": "Collected minus refunded",
+      "byQuarter": "Last 4 quarters",
+      "byMonth": "By month",
+      "note": "Amounts in SAR (USD invoices × 3.75), dates in Saudi time: a sale counts in the month it was paid, a refund in the month it was refunded. File the VAT return for the period ZATCA sets (usually quarterly)."
+    }
   },
   "Site": {
     "followUs": "Follow us",

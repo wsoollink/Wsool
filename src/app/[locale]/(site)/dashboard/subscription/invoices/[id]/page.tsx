@@ -8,7 +8,10 @@ import { isLocale, locales, toIntlLocale, type Locale } from "@/i18n/config";
 import { invoiceLabel } from "@/lib/billing";
 import { requireCreator } from "@/lib/creator";
 import { db } from "@/lib/db";
+import QRCode from "qrcode";
 import { formatPrice } from "@/lib/format";
+import { USD_TO_SAR } from "@/lib/finance";
+import { zatcaQrPayload } from "@/lib/vat";
 import { PrintButton } from "./PrintButton";
 import { SectionSkeleton } from "@/components/dashboard/SectionSkeleton";
 
@@ -33,6 +36,11 @@ async function Invoice({ params, lang }: { params: Promise<{ id: string }>; lang
   const credit = Number(inv.creditAmount);
   const subtotal = Math.round((total - vat) * 100) / 100;
   const lineEx = discount ? Math.round((total + discount - vatPart(total + discount)) * 100) / 100 : subtotal;
+  // ZATCA simplified tax invoice QR (phase 1), once Wsool has a VAT number. Amounts in SAR.
+  const sar = (v: number) => Math.round((inv.currency === "USD" ? v * USD_TO_SAR : v) * 100) / 100;
+  const qr = SELLER.vatNumber && inv.paidAt
+    ? await QRCode.toDataURL(zatcaQrPayload({ seller: SELLER.name, vatNumber: SELLER.vatNumber, time: inv.paidAt, total: sar(total), vat: sar(vat) }), { margin: 1, width: 280 })
+    : null;
 
   return (
     <Card className="flex flex-col gap-6 print:border-0 print:shadow-none">
@@ -65,6 +73,10 @@ async function Invoice({ params, lang }: { params: Promise<{ id: string }>; lang
           {credit > 0 && <tr className="font-bold"><td className="py-2">{t("charged")}</td><td className="py-2 text-end">{money(Math.round((total - credit) * 100) / 100)}</td></tr>}
         </tbody>
       </table>
+      {qr && (
+        // eslint-disable-next-line @next/next/no-img-element -- data URL, nothing to optimise
+        <img src={qr} alt={t("qr")} width={140} height={140} className="self-start rounded-lg bg-white" />
+      )}
       {inv.status === "refunded" && <p className="rounded-xl bg-warn/10 p-3 text-sm text-warn">{t("refunded")}</p>}
     </Card>
   );

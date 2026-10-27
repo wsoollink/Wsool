@@ -9,6 +9,8 @@ import { requireAdmin } from "@/lib/admin";
 import { db } from "@/lib/db";
 import { financeReport, growthCounts } from "@/lib/finance";
 import { formatPrice } from "@/lib/format";
+import { vatReport } from "@/lib/vat";
+import { VatSection } from "@/components/finance/VatSection";
 import { ExpensesCard } from "./ExpensesCard";
 import { InvestorLinks } from "./InvestorLinks";
 import { PrintButton } from "@/components/PrintButton";
@@ -21,8 +23,9 @@ async function Finance({ lang, searchParams }: { lang: Locale; searchParams: SP 
   const t = await getTranslations("Finance");
   const raw = Number((await searchParams).months);
   const months = (FINANCE_PERIODS as readonly number[]).includes(raw) ? raw : 6;
-  const [report, growth, expenses, links] = await Promise.all([
+  const [report, vat, growth, expenses, links] = await Promise.all([
     financeReport(months),
+    vatReport(months),
     growthCounts(),
     db.expense.findMany({ orderBy: { date: "desc" }, take: 50 }),
     admin.isOwner ? db.investorLink.findMany({ orderBy: { createdAt: "desc" } }) : Promise.resolve([]),
@@ -44,6 +47,7 @@ async function Finance({ lang, searchParams }: { lang: Locale; searchParams: SP 
         <span className="ms-auto"><PrintButton label={t("exportPdf")} /></span>
       </nav>
       <FinanceView report={report} growth={growth} sections={INVESTOR_SECTIONS} lang={lang} />
+      <VatSection report={vat} months={months} lang={lang} />
       <div className="print:hidden">
       <ExpensesCard
         today={now.toISOString().slice(0, 10)}

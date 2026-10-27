@@ -12,12 +12,16 @@ export const DEMO_EMAIL = "ibrahim@wsool.link";
  * invoice; the VAT number is required on Saudi tax invoices once registered.
  */
 export const SELLER = {
-  name: "وصول",
-  nameEn: "Wsool",
-  /** TODO(owner): VAT registration number (15 digits) once registered. */
+  /** Legal name in the commercial registration (one-person LLC, issued 2026-10-27). */
+  name: "شركة صفحة وصول لتقنية المعلومات",
+  nameEn: "Safhat Wsool Company For Information Technology",
+  /**
+   * TODO(owner): VAT registration number (15 digits, starts and ends with 3) once registered with ZATCA.
+   * Not the ZATCA "distinguished number" (10 digits), which never goes on invoices.
+   */
   vatNumber: "",
-  /** TODO(owner): commercial registration number. */
-  crNumber: "",
+  /** Unified national number of the commercial registration. */
+  crNumber: "7055476373",
   address: "",
   email: BILLING_EMAIL,
 };
@@ -27,11 +31,10 @@ export const SELLER = {
  * shows as a [bracketed] placeholder, so fill them all before launch.
  */
 export const LEGAL = {
-  /** TODO(owner): name in the commercial registration / freelance document. */
-  entity: "",
-  entityEn: "",
-  /** TODO(owner): commercial registration / freelance document number. */
-  registration: "",
+  /** Name and unified national number in the commercial registration. */
+  entity: "شركة صفحة وصول لتقنية المعلومات",
+  entityEn: "Safhat Wsool Company For Information Technology",
+  registration: "7055476373",
   email: SUPPORT_EMAIL,
   /** TODO(owner): Moyasar or Tap, once chosen. */
   paymentGateway: "",

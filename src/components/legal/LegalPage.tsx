@@ -25,7 +25,7 @@ function fill(text: string, lang: Locale) {
   const b = BLANKS[lang];
   const values: Record<string, string> = {
     entity: (lang === "en" ? LEGAL.entityEn : LEGAL.entity) || b.entity,
-    registration: LEGAL.registration ? (lang === "en" ? `CR ${LEGAL.registration}` : `سجل رقم ${LEGAL.registration}`) : b.registration,
+    registration: LEGAL.registration ? (lang === "en" ? `CR No. ${LEGAL.registration}` : `سجل تجاري رقم ${LEGAL.registration}`) : b.registration,
     gateway: LEGAL.paymentGateway || b.gateway,
     mailer: LEGAL.emailProvider,
     servers: lang === "en" ? LEGAL.serverLocationEn : LEGAL.serverLocation,

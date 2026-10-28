@@ -27,11 +27,11 @@ export const PLATFORMS = Object.keys(PLATFORM_NAMES) as Platform[];
  */
 export const LINK_PLATFORMS: readonly Platform[] = ["spotify", "discord", "jaco"];
 /** Linked platforms whose API also gives audience data (src/lib/connect); the others update followers only. */
-export const CONNECT_AUDIENCE: readonly Platform[] = ["youtube", "instagram"];
+export const CONNECT_AUDIENCE: readonly Platform[] = ["youtube", "instagram", "threads"];
 /** Platforms linked by adding Wsool's bot (Telegram) instead of a sign-in screen. */
 export const BOT_PLATFORMS: readonly Platform[] = ["telegram"];
 /** Linked platforms whose monthly views fill in by themselves (src/lib/connect `monthlyViews`). */
-export const CONNECT_VIEWS: readonly Platform[] = ["youtube", "instagram"];
+export const CONNECT_VIEWS: readonly Platform[] = ["youtube", "instagram", "threads"];
 
 /** True when an active link fills this kind of data, so the creator's form for it is locked. */
 export const autoFilled = (kind: "audience" | "views", platform: Platform, connection: { status: string } | null | undefined) =>

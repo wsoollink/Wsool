@@ -23,8 +23,8 @@
 ### جاية
 | المنصة | المتابعين | الجمهور | المشاهدات | ننتظر |
 | --- | --- | --- | --- | --- |
-| Instagram | ✅ | ✅ (عمر، جنس، دول، مدن؛ من 100 متابع) | ✅ | **مبني** (28 أكتوبر). يشتغل الحين للمختبرين فقط؛ ينتظر مراجعة تطبيق Meta. حساب صانع أو تجاري فقط |
-| Threads | ✅ | ✅ | ✅ | نفس Meta |
+| Instagram | ✅ | ✅ (عمر، جنس، دول، مدن؛ من 100 متابع) | ✅ | **منشور ومجرَّب** (28 أكتوبر، المتابعين والجمهور صحيحة). للمختبرين فقط لين مراجعة Meta. حساب صانع أو تجاري فقط |
+| Threads | ✅ | ✅ (من 100 متابع) | ✅ | **مبني** (28 أكتوبر). للمختبرين فقط لين مراجعة Meta |
 | Facebook (صفحة) | ✅ | ⚠️ | ✅ | نفس Meta |
 | Snapchat | ✅ متوقع | ❓ | ❓ | موافقة Snap: `docs/snapchat-partner-request.md` |
 | Pinterest | ✅ | ⚠️ (حسابات تجارية) | ✅ | نتأكد وقت البناء |
@@ -117,6 +117,15 @@
 5. Netlify: `INSTAGRAM_APP_ID` (Instagram app ID، مو Facebook app ID) و `INSTAGRAM_APP_SECRET` (secret).
 6. للتجربة قبل المراجعة: App roles ← Instagram Tester ← الحساب، ثم قبول الدعوة من Instagram (الإعدادات ← Apps and websites ← Tester invites).
 7. التالي: فيديو + أوصاف الصلاحيات ← App Review (يحتاج توثيق النشاط).
+
+## تجهيز Threads (المالك)
+
+1. تطبيق Wsool في developers.facebook.com ← Use cases ← **Access the Threads API** ← Customize.
+2. Permissions: `threads_basic` (موجودة) + أضف `threads_manage_insights`. ما نحتاج غيرها.
+3. Settings: Redirect callback URLs `https://wsool.link/api/connect/threads/callback`، Uninstall callback URL
+   `https://wsool.link/api/connect/threads/uninstall`، Delete callback URL `https://wsool.link/api/connect/threads/data-deletion`.
+4. Netlify: `THREADS_APP_ID` و `THREADS_APP_SECRET` (secret) من نفس صفحة Settings (Threads app ID / secret).
+5. App roles ← Roles ← **Threads Tester** ← حساب وصول، ثم القبول من Threads: الإعدادات ← الحساب ← أذونات المواقع ← الدعوات.
 
 ## ملاحظات تقنية
 - مفتاح التحديث (refresh token) محفوظ مشفّر AES-256-GCM (`src/lib/token-box.ts`)، ولا يطلع للمتصفح أو التطبيق أبداً.

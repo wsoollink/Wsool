@@ -1,5 +1,4 @@
 import "server-only";
-import { createHmac, timingSafeEqual } from "node:crypto";
 import { RevokedError } from "./errors";
 import type { Audience, Provider, ProviderProfile } from "./types";
 
@@ -194,22 +193,3 @@ export const instagram: Provider = {
   async revoke() {},
 };
 
-/**
- * Meta's signed_request (deauthorize and data deletion callbacks): "<sig>.<payload>", both base64url, signed with
- * HMAC-SHA256 by the Instagram app secret. Returns the Instagram user id, or null when the signature is wrong.
- */
-export function readSignedRequest(signed: string | null | undefined): { userId: string } | null {
-  const secret = client()?.secret;
-  const [sig, payload] = String(signed ?? "").split(".");
-  if (!secret || !sig || !payload) return null;
-  const expected = createHmac("sha256", secret).update(payload).digest();
-  const given = Buffer.from(sig, "base64url");
-  if (given.length !== expected.length || !timingSafeEqual(given, expected)) return null;
-  try {
-    const data = JSON.parse(Buffer.from(payload, "base64url").toString("utf8")) as { user_id?: string | number; algorithm?: string };
-    if (String(data.algorithm ?? "").toUpperCase() !== "HMAC-SHA256" || !data.user_id) return null;
-    return { userId: String(data.user_id) };
-  } catch {
-    return null;
-  }
-}

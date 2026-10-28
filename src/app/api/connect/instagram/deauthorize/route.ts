@@ -1,24 +1,4 @@
-import { NextResponse } from "next/server";
-import { PLATFORM_NAMES } from "@/config/platforms";
-import { readSignedRequest } from "@/lib/connect/instagram";
-import { db } from "@/lib/db";
-import { notify } from "@/lib/notify";
+import { metaCallbacks } from "@/lib/connect/meta";
 
-/**
- * Meta calls this when a creator removes Wsool from their Instagram settings (Business login settings → Deauthorize
- * callback URL). The link stops, like a revoked token: numbers stay, the creator is told and can link again.
- */
-export async function POST(req: Request) {
-  const form = await req.formData().catch(() => null);
-  const signed = readSignedRequest(form?.get("signed_request")?.toString());
-  if (!signed) return NextResponse.json({ error: "bad_request" }, { status: 400 });
-  const links = await db.platformConnection.findMany({
-    where: { platform: "instagram", externalId: signed.userId, status: "active" },
-    select: { id: true, account: { select: { handle: true, page: { select: { userId: true } } } } },
-  });
-  for (const c of links) {
-    await db.platformConnection.update({ where: { id: c.id }, data: { status: "error", lastError: "deauthorized", lastSyncAt: new Date() } });
-    await notify(c.account.page.userId, "connection_lost", { platform: PLATFORM_NAMES.instagram, handle: c.account.handle }, { dedupeKey: `connection_lost_${c.id}` });
-  }
-  return NextResponse.json({ ok: true });
-}
+/** Meta: the creator removed Wsool in Instagram's settings (Business login settings → Deauthorize callback URL). */
+export const POST = (req: Request) => metaCallbacks("instagram", () => process.env.INSTAGRAM_APP_SECRET).deauthorize(req);

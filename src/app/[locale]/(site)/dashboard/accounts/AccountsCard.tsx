@@ -196,6 +196,7 @@ export function AccountsCard({ initial, connectable = [], pro = true }: { initia
                             <>
                               <p className="text-sm font-bold">{row.connection ? t("connect.stoppedTitle", { platform: name }) : t("connect.title", { platform: name })}</p>
                               <p className="text-xs text-muted">{t(CONNECT_AUDIENCE.includes(row.platform) ? "connect.why" : "connect.whyFollowers")}</p>
+                              {row.platform === "instagram" && <p className="text-xs text-muted">{t("connect.igProfessional")}</p>}
                               {!pro ? (
                                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
                                   <p className="flex min-w-0 flex-1 items-center gap-2 text-xs font-semibold text-blue"><Sparkles aria-hidden="true" size={15} className="shrink-0" /> {t("connect.proOnly")}</p>

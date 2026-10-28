@@ -23,7 +23,7 @@
 ### جاية
 | المنصة | المتابعين | الجمهور | المشاهدات | ننتظر |
 | --- | --- | --- | --- | --- |
-| Instagram | ✅ | ✅ (عمر، جنس، دول، مدن؛ من 100 متابع) | ✅ | توثيق النشاط في Meta + مراجعة التطبيق. حساب صانع أو تجاري فقط |
+| Instagram | ✅ | ✅ (عمر، جنس، دول، مدن؛ من 100 متابع) | ✅ | **مبني** (28 أكتوبر). يشتغل الحين للمختبرين فقط؛ ينتظر مراجعة تطبيق Meta. حساب صانع أو تجاري فقط |
 | Threads | ✅ | ✅ | ✅ | نفس Meta |
 | Facebook (صفحة) | ✅ | ⚠️ | ✅ | نفس Meta |
 | Snapchat | ✅ متوقع | ❓ | ❓ | موافقة Snap: `docs/snapchat-partner-request.md` |
@@ -107,6 +107,16 @@
    - Callback URI: `https://wsool.link/api/connect/x/callback`
    - Website: `https://wsool.link`، Terms `https://wsool.link/terms`، Privacy `https://wsool.link/privacy`
 4. **Keys and tokens** ← **OAuth 2.0 Client ID and Client Secret**: حطهم في Netlify باسم `X_CLIENT_ID` و `X_CLIENT_SECRET` (secret)، ثم انشر.
+
+## تجهيز Instagram (المالك، تم 28 أكتوبر 2026)
+
+1. **business.facebook.com**: Business portfolio باسم الشركة، الدومين `wsool.link` موثّق (سجل TXT في Cloudflare)، وطلب توثيق النشاط أُرسل.
+2. **developers.facebook.com** ← تطبيق **Wsool** (Business) ← Use cases: Instagram API + Threads API.
+3. Instagram API ← **API setup with Instagram login** (مو Unified login: تلك لحسابات الشركة نفسها بصلاحيات إعلانات). الصلاحيات المطلوبة في المراجعة: `instagram_business_basic` و `instagram_business_manage_insights` فقط.
+4. Business login settings: redirect `https://wsool.link/api/connect/instagram/callback`، deauthorize `https://wsool.link/api/connect/instagram/deauthorize`، data deletion `https://wsool.link/api/connect/instagram/data-deletion`.
+5. Netlify: `INSTAGRAM_APP_ID` (Instagram app ID، مو Facebook app ID) و `INSTAGRAM_APP_SECRET` (secret).
+6. للتجربة قبل المراجعة: App roles ← Instagram Tester ← الحساب، ثم قبول الدعوة من Instagram (الإعدادات ← Apps and websites ← Tester invites).
+7. التالي: فيديو + أوصاف الصلاحيات ← App Review (يحتاج توثيق النشاط).
 
 ## ملاحظات تقنية
 - مفتاح التحديث (refresh token) محفوظ مشفّر AES-256-GCM (`src/lib/token-box.ts`)، ولا يطلع للمتصفح أو التطبيق أبداً.

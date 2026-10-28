@@ -13,6 +13,7 @@ import { canEncryptTokens, openToken, sealToken } from "@/lib/token-box";
 import { RevokedError } from "./errors";
 import type { Audience, Provider, ProviderProfile } from "./types";
 import { discord } from "./discord";
+import { instagram } from "./instagram";
 import { botIsAdmin, channelProfile, CONNECT_WINDOW_MS, telegram } from "./telegram";
 import { tiktok } from "./tiktok";
 import { twitch } from "./twitch";
@@ -26,7 +27,7 @@ import { youtube } from "./youtube";
  *   start (web: session cookie; app: a 5-minute ticket) → sets a nonce cookie → platform consent screen
  *   → /api/connect/<platform>/callback (state signed + nonce cookie) → saveConnection → back to the dashboard or the app.
  */
-export const PROVIDERS: Partial<Record<Platform, Provider>> = { youtube, tiktok, twitch, discord, telegram, x };
+export const PROVIDERS: Partial<Record<Platform, Provider>> = { youtube, instagram, tiktok, twitch, discord, telegram, x };
 
 export const connectablePlatforms = () =>
   canEncryptTokens() ? (Object.values(PROVIDERS).filter((p) => p!.configured()).map((p) => p!.platform) as Platform[]) : [];

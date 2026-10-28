@@ -24,11 +24,11 @@ export const PLATFORMS = Object.keys(PLATFORM_NAMES) as Platform[];
 /** The creator pastes the profile link for these (no URL can be built from a username). */
 export const LINK_PLATFORMS: readonly Platform[] = ["spotify","discord","jaco"];
 /** Linked platforms whose API also gives audience data (server: src/lib/connect); the others update followers only. */
-export const CONNECT_AUDIENCE: readonly Platform[] = ["youtube"];
+export const CONNECT_AUDIENCE: readonly Platform[] = ["youtube", "instagram"];
 /** Platforms linked by adding Wsool's bot (Telegram) instead of a sign-in screen. */
 export const BOT_PLATFORMS: readonly Platform[] = ["telegram"];
 /** Linked platforms whose monthly views fill in by themselves. */
-export const CONNECT_VIEWS: readonly Platform[] = ["youtube"];
+export const CONNECT_VIEWS: readonly Platform[] = ["youtube", "instagram"];
 export const autoFilled = (kind: "audience" | "views", platform: Platform, connection: { status: string } | null | undefined) =>
   connection?.status === "active" && (kind === "audience" ? CONNECT_AUDIENCE : CONNECT_VIEWS).includes(platform);
 export const BRAND_COLORS: Record<Platform, string> = {

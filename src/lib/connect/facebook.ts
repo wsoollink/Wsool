@@ -46,7 +46,35 @@ const quiet = <T>(p: Promise<T>) =>
   });
 
 type PageInfo = { id: string; name?: string; username?: string; link?: string; followers_count?: number; fan_count?: number; access_token?: string };
-const PAGE_FIELDS = "id,name,username,link,followers_count,fan_count";
+
+/** A Page's details. Meta keeps retiring Page fields, so fewer fields are tried after a refusal (logged). */
+async function pageDetails(id: string, token: string, strict = false): Promise<PageInfo> {
+  const sets = ["id,name,username,link,followers_count", "id,name,link,followers_count", "id,name,followers_count", "id,name"];
+  for (const [i, fields] of sets.entries()) {
+    try {
+      return await graph<PageInfo>(`/${id}`, { fields }, token);
+    } catch (err) {
+      if (err instanceof RevokedError || (strict && i === sets.length - 1)) throw err;
+      console.warn("[facebook]", (err as Error).message);
+    }
+  }
+  return { id };
+}
+
+/**
+ * The Pages the creator shared, with their own tokens: /me/accounts, else (Pages reached through a business portfolio
+ * may be missing there) the Page ids the login granted (debug_token's granular scopes), read one by one.
+ */
+async function sharedPages(userToken: string): Promise<PageInfo[]> {
+  const list = await quiet(graph<{ data?: PageInfo[] }>("/me/accounts", { fields: "id,name,access_token", limit: "100" }, userToken));
+  if (list?.data?.length) return list.data;
+  const c = client()!;
+  type Debug = { data?: { granular_scopes?: { scope?: string; target_ids?: string[] }[] } };
+  const debug = await quiet(graph<Debug>("/debug_token", { input_token: userToken }, `${c.id}|${c.secret}`));
+  const ids = new Set((debug?.data?.granular_scopes ?? []).filter((g) => g.scope?.startsWith("pages_")).flatMap((g) => g.target_ids ?? []));
+  const pages = await Promise.all([...ids].map((id) => quiet(graph<PageInfo>(`/${id}`, { fields: "id,name,access_token" }, userToken))));
+  return pages.filter((p): p is PageInfo => !!p?.id);
+}
 
 /** "wsool.link", "https://facebook.com/wsool.link" or "@Wsool.Link" → "wsool.link". */
 const slug = (v: string | null | undefined) => String(v ?? "").trim().toLowerCase().replace(/^@/, "").replace(/^https?:\/\/(www\.|m\.)?facebook\.com\//, "").split(/[/?#]/)[0];
@@ -93,13 +121,20 @@ export const facebook: Provider = {
   async profile(token, account): Promise<ProviderProfile | null> {
     if (account.externalId) {
       // Daily update: the token is already the Page's own.
-      const page = await graph<PageInfo>(`/${account.externalId}`, { fields: PAGE_FIELDS }, token);
-      return toProfile(page);
+      return toProfile(await pageDetails(account.externalId, token, true));
     }
-    // Linking: find the Page among the ones the creator shared, then keep its own token.
-    const list = await graph<{ data?: PageInfo[] }>("/me/accounts", { fields: `${PAGE_FIELDS},access_token`, limit: "100" }, token);
-    const page = pickPage(list.data ?? [], account.url);
-    if (!page?.access_token) return null;
+    // Linking: the Pages the creator shared, each with its own token.
+    const pages = await sharedPages(token);
+    if (!pages.length) {
+      console.warn("[facebook] no Pages shared with the app");
+      return null;
+    }
+    const detailed = await Promise.all(pages.map(async (p) => ({ ...p, ...(await pageDetails(p.id, p.access_token ?? token).catch(() => ({}))) })));
+    const page = pickPage(detailed, account.url);
+    if (!page?.access_token) {
+      console.warn("[facebook] no Page matches", slug(account.url), "among", detailed.map((p) => slug(p.username) || p.id).join(","));
+      return null;
+    }
     return { ...toProfile(page), refreshToken: page.access_token };
   },
 

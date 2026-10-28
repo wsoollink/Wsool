@@ -115,9 +115,9 @@ export async function completeConnection(flow: Flow, code: string, redirectUri: 
   if (!provider || !account || account.platform !== flow.platform) return { error: "gone" };
   if (!(await canConnect(flow.userId))) return { error: "pro" };
 
-  const tokens = await provider.exchange(code, redirectUri, state).catch(() => null);
+  const tokens = await provider.exchange(code, redirectUri, state).catch((err) => { console.warn(`[connect] ${flow.platform} exchange`, (err as Error).message); return null; });
   if (!tokens) return { error: "failed" };
-  const profile = await provider.profile(tokens.accessToken, { url: account.url, externalId: null }).catch(() => null);
+  const profile = await provider.profile(tokens.accessToken, { url: account.url, externalId: null }).catch((err) => { console.warn(`[connect] ${flow.platform} profile`, (err as Error).message); return null; });
   if (!profile) {
     await provider.revoke(tokens.refreshToken);
     return { error: provider.notFound ?? "no_channel" };

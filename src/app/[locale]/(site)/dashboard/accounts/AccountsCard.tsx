@@ -146,7 +146,7 @@ export function AccountsCard({ initial, connectable = [], pro = true }: { initia
     >
       {(connectedNow || connectError) && (
         <p role="status" className={`mx-5 mt-3 rounded-[10px] px-3 py-2 text-sm ${connectedNow ? "bg-good/10 text-good" : "bg-bad/10 text-bad"}`}>
-          {connectedNow ? t("connect.done", { platform: PLATFORM_NAMES[connectedNow as Platform] ?? connectedNow }) : t(`connect.errors.${["denied", "taken", "no_channel", "no_server", "expired", "gone", "unavailable", "pro"].includes(connectError!) ? connectError : "failed"}`)}
+          {connectedNow ? t("connect.done", { platform: PLATFORM_NAMES[connectedNow as Platform] ?? connectedNow }) : t(`connect.errors.${["denied", "taken", "no_channel", "no_server", "no_page", "expired", "gone", "unavailable", "pro"].includes(connectError!) ? connectError : "failed"}`)}
         </p>
       )}
       <p className="px-5 pt-3 text-xs text-muted">{t("orderHint")}</p>
@@ -197,6 +197,7 @@ export function AccountsCard({ initial, connectable = [], pro = true }: { initia
                               <p className="text-sm font-bold">{row.connection ? t("connect.stoppedTitle", { platform: name }) : t("connect.title", { platform: name })}</p>
                               <p className="text-xs text-muted">{t(CONNECT_AUDIENCE.includes(row.platform) ? "connect.why" : "connect.whyFollowers")}</p>
                               {row.platform === "instagram" && <p className="text-xs text-muted">{t("connect.igProfessional")}</p>}
+                              {row.platform === "facebook" && <p className="text-xs text-muted">{t("connect.fbPage")}</p>}
                               {!pro ? (
                                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
                                   <p className="flex min-w-0 flex-1 items-center gap-2 text-xs font-semibold text-blue"><Sparkles aria-hidden="true" size={15} className="shrink-0" /> {t("connect.proOnly")}</p>

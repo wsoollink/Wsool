@@ -25,7 +25,7 @@
 | --- | --- | --- | --- | --- |
 | Instagram | ✅ | ✅ (عمر، جنس، دول، مدن؛ من 100 متابع) | ✅ | **منشور ومجرَّب** (28 أكتوبر، المتابعين والجمهور صحيحة). للمختبرين فقط لين مراجعة Meta. حساب صانع أو تجاري فقط |
 | Threads | ✅ | ✅ (من 100 متابع) | ✅ | **مبني** (28 أكتوبر). للمختبرين فقط لين مراجعة Meta |
-| Facebook (صفحة) | ✅ | ⚠️ | ✅ | نفس Meta |
+| Facebook (صفحة) | ✅ | ❌ (Meta شالها من الـ API) | ⏳ نتأكد بصفحة حقيقية | **مبني** (28 أكتوبر). صفحات فقط، مو الحساب الشخصي. للمختبرين لين مراجعة Meta |
 | Snapchat | ✅ متوقع | ❓ | ❓ | موافقة Snap: `docs/snapchat-partner-request.md` |
 | Pinterest | ✅ | ⚠️ (حسابات تجارية) | ✅ | نتأكد وقت البناء |
 
@@ -126,6 +126,17 @@
    `https://wsool.link/api/connect/threads/uninstall`، Delete callback URL `https://wsool.link/api/connect/threads/data-deletion`.
 4. Netlify: `THREADS_APP_ID` و `THREADS_APP_SECRET` (secret) من نفس صفحة Settings (Threads app ID / secret).
 5. App roles ← Roles ← **Threads Tester** ← حساب وصول، ثم القبول من Threads: الإعدادات ← الحساب ← أذونات المواقع ← الدعوات.
+
+## تجهيز Facebook (صفحات) (المالك)
+
+1. تطبيق Wsool ← **Add use cases** ← **Manage everything on your Page** (Pages API) أو **Facebook Login for Business**.
+2. Facebook Login for Business ← **Configurations** ← **Create**: نوع المفتاح **User access token**، الصلاحيات
+   `pages_show_list` و `pages_read_engagement` و `read_insights` فقط ← خذ **Configuration ID**.
+3. Facebook Login for Business ← **Settings** ← Valid OAuth Redirect URIs: `https://wsool.link/api/connect/facebook/callback`.
+4. App settings ← Basic: **App ID** و **App secret**، و Privacy policy `https://wsool.link/privacy`، و Data deletion instructions
+   URL `https://wsool.link/privacy`.
+5. Netlify: `FACEBOOK_APP_ID`، `FACEBOOK_APP_SECRET` (secret)، `FACEBOOK_CONFIG_ID`.
+6. للتجربة قبل المراجعة: الحساب اللي يدير صفحة وصول لازم يكون له دور في التطبيق (Admin/Developer/Tester).
 
 ## ملاحظات تقنية
 - مفتاح التحديث (refresh token) محفوظ مشفّر AES-256-GCM (`src/lib/token-box.ts`)، ولا يطلع للمتصفح أو التطبيق أبداً.

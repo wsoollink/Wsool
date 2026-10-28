@@ -13,6 +13,7 @@ import { canEncryptTokens, openToken, sealToken } from "@/lib/token-box";
 import { RevokedError } from "./errors";
 import type { Audience, Provider, ProviderProfile } from "./types";
 import { discord } from "./discord";
+import { facebook } from "./facebook";
 import { instagram } from "./instagram";
 import { botIsAdmin, channelProfile, CONNECT_WINDOW_MS, telegram } from "./telegram";
 import { threads } from "./threads";
@@ -28,7 +29,7 @@ import { youtube } from "./youtube";
  *   start (web: session cookie; app: a 5-minute ticket) → sets a nonce cookie → platform consent screen
  *   → /api/connect/<platform>/callback (state signed + nonce cookie) → saveConnection → back to the dashboard or the app.
  */
-export const PROVIDERS: Partial<Record<Platform, Provider>> = { youtube, instagram, threads, tiktok, twitch, discord, telegram, x };
+export const PROVIDERS: Partial<Record<Platform, Provider>> = { youtube, instagram, threads, facebook, tiktok, twitch, discord, telegram, x };
 
 export const connectablePlatforms = () =>
   canEncryptTokens() ? (Object.values(PROVIDERS).filter((p) => p!.configured()).map((p) => p!.platform) as Platform[]) : [];
@@ -90,7 +91,7 @@ export async function ownAccount(userId: string, accountId: string) {
 
 // ---- saving and updating ----
 
-export type ConnectError = "denied" | "failed" | "no_channel" | "no_server" | "taken" | "gone" | "pro";
+export type ConnectError = "denied" | "failed" | "no_channel" | "no_server" | "no_page" | "taken" | "gone" | "pro";
 
 /**
  * Linking and the daily update are Pro (the trial counts), owner Oct 2026: a page on Free keeps its links and last
@@ -127,12 +128,14 @@ export async function completeConnection(flow: Flow, code: string, redirectUri: 
     await provider.revoke(tokens.refreshToken);
     return { error: "taken" };
   }
+  // Facebook hands back the Page's own token: read and keep that one.
+  const token = profile.refreshToken ?? tokens.accessToken;
   const [audience, views] = await Promise.all([
-    provider.audience?.(tokens.accessToken).catch(() => null),
-    provider.monthlyViews?.(tokens.accessToken).catch(() => null),
+    provider.audience?.(token).catch(() => null),
+    provider.monthlyViews?.(token).catch(() => null),
   ]);
 
-  await saveLink(account, flow.platform, profile, tokens, audience ?? null, views ?? null);
+  await saveLink(account, flow.platform, profile, { ...tokens, refreshToken: profile.refreshToken ?? tokens.refreshToken }, audience ?? null, views ?? null);
   return { ok: true };
 }
 

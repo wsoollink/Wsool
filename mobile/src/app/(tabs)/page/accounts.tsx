@@ -184,6 +184,7 @@ export default function Accounts() {
         <T weight="bold" size={14}>{t("accounts.connect.title", { platform: name })}</T>
         {!pro ? <T size={12.5} tone="blue">{t("accounts.connect.proOnly")}</T> : <>
         {a.platform === "instagram" && a.id && saved?.platform === a.platform ? <T size={12.5} tone="muted">{t("accounts.connect.igProfessional")}</T> : null}
+        {a.platform === "facebook" && a.id && saved?.platform === a.platform ? <T size={12.5} tone="muted">{t("accounts.connect.fbPage")}</T> : null}
         <T size={12.5} tone="muted">{a.id && saved?.platform === a.platform ? t(CONNECT_AUDIENCE.includes(a.platform) ? "accounts.connect.why" : "accounts.connect.whyFollowers") : t("accounts.connect.saveFirst")}</T>
         {a.id && saved?.platform === a.platform
           ? brandButton(a, t("accounts.connect.button", { platform: name }), s === "busy")

@@ -559,9 +559,11 @@
         "gone": "We couldn't find this account on your page. Refresh and try again.",
         "unavailable": "Connecting this platform isn't available right now.",
         "pro": "Linking accounts is available on Pro only.",
-        "failed": "Something went wrong while connecting. Please try again."
+        "failed": "Something went wrong while connecting. Please try again.",
+        "no_page": "We couldn't find a Facebook Page matching this account. Make sure you picked your Page on Facebook's screen and the username here is the Page's."
       },
-      "igProfessional": "Needs an Instagram professional account (creator or business). If yours is personal, switch for free in Instagram: Settings → Account type and tools → Switch to professional account."
+      "igProfessional": "Needs an Instagram professional account (creator or business). If yours is personal, switch for free in Instagram: Settings → Account type and tools → Switch to professional account.",
+      "fbPage": "Links a Facebook Page, not a personal profile. On Facebook's screen pick your Page and keep the permissions on. Facebook doesn't share audience data, so fill it from a stats screenshot."
     },
     "audienceNotFromPlatform": "{platform} doesn't share audience data when linked, so you still fill it in: tap “Fill from a stats screenshot” and upload a screenshot of your account's stats."
   },

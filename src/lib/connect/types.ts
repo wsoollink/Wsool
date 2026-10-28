@@ -10,6 +10,8 @@ export type ProviderProfile = {
   url: string;
   /** null when the platform hides the number. */
   followers: number | null;
+  /** A token to keep instead of the sign-in one (Facebook: the picked Page's own token). */
+  refreshToken?: string;
 };
 
 /**
@@ -39,7 +41,7 @@ export type Provider = {
   bot?: boolean;
   botLink?: () => Promise<string | null>;
   /** Error shown when profile() finds nothing (default no_channel). */
-  notFound?: "no_channel" | "no_server";
+  notFound?: "no_channel" | "no_server" | "no_page";
   audience?: (accessToken: string) => Promise<Audience | null>;
   /** Views of the last complete month (`month` = its first day, UTC), for the monthly views box. */
   monthlyViews?: (accessToken: string) => Promise<{ month: Date; views: number } | null>;

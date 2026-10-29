@@ -96,3 +96,7 @@
   (`src/lib/mobile/review-login.ts`). صفحة المتجر وإجابات الخصوصية وملاحظات المراجع: `docs/app-store.md`، والصور في
   `docs/app-store/screenshots/` (مؤقتة من نسخة الويب؛ تنعاد من TestFlight). شريط iOS الأصلي ما ينجرب إلا على آيفون حقيقي.
 
+- **تجهيز المتاجر (أكتوبر 2026)**: الشركة مسجّلة (السجل التجاري جاهز). الباقي على المالك: D-U-N-S، حساب Apple Developer وGoogle Play
+  كمنظمة. Google Play: `docs/google-play.md` (صفحة المتجر، أمان البيانات، التقييم، الرفع، Firebase للإشعارات) + صور الواجهة في
+  `docs/google-play/`. إشعارات أندرويد: `mobile/app.config.js` يضيف `googleServicesFile` من متغير الملف `GOOGLE_SERVICES_JSON` في expo.dev
+  (ما ينرفع في GitHub). `eas.json` → submit أندرويد إلى Internal testing كمسودة. Sign in with Apple غير مطلوب (ما فيه دخول Google في التطبيق).

@@ -15,7 +15,7 @@
 | رابط الخصوصية Privacy Policy URL | https://wsool.link/privacy | https://wsool.link/privacy |
 | رابط الدعم Support URL | https://wsool.link | https://wsool.link |
 | رابط التسويق Marketing URL | https://wsool.link | https://wsool.link |
-| حقوق النشر Copyright | ‏2026 [اسم المنشأة من السجل التجاري] | ‏2026 [entity name] |
+| حقوق النشر Copyright | ‏2026 شركة صفحة وصول لتقنية المعلومات | ‏2026 Safhat Wsool Company For Information Technology |
 
 اللغة الأساسية للتطبيق: **العربية**، ونضيف الإنجليزية كلغة ثانية (App Store Connect → App Information → Localizable Information).
 
@@ -46,7 +46,7 @@ Your media kit, now in your pocket: follow your page visitors, update your numbe
 كم زائر دخل صفحتك، وكم ضغطة على الواتساب والإيميل، ومن أي دول، خلال آخر 7 أو 30 أو 90 يوم.
 
 • أرقامك موثّقة
-أضف حساباتك في TikTok وInstagram وSnapchat وYouTube وX وغيرها، ووثّقها بصورة من حسابك عشان تظهر علامة التوثيق في صفحتك.
+أضف حساباتك في TikTok وInstagram وSnapchat وYouTube وX وغيرها، واربطها بتسجيل الدخول في المنصة عشان تتحدث أرقامك وجمهورك تلقائياً كل يوم، أو وثّقها بصورة من حسابك.
 
 • أسعار إعلاناتك
 حدد أسعارك لكل منصة، وسوّ باقة تجمع أكثر من منصة بسعر أوفر للبراند.
@@ -76,7 +76,7 @@ Share your link in a tap and see your page the way brands see it.
 How many people visited your page, how many tapped WhatsApp or email, and which countries they came from, over the last 7, 30 or 90 days.
 
 • Verified numbers
-Add your TikTok, Instagram, Snapchat, YouTube, X and other accounts, and verify them with a screenshot so your page shows the verified badge.
+Add your TikTok, Instagram, Snapchat, YouTube, X and other accounts, and connect them with the platform's own sign-in so your followers and audience update automatically every day, or verify them with a screenshot.
 
 • Your ad rates
 Set your rates per platform and build a bundle across platforms that saves brands money.
@@ -164,7 +164,7 @@ Photos are chosen with the system photo picker; the app never requests access to
 | Export Compliance (التشفير) | محسوم في التطبيق (`ITSAppUsesNonExemptEncryption = false`): يستخدم HTTPS العادي فقط |
 | Content Rights | No (ما فيه محتوى من طرف ثالث) |
 | Advertising Identifier (IDFA) | No |
-| Sign in with Apple | يتفعّل لما يتجهز حساب Apple Developer (`EXPO_PUBLIC_APPLE_SIGN_IN=1` في إعدادات البناء + المزود في Supabase) |
+| Sign in with Apple | غير مطلوب: التطبيق ما فيه دخول بـ Google (قاعدة 4.8 تنطبق بس لو فيه دخول بحساب طرف ثالث). جاهز لو احتجناه لاحقاً (`EXPO_PUBLIC_APPLE_SIGN_IN=1` + المزود في Supabase) |
 
 ---
 
@@ -173,6 +173,6 @@ Photos are chosen with the system photo picker; the app never requests access to
 1. App Store Connect → My Apps → **+** → New App: Platform iOS، الاسم أعلاه، اللغة الأساسية Arabic، Bundle ID ‏`link.wsool.app`، SKU ‏`wsool-ios`.
 2. expo.dev → المشروع `wsool-app` → Credentials → iOS: سجّل دخول بحساب Apple، وExpo يسوي الشهادات تلقائياً (Distribution + Push).
 3. expo.dev → Builds → Build from GitHub: الفرع `main`، المنصة iOS، الملف `production`، وفعّل **Auto submit** (يرفعه لـ TestFlight).
-4. في Netlify أضف `REVIEW_EMAIL` و`REVIEW_CODE` (Contains secret values).
+4. `REVIEW_EMAIL` و`REVIEW_CODE` موجودة في Netlify (أكتوبر 2026)، وحساب المراجعين جاهز.
 5. جرّب على جوالك من تطبيق TestFlight، ونأخذ صور المتجر من الآيفون.
 6. عبّ الخانات من هذا الملف، وارفع الصور، واختر البناء، وقدّم للمراجعة (Submit for Review).

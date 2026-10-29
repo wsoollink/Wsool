@@ -869,7 +869,7 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
 - **iPhone (Oct 2026)**: system tab bar on iOS (`app/(tabs)/_layout.ios.tsx`, `NativeTabs`) and system headers with large titles
   (`TabStack`; `Screen` / `SectionScreen` set `Stack.Screen` options when `NATIVE_BARS`); Android/web keep `TabBar` + our bars.
   Store and platform reviewers sign in with `REVIEW_EMAIL` + `REVIEW_CODE` (Netlify secrets) in the app and on the website login (`reviewTokenHash()` in `src/lib/mobile/review-login.ts`, no email sent). Meta review guide (7 permissions, texts, screencast script): `docs/meta-app-review.md`. Store listing, privacy answers
-  and review notes: `docs/app-store.md`. Demo page files are stored as full URLs (`asset()`), because the app can't open
+  and review notes: `docs/app-store.md`; Google Play listing, data safety, upload and Firebase push setup: `docs/google-play.md` (`mobile/app.config.js` adds `googleServicesFile` from the expo.dev file env var `GOOGLE_SERVICES_JSON`). Demo page files are stored as full URLs (`asset()`), because the app can't open
   site-relative paths: after deploying, the owner presses "Refresh demo page" once.
 - Home page "Get the app" (owner, Oct 2026): App Store + Google Play badges under "Follow us" in the newsletter card
   (`.wapp` in the design files + `marketing.css`, images `public/marketing/{app-store,google-play}-badge.png` from the owner).

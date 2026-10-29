@@ -855,7 +855,7 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
 - Server: `/api/mobile/v1/*` (Bearer Supabase token, `authed`/`withPage` in `src/lib/mobile/api.ts`, CORS open: no cookies).
   Shared logic goes in `src/lib/*` (e.g. `claimPage`), never duplicated. `notify()` also pushes to phones (`src/lib/push.ts`,
   table `push_tokens`). App: `mobile/` (Expo SDK 58, own package.json; excluded from the root tsc/eslint; CI job `mobile`).
-  Changes only in `mobile/` or `docs/` don't trigger a Netlify deploy (`ignore` in `netlify.toml`).
+  Changes only in `mobile/`, `docs/`, `.claude/`, `.github/` or `*.md` files (CLAUDE.md, README…) don't trigger a Netlify deploy (`ignore` in `netlify.toml`); the netlify.toml change itself does.
 - **Design review (owner, Oct 2026, against Apple's HIG + Material)**: text is never under 12 (`MIN_TEXT`, no global shrink) and
   follows the phone's larger-text setting up to `MAX_SCALE` 1.8 (bars and tab labels 1.3; no fixed heights around text);
   small grey `faint` ≥ 4.5:1, an "off" switch uses `switchOff` (≥ 3:1). Touch targets `TOUCH` = 44 (iOS) / 48 (Android).

@@ -249,6 +249,11 @@ Username rules: lowercase a–z, 0–9, dot, underscore, 3–20 chars, not reser
 
 Before starting each phase: write a short plan in Arabic and wait for the owner's "تمام".
 
+**Business brief** (owner, Oct 2026): `docs/business-brief.md` is the non-technical summary of Wsool (product, plans, growth
+tools, company, what's left) that the owner keeps in a claude.ai Project (synced from GitHub) for marketing and expansion
+planning. **Update it in the same commit whenever a feature, price, plan limit, platform connection, growth tool or
+company detail changes**, and bump its "آخر تحديث" date. Arabic, no code, no secrets, no real user numbers.
+
 **Before the official launch**: walk the owner through `docs/launch-checklist.md` (security/2FA, Supabase Pro,
 Resend, payment gateway, seller + legal details, DMARC, final checks). Remind them whenever they mention launching.
 

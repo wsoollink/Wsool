@@ -34,7 +34,7 @@ Surfaces:
   inbox (`ibrahim@wsool.link`; MX on `wsool.link` = Google, don't touch). Constants `SUPPORT_EMAIL` /
   `BILLING_EMAIL` in `src/config/site.ts`: support = reply-to of every email + "Contact support" in the
   dashboard; billing = invoices + reply-to of billing notifications (`billing: true` in `NOTIFICATIONS`).
-- **Payments**: Saudi gateway, provider not final (Moyasar or Tap). Build behind a
+- **Payments**: Saudi gateway, **Moyasar** (owner, Oct 2026: application sent, awaiting approval). Build behind a
   `PaymentProvider` interface so the provider can be swapped. Must support mada, Apple Pay,
   international cards, and recurring billing.
 - **Hosting**: Netlify (switched from Vercel: its phone verification never reached Saudi
@@ -517,7 +517,7 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
 
 ### Payments (Phase 5)
 - Provider interface: `src/lib/payments/types.ts`; active provider from `PAYMENT_PROVIDER`
-  (`src/lib/payments/index.ts`). Only `mock` exists (owner hasn't picked Moyasar/Tap): signed
+  (`src/lib/payments/index.ts`). Only `mock` exists (Moyasar not connected until approved): signed
   fake payment ids, tokens `mock_tok_ok` / `mock_tok_fail`. **Test providers are staff-only**
   (checkout refuses non-staff), so leaving `mock` on never gives Pro for free. Unset = payments off.
 - Adding the real provider: implement `PaymentProvider` next to `mock.ts`, register it in

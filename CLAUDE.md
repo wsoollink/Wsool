@@ -868,7 +868,7 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   manage the plan (App Store 3.1.3).
 - **iPhone (Oct 2026)**: system tab bar on iOS (`app/(tabs)/_layout.ios.tsx`, `NativeTabs`) and system headers with large titles
   (`TabStack`; `Screen` / `SectionScreen` set `Stack.Screen` options when `NATIVE_BARS`); Android/web keep `TabBar` + our bars.
-  Store reviewers sign in with `REVIEW_EMAIL` + `REVIEW_CODE` (Netlify secrets, app endpoints only). Store listing, privacy answers
+  Store and platform reviewers sign in with `REVIEW_EMAIL` + `REVIEW_CODE` (Netlify secrets) in the app and on the website login (`reviewTokenHash()` in `src/lib/mobile/review-login.ts`, no email sent). Meta review guide (7 permissions, texts, screencast script): `docs/meta-app-review.md`. Store listing, privacy answers
   and review notes: `docs/app-store.md`. Demo page files are stored as full URLs (`asset()`), because the app can't open
   site-relative paths: after deploying, the owner presses "Refresh demo page" once.
 - Home page "Get the app" (owner, Oct 2026): App Store + Google Play badges under "Follow us" in the newsletter card

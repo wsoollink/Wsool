@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { ensureAccount } from "@/lib/account";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
+import { isReviewEmail, reviewTokenHash } from "@/lib/mobile/review-login";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export type LoginState = {
@@ -27,6 +28,9 @@ export async function requestCode(_prev: LoginState, formData: FormData): Promis
   if (!(await rateLimit(`otp-ip:${ip}`, 10, 3600)) || !(await rateLimit(`otp-email:${email.data}`, 5, 3600))) {
     return { step: "email", email: email.data, error: "rate_limited" };
   }
+
+  // Platform reviewers' address: the code is fixed (src/lib/mobile/review-login.ts), nothing to email.
+  if (isReviewEmail(email.data)) return { step: "code", email: email.data };
 
   const supabase = await createSupabaseServerClient();
   const { error } = await supabase.auth.signInWithOtp({
@@ -54,11 +58,12 @@ export async function verifyCode(_prev: LoginState, formData: FormData): Promise
   }
 
   const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase.auth.verifyOtp({
-    email: email.data,
-    token: code.data,
-    type: "email",
-  });
+  // The reviewers' address signs in with its fixed code through a server-made token (sets the same session cookie).
+  const reviewHash = isReviewEmail(email.data) ? await reviewTokenHash(email.data, code.data) : null;
+  if (isReviewEmail(email.data) && !reviewHash) return { step: "code", email: email.data, error: "invalid_code" };
+  const { data, error } = reviewHash
+    ? await supabase.auth.verifyOtp({ token_hash: reviewHash, type: "magiclink" })
+    : await supabase.auth.verifyOtp({ email: email.data, token: code.data, type: "email" });
 
   if (error || !data.user) {
     return { step: "code", email: email.data, error: error?.status === 429 ? "rate_limited" : "invalid_code" };

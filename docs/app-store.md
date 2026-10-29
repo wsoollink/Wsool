@@ -136,7 +136,7 @@ Available in Arabic and English, with dark mode and larger text support.
 ## 5. ملاحظات للمراجع (App Review Information)
 
 **Sign-in required: Yes.**
-- User name: الإيميل اللي تحطه في Netlify كـ `REVIEW_EMAIL` (مثال: `review@wsool.link`).
+- User name: الإيميل اللي تحطه في Netlify كـ `REVIEW_EMAIL`.
 - Password: الرمز اللي تحطه كـ `REVIEW_CODE` (8 إلى 10 أرقام).
 
 **Notes (بالإنجليزي، انسخها كما هي):**

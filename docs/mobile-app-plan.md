@@ -100,3 +100,7 @@
   كمنظمة. Google Play: `docs/google-play.md` (صفحة المتجر، أمان البيانات، التقييم، الرفع، Firebase للإشعارات) + صور الواجهة في
   `docs/google-play/`. إشعارات أندرويد: `mobile/app.config.js` يضيف `googleServicesFile` من متغير الملف `GOOGLE_SERVICES_JSON` في expo.dev
   (ما ينرفع في GitHub). `eas.json` → submit أندرويد إلى Internal testing كمسودة. Sign in with Apple غير مطلوب (ما فيه دخول Google في التطبيق).
+- **أول نسخة أندرويد (30 أكتوبر 2026)**: بناء `preview` (APK) من expo.dev نجح، وجرّبه المالك على جواله: الدخول، والتنقل، وطلب إذن
+  الإشعارات بعد الدخول، ووصول إشعار حقيقي (Firebase + مفتاح FCM V1 في expo.dev). إصلاحان قبلها: تحديث حزم Expo للنسخ اللي يطلبها
+  `expo doctor`، ونصوص `locales/*.json` صارت تحت `ios` فقط (أندرويد كان يرفض البناء بخطأ ExtraTranslation). الباقي لـ Google Play:
+  D-U-N-S (مطلوب، 29 أكتوبر) ثم حساب Play Console كمنظمة.

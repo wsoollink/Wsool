@@ -1,4 +1,6 @@
 {
-  "CFBundleDisplayName": "Wsool",
-  "NSPhotoLibraryUsageDescription": "Wsool opens your photos only when you choose a picture or video for your page."
+  "ios": {
+    "CFBundleDisplayName": "Wsool",
+    "NSPhotoLibraryUsageDescription": "Wsool opens your photos only when you choose a picture or video for your page."
+  }
 }

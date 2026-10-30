@@ -16,10 +16,10 @@ export const SELLER = {
   name: "شركة صفحة وصول لتقنية المعلومات",
   nameEn: "Safhat Wsool Company For Information Technology",
   /**
-   * TODO(owner): VAT registration number (15 digits, starts and ends with 3) once registered with ZATCA.
+   * VAT registration number (ZATCA, registered 2026-10-30): printed on invoices with the phase-1 QR.
    * Not the ZATCA "distinguished number" (10 digits), which never goes on invoices.
    */
-  vatNumber: "",
+  vatNumber: "315129912700003",
   /** Unified national number of the commercial registration. */
   crNumber: "7055476373",
   /** National address (may move when the company gets an office): update both languages. */

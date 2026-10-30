@@ -583,7 +583,7 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   KPIs (sales incl./excl. VAT, VAT collected, VAT on refunds, owed to ZATCA), last 4 quarters and per month. Sales count in the
   Saudi-time month paid, refunds take their VAT back in the month refunded, USD × 3.75. CSV for the accountant `/api/admin/vat?months=`
   (`revenue.view`, audited `vat.export`, one row per invoice). Not in investor links. Invoices = "simplified tax invoice" with seller
-  name/CR/address from `SELLER` and, once `SELLER.vatNumber` (15 digits) is set, the ZATCA phase-1 QR (`zatcaQrPayload`: TLV of seller,
+  name/CR/address from `SELLER`, the VAT number (`SELLER.vatNumber` = 315129912700003, registered Oct 30, 2026) and the ZATCA phase-1 QR (`zatcaQrPayload`: TLV of seller,
   VAT number, time, total, VAT in SAR, base64). The ZATCA "distinguished number" (10 digits) never goes on invoices. Phase-2 e-invoicing
   integration (Fatoora API) is built only when ZATCA notifies the company.
 - **Investor links** (owner only): table `investor_links` stores only the token hash, chosen

@@ -8,7 +8,7 @@ import { requireCreator } from "@/lib/creator";
 import { db } from "@/lib/db";
 import { AppearanceEditor } from "./AppearanceEditor";
 import { PageHeader } from "@/components/dashboard/PageHeader";
-import { ACCENT_SWATCHES } from "@/lib/validation/appearance";
+import { ACCENT_SWATCHES, PAGE_SECTIONS, type PageSection } from "@/lib/validation/appearance";
 import { SectionSkeleton } from "@/components/dashboard/SectionSkeleton";
 
 async function Editor() {
@@ -32,6 +32,7 @@ async function Editor() {
         accent: ACCENT_SWATCHES.some((sw) => sw.light === page.accent) ? page.accent : null,
         hideBranding: page.hideBranding,
         iconStyle: page.iconStyle,
+        hiddenSections: page.hiddenSections.filter((s): s is PageSection => (PAGE_SECTIONS as readonly string[]).includes(s)),
       }}
       preview={{
         name: tr?.fullName ?? "",

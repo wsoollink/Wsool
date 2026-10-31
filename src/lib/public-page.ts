@@ -35,7 +35,7 @@ export function pageChanged(username: string) {
 /** Every column the public page needs (public fields only, never the owner's account email). */
 const PAGE_SELECT = {
   id: true, username: true, primaryLang: true, enEnabled: true, template: true,
-  customColors: true, accent: true, photoShape: true, iconStyle: true, hideBranding: true,
+  customColors: true, accent: true, photoShape: true, iconStyle: true, hideBranding: true, hiddenSections: true,
   isPublished: true, deletedAt: true, photoUrl: true, logoUrl: true, whatsapp: true, contactEmail: true, whatsappVisible: true, emailVisible: true,
   user: { select: { suspendedAt: true, subscription: { select: { plan: true, status: true, trialEndsAt: true } } } },
   translations: true,
@@ -116,8 +116,11 @@ export async function getPreviewPage(pageId: string) {
 function shapePage(page: PageRow, now: number) {
   const isPro = hasPro(page.user.subscription, now);
   // Free pages hide rates and audience data (FREE_LIMITS); nothing is deleted.
-  const showRates = isPro || FREE_LIMITS.rates;
-  const showAudience = isPro || FREE_LIMITS.audience;
+  // Sections the creator hid (Appearance → "Page sections"): their data is kept, just not shown (page, PDF, link preview).
+  const hidden = new Set(page.hiddenSections);
+  const showNumbers = !hidden.has("numbers");
+  const showRates = (isPro || FREE_LIMITS.rates) && !hidden.has("rates");
+  const showAudience = (isPro || FREE_LIMITS.audience) && showNumbers;
   return {
     status: "published" as const,
     username: page.username,
@@ -130,6 +133,8 @@ function shapePage(page: PageRow, now: number) {
     photoShape: page.photoShape,
     iconStyle: page.iconStyle,
     isPro,
+    /** False = no follower counts, monthly views or audience anywhere (the account icons and badge stay). */
+    showNumbers,
     // Hiding the footer is a Pro feature unless the Free limits allow it.
     showBranding: !(page.hideBranding && (isPro || FREE_LIMITS.hideBranding)),
     photoUrl: page.photoUrl,
@@ -148,7 +153,7 @@ function shapePage(page: PageRow, now: number) {
         platform: a.platform,
         handle: a.handle,
         url: a.url,
-        followers: a.followers,
+        followers: showNumbers ? a.followers : 0,
         followersUpdatedAt: a.followersUpdatedAt?.toISOString() ?? null,
         // The badge is a Pro feature (CLAUDE.md section 6).
         verified: verified && isPro,
@@ -158,11 +163,11 @@ function shapePage(page: PageRow, now: number) {
         rates: (showRates ? a.rates : []).map((r) => ({ id: r.id, name: r.name, nameEn: r.nameEn, price: Number(r.price) })),
       };
     }),
-    monthlyViews: page.monthlyViews[0] ? Number(page.monthlyViews[0].views) : null,
+    monthlyViews: showNumbers && page.monthlyViews[0] ? Number(page.monthlyViews[0].views) : null,
     /** First day (UTC) of the month those views belong to. */
     monthlyViewsMonth: page.monthlyViews[0]?.month.toISOString() ?? null,
-    brandLogos: page.brandLogos,
-    portfolio: isPro ? page.portfolioItems : page.portfolioItems.slice(0, FREE_LIMITS.portfolioItems),
+    brandLogos: hidden.has("brands") ? [] : page.brandLogos,
+    portfolio: hidden.has("works") ? [] : isPro ? page.portfolioItems : page.portfolioItems.slice(0, FREE_LIMITS.portfolioItems),
     // No saved settings yet = the defaults (shown, VAT included, SAR or USD by primary language).
     rateSettings: page.rateSettings ?? { showOnPage: true, showInPdf: true, currency: page.primaryLang === "en" ? ("USD" as const) : ("SAR" as const), vatIncluded: true },
     // One bundle per page (older pages may still have more saved).

@@ -28,6 +28,7 @@ export function Preview({ value, data }: { value: AppearanceInput; data: Preview
   const t = useTranslations("AppearancePage");
   const theme = pageTheme(value.template as Template, value.accent, value.customColors);
   const numbers = "font-numbers";
+  const showNumbers = !(value.hiddenSections ?? []).includes("numbers");
   const accounts = data.accounts.length ? data.accounts.slice(0, 2) : [{ platform: "tiktok" as const, followers: 125000 }, { platform: "instagram" as const, followers: 48000 }];
   const total = data.followers || accounts.reduce((s, a) => s + a.followers, 0);
   // The creator's own platforms (up to 5), else a sample row.
@@ -60,20 +61,20 @@ export function Preview({ value, data }: { value: AppearanceInput; data: Preview
             {data.name || t("sampleName")} <BadgeCheck aria-hidden="true" size={18} className="text-[var(--page-accent)]" />
           </p>
           <p className="text-sm font-medium text-[var(--page-accent)]">{data.specialty || t("sampleSpecialty")}</p>
-          <p className={`${numbers} mt-1 text-4xl font-bold tabular-nums`}>{formatCompact(total, data.lang)}</p>
-          <p className="text-xs text-[var(--page-muted)]">{t("followers")}</p>
+          {showNumbers && <p className={`${numbers} mt-1 text-4xl font-bold tabular-nums`}>{formatCompact(total, data.lang)}</p>}
+          {showNumbers && <p className="text-xs text-[var(--page-muted)]">{t("followers")}</p>}
           <div className="mt-1 flex flex-wrap justify-center gap-1.5">
             {icons.map((p) => <SocialIcon key={p} platform={p} iconStyle={value.iconStyle} small />)}
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-2 px-4">
+        {showNumbers && <div className="grid grid-cols-2 gap-2 px-4">
           {accounts.map((a, i) => (
             <div key={i} className={`${card} flex flex-col gap-1 p-3`}>
               <PlatformIcon platform={a.platform} size={18} />
               <span className={`${numbers} text-lg font-bold`}>{formatCompact(a.followers, data.lang)}</span>
             </div>
           ))}
-        </div>
+        </div>}
         <div className="flex flex-col gap-2 p-4">
           <span className="inline-flex min-h-10 items-center justify-center gap-2 rounded-full bg-[var(--page-accent)] text-sm font-semibold text-[var(--page-on-accent)]">
             <PlatformIcon platform="whatsapp" size={16} /> {t("whatsapp")}

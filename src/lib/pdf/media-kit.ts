@@ -383,10 +383,10 @@ export async function buildMediaKit(page: PublishedPage, lang: Locale): Promise<
     const nameW = CONTENT - (anyVerified ? 42 : 0);
     const nameM = measure(name, { size: nameSize, weight: 700, width: nameW, maxLines: 2, lineHeight: 1.15 });
     const g1 = nameM.height + (tr?.specialty ? 8 + 30 : 0) + (tr?.city || tr?.country ? 8 + 22 : 0);
-    const g2 = 22 + 2 + 80;
+    const g2 = page.showNumbers ? 22 + 2 + 80 : 0;
     const ctaH = 80;
     const avail = PH - 10 - 28 - coverTop;
-    const gap = Math.max(16, (avail - g1 - g2 - ctaH) / 4);
+    const gap = Math.max(16, (avail - g1 - g2 - ctaH) / (page.showNumbers ? 4 : 3));
     let cy = coverTop + gap;
     const nx = (PW - nameM.width - (anyVerified ? 42 : 0)) / 2;
     text(name, rtl ? nx + (anyVerified ? 42 : 0) : nx, cy, { size: nameSize, weight: 700, color: P.ink, width: nameM.width + 1, maxLines: 2, lineHeight: 1.15, align: "center" });
@@ -396,10 +396,12 @@ export async function buildMediaKit(page: PublishedPage, lang: Locale): Promise<
     const place = [tr?.country, tr?.city].filter(Boolean).join(t("listSep"));
     if (place) cy += 8 + text(place, PAD, cy + 8, { size: 15, color: P.muted, width: CONTENT, align: "center" });
     cy += gap;
-    cy += text(t("followersAll"), PAD, cy, { size: 15, color: P.muted, width: CONTENT, align: "center" }) + 2;
-    const totalText = formatNumber(total, lang);
-    cy += text(totalText, PAD, cy, { size: 76, weight: 700, color: P.ink, width: CONTENT, align: "center", numbers: isLatin(totalText), lineHeight: 1.05 });
-    cy += gap;
+    if (page.showNumbers) {
+      cy += text(t("followersAll"), PAD, cy, { size: 15, color: P.muted, width: CONTENT, align: "center" }) + 2;
+      const totalText = formatNumber(total, lang);
+      cy += text(totalText, PAD, cy, { size: 76, weight: 700, color: P.ink, width: CONTENT, align: "center", numbers: isLatin(totalText), lineHeight: 1.05 });
+      cy += gap;
+    }
     // Call to action: open the full page.
     const linkM = measure(shortLink, { size: 20, weight: 700, width: 500 });
     const tapM = measure(t("tapToOpen"), { size: 13, width: 500 });
@@ -471,7 +473,7 @@ export async function buildMediaKit(page: PublishedPage, lang: Locale): Promise<
   }
 
   // ================= 3) Numbers =================
-  if (accounts.length) {
+  if (accounts.length && page.showNumbers) {
     section(t("numbers"));
     const stats = [{ label: t("totalFollowers"), value: formatNumber(total, lang) }];
     if (page.monthlyViews !== null && page.monthlyViewsMonth) {
@@ -558,17 +560,20 @@ export async function buildMediaKit(page: PublishedPage, lang: Locale): Promise<
     box(tile, y + 18, 88, 88, { fill: "#FFFFFF", stroke: "rgba(18,21,26,0.08)", r: 22 });
     platformIcon(a.platform, tile + 18, y + 36, 52, "#12151A");
     const unit = a.platform === "youtube" ? t("subscribers") : a.platform === "discord" ? t("members") : t("followers");
-    const num = formatNumber(a.followers, lang);
-    const numM = measure(num, { size: 34, weight: 700, width: 300, numbers: true });
-    const endX = alignX(PAD + 20, CONTENT - 40, numM.width, "end");
-    text(num, endX, y + 30, { size: 34, weight: 700, color: P.ink, width: numM.width + 1, numbers: true });
-    text(unit, alignX(PAD + 20, CONTENT - 40, 120, "end"), y + 76, { size: 13, color: P.muted, width: 120, align: "end" });
+    // Hidden numbers (page sections setting): the card keeps the platform, handle and link only.
+    const num = page.showNumbers ? formatNumber(a.followers, lang) : "";
+    const numM = page.showNumbers ? measure(num, { size: 34, weight: 700, width: 300, numbers: true }) : { width: 0, height: 0 };
+    if (page.showNumbers) {
+      const endX = alignX(PAD + 20, CONTENT - 40, numM.width, "end");
+      text(num, endX, y + 30, { size: 34, weight: 700, color: P.ink, width: numM.width + 1, numbers: true });
+      text(unit, alignX(PAD + 20, CONTENT - 40, 120, "end"), y + 76, { size: 13, color: P.muted, width: 120, align: "end" });
+    }
     const infoX = rtl ? PAD + 20 + numM.width + 20 : tile + 88 + 18, infoW = CONTENT - 40 - 88 - 18 - numM.width - 20;
     const nm = measure(pname, { size: 24, weight: 700, width: infoW });
     text(pname, infoX, y + 20, { size: 24, weight: 700, color: P.ink, width: infoW });
     if (a.verified) tick(rtl ? infoX + infoW - nm.width - 8 - 22 : infoX + nm.width + 8, y + 27, 22);
     text(`@${a.handle}`, infoX, y + 56, { size: 15, color: P.muted, width: infoW });
-    if (a.followersUpdatedAt) text(t("lastUpdated", { month: monthName(a.followersUpdatedAt) }), infoX, y + 82, { size: 13, color: P.muted, width: infoW });
+    if (page.showNumbers && a.followersUpdatedAt) text(t("lastUpdated", { month: monthName(a.followersUpdatedAt) }), infoX, y + 82, { size: 13, color: P.muted, width: infoW });
     link(PAD, y, CONTENT, 124, a.url);
     y += 124 + 28;
 

@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: PageProps<"/[locale]/[usernam
   const title = tr?.specialty ? `${name} · ${tr.specialty}` : name;
   // The image is CDN-cached for a day: a fingerprint of what it shows gives a new URL whenever that
   // changes (followers, name, photo, colors), so link previews never show stale numbers.
-  const shown = [lang, name, tr?.specialty, data.photoUrl, data.photoShape, data.template, data.accent, JSON.stringify(data.customColors),
+  const shown = [lang, name, tr?.specialty, data.photoUrl, data.photoShape, data.showNumbers, data.template, data.accent, JSON.stringify(data.customColors),
     data.accounts.map((a) => `${a.platform}:${a.followers}:${a.verified ? 1 : 0}`).join(",")];
   const v = createHash("sha1").update(shown.join("|")).digest("hex").slice(0, 10);
   const image = { url: `/${data.username}/og?lang=${lang}&v=${v}`, width: 1200, height: 630, alt: name };

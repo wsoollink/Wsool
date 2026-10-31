@@ -11,7 +11,7 @@ import { Card } from "@/components/ui/Card";
 import type { Template } from "@/generated/prisma/enums";
 import { SaveBar } from "@/components/dashboard/SaveBar";
 import { Switch } from "@/components/ui/Switch";
-import { ACCENT_SWATCHES, ICON_STYLES, TEMPLATES, type AppearanceInput } from "@/lib/validation/appearance";
+import { ACCENT_SWATCHES, ICON_STYLES, PAGE_SECTIONS, TEMPLATES, type AppearanceInput } from "@/lib/validation/appearance";
 import { saveAppearance } from "./actions";
 import { Preview, type PreviewData } from "./Preview";
 
@@ -159,6 +159,27 @@ export function AppearanceEditor({ initial, isPro, freeTemplates, preview }: { i
                     </span>
                   </span>
                 </button>
+              );
+            })}
+          </div>
+        </Card>
+
+        <Card className="flex flex-col gap-3">
+          <div>
+            <h2 className="font-bold">{t("sections")}</h2>
+            <p className="text-xs text-muted">{t("sectionsHint")}</p>
+          </div>
+          <div className="flex flex-col divide-y divide-line-soft">
+            {PAGE_SECTIONS.map((key) => {
+              const hidden = value.hiddenSections ?? [];
+              return (
+                <div key={key} className="py-3 first:pt-0 last:pb-0">
+                  <Switch
+                    checked={!hidden.includes(key)}
+                    onChange={(on) => set({ hiddenSections: on ? hidden.filter((k) => k !== key) : [...hidden, key] })}
+                    label={t(`section.${key}`)} hint={t(`sectionHint.${key}`)}
+                  />
+                </div>
               );
             })}
           </div>

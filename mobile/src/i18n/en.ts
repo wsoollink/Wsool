@@ -88,6 +88,9 @@ export const en: typeof ar = {
     modeLight: "Light", modeDark: "Dark", accent: "Accent colour", accentDefault: "Template colour", auto: "Auto",
     icons: "Account icons style", iconSolid: "Solid circle", iconColor: "Brand colours", iconOutline: "Outline",
     hideBranding: "Hide “Made with Wsool”", hideBrandingPro: "Available on Pro", proOnly: "This option is available on Pro.",
+    sections: "Page sections", sectionsHint: "Turn off any section you don't want on your page and PDF. Its data stays saved and comes back when you turn it on.",
+    section: { numbers: "Numbers", brands: "Brands", works: "Past work", rates: "Ad rates" },
+    sectionHint: { numbers: "Followers, views and audience. Your account icons and verified badge stay.", brands: "The strip of brand logos.", works: "Your past work and its videos.", rates: "Your ad rates and bundle; the whole section disappears." },
   },
   coupons: {
     subtitle: "Your store discount codes and tracking links", store: "Store name", storeEn: "Store name in English", storePh: "e.g. Noon",

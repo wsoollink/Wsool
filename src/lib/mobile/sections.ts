@@ -234,6 +234,7 @@ const LOADERS = {
       accents: ACCENT_SWATCHES,
       hideBranding: page.hideBranding,
       iconStyle: page.iconStyle,
+      hiddenSections: page.hiddenSections,
     };
   },
 } as const;

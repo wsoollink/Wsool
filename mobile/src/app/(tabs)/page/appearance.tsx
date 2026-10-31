@@ -12,7 +12,10 @@ type Data = {
   isPro: boolean; freeTemplates: Template[]; template: Template;
   customColors: { colors: string[]; mode: "light" | "dark" }; accent: string | null;
   accents: { key: string; light: string; dark: string }[]; hideBranding: boolean; iconStyle: "solid" | "color" | "outline";
+  /** Public page sections the creator hid (numbers, brands, works, rates). */
+  hiddenSections?: string[];
 };
+const PAGE_SECTIONS = ["numbers", "brands", "works", "rates"] as const;
 /** Template colours (src/components/creator/theme.ts): background, text, accent. */
 const SWATCH: Record<Exclude<Template, "custom">, [string, string, string]> = {
   white: ["#F3F4F6", "#12151A", "#2347D6"], black: ["#07090E", "#F2F4F8", "#6EE7F9"], sand: ["#F4EDE3", "#2B2118", "#A0522D"],
@@ -36,7 +39,7 @@ export default function Appearance() {
     if (!form) return false;
     const custom = form.customColors.colors.filter((c) => HEX.test(c));
     const res = await rpc<{ ok?: boolean; error?: string }>("saveAppearance", {
-      template: form.template, accent: form.accent, hideBranding: form.hideBranding, iconStyle: form.iconStyle,
+      template: form.template, accent: form.accent, hideBranding: form.hideBranding, iconStyle: form.iconStyle, hiddenSections: form.hiddenSections ?? [],
       customColors: custom.length ? { colors: custom, mode: form.customColors.mode } : null,
     });
     return res.ok ? true : res.error === "pro_only" ? t("appearance.proOnly") : false;
@@ -101,6 +104,18 @@ export default function Appearance() {
             <T weight="bold">{t("appearance.icons")}</T>
             <Chips value={[form.iconStyle]} onChange={([v]) => set({ iconStyle: v })}
               options={[{ value: "solid", label: t("appearance.iconSolid") }, { value: "color", label: t("appearance.iconColor") }, { value: "outline", label: t("appearance.iconOutline") }]} />
+          </Card>
+
+          <Card>
+            <T weight="bold">{t("appearance.sections")}</T>
+            <T size={13} tone="muted">{t("appearance.sectionsHint")}</T>
+            {PAGE_SECTIONS.map((key) => {
+              const hidden = form.hiddenSections ?? [];
+              return (
+                <SwitchRow key={key} label={t(`appearance.section.${key}`)} hint={t(`appearance.sectionHint.${key}`)} value={!hidden.includes(key)}
+                  onChange={(on) => set({ hiddenSections: on ? hidden.filter((k) => k !== key) : [...hidden, key] })} />
+              );
+            })}
           </Card>
 
           <Card>

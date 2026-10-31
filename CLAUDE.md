@@ -143,6 +143,10 @@ rounded squares with white glyphs (`BRAND_COLORS`), `outline` = Tabler outline g
 hand-drawn) in the text colour), in `src/components/creator/icon-styles.ts` + `SocialIcon.tsx`. Only the icons row under
 total followers uses it (not platform cards, PDF or OG).
 Big numbers always use the wide Black cut (the number-font choice was removed by the owner, Oct 2026).
+**Page sections** (owner, Oct 2026, all plans): Appearance card "أقسام صفحتي" (web + app) hides `numbers` / `brands` / `works` /
+`rates` (`pages.hidden_sections`, `PAGE_SECTIONS` in `src/lib/validation/appearance.ts`; data kept). Applied in `shapePage()`: brands/works
+= empty lists, rates = none (whole section gone, no "on request"), numbers = `showNumbers: false` (followers zeroed, no monthly views or
+audience; total, Numbers section, PDF numbers/cover total/per-platform counts and the OG total are hidden; icons row + verified badge stay).
 
 **Licenses**: a flexible list. Each item = free-text name (e.g. "رخصة موثوق") + number + optional
 file (opens in a pop-up). Section hidden if empty.

@@ -8,7 +8,7 @@ import { appearanceSchema, type AppearanceInput } from "@/lib/validation/appeara
 
 export type AppearanceResult = { ok?: boolean; error?: "failed" | "pro_only" };
 
-/** Template, custom colors, accent, icon style, Wsool footer. Pro-only choices are checked here. */
+/** Template, custom colors, accent, icon style, hidden page sections, Wsool footer. Pro-only choices are checked here. */
 export async function saveAppearance(input: AppearanceInput): Promise<AppearanceResult> {
   const { user, page } = await requireCreator();
   const parsed = appearanceSchema.safeParse(input);
@@ -30,6 +30,7 @@ export async function saveAppearance(input: AppearanceInput): Promise<Appearance
       accent: value.accent,
       hideBranding: value.hideBranding,
       iconStyle: value.iconStyle,
+      ...(value.hiddenSections && { hiddenSections: value.hiddenSections }),
     },
   });
   pageChanged(page.username);

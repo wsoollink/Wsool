@@ -188,10 +188,12 @@ export async function CreatorProfile({ page, lang, preview = false }: ProfilePro
               </ul>
             )}
 
-            <div className="flex flex-col items-center gap-0.5 py-1 text-center">
-              <p className="text-sm text-[var(--page-muted)]">{t("followersTotal")}</p>
-              <CountUp value={totalFollowers} locale={locale} className={`${numbersFont} grad-num text-[44px] leading-[1.15] font-black tabular-nums`} />
-            </div>
+            {page.showNumbers && (
+              <div className="flex flex-col items-center gap-0.5 py-1 text-center">
+                <p className="text-sm text-[var(--page-muted)]">{t("followersTotal")}</p>
+                <CountUp value={totalFollowers} locale={locale} className={`${numbersFont} grad-num text-[44px] leading-[1.15] font-black tabular-nums`} />
+              </div>
+            )}
 
             {page.accounts.length > 0 && (
               <ul className="flex flex-wrap justify-center gap-2" aria-label={t("accountsOf", { name })}>
@@ -224,7 +226,7 @@ export async function CreatorProfile({ page, lang, preview = false }: ProfilePro
         </aside>
 
         <main className="flex min-w-0 flex-1 flex-col gap-8 px-5 md:gap-9 md:px-0">
-          {(page.monthlyViews !== null || page.accounts.length > 0) && (
+          {page.showNumbers && (page.monthlyViews !== null || page.accounts.length > 0) && (
             <Section title={t("numbers")} aside={numbersNote || undefined}>
               {/* Owner decision: monthly views stay before the platform cards (CLAUDE.md section 5). */}
               {page.monthlyViews !== null && (

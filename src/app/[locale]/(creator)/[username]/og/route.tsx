@@ -82,11 +82,13 @@ export async function GET(request: NextRequest, { params }: RouteContext<"/[loca
       {specialtyImg && <img src={specialtyImg.src} width={specialtyImg.width} height={specialtyImg.height} alt="" />}
       <div style={{ display: "flex", flexDirection: "column", alignItems: rtl ? "flex-end" : "flex-start", marginTop: 26, padding: "22px 30px", borderRadius: 28, background: surface, border: `2px solid ${theme.line}` }}>
         {/* eslint-disable-next-line @next/next/no-img-element -- rendered by next/og */}
-        <img src={labelImg.src} width={labelImg.width} height={labelImg.height} alt="" />
-        <div style={{ fontFamily: "KufiNumbers", fontSize: 76, fontWeight: 900, color: theme.text }}>
-          {new Intl.NumberFormat(toIntlLocale(lang)).format(total)}
-        </div>
-        <div style={{ display: "flex", gap: 14, marginTop: 8, flexDirection: rtl ? "row-reverse" : "row" }}>
+        {data.showNumbers && <img src={labelImg.src} width={labelImg.width} height={labelImg.height} alt="" />}
+        {data.showNumbers && (
+          <div style={{ fontFamily: "KufiNumbers", fontSize: 76, fontWeight: 900, color: theme.text }}>
+            {new Intl.NumberFormat(toIntlLocale(lang)).format(total)}
+          </div>
+        )}
+        <div style={{ display: "flex", gap: 14, marginTop: data.showNumbers ? 8 : 0, flexDirection: rtl ? "row-reverse" : "row" }}>
           {data.accounts.slice(0, 6).map((a) => (
             <svg key={a.id} width="34" height="34" viewBox="0 0 24 24" fill={theme.text}>
               <path d={PLATFORM_ICON_PATHS[a.platform]} />

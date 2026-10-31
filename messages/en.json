@@ -761,6 +761,20 @@
       "solid": "Solid circle",
       "color": "Colour",
       "outline": "Outline"
+    },
+    "sections": "Page sections",
+    "sectionsHint": "Turn off any section you don't want on your page and PDF. Its data stays saved and comes back when you turn it on.",
+    "section": {
+      "numbers": "Numbers",
+      "brands": "Brands",
+      "works": "Past work",
+      "rates": "Ad rates"
+    },
+    "sectionHint": {
+      "numbers": "Total followers, each platform's count, monthly views and audience. Your account icons and verified badge stay.",
+      "brands": "The strip of brands you've worked with.",
+      "works": "Your past work and its videos.",
+      "rates": "Your ad rates and bundle. Turned off, the whole section disappears."
     }
   },
   "Suspended": {

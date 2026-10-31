@@ -4,6 +4,10 @@ const hex = z.string().regex(/^#[0-9a-fA-F]{6}$/).transform((v) => v.toLowerCase
 
 export const ICON_STYLES = ["solid", "color", "outline"] as const;
 
+/** Public page sections a creator can hide (Appearance → "Page sections"); the data stays saved. */
+export const PAGE_SECTIONS = ["numbers", "brands", "works", "rates"] as const;
+export type PageSection = (typeof PAGE_SECTIONS)[number];
+
 export const TEMPLATES = ["white", "black", "sand", "pink", "black_gold", "vivid", "green", "custom"] as const;
 
 export const appearanceSchema = z
@@ -15,6 +19,8 @@ export const appearanceSchema = z
     hideBranding: z.boolean(),
     /** Social icons row on the page (all plans). */
     iconStyle: z.enum(ICON_STYLES),
+    /** Hidden sections; left out (older app versions) = keep what is saved. */
+    hiddenSections: z.array(z.enum(PAGE_SECTIONS)).max(PAGE_SECTIONS.length).transform((v) => [...new Set(v)]).optional(),
   })
   .refine((v) => v.template !== "custom" || v.customColors !== null, { path: ["customColors"] });
 

@@ -125,6 +125,8 @@ model Page {
   photoShape        PhotoShape @default(full) @map("photo_shape")
   iconStyle         IconStyle  @default(solid) @map("icon_style")
   hideBranding      Boolean    @default(false) @map("hide_branding")
+  /// Public page sections the creator hid (owner, Oct 2026): numbers | brands | works | rates. Data is kept.
+  hiddenSections    String[]   @default([]) @map("hidden_sections")
   /// Square hero photo (Supabase Storage URL).
   photoUrl          String?    @map("photo_url")
   /// Brand logo shown in the PDF media kit only.

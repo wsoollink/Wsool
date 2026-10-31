@@ -327,7 +327,7 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
 - `src/proxy.ts` refreshes the Supabase session cookie only when an `sb-` cookie exists.
 - Supabase email templates "Magic Link" (returning users) and "Confirm signup" (new users)
   hold one bilingual body (Arabic, code, English) with `{{ .Token }}`. Free projects can only
-  edit templates with custom SMTP, which is why Resend is connected. The OTP is 8 digits
+  edit templates with custom SMTP, which is why Resend is connected. The OTP is 6 digits (owner, Oct 31, 2026; was 8; Supabase → Sign In / Providers → Email → Email OTP Length)
   (the form accepts 6-10).
 - **Google sign-in**: `signInWithGoogle` (server action, PKCE) → Supabase → Google → `/api/auth/callback`
   (`exchangeCodeForSession`, then `ensureAccount` = same trial as email sign-up) → `/dashboard`. Errors go to

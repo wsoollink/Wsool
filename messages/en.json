@@ -2352,5 +2352,48 @@
     "save": "Save",
     "saved": "Saved",
     "saveFailed": "Not saved, please check the fields."
+  },
+  "Contact": {
+    "metaTitle": "Contact us",
+    "title": "Contact us",
+    "lead": "A question, an idea or a partnership? We reply within one business day.",
+    "home": "Home",
+    "start": "Start free",
+    "formTitle": "Send a message",
+    "name": "Name",
+    "namePh": "Your name",
+    "email": "Email",
+    "topic": "Topic",
+    "username": "Your Wsool username (optional)",
+    "message": "Message",
+    "messagePh": "Write your message…",
+    "send": "Send",
+    "sending": "Sending…",
+    "consent": "By sending, you agree to our <privacy>Privacy Policy</privacy>. We only use your details to reply to you.",
+    "sent": "Message received ✅ We'll reply to your email within one business day.",
+    "sendAnother": "Send another message",
+    "errors": {
+      "name": "Enter your name.",
+      "email": "Enter a valid email.",
+      "message": "Write your message (at least 10 characters).",
+      "rate": "Too many messages. Try again in an hour, or message us on WhatsApp.",
+      "failed": "We couldn't send your message. Try again, or email us at {email}."
+    },
+    "topics": {
+      "billing": "Subscription & billing",
+      "verification": "Account verification",
+      "technical": "Technical issue",
+      "partnership": "Partnership (brands & agencies)",
+      "suggestion": "Suggestion",
+      "other": "Other"
+    },
+    "company": "Company details",
+    "companyName": "Name",
+    "address": "Address",
+    "emailLabel": "Email",
+    "waTitle": "Need a faster reply?",
+    "waBody": "Chat with us on WhatsApp, Sunday to Thursday",
+    "waButton": "Chat on WhatsApp",
+    "waText": "Hi, I have a question about Wsool"
   }
 }

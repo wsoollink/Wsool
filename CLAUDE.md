@@ -38,6 +38,10 @@ Surfaces:
   Shown as the last icon of the marketing footer row (`SOCIAL_LINKS.whatsapp`, `.wsoc-whatsapp` mask = `public/marketing/whatsapp.svg`,
   label "Chat with Wsool"), "WhatsApp support" in the dashboard sidebar/drawer and the app's Account tab (prefilled message),
   the suspended page, and `{whatsapp}` in the Terms/Privacy contact lines. App copy: `SUPPORT_WHATSAPP` in `mobile/src/lib/config.ts`.
+- **Contact page** `/contact` (owner, Oct 2026; footer "تواصل معنا" / "راسلنا" link there via `LINKS` in `scripts/design-to-tsx.py`):
+  form (`ContactForm`, controlled) → `sendSupportMessage` emails support@ with the visitor as reply-to, nothing stored; zod
+  `supportMessageSchema` (`src/lib/validation/support-message.ts`, `CONTACT_TOPICS`), honeypot field `website`, rate limits 5/h per IP +
+  3/h per address. Side: company name/address/email from `SELLER` (no CR/VAT numbers here, owner) + WhatsApp card. Texts: `Contact`.
 - **Payments**: Saudi gateway, **Moyasar** (owner, Oct 2026: application sent, awaiting approval). Build behind a
   `PaymentProvider` interface so the provider can be swapped. Must support mada, Apple Pay,
   international cards, and recurring billing.

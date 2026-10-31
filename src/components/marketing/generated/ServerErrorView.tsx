@@ -79,9 +79,9 @@ export function ServerErrorView({ v, t }: { v: any; t: (i: number) => string }) 
               {t(15)}
             </span>
             {" "}{t(16)}{" "}
-            <a href="mailto:support@wsool.link">
+            <Link href="/contact">
               {t(17)}
-            </a>
+            </Link>
           </span>
         </div>
       </main>

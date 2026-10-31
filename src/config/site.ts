@@ -6,6 +6,13 @@ export const SUPPORT_EMAIL = "support@wsool.link";
 export const BILLING_EMAIL = "billing@wsool.link";
 /** Owner's account that holds the demo page (wsool.link/demo), so it can be edited from the dashboard. */
 export const DEMO_EMAIL = "ibrahim@wsool.link";
+/** Wsool's WhatsApp Business number (owner, Oct 2026), international digits without "+". */
+export const SUPPORT_WHATSAPP = "966550960540";
+/** The same number written for people: +966 55 096 0540. */
+export const SUPPORT_WHATSAPP_DISPLAY = "+966 55 096 0540";
+/** Opens a WhatsApp chat with Wsool, optionally with a prefilled message. */
+export const supportWhatsappUrl = (text?: string) =>
+  `https://wa.me/${SUPPORT_WHATSAPP}${text ? `?text=${encodeURIComponent(text)}` : ""}`;
 
 /**
  * Site-wide settings the owner fills in. The seller details appear on every
@@ -70,4 +77,6 @@ export const SOCIAL_LINKS = {
   facebook: "https://www.facebook.com/wsoollink",
   threads: "https://www.threads.com/@wsoollink",
   telegram: "https://t.me/wsoollink",
+  /** Not a social account: Wsool's WhatsApp Business chat (shown last, labelled "Chat with Wsool"). */
+  whatsapp: "https://wa.me/966550960540",
 } as const;

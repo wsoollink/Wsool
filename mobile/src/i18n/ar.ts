@@ -61,7 +61,7 @@ export const ar = {
   notifications: { title: "التنبيهات", empty: "ما عندك تنبيهات للحين.", markAll: "قراءة الكل", today: "اليوم", earlier: "قبل كذا" },
   more: {
     title: "المزيد", sections: "أقسام صفحتك", account: "الحساب", settings: "الإعدادات", language: "اللغة", theme: "المظهر",
-    themeSystem: "حسب الجهاز", themeLight: "فاتح", themeDark: "داكن", signOut: "تسجيل الخروج", support: "تواصل مع الدعم",
+    themeSystem: "حسب الجهاز", themeLight: "فاتح", themeDark: "داكن", signOut: "تسجيل الخروج", support: "تواصل مع الدعم", whatsapp: "واتساب الدعم", whatsappText: "السلام عليكم، عندي استفسار عن حسابي في وصول",
     signedInAs: "مسجّل باسم {email}", version: "الإصدار {v}",
   },
   section: {

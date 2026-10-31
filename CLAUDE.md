@@ -34,6 +34,10 @@ Surfaces:
   inbox (`ibrahim@wsool.link`; MX on `wsool.link` = Google, don't touch). Constants `SUPPORT_EMAIL` /
   `BILLING_EMAIL` in `src/config/site.ts`: support = reply-to of every email + "Contact support" in the
   dashboard; billing = invoices + reply-to of billing notifications (`billing: true` in `NOTIFICATIONS`).
+- **WhatsApp Business** (owner, Oct 2026): `SUPPORT_WHATSAPP` / `supportWhatsappUrl()` in `src/config/site.ts` (+966 55 096 0540).
+  Shown as the last icon of the marketing footer row (`SOCIAL_LINKS.whatsapp`, `.wsoc-whatsapp` mask = `public/marketing/whatsapp.svg`,
+  label "Chat with Wsool"), "WhatsApp support" in the dashboard sidebar/drawer and the app's Account tab (prefilled message),
+  the suspended page, and `{whatsapp}` in the Terms/Privacy contact lines. App copy: `SUPPORT_WHATSAPP` in `mobile/src/lib/config.ts`.
 - **Payments**: Saudi gateway, **Moyasar** (owner, Oct 2026: application sent, awaiting approval). Build behind a
   `PaymentProvider` interface so the provider can be swapped. Must support mada, Apple Pay,
   international cards, and recurring billing.

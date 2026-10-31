@@ -84,6 +84,8 @@
 .wsoc-facebook span{-webkit-mask-image:url(/marketing/5f6ecffb186e08578123cf9f80538037.png);mask-image:url(/marketing/5f6ecffb186e08578123cf9f80538037.png)}/* Threads and Telegram (added by the owner after the design): same mask style. */
 .wsoc-threads span{-webkit-mask-image:url(/marketing/18a6d2d10238b2687911d702e2367069.png);mask-image:url(/marketing/18a6d2d10238b2687911d702e2367069.png)}
 .wsoc-telegram span{-webkit-mask-image:url(/marketing/94f072271263d65724e19992fa15f043.svg);mask-image:url(/marketing/94f072271263d65724e19992fa15f043.svg)}
+/* WhatsApp (Wsool's business chat, owner Oct 2026): same mask style, last in the row. */
+.wsoc-whatsapp span{-webkit-mask-image:url(/marketing/whatsapp.svg);mask-image:url(/marketing/whatsapp.svg)}
 
 /* The design's mobile frame is 390px wide; on narrower phones the 4-column
    follower row of the browser mockup (Home) gets tighter numbers. */

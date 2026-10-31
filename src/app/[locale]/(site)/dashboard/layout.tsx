@@ -13,7 +13,8 @@ import { SectionIcon } from "@/components/dashboard/SectionIcon";
 import { SectionSearch } from "@/components/dashboard/SectionSearch";
 import { UnreadDot } from "@/components/dashboard/UnreadDot";
 import { iconButton, navRow, topBar } from "@/components/ui/styles";
-import { SUPPORT_EMAIL } from "@/config/site";
+import { PlatformIcon } from "@/components/creator/PlatformIcon";
+import { SUPPORT_EMAIL, supportWhatsappUrl } from "@/config/site";
 import { isLocale, toIntlLocale } from "@/i18n/config";
 import { requireCreator } from "@/lib/creator";
 import { db } from "@/lib/db";
@@ -61,6 +62,10 @@ export default async function DashboardLayout({ children, params }: LayoutProps<
       <a href={`mailto:${SUPPORT_EMAIL}`} className={navRow}>
         <LifeBuoy aria-hidden="true" size={17} />
         {t("help")}
+      </a>
+      <a href={supportWhatsappUrl(t("whatsappText"))} target="_blank" rel="noopener noreferrer" className={navRow}>
+        <PlatformIcon platform="whatsapp" size={17} />
+        {t("whatsapp")}
       </a>
       <form action={signOut}>
         <button type="submit" className={`${navRow} w-full`}>

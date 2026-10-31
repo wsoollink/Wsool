@@ -5,7 +5,8 @@ import { CircleDollarSign, CreditCard, FileText, LifeBuoy, Star } from "lucide-r
 import { Avatar, Button, Card, Group, IconTile, ListRow, Row, Screen, Segmented, T } from "../../../components/ui";
 import { useI18n, type Lang } from "../../../i18n";
 import { useAuth } from "../../../lib/app";
-import { SITE_URL } from "../../../lib/config";
+import { SITE_URL, SUPPORT_WHATSAPP } from "../../../lib/config";
+import { PlatformIcon } from "../../../components/PlatformIcon";
 import { useTheme, type ThemeMode } from "../../../lib/theme";
 
 const TRIAL_DAYS = 14;
@@ -71,6 +72,7 @@ export default function AccountTab() {
 
       <Group title={t("account.help")}>
         <ListRow icon={<IconTile color="#16A34A"><LifeBuoy size={17} color="#fff" /></IconTile>} label={t("more.support")} onPress={() => Linking.openURL("mailto:support@wsool.link")} />
+        <ListRow icon={<IconTile color="#25D366"><PlatformIcon platform="whatsapp" size={17} color="#fff" /></IconTile>} label={t("more.whatsapp")} onPress={() => Linking.openURL(`https://wa.me/${SUPPORT_WHATSAPP}?text=${encodeURIComponent(t("more.whatsappText"))}`)} />
         <ListRow icon={<IconTile color="#64748B"><FileText size={17} color="#fff" /></IconTile>} label={t("account.legal")} onPress={() => Linking.openURL(`${SITE_URL}/terms`)} />
       </Group>
 

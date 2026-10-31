@@ -2,7 +2,7 @@
  * Terms of Use and Privacy Policy, from the owner's document "وصول — شروط
  * الاستخدام وسياسة الخصوصية", adjusted to how Wsool actually works (Netlify
  * hosting, email code or Google sign-in without passwords, no stored IP addresses).
- * {entity}, {registration}, {email}, {gateway}, {mailer}, {servers} are filled
+ * {entity}, {registration}, {email}, {whatsapp}, {gateway}, {mailer}, {servers} are filled
  * from LEGAL in src/config/site.ts. Should be reviewed by a Saudi lawyer.
  */
 export type Block = { h: string } | { p: string } | { ul: string[] } | { table: string[][] };
@@ -85,7 +85,7 @@ export const LEGAL_TEXT: Record<"ar" | "en", Record<LegalKind, LegalDoc>> = {
         { h: "13. النظام الحاكم" },
         { p: "تخضع هذه الشروط لأنظمة المملكة العربية السعودية، وتختص المحاكم في مدينة الرياض بالنظر في أي نزاع. وعند الاختلاف بين النسختين العربية والإنجليزية، تُعتمد النسخة العربية." },
         { h: "14. التواصل" },
-        { p: "لأي سؤال عن هذه الشروط: {email}" },
+        { p: "لأي سؤال عن هذه الشروط: {email} أو واتساب {whatsapp}" },
       ],
     },
     privacy: {
@@ -167,7 +167,7 @@ export const LEGAL_TEXT: Record<"ar" | "en", Record<LegalKind, LegalDoc>> = {
         { h: "11. تحديث السياسة" },
         { p: "قد نحدّث هذه السياسة، وسنبلغك بأي تغيير جوهري بالبريد أو عبر لوحة التحكم." },
         { h: "12. التواصل" },
-        { p: "للاستفسارات وطلبات الخصوصية: {email}" },
+        { p: "للاستفسارات وطلبات الخصوصية: {email} أو واتساب {whatsapp}" },
       ],
     },
   },
@@ -246,7 +246,7 @@ export const LEGAL_TEXT: Record<"ar" | "en", Record<LegalKind, LegalDoc>> = {
         { h: "13. Governing law" },
         { p: "These Terms are governed by the laws of the Kingdom of Saudi Arabia, and the courts of Riyadh have jurisdiction over any dispute. If the Arabic and English versions differ, the Arabic version prevails." },
         { h: "14. Contact" },
-        { p: "Questions about these Terms: {email}" },
+        { p: "Questions about these Terms: {email} or WhatsApp {whatsapp}" },
       ],
     },
     privacy: {
@@ -328,7 +328,7 @@ export const LEGAL_TEXT: Record<"ar" | "en", Record<LegalKind, LegalDoc>> = {
         { h: "11. Changes to this policy" },
         { p: "We may update this policy and will notify you of material changes by email or in your dashboard." },
         { h: "12. Contact" },
-        { p: "Privacy questions and requests: {email}" },
+        { p: "Privacy questions and requests: {email} or WhatsApp {whatsapp}" },
       ],
     },
   },

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { BrandLogo } from "@/components/BrandLogo";
 import { Fragment } from "react";
-import { LEGAL } from "@/config/site";
+import { LEGAL, SUPPORT_WHATSAPP_DISPLAY, supportWhatsappUrl } from "@/config/site";
 import { LEGAL_TEXT, type LegalKind } from "@/content/legal";
 import { toIntlLocale, type Locale } from "@/i18n/config";
 
@@ -20,7 +20,7 @@ const links = (text: string) =>
   text.split(/(https:\/\/[^\s)]+)/).map((part, i) =>
     i % 2 ? <a key={i} href={part} target="_blank" rel="noopener noreferrer" dir="ltr" className="text-blue underline underline-offset-2">{part.replace(/^https:\/\//, "")}</a> : part);
 
-/** Fills {placeholders}; the official email becomes a mailto link. */
+/** Fills {placeholders}; the official email and WhatsApp number become links. */
 function fill(text: string, lang: Locale) {
   const b = BLANKS[lang];
   const values: Record<string, string> = {
@@ -33,6 +33,7 @@ function fill(text: string, lang: Locale) {
   return text.split(/(\{\w+\})/).map((part, i) => {
     const key = part.match(/^\{(\w+)\}$/)?.[1];
     if (!key) return <Fragment key={i}>{links(part)}</Fragment>;
+    if (key === "whatsapp") return <a key={i} href={supportWhatsappUrl()} target="_blank" rel="noopener noreferrer" dir="ltr" className="font-semibold text-blue underline underline-offset-2">{SUPPORT_WHATSAPP_DISPLAY}</a>;
     if (key === "email") return <a key={i} href={`mailto:${LEGAL.email}`} dir="ltr" className="font-semibold text-blue underline underline-offset-2">{LEGAL.email}</a>;
     return <Fragment key={i}>{values[key] ?? part}</Fragment>;
   });

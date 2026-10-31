@@ -94,7 +94,9 @@ export function useMarketing(lang: Locale, opts: { initialClaim?: string; source
     // Footer "Follow us": only platforms with a link (CLAUDE.md section 11).
     socialList: (Object.entries(SOCIAL_LINKS) as [keyof typeof SOCIAL_LINKS, string][])
       .filter(([, href]) => href)
-      .map(([key, href]) => ({ key, href, name: PLATFORM_NAMES[key], label: T.followOn(PLATFORM_NAMES[key]) })),
+      .map(([key, href]) => key === "whatsapp"
+        ? { key, href, name: "WhatsApp", label: T.chatWhatsapp }
+        : { key, href, name: PLATFORM_NAMES[key], label: T.followOn(PLATFORM_NAMES[key]) }),
     // "Get the app" under Follow us: the store badges link once APP_LINKS has them.
     appIosHref: APP_LINKS.ios || undefined,
     appIosLabel: T.appLabel("App Store", !!APP_LINKS.ios),

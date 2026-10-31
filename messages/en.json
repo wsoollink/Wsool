@@ -217,7 +217,9 @@
     "search": "Jump to a section…",
     "searchLabel": "Search sections",
     "noResults": "No section with that name",
-    "referrals": "Commission"
+    "referrals": "Commission",
+    "whatsapp": "WhatsApp support",
+    "whatsappText": "Hi, I have a question about my Wsool account"
   },
   "CreatorPage": {
     "demoBadge": "Demo page",
@@ -765,7 +767,9 @@
     "title": "Your account is suspended",
     "body": "The Wsool team has suspended your account and your page is hidden from visitors. Your data is kept and nothing was deleted. To ask why or appeal, contact us.",
     "signOut": "Sign out",
-    "signingOut": "Signing out…"
+    "signingOut": "Signing out…",
+    "whatsapp": "WhatsApp:",
+    "whatsappText": "Hi, my Wsool account is suspended and I'd like to know why"
   },
   "VerificationPage": {
     "howTitle": "How to verify an account",

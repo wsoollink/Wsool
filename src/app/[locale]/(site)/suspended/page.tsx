@@ -3,7 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ShieldAlert } from "lucide-react";
 import { SubmitButton } from "@/components/SubmitButton";
 import { Card } from "@/components/ui/Card";
-import { SUPPORT_EMAIL } from "@/config/site";
+import { SUPPORT_EMAIL, SUPPORT_WHATSAPP_DISPLAY, supportWhatsappUrl } from "@/config/site";
 import { isLocale, toIntlLocale } from "@/i18n/config";
 import { signOut } from "../login/actions";
 
@@ -21,6 +21,9 @@ export default async function SuspendedPage({ params }: PageProps<"/[locale]/sus
         <h1 className="text-2xl font-bold">{t("title")}</h1>
         <p className="text-sm text-muted">{t("body")}</p>
         <a href={`mailto:${SUPPORT_EMAIL}`} dir="ltr" className="text-sm font-medium text-blue underline">{SUPPORT_EMAIL}</a>
+        <a href={supportWhatsappUrl(t("whatsappText"))} target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-blue underline">
+          {t("whatsapp")} <span dir="ltr">{SUPPORT_WHATSAPP_DISPLAY}</span>
+        </a>
         <form action={signOut}>
           <SubmitButton variant="secondary" pendingText={t("signingOut")}>{t("signOut")}</SubmitButton>
         </form>

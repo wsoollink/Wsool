@@ -20,7 +20,7 @@ export async function SocialLinks({ className = "" }: { className?: string }) {
           <li key={platform}>
             <a
               href={url} target="_blank" rel="noopener noreferrer"
-              aria-label={t("followOn", { platform: PLATFORM_NAMES[platform] })}
+              aria-label={t("followOn", { platform: platform === "whatsapp" ? "WhatsApp" : PLATFORM_NAMES[platform] })}
               className="inline-flex size-11 items-center justify-center rounded-full border border-line bg-card text-navy transition-colors hover:border-blue hover:text-blue"
             >
               <PlatformIcon platform={platform} size={18} />

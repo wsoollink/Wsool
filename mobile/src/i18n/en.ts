@@ -63,7 +63,7 @@ export const en: typeof ar = {
   notifications: { title: "Notifications", empty: "No notifications yet.", markAll: "Mark all read", today: "Today", earlier: "Earlier" },
   more: {
     title: "More", sections: "Your page", account: "Account", settings: "Settings", language: "Language", theme: "Appearance",
-    themeSystem: "Device setting", themeLight: "Light", themeDark: "Dark", signOut: "Sign out", support: "Contact support",
+    themeSystem: "Device setting", themeLight: "Light", themeDark: "Dark", signOut: "Sign out", support: "Contact support", whatsapp: "WhatsApp support", whatsappText: "Hi, I have a question about my Wsool account",
     signedInAs: "Signed in as {email}", version: "Version {v}",
   },
   section: {

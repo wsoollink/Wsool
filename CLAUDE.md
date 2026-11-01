@@ -394,7 +394,7 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
 - States: unknown/invalid name → creator not-found (invite to claim); unpublished or deleted →
   "not available" page with noindex; `/Ali` → 308 to `/ali`.
 - Reserved names only block claiming; staff-made pages with reserved names still render.
-- **Demo page** `/demo` (owner, Oct 2026): fictional creator "عبدالله القحطاني" (Riyadh, owner's AI photo) showing EVERY
+- **Demo page** `/demo` (owner, Oct 2026): fictional creator "عبدالله بن سلطان" / "Abdullah bin Sultan" (owner, Nov 2026; Riyadh, owner's AI photo) showing EVERY
   page feature: all 14 platforms (big five verified + audience), monthly views per account, verified license with file,
   brands, works, rates on five platforms + a bundle with savings, services, links, coupons, creator logo, categories, Pro
   forever (`currentPeriodEnd` 2099). The page belongs to the owner's account `DEMO_EMAIL` (`src/config/site.ts`,

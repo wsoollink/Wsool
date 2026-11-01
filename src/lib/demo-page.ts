@@ -144,8 +144,8 @@ export async function buildDemoPage(db: PrismaClient, opts: DemoOptions = {}) {
         contactEmail: "abdullah@example.com",
         translations: {
           create: [
-            { lang: "ar", fullName: "عبدالله القحطاني", specialty: "صانع محتوى لايف ستايل وتقنية", bio: "أشارك يومياتي في الرياض، تجارب المنتجات والتقنية والسفر، وأتعاون مع البراندات بمحتوى صادق يوصل للناس. هذي صفحة تجريبية من وصول تعرض كل اللي تقدر تضيفه في صفحتك.", city: "الرياض", country: "السعودية" },
-            { lang: "en", fullName: "Abdullah Alqahtani", specialty: "Lifestyle & tech creator", bio: "I share my days in Riyadh, product and tech reviews and travel, and partner with brands on honest content people trust. This is a Wsool demo page showing everything you can add to yours.", city: "Riyadh", country: "Saudi Arabia" },
+            { lang: "ar", fullName: "عبدالله بن سلطان", specialty: "صانع محتوى لايف ستايل وتقنية", bio: "أشارك يومياتي في الرياض، تجارب المنتجات والتقنية والسفر، وأتعاون مع البراندات بمحتوى صادق يوصل للناس. هذي صفحة تجريبية من وصول تعرض كل اللي تقدر تضيفه في صفحتك.", city: "الرياض", country: "السعودية" },
+            { lang: "en", fullName: "Abdullah bin Sultan", specialty: "Lifestyle & tech creator", bio: "I share my days in Riyadh, product and tech reviews and travel, and partner with brands on honest content people trust. This is a Wsool demo page showing everything you can add to yours.", city: "Riyadh", country: "Saudi Arabia" },
           ],
         },
         tags: {

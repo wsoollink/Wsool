@@ -10,7 +10,7 @@ export const DISCOUNT_MAX = 90;
 /** A 100% code is a free Pro period (one month or one year), redeemed without any payment. */
 export const DISCOUNT_FREE = 100;
 /** Codes made in one go. */
-export const DISCOUNT_BATCH_MAX = 50;
+export const DISCOUNT_BATCH_MAX = 200;
 
 // No 0/O/1/I/L: easy to read out and type.
 const ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";

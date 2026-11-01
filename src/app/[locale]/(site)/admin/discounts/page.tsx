@@ -7,14 +7,14 @@ import { Card } from "@/components/ui/Card";
 import { isLocale, toIntlLocale, type Locale } from "@/i18n/config";
 import { requireAdmin } from "@/lib/admin";
 import { db } from "@/lib/db";
-import { codeStatus, DISCOUNT_BATCH_MAX, DISCOUNT_DAYS, DISCOUNT_MAX, DISCOUNT_MIN, type CodeStatus } from "@/lib/discounts";
+import { codeStatus, DISCOUNT_BATCH_MAX, DISCOUNT_DAYS, DISCOUNT_MAX, DISCOUNT_MIN } from "@/lib/discounts";
 import { formatNumber } from "@/lib/format";
-import { CreateCodes, DeleteRevokedButton, RevokeButton } from "./CodesManager";
+import { CreateCodes, DeleteRevokedButton } from "./CodesManager";
+import { CodesTable } from "./CodesTable";
 
 type SP = Promise<Record<string, string | string[] | undefined>>;
 const FILTERS = ["all", "unused", "used", "expired", "revoked"] as const;
 type Filter = (typeof FILTERS)[number];
-const tone: Record<CodeStatus, string> = { unused: "bg-blue/10 text-blue", used: "bg-good/10 text-good", expired: "bg-navy/5 text-muted", revoked: "bg-bad/8 text-bad" };
 
 /** Discount codes: make them for named people, see each one's status, cancel unused ones. */
 async function Codes({ lang, searchParams }: { lang: Locale; searchParams: SP }) {
@@ -55,41 +55,12 @@ async function Codes({ lang, searchParams }: { lang: Locale; searchParams: SP })
       {shown.length === 0 ? (
         <Card><p className="text-sm text-muted">{t("empty")}</p></Card>
       ) : (
-        <Card className="overflow-x-auto p-0">
-          <table className="w-full min-w-[820px] text-sm">
-            <thead className="bg-bg text-[11.5px] text-muted">
-              <tr className="border-b border-line-soft">
-                {["code", "percent", "for", "created", "expires", "status", ""].map((h) => <th key={h} scope="col" className="px-4 py-3 text-start font-semibold">{h && t(`table.${h}`)}</th>)}
-              </tr>
-            </thead>
-            <tbody>
-              {shown.map((r) => (
-                <tr key={r.id} className="border-b border-navy/6 last:border-0">
-                  <td className="px-4 py-3"><code dir="ltr" className="font-bold">{r.code}</code></td>
-                  <td className="px-4 py-3 font-bold">{r.freeCycle ? t("freeLabel", { cycle: t(`cycle.${r.freeCycle}`) }) : `${r.percent}%`}</td>
-                  <td className="px-4 py-3">
-                    <span className="block">{r.note || "—"}</span>
-                    {r.email && <span dir="ltr" className="block text-xs text-muted rtl:text-end">{r.email}</span>}
-                  </td>
-                  <td className="px-4 py-3 whitespace-nowrap text-muted">{date.format(r.createdAt)}</td>
-                  <td className="px-4 py-3 whitespace-nowrap text-muted">{date.format(r.expiresAt)}</td>
-                  <td className="px-4 py-3">
-                    <span className={`rounded-full px-2.5 py-1 text-xs font-bold whitespace-nowrap ${tone[r.status]}`}>{t(`status.${r.status}`)}</span>
-                    {r.status === "used" && r.usedAt && (
-                      <span className="mt-1 block text-xs text-muted">
-                        <bdi dir="ltr">{usedBy.get(r.usedBy ?? "") ?? "—"}</bdi> · {date.format(r.usedAt)}
-                      </span>
-                    )}
-                  </td>
-                  <td className="px-4 py-3">
-                    {r.status === "unused" && <RevokeButton id={r.id} code={r.code} />}
-                    {r.status === "revoked" && <DeleteRevokedButton id={r.id} code={r.code} />}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </Card>
+        <CodesTable rows={shown.map((r) => ({
+          id: r.id, code: r.code, note: r.note, email: r.email,
+          discount: r.freeCycle ? t("freeLabel", { cycle: t(`cycle.${r.freeCycle}`) }) : `${r.percent}%`,
+          created: date.format(r.createdAt), expires: date.format(r.expiresAt), status: r.status,
+          usedLine: r.status === "used" && r.usedAt ? `${usedBy.get(r.usedBy ?? "") ?? "—"} · ${date.format(r.usedAt)}` : null,
+        }))} />
       )}
     </div>
   );

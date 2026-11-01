@@ -1366,7 +1366,7 @@
       "discount": {
         "create": "أنشأ {count} كود خصم بنسبة {percent}%",
         "revoke": "ألغى كود الخصم {code}",
-        "delete": "حذف {count} كود خصم ملغي {code}"
+        "delete": "حذف {count} كود خصم {code}"
       },
       "creators": {
         "export": "حمّل قائمة الصناع ({count})"
@@ -1564,7 +1564,22 @@
         "yearly": "سنة"
       },
       "freeHint": "الصانع يفعّل الكود من صفحة الاشتراك بدون بطاقة. ما يتجدد تلقائياً، ويوصله تذكير قبل النهاية بأسبوع.",
-      "freeLabel": "مجاني · {cycle}"
+      "freeLabel": "مجاني · {cycle}",
+      "mode": "طريقة الإنشاء",
+      "modeCount": "عدد أكواد",
+      "modePeople": "لأشخاص محددين",
+      "count": "عدد الأكواد",
+      "countHint": "من 1 إلى {max} كود، كلها بنفس النسبة والملاحظة، وتشتغل لأي أحد.",
+      "countNote": "ملاحظة للأكواد (اختياري)",
+      "countNotePh": "مثل: حملة رمضان، مؤثرين",
+      "selectAll": "تحديد الكل",
+      "selectCode": "تحديد {code}",
+      "selected": "{n, plural, one {محدد كود واحد} two {محدد كودين} few {محدد # أكواد} other {محدد # كود}}",
+      "deleteSelected": "احذف المحدد",
+      "clearSelection": "إلغاء التحديد",
+      "confirmDeleteSelected": "تحذف {n, plural, one {كود واحد} two {كودين} few {# أكواد} other {# كود}} نهائياً؟ ما تقدر ترجعها.",
+      "deletedSome": "انحذف {count}، وتُرك {skipped} لأنها مستخدمة أو في عملية دفع.",
+      "usedLocked": "الأكواد المستخدمة ما تنحذف"
     },
     "insights": {
       "none": "غير محدد",

@@ -20,7 +20,11 @@ export function CreateCodes({ limits }: { limits: { min: number; max: number; ba
   const [percent, setPercent] = useState("20");
   const [freeCycle, setFreeCycle] = useState<"monthly" | "yearly">("yearly");
   const free = percent === "100";
+  const [mode, setMode] = useState<"count" | "people">("count");
+  const [count, setCount] = useState("10");
+  const [countNote, setCountNote] = useState("");
   const [rows, setRows] = useState<Row[]>([{ key: newKey(), note: "", email: "" }]);
+  const n = mode === "count" ? Math.min(Number(count) || 0, limits.batch) : rows.length;
   const [result, setResult] = useState<CreateResult["codes"] | null>(null);
   const [error, setError] = useState("");
   const [copied, setCopied] = useState<string | null>(null);
@@ -39,7 +43,8 @@ export function CreateCodes({ limits }: { limits: { min: number; max: number; ba
     e.preventDefault();
     setError("");
     startTransition(async () => {
-      const res = await createCodes({ percent: Number(percent), ...(free && { freeCycle }), rows: rows.map(({ note, email }) => ({ note, email })) });
+      const list = mode === "count" ? Array.from({ length: n }, () => ({ note: countNote, email: "" })) : rows.map(({ note, email }) => ({ note, email }));
+      const res = await createCodes({ percent: Number(percent), ...(free && { freeCycle }), rows: list });
       if (res.codes) {
         setResult(res.codes);
         setRows([{ key: newKey(), note: "", email: "" }]);
@@ -91,6 +96,34 @@ export function CreateCodes({ limits }: { limits: { min: number; max: number; ba
           </fieldset>
         )}
 
+        <fieldset className="flex flex-col gap-2">
+          <legend className="mb-1.5 text-[13px] font-medium">{t("mode")}</legend>
+          <div className="flex flex-wrap gap-2">
+            {(["count", "people"] as const).map((m) => (
+              <button key={m} type="button" aria-pressed={mode === m} onClick={() => setMode(m)} className={`inline-flex min-h-11 items-center rounded-full px-4 text-sm font-bold ${mode === m ? "bg-blue/10 text-blue ring-1 ring-blue/30" : "bg-card text-muted shadow-card ring-1 ring-line hover:text-navy"}`}>
+                {t(m === "count" ? "modeCount" : "modePeople")}
+              </button>
+            ))}
+          </div>
+        </fieldset>
+
+        {mode === "count" ? (
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-[10rem_minmax(0,1fr)]">
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="code-count" className="text-[13px] font-medium">{t("count")}</label>
+              <input
+                id="code-count" type="text" inputMode="numeric" dir="ltr" value={count}
+                onChange={(e) => setCount(e.target.value.replace(/[٠-٩]/g, (d) => String(d.charCodeAt(0) - 1632)).replace(/\D/g, "").slice(0, 3))}
+                className={`${control} text-center`}
+              />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="code-note" className="text-[13px] font-medium">{t("countNote")}</label>
+              <input id="code-note" value={countNote} maxLength={120} placeholder={t("countNotePh")} onChange={(e) => setCountNote(e.target.value)} className={control} />
+            </div>
+            <p className="text-xs text-muted sm:col-span-2">{t("countHint", { max: limits.batch })}</p>
+          </div>
+        ) : (
         <div className="flex flex-col gap-2">
           <p className="text-[13px] font-medium">{t("people")}</p>
           <ul className="flex flex-col gap-2">
@@ -116,9 +149,10 @@ export function CreateCodes({ limits }: { limits: { min: number; max: number; ba
             </button>
           )}
         </div>
+        )}
 
-        <button type="submit" disabled={pending} className={buttonClasses("primary", "self-start")}>
-          {pending ? t("creating") : t("create", { n: rows.length })}
+        <button type="submit" disabled={pending || n < 1} className={buttonClasses("primary", "self-start")}>
+          {pending ? t("creating") : t("create", { n })}
         </button>
         {error && <p role="alert" className="text-sm text-bad">{error}</p>}
       </form>

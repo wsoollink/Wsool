@@ -1366,7 +1366,7 @@
       "discount": {
         "create": "Created {count} discount codes at {percent}%",
         "revoke": "Revoked discount code {code}",
-        "delete": "Deleted {count} revoked discount code(s) {code}"
+        "delete": "Deleted {count} discount code(s) {code}"
       },
       "creators": {
         "export": "Downloaded the creators list ({count})"
@@ -1564,7 +1564,22 @@
         "yearly": "1 year"
       },
       "freeHint": "The creator redeems it on the Subscription page, no card needed. It doesn't renew; they get a reminder a week before it ends.",
-      "freeLabel": "Free · {cycle}"
+      "freeLabel": "Free · {cycle}",
+      "mode": "How to create",
+      "modeCount": "Number of codes",
+      "modePeople": "For specific people",
+      "count": "Number of codes",
+      "countHint": "1 to {max} codes, all with the same discount and note, usable by anyone.",
+      "countNote": "Note for these codes (optional)",
+      "countNotePh": "e.g. Ramadan campaign, influencers",
+      "selectAll": "Select all",
+      "selectCode": "Select {code}",
+      "selected": "{n, plural, one {1 code selected} other {# codes selected}}",
+      "deleteSelected": "Delete selected",
+      "clearSelection": "Clear selection",
+      "confirmDeleteSelected": "Delete {n, plural, one {1 code} other {# codes}} for good? This can't be undone.",
+      "deletedSome": "Deleted {count}; {skipped} kept because they're used or in a checkout.",
+      "usedLocked": "Used codes can't be deleted"
     },
     "insights": {
       "none": "Not set",

@@ -78,3 +78,25 @@ export async function deleteRevoked(id: string | null): Promise<{ ok?: boolean; 
   });
   return count ? { ok: true, count } : { error: "invalid" };
 }
+
+/**
+ * Deletes the chosen codes for good (the table's checkboxes). Used codes and codes in an open
+ * checkout are skipped (their invoices point at them). Audited.
+ */
+export async function deleteCodes(ids: string[]): Promise<{ count?: number; skipped?: number; error?: string }> {
+  const admin = await requireAdmin("discounts.manage");
+  const parsed = z.array(z.uuid()).min(1).max(500).safeParse(ids);
+  if (!parsed.success) return { error: "invalid" };
+  const wanted = [...new Set(parsed.data)];
+  const count = await db.$transaction(async (tx) => {
+    const open = await tx.invoice.findMany({ where: { discountCodeId: { in: wanted }, status: "pending" }, select: { discountCodeId: true } });
+    const busy = open.map((o) => o.discountCodeId).filter((x): x is string => !!x);
+    const where = { id: { in: wanted.filter((id) => !busy.includes(id)) }, usedAt: null, invoiceId: null };
+    const rows = await tx.discountCode.findMany({ where, select: { code: true } });
+    if (!rows.length) return 0;
+    await tx.discountCode.deleteMany({ where });
+    await audit(admin, "discount.delete", undefined, { count: rows.length, code: rows.length === 1 ? rows[0].code : "" }, tx);
+    return rows.length;
+  });
+  return { count, skipped: wanted.length - count };
+}

@@ -611,6 +611,8 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   Owner wording (Oct 2026): "ملفك الإعلامي" instead of "ميديا كِت", "تقنع أي شركة", paid plan badge "الاحترافية".
   On phones the header shows "Log in" as a round person icon next to "Start free" (CSS in `marketing.css`).
   Tablets / wide foldables (768-1199px): the home hero stacks and centres (text above, phone below), CSS in `marketing.css`.
+  Friends feedback (Nov 2026, `marketing.css`): the hero phone has a real phone's proportions (393 × 852, photo fills the extra
+  height, small island); the template deck's arrow row sits above the tilted cards (they covered the arrows and swallowed taps).
   Text changes are made in the `design/marketing/*.dc.html` files, then the script is re-run.
   Adding an element to a design shifts the generated `mk-home-N` numbers after it: update the numbers used in
   `marketing.css` (check each against `generated/home.css` before and after).

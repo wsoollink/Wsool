@@ -147,3 +147,12 @@
   .mk-home-7 { align-self: center !important; }
   :is(.mk-home-10, .mk-home-14) { justify-content: center !important; }
 }
+/* Template deck: the tilted cards spill over the arrow row below them, which swallowed taps on the arrows (owner feedback,
+   Nov 2026). The row with the arrows + name sits above the cards. */
+div:has(> button + span[aria-live="polite"] + button) { position: relative; z-index: 30; }
+/* Hero phone (owner feedback, Nov 2026): a real phone's proportions (iPhone 393 × 852) instead of the design's short frame.
+   The screen fills the frame and the photo grows into the extra height; a small island marks the top like a real phone. */
+.mk-home-18 { aspect-ratio: 393 / 852; height: auto !important; display: flex; }
+.mk-home-18 > div { flex: 1; display: flex; flex-direction: column; position: relative; }
+.mk-home-18 > div > div:first-child { flex: 1 1 auto; aspect-ratio: auto !important; min-height: 257px; }
+.mk-home-18 > div::before { content: ""; position: absolute; top: 10px; left: 50%; width: 84px; height: 24px; margin-left: -42px; border-radius: 999px; background: #020d22; z-index: 5; }

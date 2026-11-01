@@ -130,7 +130,7 @@ Order (mobile): hero square photo fading into background · name + verified badg
 · social icons row · tags (3 per row, max 18 chars, no wrap) · monthly views box · platform cards
 grid (tap → audience pop-up if data exists) · brand logos (auto-scrolling marquee) · past work
 (auto-scrolling row, tap → portrait video pop-up) · **ad rates** · contact (WhatsApp + email)
-· footer "صنعت بـ❤️ وصول" (hideable on Pro).
+· footer "صنعت بـ❤️ مع وصول" (hideable on Pro).
 Desktop: left sticky sidebar with photo, info and contact; main column with the rest.
 
 **8 templates**: White, Black (glass), Sand, Pink, Black & Gold, Vivid, Green, **Custom**
@@ -142,6 +142,8 @@ Creator can also pick an accent color (Appearance) and the photo shape (Edit pag
 rounded squares with white glyphs (`BRAND_COLORS`), `outline` = Tabler outline glyphs (MIT, `OUTLINE_ICON_PATHS`, Jaco
 hand-drawn) in the text colour), in `src/components/creator/icon-styles.ts` + `SocialIcon.tsx`. Only the icons row under
 total followers uses it (not platform cards, PDF or OG).
+**Verified badge** (owner, Nov 2026): Meta-style wavy blue badge (`badgeShape()` / `VERIFIED_BLUE` in `src/lib/verified-badge.ts`,
+`VerifiedBadge` component) everywhere: page name, platform cards, licenses, OG image, PDF, Appearance preview, pricing list.
 Big numbers always use the wide Black cut (the number-font choice was removed by the owner, Oct 2026).
 **Page sections** (owner, Oct 2026, all plans): Appearance card "أقسام صفحتي" (web + app) hides `numbers` / `brands` / `works` /
 `rates` (`pages.hidden_sections`, `PAGE_SECTIONS` in `src/lib/validation/appearance.ts`; data kept). Applied in `shapePage()`: brands/works
@@ -160,7 +162,7 @@ show in PDF, currency, VAT included or not. Hidden → show "الأسعار عن
 
 ## 6. Plans, trial, pricing
 
-- **Free** and **Pro**. Pro = **SAR 49/month or SAR 490/year** (USD 13 / 130 on the English site).
+- **Free** and **Pro** (shown to visitors as «الأساسية» / Basic and «الاحترافية» / Pro, owner Nov 2026; code keeps free/pro). Pro = **SAR 49/month or SAR 490/year** (USD 13 / 130 on the English site).
   Prices are fixed in every country and **include VAT**.
 - Every new account automatically gets a **14-day Pro trial, no card**. Reminder emails at
   day 10, day 13, and day 14. If not subscribed, the page drops to Free; **no data is deleted**.
@@ -613,6 +615,8 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   Tablets / wide foldables (768-1199px): the home hero stacks and centres (text above, phone below), CSS in `marketing.css`.
   Friends feedback (Nov 2026, `marketing.css`): the hero phone has a real phone's proportions (393 × 852, photo fills the extra
   height, small island); the template deck's arrow row sits above the tilted cards (they covered the arrows and swallowed taps).
+  Friends feedback 2 (Nov 2026): the monthly/yearly switch is one navy pill that slides (`div[role="group"]:has(...)`, `marketing.css`);
+  pricing FAQ ends with «ما لقيت جوابك؟» + a «تواصل معنا» button on the same line; demo brand logos are icons only (`public/demo/logo-*.png`).
   Text changes are made in the `design/marketing/*.dc.html` files, then the script is re-run.
   Adding an element to a design shifts the generated `mk-home-N` numbers after it: update the numbers used in
   `marketing.css` (check each against `generated/home.css` before and after).

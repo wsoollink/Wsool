@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { CountUp } from "./CountUp";
 import { Modal } from "./Modal";
 import { glassCard } from "./styles";
+import { VerifiedBadge } from "./VerifiedBadge";
 
 type Share = { label: string; percent: number };
 export type Audience = { gender?: Share[]; ages?: Share[]; countries?: Share[]; cities?: Share[]; updatedAt?: Date | string };
@@ -35,9 +36,7 @@ export function PlatformCard({ name, followers, handle, verified, icon, audience
         {icon}
         {name}
         {verified && (
-          <span role="img" aria-label={t("verified")} className="inline-flex size-4 items-center justify-center rounded-full bg-[var(--page-accent)] text-[var(--page-on-accent)]">
-            <Check size={10} />
-          </span>
+          <VerifiedBadge size={17} label={t("verified")} />
         )}
       </span>
       <CountUp value={followers} locale={locale} className={`${numbersClass} grad-num text-2xl font-black tabular-nums`} />

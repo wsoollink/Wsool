@@ -14,7 +14,7 @@ export const HIDDEN_TEXT = {
   "هذي الصفحة غير متاحة حاليًا",
   "صاحب الصفحة أخفاها مؤقتًا. جرّب ترجع لها بعدين، أو تواصل معه من حساباته على المنصات.",
   "تعرّف على وصول",
-  "سوّ صفحتك مجانًا",
+  "أنشئ صفحتك الآن",
   "© 2026 wsool.link",
   "صُنع في السعودية"
  ],
@@ -32,7 +32,7 @@ export const HIDDEN_TEXT = {
   "This page isn’t available right now",
   "The owner has hidden it for now. Check back later, or reach them through their social accounts.",
   "Discover Wsool",
-  "Create your page free",
+  "Create your page now",
   "© 2026 wsool.link",
   "Made in Saudi Arabia"
  ]

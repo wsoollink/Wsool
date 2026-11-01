@@ -156,3 +156,14 @@ div:has(> button + span[aria-live="polite"] + button) { position: relative; z-in
 .mk-home-18 > div { flex: 1; display: flex; flex-direction: column; position: relative; }
 .mk-home-18 > div > div:first-child { flex: 1 1 auto; aspect-ratio: auto !important; min-height: 257px; }
 .mk-home-18 > div::before { content: ""; position: absolute; top: 10px; left: 50%; width: 84px; height: 24px; margin-left: -42px; border-radius: 999px; background: #020d22; z-index: 5; }
+/* Monthly / yearly switch (owner feedback, Nov 2026): a pill that slides between the two choices instead of jumping. Both
+   choices get equal widths; the buttons' own background is replaced by the sliding pill (navy, like the design). */
+div[role="group"]:has(> button[aria-pressed] + button[aria-pressed]) { position: relative; display: grid !important; grid-template-columns: 1fr 1fr; isolation: isolate; }
+div[role="group"]:has(> button[aria-pressed] + button[aria-pressed]) > button { position: relative; z-index: 1; background: transparent !important; display: flex; align-items: center; justify-content: center; gap: 8px; transition: color .35s ease; }
+div[role="group"]:has(> button[aria-pressed] + button[aria-pressed])::before {
+  content: ""; position: absolute; z-index: 0; top: 5px; bottom: 5px; inset-inline-start: 5px; width: calc(50% - 7px);
+  border-radius: 999px; background: #021941; transition: transform .38s cubic-bezier(.4, 0, .2, 1);
+}
+div[role="group"]:has(> button[aria-pressed="false"] + button[aria-pressed="true"])::before { transform: translateX(calc(100% + 4px)); }
+[dir="rtl"] div[role="group"]:has(> button[aria-pressed="false"] + button[aria-pressed="true"])::before { transform: translateX(calc(-100% - 4px)); }
+@media (prefers-reduced-motion: reduce) { div[role="group"]:has(> button[aria-pressed] + button[aria-pressed])::before { transition: none; } }

@@ -9,6 +9,7 @@ import { PLATFORM_ICON_PATHS } from "@/components/creator/PlatformIcon";
 import { getDirection, toIntlLocale } from "@/i18n/config";
 import { loadCreatorPage } from "@/lib/creator-page";
 import { textImage } from "@/lib/og-text";
+import { BADGE_CHECK, BADGE_PATH, VERIFIED_BLUE } from "@/lib/verified-badge";
 
 // Link preview image for wsool.link/<username> (1200x630), in the page's
 // template colors and language. Served at /<username>/og.
@@ -73,8 +74,8 @@ export async function GET(request: NextRequest, { params }: RouteContext<"/[loca
         <img src={nameImg.src} width={nameImg.width} height={nameImg.height} alt="" />
         {verified && (
           <svg width="52" height="52" viewBox="0 0 24 24" style={{ flexShrink: 0 }}>
-            <circle cx="12" cy="12" r="11" fill={theme.accent} />
-            <path d="M7 12.5l3.2 3.2L17 9" stroke={theme.onAccent} strokeWidth="2.4" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+            <path d={BADGE_PATH} fill={VERIFIED_BLUE} />
+            <path d={BADGE_CHECK} stroke="#fff" strokeWidth="2.4" fill="none" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         )}
       </div>

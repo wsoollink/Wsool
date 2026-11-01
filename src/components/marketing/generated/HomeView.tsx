@@ -895,6 +895,10 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
                     <path d="M5 12l5 5 9-10" />
                   </svg>
                   {t(156)}
+                  <svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M23.50 12.00L23.39 12.60L23.10 13.17L22.73 13.70L22.38 14.21L22.16 14.72L22.10 15.28L22.14 15.89L22.20 16.54L22.16 17.18L21.96 17.75L21.57 18.21L21.03 18.56L20.44 18.83L19.89 19.10L19.44 19.44L19.10 19.89L18.83 20.44L18.56 21.03L18.21 21.57L17.75 21.96L17.18 22.16L16.54 22.20L15.89 22.14L15.28 22.10L14.72 22.16L14.21 22.38L13.70 22.73L13.17 23.10L12.60 23.39L12.00 23.50L11.40 23.39L10.83 23.10L10.30 22.73L9.79 22.38L9.28 22.16L8.72 22.10L8.11 22.14L7.46 22.20L6.82 22.16L6.25 21.96L5.79 21.57L5.44 21.03L5.17 20.44L4.90 19.89L4.56 19.44L4.11 19.10L3.56 18.83L2.97 18.56L2.43 18.21L2.04 17.75L1.84 17.18L1.80 16.54L1.86 15.89L1.90 15.28L1.84 14.72L1.62 14.21L1.27 13.70L0.90 13.17L0.61 12.60L0.50 12.00L0.61 11.40L0.90 10.83L1.27 10.30L1.62 9.79L1.84 9.28L1.90 8.72L1.86 8.11L1.80 7.46L1.84 6.82L2.04 6.25L2.43 5.79L2.97 5.44L3.56 5.17L4.11 4.90L4.56 4.56L4.90 4.11L5.17 3.56L5.44 2.97L5.79 2.43L6.25 2.04L6.82 1.84L7.46 1.80L8.11 1.86L8.72 1.90L9.28 1.84L9.79 1.62L10.30 1.27L10.83 0.90L11.40 0.61L12.00 0.50L12.60 0.61L13.17 0.90L13.70 1.27L14.21 1.62L14.72 1.84L15.28 1.90L15.89 1.86L16.54 1.80L17.18 1.84L17.75 2.04L18.21 2.43L18.56 2.97L18.83 3.56L19.10 4.11L19.44 4.56L19.89 4.90L20.44 5.17L21.03 5.44L21.57 5.79L21.96 6.25L22.16 6.82L22.20 7.46L22.14 8.11L22.10 8.72L22.16 9.28L22.38 9.79L22.73 10.30L23.10 10.83L23.39 11.40Z" fill="#0095F6" />
+                    <path d="M7.6 12.4l3 3 5.8-6.2" fill="none" stroke="#FFFFFF" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
                 </li>
                 <li style={{"display": "flex", "alignItems": "center", "gap": "10px", "minHeight": "38px", "fontSize": "14.5px"}}>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7EE2B8" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -947,13 +951,13 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
             <h2 style={{"margin": "0", "fontSize": "48px", "lineHeight": "1.2", "fontWeight": "900", "letterSpacing": "-0.015em", "color": "var(--mk-text)"}} className="mk-home-56">
               {t(164)}
             </h2>
-            <p style={{"margin": "0", "fontSize": "18px", "lineHeight": "1.8", "color": "var(--mk-muted)"}} className="mk-home-57">
+            <p style={{"margin": "0", "fontSize": "18px", "lineHeight": "1.8", "color": "var(--mk-muted)", "display": "flex", "alignItems": "center", "flexWrap": "wrap", "gap": "12px"}} className="mk-home-57">
               {t(165)}
+              <Link href="/contact" style={{"height": "52px", "padding": "0 24px", "borderRadius": "999px", "border": "1px solid rgba(var(--mk-ink),0.09)", "background": "var(--mk-card)", "color": "var(--mk-text)", "fontFamily": "inherit", "fontSize": "15px", "fontWeight": "500", "display": "inline-flex", "alignItems": "center", "justifyContent": "center", "gap": "8px", "cursor": "pointer", "textDecoration": "none"}} className="mk-home-58">
+                {t(166)}
+              </Link>
             </p>
           </div>
-          <Link href="/contact" style={{"height": "52px", "padding": "0 24px", "borderRadius": "999px", "border": "1px solid rgba(var(--mk-ink),0.09)", "background": "var(--mk-card)", "color": "var(--mk-text)", "fontFamily": "inherit", "fontSize": "15px", "fontWeight": "500", "display": "inline-flex", "alignItems": "center", "justifyContent": "center", "gap": "8px", "cursor": "pointer", "textDecoration": "none", "alignSelf": "flex-start"}} className="mk-home-58">
-            {t(166)}
-          </Link>
         </div>
         <div style={{"display": "flex", "flexDirection": "column", "gap": "10px", "flex": "1 1 480px", "minWidth": "0"}}>
           {(v.faq as any[]).map((q: any, qIndex: number) => (

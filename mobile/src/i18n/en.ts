@@ -97,7 +97,7 @@ export const en: typeof ar = {
     description: "What the discount is", descriptionEn: "Description in English", descriptionPh: "e.g. 10% off everything", code: "Discount code",
     url: "Tracking link", expires: "Ends on (optional)", expiresHint: "As 2026-12-31. After this day it disappears from your page.", logo: "Store logo",
     add: "Add a coupon", badUrl: "Coupon {n} has an invalid link.", badCode: "Coupon {n}: use letters and numbers without spaces.",
-    freeLimit: "The Free plan shows the first {n} coupons on your page.", disclosure: "“Sponsored codes” shows under the section, as the rules require.",
+    freeLimit: "The Basic plan shows the first {n} coupons on your page.", disclosure: "“Sponsored codes” shows under the section, as the rules require.",
   },
   links: {
     subtitle: "Your store and course links, and services beyond ads", links: "My links", services: "My services",
@@ -106,7 +106,7 @@ export const en: typeof ar = {
     price: "Price ({currency})", onRequest: "On request", unit: "Unit", unitHint: "e.g. per hour", unitEn: "Unit in English",
     note: "Free space", noteHint: "A fact, a quote or a message for your visitors (up to {max} characters). It shows before “My services” and stays hidden while empty.",
     noteHeading: "Title (optional)", noteHeadingPh: "e.g. My motto", noteText: "Text", noteHeadingEn: "Title in English", noteTextEn: "Text in English",
-    addService: "Add service", badUrl: "Link {n} isn't valid.", freeLimit: "The Free plan shows your first {links} links and {services} services.",
+    addService: "Add service", badUrl: "Link {n} isn't valid.", freeLimit: "The Basic plan shows your first {links} links and {services} services.",
   },
   rates: {
     subtitle: "Set your rates and choose whether to show them", proOnly: "Rates show on your page with Pro. You can prepare them now.",
@@ -130,7 +130,7 @@ export const en: typeof ar = {
       button: "Connect {platform}", again: "Reconnect", againOn: "Reconnect {platform}", check: "Check the link",
       checkErrors: { not_admin: "The bot isn't an admin of {handle} yet. Add it as an admin of the channel with that exact username, then try again in a few seconds.", expired: "Tap “Connect Telegram” first, then add the bot and tap “Check the link” within 30 minutes.", taken: "This channel is linked to another Wsool page.", gone: "We couldn't find this account on your page. Refresh and try again.", pro: "Linking accounts is available on Pro only." },
       fbPage: "Links a Facebook Page, not a personal profile. On Facebook's screen pick your Page and keep the permissions on. Facebook doesn't share audience data, so fill it from a stats screenshot.", igProfessional: "Needs an Instagram professional account (creator or business). If yours is personal, switch for free in Instagram: Settings → Account type and tools → Switch to professional account.", botStep1: "Tap the button; Telegram opens.", botStep2: "Pick your channel {handle} and add the Wsool bot as an admin (no extra rights needed).", botStep3: "Come back and tap “Check the link”. The channel must be public, with the same username.", saveFirst: "Save the account first, then you can connect it.",
-      paused: "Automatic updates are paused because your page is on the Free plan. Your numbers stay as last updated, and updates resume by themselves with Pro.",
+      paused: "Automatic updates are paused because your page is on the Basic plan. Your numbers stay as last updated, and updates resume by themselves with Pro.",
       proOnly: "Linking accounts so their numbers update by themselves is part of Pro. You can still type your numbers and verify them with a screenshot.", linked: "Connected", stopped: "Connection stopped",
       linkedTo: "Connected to {name}", lastSync: "Last update: {date}", auto: "Updates every day", unlink: "Disconnect", cancel: "Cancel",
       confirmUnlink: "Disconnect {platform}? Your numbers stop updating by themselves; the verification stays until it expires.", locked: "Username and followers come straight from the platform and update by themselves.",
@@ -150,7 +150,7 @@ export const en: typeof ar = {
   },
   work: {
     subtitle: "Brand logos and videos of your work", brands: "Brands you worked with", brandsHint: "Shown as a scrolling strip on your page",
-    addBrand: "Add logo", saveBrands: "Save logos", works: "Past work", freeLimit: "The Free plan shows your first {n} works.",
+    addBrand: "Add logo", saveBrands: "Save logos", works: "Past work", freeLimit: "The Basic plan shows your first {n} works.",
     video: "Video", link: "Post link", pickVideo: "Choose video", replaceVideo: "Replace video", postLink: "Post link (TikTok / Instagram / YouTube)",
     checkLink: "Check link", cover: "Cover image", brand: "Brand", type: "Type of work", typeHint: "e.g. Ad, coverage", addWork: "Add work",
     badLink: "The link must be a TikTok, Instagram or YouTube post.", missingFile: "A work has no video or link.",
@@ -197,7 +197,7 @@ export const en: typeof ar = {
     customerN: "Customer {n}", payouts: "Payouts", sar: "SAR {n}",
   },
   sub: {
-    subtitle: "Your plan and invoices", yourPlan: "Your plan", monthly: "Monthly plan", yearly: "Yearly plan", freeText: "Your page is on the Free plan.",
+    subtitle: "Your plan and invoices", yourPlan: "Your plan", monthly: "Monthly plan", yearly: "Yearly plan", freeText: "Your page is on the Basic plan.",
     invoices: "Invoices", refunded: "Refunded", deleteTitle: "Delete account",
     deleteText: "Your page is hidden right away and renewal stops. After 30 days everything is deleted for good and your name is released; you can undo it until then.",
     typeUsername: "To confirm, type your username: {username}", delete: "Delete my account", deleteScheduled: "Your account will be deleted for good on {date}; your page is hidden.", undo: "Undo deletion",

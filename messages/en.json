@@ -79,7 +79,7 @@
     "contactsUnit": "contacts",
     "continueFor": "Continue for {price}",
     "perMonth": "{price} {currency, select, SAR {SAR} USD {USD} other {{currency}}}/month",
-    "onFree": "Your page is on the free plan",
+    "onFree": "Your page is on the Basic plan",
     "dataSafe": "Your data is safe; bring the features back anytime",
     "bringBack": "Get the features back",
     "paidPlan": "Paid plan",
@@ -98,7 +98,7 @@
     "completionHint": "A complete page wins brands faster. {left, plural, one {1 step left.} other {# steps left.}}",
     "subscription": "Subscription",
     "proBadge": "Pro",
-    "freeBadge": "Free",
+    "freeBadge": "Basic",
     "trial": "Free trial",
     "daysLeftShort": "{days, plural, one {1 day left} other {# days left}}",
     "trialAfter": "After that your page moves to Free; nothing is deleted.",
@@ -224,14 +224,14 @@
   "CreatorPage": {
     "demoBadge": "Demo page",
     "demoNote": "A sample of what your Wsool page can look like.",
-    "demoCta": "Make yours free",
+    "demoCta": "Create your page now",
     "brand": "Wsool",
     "notFoundTitle": "No page at this link",
     "notFoundBody": "This name is free. You can claim it for your Wsool page.",
     "claimCta": "Claim your name",
     "hiddenTitle": "This page isn't available right now",
     "hiddenBody": "Its owner has hidden it for now.",
-    "madeWith": "Made with ❤️ <b>Wsool</b>",
+    "madeWith": "Made with ❤️ on <b>Wsool</b>",
     "verified": "Verified account",
     "licenses": "Licenses",
     "viewFile": "View file",
@@ -347,7 +347,7 @@
     "email": "Email",
     "fullPage": "My full page",
     "fullPageNote": "Live numbers, video work, and every way to reach me.",
-    "madeWith": "Made with❤️",
+    "madeWith": "Made with ❤️ on",
     "couponDisclosure": "Sponsored codes · tap a coupon to open the store",
     "shopNow": "Shop now",
     "couponEnds": "Ends {date}"
@@ -540,7 +540,7 @@
         "3": "Come back and tap “Check the link”. The channel must be public, with the same username."
       },
       "saveFirst": "Save the account first, then you can connect it.",
-      "paused": "Automatic updates are paused because your page is on the Free plan. Your numbers stay as last updated, and updates resume by themselves with Pro.",
+      "paused": "Automatic updates are paused because your page is on the Basic plan. Your numbers stay as last updated, and updates resume by themselves with Pro.",
       "proOnly": "Linking accounts so their numbers update by themselves is part of Pro. You can still type your numbers and verify them with a screenshot.",
       "upgrade": "Upgrade to Pro",
       "linked": "Connected",
@@ -579,7 +579,7 @@
     "works": "Past work",
     "worksHint": "Videos of your past ads (upload or link), up to {max}. Visitors tap a work to watch it.",
     "noWorks": "No work yet.",
-    "freeLimit": "On the Free plan only your first {n} works show on your page. Put the best ones first.",
+    "freeLimit": "On the Basic plan only your first {n} works show on your page. Put the best ones first.",
     "workN": "Work {n}",
     "replaceVideo": "Replace video",
     "addCover": "Add cover",
@@ -705,7 +705,7 @@
       "custom": "Custom"
     },
     "proLabel": "Pro only",
-    "templateLocked": "This template is for Pro subscribers. On the Free plan you can use White or Black.",
+    "templateLocked": "This template is for Pro subscribers. On the Basic plan you can use White or Black.",
     "upgrade": "Go Pro",
     "proOnly": "This option is for Pro subscribers.",
     "customColors": "Your colors",
@@ -1679,14 +1679,14 @@
     "redirecting": "Redirecting to payment…",
     "comingSoon": "Payments open soon. Enjoy your trial for now.",
     "currentPlan": "Your plan",
-    "free": "Free",
+    "free": "Basic",
     "status": {
       "trial": "Trial: {days} days left (ends {date}).",
       "renewsOn": "Renews automatically on {date}.",
       "endsOn": "Auto-renew is off. Pro until {date}.",
       "pastDue": "We couldn't renew your payment. We'll retry on {date}, or pay again.",
-      "free": "Free plan. Subscribe to get Pro back; all your data is kept.",
-      "freeUntil": "🎁 Free plan until {date}. It doesn't renew automatically."
+      "free": "Basic plan. Subscribe to get Pro back; all your data is kept.",
+      "freeUntil": "🎁 Basic plan until {date}. It doesn't renew automatically."
     },
     "manage": "Manage subscription",
     "autoRenewOn": "Auto-renew is on.",
@@ -1777,7 +1777,7 @@
     },
     "cancelSub": "Cancel subscription",
     "cancelSure": "Sure you want to cancel?",
-    "cancelBody": "You keep every feature until {date}. Then your page moves to the free plan: the verified badge and analytics go away, the template goes back to White, and only your first 6 works show.",
+    "cancelBody": "You keep every feature until {date}. Then your page moves to the Basic plan: the verified badge and analytics go away, the template goes back to White, and only your first 6 works show.",
     "whyCancel": "Why are you cancelling? (optional)",
     "cancelReasons": {
       "price": "It's too expensive",
@@ -1792,13 +1792,13 @@
     "cancelled": "Renewal cancelled. Your plan stays active until {date}.",
     "resume": "Resume",
     "paidPlan": "Paid plan",
-    "freePlan": "Free plan",
+    "freePlan": "Basic plan",
     "unitMonth": "{currency} per month",
     "unitYear": "{currency} per year",
     "paymentMethod": "Payment method",
     "compare": "Compare plans",
     "trialTitle": "14-day free trial",
-    "trialBody": "Every paid feature with no card. We remind you before it ends; if you don't subscribe, your page moves to the free plan and none of your data is deleted.",
+    "trialBody": "Every paid feature with no card. We remind you before it ends; if you don't subscribe, your page moves to the Basic plan and none of your data is deleted.",
     "cmp": {
       "feature": "Feature",
       "page": "Your page and link",
@@ -1811,7 +1811,7 @@
       "badge": "Verified badge",
       "analytics": "Analytics",
       "pdf": "PDF media kit",
-      "branding": "Hide “Made with ❤️ Wsool”",
+      "branding": "Hide “Made with ❤️ on Wsool”",
       "brands": "Brand logos strip",
       "contact": "Contact (WhatsApp & email)",
       "links": "Links & services",
@@ -1903,7 +1903,7 @@
     "trial_ended": {
       "subject": "Your Pro trial has ended",
       "title": "Your page is now on Free",
-      "body": "Your Pro trial has ended and your page is on the Free plan. All your data is kept.\nSubscribe anytime to get every Pro feature back right away.",
+      "body": "Your Pro trial has ended and your page is on the Basic plan. All your data is kept.\nSubscribe anytime to get every Pro feature back right away.",
       "cta": "Go Pro"
     },
     "payment_receipt": {
@@ -1933,7 +1933,7 @@
     "subscription_ended": {
       "subject": "Your Pro plan has ended",
       "title": "Your page is back on Free",
-      "body": "Your Pro plan has ended and your page is on the Free plan. All your data is kept.\nYou can subscribe again anytime.",
+      "body": "Your Pro plan has ended and your page is on the Basic plan. All your data is kept.\nYou can subscribe again anytime.",
       "cta": "Subscribe again"
     },
     "refund_issued": {
@@ -2000,7 +2000,7 @@
     "free_ending": {
       "subject": "Your free subscription ends soon",
       "title": "Your free Pro is ending",
-      "body": "Your free Pro plan ends on {endDate}.\nSubscribe to keep the templates, verified badge and analytics. If you don't, your page goes back to the Free plan and none of your data is deleted.",
+      "body": "Your free Pro plan ends on {endDate}.\nSubscribe to keep the templates, verified badge and analytics. If you don't, your page goes back to the Basic plan and none of your data is deleted.",
       "cta": "Subscribe to Pro"
     },
     "commission_earned": {
@@ -2266,7 +2266,7 @@
     "englishVersion": "English version (optional)",
     "addService": "Add service",
     "currencyNote": "Currency: {currency}, same as your ad rates (change it in Ad rates).",
-    "freeLimit": "The Free plan shows the first {n} on your page. The rest is saved and appears when you subscribe.",
+    "freeLimit": "The Basic plan shows the first {n} on your page. The rest is saved and appears when you subscribe.",
     "fixErrors": "Some fields need fixing (marked in red).",
     "errors": {
       "url": "That link isn't valid. Use a full link like https://example.com"
@@ -2297,7 +2297,7 @@
     "logoFor": "Logo of {item}",
     "add": "Add a coupon",
     "englishVersion": "English version (optional)",
-    "freeLimit": "The Free plan shows the first {n} coupons on your page. The rest are saved and show when you subscribe.",
+    "freeLimit": "The Basic plan shows the first {n} coupons on your page. The rest are saved and show when you subscribe.",
     "fixErrors": "Some fields need fixing (marked in red).",
     "disclosureNote": "“Sponsored codes” shows under the section, as the rules require. You're responsible for your codes and links.",
     "errors": {

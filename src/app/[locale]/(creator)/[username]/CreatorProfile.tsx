@@ -9,7 +9,7 @@ import { LicenseFile } from "@/components/creator/LicenseFile";
 import { Marquee } from "@/components/creator/Marquee";
 import { DEMO_USERNAME } from "@/lib/demo-page";
 import { PageActions } from "@/components/creator/PageActions";
-import { Check, PlatformCard, type Audience } from "@/components/creator/PlatformCard";
+import { PlatformCard, type Audience } from "@/components/creator/PlatformCard";
 import { glassCard } from "@/components/creator/styles";
 import { PlatformIcon } from "@/components/creator/PlatformIcon";
 import { SocialIcon } from "@/components/creator/SocialIcon";
@@ -24,6 +24,7 @@ import { currencyLabel, formatAmount, formatPercent, formatPhone } from "@/lib/f
 import type { PublishedPage } from "@/lib/public-page";
 import { linkKind, type LinkKind } from "@/lib/link-kind";
 import { bundleComparison, rateName } from "@/lib/rates";
+import { VerifiedBadge } from "@/components/creator/VerifiedBadge";
 
 type Props = { page: PublishedPage; lang: Locale };
 /** preview: the owner's dashboard preview (no visit counting). */
@@ -147,9 +148,7 @@ export async function CreatorProfile({ page, lang, preview = false }: ProfilePro
             <h1 className="flex flex-wrap items-center justify-center gap-2 text-[28px] leading-tight font-bold md:text-[30px]">
               {name}
               {verified && (
-                <span role="img" aria-label={t("verified")} className="inline-flex size-6 shrink-0 items-center justify-center rounded-full bg-[var(--page-accent)] text-[var(--page-on-accent)]">
-                  <Check size={14} />
-                </span>
+                <VerifiedBadge size={26} label={t("verified")} />
               )}
             </h1>
             {tr?.specialty && <p className="text-[17px] font-medium text-[var(--page-accent)]">{tr.specialty}</p>}
@@ -172,9 +171,7 @@ export async function CreatorProfile({ page, lang, preview = false }: ProfilePro
                       <span className="text-[var(--page-text)]"><Icon d={SHIELD} /></span>
                       <span className="font-medium text-[var(--page-text)]">{licenseName}</span>
                       {license.verified && (
-                        <span role="img" aria-label={t("licenseVerified")} className="inline-flex size-4 items-center justify-center rounded-full bg-[var(--page-accent)] text-[var(--page-on-accent)]">
-                          <Check size={10} />
-                        </span>
+                        <VerifiedBadge size={17} label={t("licenseVerified")} />
                       )}
                       {(license.number || license.fileUrl) && <span aria-hidden="true">·</span>}
                       {license.fileUrl ? (

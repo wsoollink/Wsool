@@ -17,6 +17,7 @@ import { hasArabic, textPaths } from "@/lib/og-text";
 import type { PublishedPage } from "@/lib/public-page";
 import { bundleComparison, rateName } from "@/lib/rates";
 import { siteOrigin } from "@/lib/site-url";
+import { VERIFIED_BLUE, badgeShape } from "@/lib/verified-badge";
 import ar from "../../../messages/ar.json";
 import en from "../../../messages/en.json";
 
@@ -175,10 +176,10 @@ export async function buildMediaKit(page: PublishedPage, lang: Locale): Promise<
     const p = paint(value);
     pg.drawSvgPath(PLATFORM_ICON_PATHS[platform], { x: x * PX, y: H - y * PX, scale: (size / 24) * PX, color: p.color, opacity: p.opacity });
   };
-  /** Verified mark: accent circle with a check. */
+  /** Verified mark: Meta-style blue wavy badge with a white check (src/lib/verified-badge.ts). */
   const tick = (x: number, y: number, size: number) => {
-    circle(x + size / 2, y + size / 2, size / 2, P.accent);
-    stroke(ICONS.check, x + size * 0.2, y + size * 0.2, size * 0.6, P.onAccent, 3.2);
+    fill(badgeShape(x + size / 2, y + size / 2, size / 2), VERIFIED_BLUE);
+    stroke(ICONS.check, x + size * 0.2, y + size * 0.2, size * 0.6, "#FFFFFF", 3.2);
   };
   /** Clickable area opening `url`. */
   const link = (x: number, y: number, w: number, h: number, url: string) => {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { BadgeCheck, Mail } from "lucide-react";
+import { Mail } from "lucide-react";
 import { PlatformIcon } from "@/components/creator/PlatformIcon";
 import { SocialIcon } from "@/components/creator/SocialIcon";
 import { pageTheme, themeStyle } from "@/components/creator/theme";
@@ -9,6 +9,7 @@ import type { Platform, Template } from "@/generated/prisma/enums";
 import type { Locale } from "@/i18n/config";
 import { formatCompact } from "@/lib/format";
 import type { AppearanceInput } from "@/lib/validation/appearance";
+import { VerifiedBadge } from "@/components/creator/VerifiedBadge";
 
 export type PreviewData = {
   name: string;
@@ -58,7 +59,7 @@ export function Preview({ value, data }: { value: AppearanceInput; data: Preview
         )}
         <div className={`relative flex flex-col items-center gap-2 px-4 pb-4 text-center ${data.photoShape === "circle" ? "pt-3" : "-mt-12"}`}>
           <p className="flex items-center gap-1 text-lg font-bold">
-            {data.name || t("sampleName")} <BadgeCheck aria-hidden="true" size={18} className="text-[var(--page-accent)]" />
+            {data.name || t("sampleName")} <VerifiedBadge size={18} />
           </p>
           <p className="text-sm font-medium text-[var(--page-accent)]">{data.specialty || t("sampleSpecialty")}</p>
           {showNumbers && <p className={`${numbers} mt-1 text-4xl font-bold tabular-nums`}>{formatCompact(total, data.lang)}</p>}

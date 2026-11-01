@@ -157,7 +157,7 @@ export async function buildDemoPage(db: PrismaClient, opts: DemoOptions = {}) {
         licenses: {
           create: [{ name: "رخصة موثوق", nameEn: "Mawthooq license", number: "MW-000000", fileUrl: asset("/demo/license.png"), sort: 0, verificationStatus: "verified", submittedAt: new Date(), reviewedAt: new Date() }],
         },
-        brandLogos: { create: BRANDS.map(([file, name], sort) => ({ name, logoUrl: asset(`/demo/brand-${file}.png`), sort })) },
+        brandLogos: { create: BRANDS.map(([file, name], sort) => ({ name, logoUrl: asset(`/demo/logo-${file}.png`), sort })) },
         portfolioItems: {
           create: WORKS.map((w, sort) => ({
             platform: w.platform,

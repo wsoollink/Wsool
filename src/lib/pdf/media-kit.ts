@@ -419,10 +419,23 @@ export async function buildMediaKit(page: PublishedPage, lang: Locale): Promise<
   fill(`M0 ${PH - 10}H${PW}V${PH}H0Z`, P.ink);
 
   // ================= 2) About =================
-  const about = tr?.bio || page.tags.length || page.licenses.length || tr?.city || tr?.country;
+  const about = tr?.bio || page.note || page.tags.length || page.licenses.length || tr?.city || tr?.country;
   if (about) {
     section(t("about"));
     if (tr?.bio) y += text(tr.bio, PAD, y, { size: 22, color: P.ink, width: CONTENT, maxLines: 7, lineHeight: 1.9 }) + 28;
+    // The creator's free text block (Links & services), as a card under the bio.
+    if (page.note) {
+      const en = lang === "en" && !!page.note.bodyEn;
+      const noteTitle = en ? page.note.titleEn : page.note.title;
+      const noteBody = (en ? page.note.bodyEn : page.note.body) ?? "";
+      const bodyOpts = { size: 16, color: P.ink, width: CONTENT - 40, maxLines: 6, lineHeight: 1.8 };
+      const h = 40 + (noteTitle ? measure(noteTitle, { size: 17, weight: 700, width: CONTENT - 40 }).height + 8 : 0) + measure(noteBody, bodyOpts).height;
+      card(PAD, y, CONTENT, h);
+      let ny = y + 20;
+      if (noteTitle) ny += text(noteTitle, PAD + 20, ny, { size: 17, weight: 700, color: P.ink, width: CONTENT - 40 }) + 8;
+      text(noteBody, PAD + 20, ny, bodyOpts);
+      y += h + 28;
+    }
     const tags = page.tags.filter((x) => x.lang === lang);
     const shownTags = tags.length ? tags : page.tags.filter((x) => x.lang === page.primaryLang);
     if (shownTags.length) {

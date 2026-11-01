@@ -48,3 +48,14 @@ export const servicesSchema = z
 
 export type LinkInput = z.input<typeof linksSchema>[number];
 export type ServiceInput = z.input<typeof servicesSchema>[number];
+
+/** Free text block (title ≤ 40, text ≤ 300; English optional). An empty text hides the block. */
+export const NOTE_TITLE_MAX = 40;
+export const NOTE_BODY_MAX = 300;
+export const noteSchema = z.object({
+  title: optional(NOTE_TITLE_MAX),
+  body: optional(NOTE_BODY_MAX),
+  titleEn: optional(NOTE_TITLE_MAX),
+  bodyEn: optional(NOTE_BODY_MAX),
+});
+export type NoteInput = z.input<typeof noteSchema>;

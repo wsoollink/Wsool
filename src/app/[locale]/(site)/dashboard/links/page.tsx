@@ -25,6 +25,7 @@ async function Editor() {
         name: s.name, nameEn: s.nameEn ?? "", description: s.description, descriptionEn: s.descriptionEn ?? "",
         price: s.price === null ? "" : String(Number(s.price)), unit: s.unit, unitEn: s.unitEn ?? "",
       }))}
+      initialNote={{ title: page.noteTitle ?? "", body: page.noteBody ?? "", titleEn: page.noteTitleEn ?? "", bodyEn: page.noteBodyEn ?? "" }}
       currency={settings?.currency ?? (page.primaryLang === "en" ? "USD" : "SAR")}
       lang={{ primary: page.primaryLang as "ar" | "en", showEnglish: page.primaryLang === "ar" && page.enEnabled }}
       freeLimits={hasPro(sub) ? null : { links: FREE_LIMITS.links, services: FREE_LIMITS.services }}

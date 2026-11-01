@@ -123,6 +123,7 @@ const LOADERS = {
       currency: settings?.currency ?? (page.primaryLang === "en" ? "USD" : "SAR"),
       freeLimits: isPro ? null : { links: FREE_LIMITS.links, services: FREE_LIMITS.services },
       links: links.map((l) => ({ title: l.title, titleEn: l.titleEn ?? "", url: l.url, imageUrl: l.imageUrl })),
+      note: { title: page.noteTitle ?? "", body: page.noteBody ?? "", titleEn: page.noteTitleEn ?? "", bodyEn: page.noteBodyEn ?? "" },
       services: services.map((s) => ({ name: s.name, nameEn: s.nameEn ?? "", description: s.description, descriptionEn: s.descriptionEn ?? "", price: s.price === null ? "" : String(Number(s.price)), unit: s.unit, unitEn: s.unitEn ?? "" })),
     };
   },

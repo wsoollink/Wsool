@@ -727,6 +727,10 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   `FREE_LIMITS.links` / `FREE_LIMITS.services` (3 each). Services print in the PDF after the rates.
   Taps are counted as click kinds `link` / `service` with `contact_clicks.target_id` (checked to belong
   to the page) and shown by name in Analytics. Shared upload helpers: `src/lib/page-files.ts`.
+  **Free space** (owner + Faisal Al-Saif meeting, Nov 2026, all plans): first card of Links & services (web + app) = optional title (≤40)
+  + text (≤300) + English versions (`pages.note_title/_body/_title_en/_body_en`, `noteSchema`), saved by `saveLinksAndServices(links,
+  services, note?)` (no `note` = older app, kept). Public page: a card before My services (`Note`, hidden while the text is empty);
+  PDF: a card under the bio on the About page. Demo page has a sample.
 - **Discount coupons** (owner, Oct 2026; creators' store codes, not Wsool's own discount codes below): dashboard `dashboard/coupons/`
   (section "كوبونات الخصم", `saveCoupons` replaces the whole list), table `coupons` (store + optional `storeEn`, description, code
   `[\p{L}\p{N}._-]{1,30}` without spaces, https tracking `url`, optional logo = upload kind `couponLogo`, optional `expires_on` = last

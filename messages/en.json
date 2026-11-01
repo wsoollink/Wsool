@@ -2270,7 +2270,13 @@
     "fixErrors": "Some fields need fixing (marked in red).",
     "errors": {
       "url": "That link isn't valid. Use a full link like https://example.com"
-    }
+    },
+    "noteTitle": "Free space",
+    "noteHint": "Write a fact, a quote or a message for your visitors (up to {max} characters). It shows on your page before “My services”, and stays hidden while empty.",
+    "noteHeading": "Title (optional)",
+    "noteHeadingPh": "e.g. My motto",
+    "noteText": "Text",
+    "noteTextPh": "Write here…"
   },
   "CouponsPage": {
     "title": "Discount coupons",

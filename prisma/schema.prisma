@@ -127,6 +127,11 @@ model Page {
   hideBranding      Boolean    @default(false) @map("hide_branding")
   /// Public page sections the creator hid (owner, Oct 2026): numbers | brands | works | rates. Data is kept.
   hiddenSections    String[]   @default([]) @map("hidden_sections")
+  /// Free text block in "Links & services" (owner, Oct 2026): a short title + up to 300 characters, shown before My services.
+  noteTitle         String?    @map("note_title") @db.VarChar(40)
+  noteBody          String?    @map("note_body") @db.VarChar(300)
+  noteTitleEn       String?    @map("note_title_en") @db.VarChar(40)
+  noteBodyEn        String?    @map("note_body_en") @db.VarChar(300)
   /// Square hero photo (Supabase Storage URL).
   photoUrl          String?    @map("photo_url")
   /// Brand logo shown in the PDF media kit only.

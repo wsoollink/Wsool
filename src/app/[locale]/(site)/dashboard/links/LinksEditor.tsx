@@ -10,14 +10,16 @@ import { fromIntlLocale } from "@/i18n/config";
 import { currencyLabel, decimalInput } from "@/lib/format";
 import { linkKind, type LinkKind } from "@/lib/link-kind";
 import { shrinkImage, uploadFile } from "@/lib/upload-client";
-import { MAX_LINKS, MAX_SERVICES, normalizeLinkUrl } from "@/lib/validation/links";
+import { MAX_LINKS, MAX_SERVICES, NOTE_BODY_MAX, NOTE_TITLE_MAX, normalizeLinkUrl } from "@/lib/validation/links";
 import { saveLinksAndServices } from "./actions";
 
 type LinkRow = { key: string; title: string; titleEn: string; url: string; path: string | null; imageUrl: string | null; preview: string | null; uploading?: boolean; error?: "title" | "url" };
 type ServiceRow = { key: string; name: string; nameEn: string; description: string; descriptionEn: string; price: string; unit: string; unitEn: string; error?: boolean };
+type Note = { title: string; body: string; titleEn: string; bodyEn: string };
 type Props = {
   initialLinks: { title: string; titleEn: string; url: string; imageUrl: string | null }[];
   initialServices: Omit<ServiceRow, "key" | "error">[];
+  initialNote: Note;
   currency: string;
   lang: { primary: "ar" | "en"; showEnglish: boolean };
   /** Free plan: how many of each the page shows (the dashboard keeps all). */
@@ -47,13 +49,15 @@ function Field({ id, label, children, hint }: { id: string; label: string; child
 }
 
 /** "My links" + "My services" with one save for both (dashboard design style). */
-export function LinksEditor({ initialLinks, initialServices, currency, lang, freeLimits }: Props) {
+export function LinksEditor({ initialLinks, initialServices, initialNote, currency, lang, freeLimits }: Props) {
   const t = useTranslations("LinksPage");
   const e = useTranslations("EditPage");
   const locale = fromIntlLocale(useLocale());
   const fileBase = useId();
   const [links, setLinks] = useState<LinkRow[]>(initialLinks.map((l) => ({ key: newKey(), ...l, path: null, preview: l.imageUrl })));
   const [services, setServices] = useState<ServiceRow[]>(initialServices.map((s) => ({ key: newKey(), ...s })));
+  const [note, setNoteState] = useState<Note>(initialNote);
+  const setNote = (patch: Partial<Note>) => { setNoteState((n) => ({ ...n, ...patch })); setStatus(null); };
   const [status, setStatus] = useState<{ tone: "good" | "bad"; text: string } | null>(null);
   const [uploadError, setUploadError] = useState("");
   const [pending, startTransition] = useTransition();
@@ -96,6 +100,7 @@ export function LinksEditor({ initialLinks, initialServices, currency, lang, fre
       const res = await saveLinksAndServices(
         checkedLinks.map((l) => ({ title: l.title, titleEn: l.titleEn, url: l.url, image: { path: l.path, url: l.path ? null : l.imageUrl } })),
         checkedServices.map((s) => ({ name: s.name, nameEn: s.nameEn, description: s.description, descriptionEn: s.descriptionEn, price: s.price, unit: s.unit, unitEn: s.unitEn })),
+        note,
       );
       if (res.ok) return setStatus({ tone: "good", text: "" });
       if (res.error === "invalid_url" && res.index !== undefined) setLinks((all) => all.map((l, i) => (i === res.index ? { ...l, error: "url" } : l)));
@@ -107,6 +112,31 @@ export function LinksEditor({ initialLinks, initialServices, currency, lang, fre
 
   return (
     <div className="flex flex-col gap-4 pb-24 md:pb-0">
+      {/* Free text block: shown on the page before My services, hidden while the text is empty. */}
+      <Card className="flex flex-col gap-4">
+        <div>
+          <h2 className="font-bold">{t("noteTitle")}</h2>
+          <p className="text-xs text-muted">{t("noteHint", { max: NOTE_BODY_MAX })}</p>
+        </div>
+        <Field id={`${fileBase}-nt`} label={t("noteHeading")}>
+          <input id={`${fileBase}-nt`} value={note.title} maxLength={NOTE_TITLE_MAX} dir={dirPrimary} lang={lang.primary} placeholder={t("noteHeadingPh")} onChange={(ev) => setNote({ title: ev.target.value })} className={control} />
+        </Field>
+        <Field id={`${fileBase}-nb`} label={t("noteText")} hint={`${note.body.length}/${NOTE_BODY_MAX}`}>
+          <textarea id={`${fileBase}-nb`} value={note.body} maxLength={NOTE_BODY_MAX} rows={4} dir={dirPrimary} lang={lang.primary} placeholder={t("noteTextPh")} onChange={(ev) => setNote({ body: ev.target.value })} className={`${control} h-auto py-2.5 leading-7`} />
+        </Field>
+        {lang.showEnglish && (
+          <div className="flex flex-col gap-3 rounded-xl bg-navy/[0.03] p-3">
+            <p className="text-xs font-bold text-muted">{t("englishVersion")}</p>
+            <Field id={`${fileBase}-nte`} label={t("noteHeading")}>
+              <input id={`${fileBase}-nte`} value={note.titleEn} maxLength={NOTE_TITLE_MAX} dir="ltr" lang="en" onChange={(ev) => setNote({ titleEn: ev.target.value })} className={control} />
+            </Field>
+            <Field id={`${fileBase}-nbe`} label={t("noteText")} hint={`${note.bodyEn.length}/${NOTE_BODY_MAX}`}>
+              <textarea id={`${fileBase}-nbe`} value={note.bodyEn} maxLength={NOTE_BODY_MAX} rows={3} dir="ltr" lang="en" onChange={(ev) => setNote({ bodyEn: ev.target.value })} className={`${control} h-auto py-2.5 leading-7`} />
+            </Field>
+          </div>
+        )}
+      </Card>
+
       {/* My links */}
       <Card className="flex flex-col gap-4">
         <div>

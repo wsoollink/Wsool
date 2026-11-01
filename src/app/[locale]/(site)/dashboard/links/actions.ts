@@ -4,16 +4,17 @@ import { requireCreator } from "@/lib/creator";
 import { db } from "@/lib/db";
 import { removeUnused, resolveFile } from "@/lib/page-files";
 import { pageChanged } from "@/lib/public-page";
-import { linksSchema, servicesSchema, type LinkInput, type ServiceInput } from "@/lib/validation/links";
+import { linksSchema, noteSchema, servicesSchema, type LinkInput, type NoteInput, type ServiceInput } from "@/lib/validation/links";
 
 export type LinksResult = { ok?: boolean; error?: "failed" | "invalid_url"; index?: number };
 
 /**
- * Replaces the creator's "My links" and "My services" (order = list order).
+ * Replaces the creator's "My links" and "My services" (order = list order) and saves the free text block
+ * (left out by older app versions = kept as it is).
  * Link images must be fresh uploads in the creator's own folder or images
  * their links already had; replaced images are deleted.
  */
-export async function saveLinksAndServices(links: LinkInput[], services: ServiceInput[]): Promise<LinksResult> {
+export async function saveLinksAndServices(links: LinkInput[], services: ServiceInput[], note?: NoteInput): Promise<LinksResult> {
   const { user, page } = await requireCreator();
   const parsedLinks = linksSchema.safeParse(links);
   if (!parsedLinks.success) {
@@ -22,6 +23,8 @@ export async function saveLinksAndServices(links: LinkInput[], services: Service
   }
   const parsedServices = servicesSchema.safeParse(services);
   if (!parsedServices.success) return { error: "failed" };
+  const parsedNote = note === undefined ? null : noteSchema.safeParse(note);
+  if (parsedNote && !parsedNote.success) return { error: "failed" };
 
   const current = new Set(
     (await db.pageLink.findMany({ where: { pageId: page.id }, select: { imageUrl: true } })).map((l) => l.imageUrl).filter((u): u is string => !!u),
@@ -42,6 +45,15 @@ export async function saveLinksAndServices(links: LinkInput[], services: Service
     db.pageLink.createMany({ data: linkRows }),
     db.service.deleteMany({ where: { pageId: page.id } }),
     db.service.createMany({ data: serviceRows }),
+    ...(parsedNote?.success
+      ? [db.page.update({
+          where: { id: page.id },
+          data: {
+            noteTitle: parsedNote.data.title || null, noteBody: parsedNote.data.body || null,
+            noteTitleEn: parsedNote.data.titleEn || null, noteBodyEn: parsedNote.data.bodyEn || null,
+          },
+        })]
+      : []),
   ]);
   await removeUnused(current, new Set(linkRows.map((r) => r.imageUrl)));
   pageChanged(page.username);

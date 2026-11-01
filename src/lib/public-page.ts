@@ -35,7 +35,7 @@ export function pageChanged(username: string) {
 /** Every column the public page needs (public fields only, never the owner's account email). */
 const PAGE_SELECT = {
   id: true, username: true, primaryLang: true, enEnabled: true, template: true,
-  customColors: true, accent: true, photoShape: true, iconStyle: true, hideBranding: true, hiddenSections: true,
+  customColors: true, accent: true, photoShape: true, iconStyle: true, hideBranding: true, hiddenSections: true, noteTitle: true, noteBody: true, noteTitleEn: true, noteBodyEn: true,
   isPublished: true, deletedAt: true, photoUrl: true, logoUrl: true, whatsapp: true, contactEmail: true, whatsappVisible: true, emailVisible: true,
   user: { select: { suspendedAt: true, subscription: { select: { plan: true, status: true, trialEndsAt: true } } } },
   translations: true,
@@ -178,6 +178,8 @@ function shapePage(page: PageRow, now: number) {
       accountIds: b.platforms.map((p) => p.accountId),
       rates: b.rates.map((r) => ({ id: r.id, name: r.name, nameEn: r.nameEn, price: Number(r.price) })),
     })),
+    /** Free text block (all plans); null when there is no text. */
+    note: page.noteBody ? { title: page.noteTitle, body: page.noteBody, titleEn: page.noteTitleEn, bodyEn: page.noteBodyEn } : null,
     // Free pages show the first few (FREE_LIMITS); the dashboard keeps them all.
     links: (isPro ? page.links : page.links.slice(0, FREE_LIMITS.links)).map((l) => ({ id: l.id, title: l.title, titleEn: l.titleEn, url: l.url, imageUrl: l.imageUrl })),
     services: (isPro ? page.services : page.services.slice(0, FREE_LIMITS.services)).map((s) => ({

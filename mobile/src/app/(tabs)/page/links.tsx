@@ -15,7 +15,11 @@ type Service = { name: string; nameEn: string; description: string; descriptionE
 type Data = {
   showEnglish: boolean; currency: string; freeLimits: { links: number; services: number } | null;
   links: { title: string; titleEn: string; url: string; imageUrl: string | null }[]; services: Service[];
+  /** Free text block (older servers don't send it). */
+  note?: Note;
 };
+type Note = { title: string; body: string; titleEn: string; bodyEn: string };
+const NOTE_TITLE_MAX = 40, NOTE_BODY_MAX = 300;
 const MAX_LINKS = 10, MAX_SERVICES = 12;
 
 /** "My links" (store, course, map…) and "My services" (non-ad work with an optional price). */
@@ -27,10 +31,13 @@ export default function Links() {
   const [links, setLinks] = useState<Link[] | null>(null);
   const [services, setServices] = useState<Service[]>([]);
   const [uploading, setUploading] = useState<number | null>(null);
+  const [note, setNoteState] = useState<Note>({ title: "", body: "", titleEn: "", bodyEn: "" });
+  const setNote = (patch: Partial<Note>) => { setNoteState((n) => ({ ...n, ...patch })); touch(); };
   useEffect(() => {
     if (!data) return;
     setLinks(data.links.map((l) => ({ title: l.title, titleEn: l.titleEn, url: l.url, image: { path: null, url: l.imageUrl } })));
     setServices(data.services);
+    if (data.note) setNoteState(data.note);
   }, [data]);
   const setLink = (i: number, patch: Partial<Link>) => { setLinks((l) => l && l.map((x, j) => (j === i ? { ...x, ...patch } : x))); touch(); };
   const setService = (i: number, patch: Partial<Service>) => { setServices((l) => l.map((x, j) => (j === i ? { ...x, ...patch } : x))); touch(); };
@@ -45,7 +52,8 @@ export default function Links() {
   };
   const onSave = () => save(async () => {
     const res = await rpc<{ ok?: boolean; error?: string; index?: number }>("saveLinksAndServices",
-      (links ?? []).map((l) => ({ ...l, image: l.image.path ? { path: l.image.path, url: null } : { path: null, url: l.image.url } })), services);
+      (links ?? []).map((l) => ({ ...l, image: l.image.path ? { path: l.image.path, url: null } : { path: null, url: l.image.url } })), services,
+      ...(data?.note ? [note] : []));
     if (res.error === "invalid_url") return t("links.badUrl", { n: num((res.index ?? 0) + 1) });
     return !!res.ok;
   });
@@ -56,6 +64,20 @@ export default function Links() {
       {links && data && (
         <>
           {data.freeLimits && <ProNote text={t("links.freeLimit", { links: num(data.freeLimits.links), services: num(data.freeLimits.services) })} />}
+          {data.note && (
+            <Card>
+              <T weight="bold" size={16}>{t("links.note")}</T>
+              <T size={13} tone="muted">{t("links.noteHint", { max: num(NOTE_BODY_MAX) })}</T>
+              <Field label={t("links.noteHeading")} value={note.title} onChangeText={(v) => setNote({ title: v })} maxLength={NOTE_TITLE_MAX} placeholder={t("links.noteHeadingPh")} />
+              <Field label={t("links.noteText")} hint={`${num(note.body.length)}/${num(NOTE_BODY_MAX)}`} value={note.body} onChangeText={(v) => setNote({ body: v })} maxLength={NOTE_BODY_MAX} multiline style={{ minHeight: 100, textAlignVertical: "top", paddingTop: 10 }} />
+              {data.showEnglish && (
+                <>
+                  <Field label={t("links.noteHeadingEn")} value={note.titleEn} onChangeText={(v) => setNote({ titleEn: v })} maxLength={NOTE_TITLE_MAX} style={{ textAlign: "left", writingDirection: "ltr" }} />
+                  <Field label={t("links.noteTextEn")} value={note.bodyEn} onChangeText={(v) => setNote({ bodyEn: v })} maxLength={NOTE_BODY_MAX} multiline style={{ minHeight: 80, textAlignVertical: "top", paddingTop: 10, textAlign: "left", writingDirection: "ltr" }} />
+                </>
+              )}
+            </Card>
+          )}
           <T weight="bold" size={16}>{t("links.links")}</T>
           {links.map((l, i) => (
             <Card key={i}>

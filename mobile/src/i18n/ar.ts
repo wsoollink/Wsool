@@ -102,6 +102,8 @@ export const ar = {
     title: "عنوان الرابط", titleEn: "العنوان بالإنجليزي", url: "الرابط", image: "صورة الرابط", addLink: "أضف رابط",
     serviceName: "اسم الخدمة", serviceNameEn: "اسم الخدمة بالإنجليزي", description: "وصف مختصر", descriptionEn: "الوصف بالإنجليزي",
     price: "السعر ({currency})", onRequest: "عند الطلب", unit: "الوحدة", unitHint: "مثل: للساعة", unitEn: "الوحدة بالإنجليزي",
+    note: "مساحة حرة", noteHint: "معلومة أو حكمة أو رسالة لزوارك (حتى {max} حرف). تظهر قبل «خدماتي»، وتختفي إذا كانت فاضية.",
+    noteHeading: "العنوان (اختياري)", noteHeadingPh: "مثلاً: حكمتي", noteText: "النص", noteHeadingEn: "العنوان بالإنجليزي", noteTextEn: "النص بالإنجليزي",
     addService: "أضف خدمة", badUrl: "الرابط رقم {n} غير صحيح.", freeLimit: "الخطة المجانية تعرض أول {links} روابط و{services} خدمات في صفحتك.",
   },
   rates: {

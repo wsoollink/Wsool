@@ -292,6 +292,7 @@ export async function CreatorProfile({ page, lang, preview = false }: ProfilePro
           )}
 
           <Rates page={page} lang={lang} t={t} numbersFont={numbersFont} />
+          <Note page={page} lang={lang} />
           <Services page={page} lang={lang} t={t} numbersFont={numbersFont} />
           <Links page={page} lang={lang} t={t} />
           <Coupons page={page} lang={lang} t={t} />
@@ -406,6 +407,21 @@ function Rates({ page, lang, t, numbersFont }: Props & { t: T; numbersFont: stri
 const LINK_ICONS: Record<LinkKind, typeof Link2> = { map: MapPin, store: ShoppingBag, video: Play, link: Link2 };
 
 /** "My services": name, unit, description, price (or "on request") and a request button. */
+/** The creator's free text block (title + up to 300 characters), before My services. */
+function Note({ page, lang }: Props) {
+  const note = page.note;
+  if (!note) return null;
+  const en = lang === "en" && !!note.bodyEn;
+  const title = en ? note.titleEn : note.title;
+  const body = en ? note.bodyEn : note.body;
+  return (
+    <section className={`${glassCard} flex flex-col gap-2 rounded-[18px] p-5`}>
+      {title && <h2 className="text-[17px] font-bold"><bdi>{title}</bdi></h2>}
+      <p className="text-[15px] leading-7 whitespace-pre-line"><bdi>{body}</bdi></p>
+    </section>
+  );
+}
+
 function Services({ page, lang, t, numbersFont }: Props & { t: T; numbersFont: string }) {
   if (page.services.length === 0) return null;
   const currency = currencyLabel(page.rateSettings.currency, lang);

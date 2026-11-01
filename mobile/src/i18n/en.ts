@@ -104,6 +104,8 @@ export const en: typeof ar = {
     title: "Link title", titleEn: "Title in English", url: "Link", image: "Link image", addLink: "Add link",
     serviceName: "Service name", serviceNameEn: "Service name in English", description: "Short description", descriptionEn: "Description in English",
     price: "Price ({currency})", onRequest: "On request", unit: "Unit", unitHint: "e.g. per hour", unitEn: "Unit in English",
+    note: "Free space", noteHint: "A fact, a quote or a message for your visitors (up to {max} characters). It shows before “My services” and stays hidden while empty.",
+    noteHeading: "Title (optional)", noteHeadingPh: "e.g. My motto", noteText: "Text", noteHeadingEn: "Title in English", noteTextEn: "Text in English",
     addService: "Add service", badUrl: "Link {n} isn't valid.", freeLimit: "The Free plan shows your first {links} links and {services} services.",
   },
   rates: {

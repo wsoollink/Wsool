@@ -19,7 +19,7 @@ export const RESERVED_USERNAMES: ReadonlySet<string> = new Set([
   "dashboard", "admin", "api", "auth", "login", "logout", "signin", "signup",
   "register", "onboarding", "settings", "account", "pricing", "plans",
   "billing", "checkout", "invoice", "invoices", "help", "support", "contact",
-  "about", "terms", "privacy", "legal", "blog", "faq", "investor", "investors",
+  "about", "terms", "privacy", "refund", "refunds", "returns", "legal", "blog", "faq", "investor", "investors",
   "invest", "verify", "verification", "notifications", "analytics", "pdf",
   "mediakit", "kit", "callback", "oauth", "reset", "brand", "assets",
   "static", "public", "images", "fonts", "og", "embed", "explore", "search",

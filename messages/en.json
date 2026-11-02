@@ -1855,7 +1855,8 @@
     },
     "freeNote": "No card needed, and it doesn't renew automatically.",
     "activate": "Activate subscription",
-    "activating": "Activating…"
+    "activating": "Activating…",
+    "refundNote": "Full refund within 7 days of your first subscription. <link>Cancellation and refund policy</link>"
   },
   "Analytics": {
     "range": "Period",

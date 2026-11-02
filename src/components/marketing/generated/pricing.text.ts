@@ -119,7 +119,8 @@ export const PRICING_TEXT = {
   "قانوني",
   "شروط الاستخدام",
   "سياسة الخصوصية",
-  "© 2026 wsool.link",
+  "سياسة الاسترجاع",
+  "© 2026 شركة صفحة وصول لتقنية المعلومات · س.ت 7055476373 · الرقم الضريبي 315129912700003",
   "صُنع في السعودية"
  ],
  "en": [
@@ -241,7 +242,8 @@ export const PRICING_TEXT = {
   "Legal",
   "Terms of use",
   "Privacy policy",
-  "© 2026 wsool.link",
+  "Refund policy",
+  "© 2026 Safhat Wsool Company For Information Technology · CR 7055476373 · VAT 315129912700003",
   "Made in Saudi Arabia"
  ]
 } as const;

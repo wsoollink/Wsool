@@ -45,13 +45,14 @@ export const LEGAL = {
   entityEn: "Safhat Wsool Company For Information Technology",
   registration: "7055476373",
   email: SUPPORT_EMAIL,
-  /** TODO(owner): Moyasar or Tap, once chosen. */
-  paymentGateway: "",
+  /** Payment gateway named in the legal pages (owner, Nov 2026). */
+  paymentGateway: "ميسر (Moyasar)",
+  paymentGatewayEn: "Moyasar",
   emailProvider: "Resend",
   serverLocation: "فرانكفورت، ألمانيا (الاتحاد الأوروبي)",
   serverLocationEn: "Frankfurt, Germany (EU)",
-  /** TODO(owner): launch date, YYYY-MM-DD. */
-  effectiveDate: "",
+  /** Effective date of the legal pages (set Nov 2, 2026 for the Moyasar review); bump it when the text changes. */
+  effectiveDate: "2026-11-02",
 };
 
 /**

@@ -7,7 +7,7 @@
  */
 export type Block = { h: string } | { p: string } | { ul: string[] } | { table: string[][] };
 export type LegalDoc = { title: string; intro: string; blocks: Block[] };
-export type LegalKind = "terms" | "privacy";
+export type LegalKind = "terms" | "privacy" | "refund";
 
 export const LEGAL_TEXT: Record<"ar" | "en", Record<LegalKind, LegalDoc>> = {
   ar: {
@@ -54,7 +54,7 @@ export const LEGAL_TEXT: Record<"ar" | "en", Record<LegalKind, LegalDoc>> = {
         { h: "6. الإلغاء والاسترجاع" },
         { ul: [
           "يمكنك إلغاء الاشتراك في أي وقت، ويستمر وصولك للمزايا المدفوعة حتى نهاية الفترة المدفوعة.",
-          "لا نسترجع المبالغ عن الفترة الجارية أو الأجزاء غير المستخدمة منها، إلا إذا ألزمتنا الأنظمة بذلك أو حدث خطأ في الخصم.",
+          "عند أول اشتراك مدفوع يحق لك استرجاع المبلغ كاملاً خلال 7 أيام من الدفع. بعدها، وفي التجديدات، لا نسترجع المبالغ عن الفترة الجارية أو الأجزاء غير المستخدمة منها، إلا إذا ألزمتنا الأنظمة بذلك أو حدث خطأ في الخصم. التفاصيل في سياسة الإلغاء والاسترجاع: https://wsool.link/refund",
           "عند انتهاء الاشتراك تبقى صفحتك على الباقة المجانية، وقد تتوقف المزايا المدفوعة مثل بعض القوالب وتصدير الملف الإعلامي PDF.",
         ] },
         { h: "7. برنامج العمولة" },
@@ -170,6 +170,43 @@ export const LEGAL_TEXT: Record<"ar" | "en", Record<LegalKind, LegalDoc>> = {
         { p: "للاستفسارات وطلبات الخصوصية: {email} أو واتساب {whatsapp}" },
       ],
     },
+    refund: {
+      title: "سياسة الإلغاء والاسترجاع",
+      intro: "توضّح هذه السياسة كيف تلغي اشتراكك في الباقة الاحترافية في وصول، ومتى يحق لك استرجاع المبلغ. وصول تديرها {entity}، {registration}، وهذه السياسة جزء من شروط الاستخدام.",
+      blocks: [
+        { h: "1. التجربة المجانية" },
+        { p: "كل حساب جديد يحصل على 14 يوماً مجاناً من الباقة الاحترافية بدون بطاقة دفع، فلا يُخصم منك أي مبلغ خلالها. إذا لم تشترك بعدها تنتقل صفحتك للباقة الأساسية وتبقى بياناتك محفوظة." },
+        { h: "2. إلغاء الاشتراك" },
+        { ul: [
+          "يمكنك إلغاء التجديد التلقائي في أي وقت من لوحة التحكم ← الاشتراك، بدون أي رسوم.",
+          "بعد الإلغاء لا نخصم منك أي مبلغ جديد، وتبقى المزايا الاحترافية متاحة حتى نهاية الفترة المدفوعة.",
+          "عند انتهاء الفترة تنتقل صفحتك للباقة الأساسية، ولا يُحذف شيء من بياناتك.",
+        ] },
+        { h: "3. مهلة 7 أيام للاسترجاع الكامل" },
+        { ul: [
+          "إذا اشتركت في الباقة الاحترافية لأول مرة (شهرياً أو سنوياً)، يحق لك طلب استرجاع المبلغ كاملاً خلال 7 أيام من تاريخ الدفع، بدون ذكر سبب.",
+          "هذه المهلة لأول اشتراك مدفوع في الحساب فقط، ولا تشمل التجديدات.",
+          "عند الاسترجاع ينتهي الاشتراك فوراً وتنتقل صفحتك للباقة الأساسية، وتبقى بياناتك محفوظة.",
+          "إذا دفعت بكود خصم، نسترجع المبلغ الذي دفعته فعلاً، ولا يُعاد الكود للاستخدام.",
+        ] },
+        { h: "4. بعد مهلة 7 أيام والتجديدات" },
+        { ul: [
+          "بعد مرور 7 أيام على أول اشتراك، وفي جميع التجديدات الشهرية والسنوية، لا نسترجع المبلغ عن الفترة الجارية أو الجزء غير المستخدم منها، إلا إذا ألزمتنا الأنظمة بذلك.",
+          "نرسل لك تذكيراً قبل التجديد السنوي بـ 7 أيام، وتقدر تلغي قبل تاريخ التجديد حتى لا يُخصم المبلغ.",
+        ] },
+        { h: "5. أخطاء الخصم" },
+        { p: "إذا خُصم منك مبلغ بالخطأ (مثل خصم مكرر، أو خصم بعد إلغاء التجديد، أو مبلغ يختلف عن السعر المعلن)، نسترجع المبلغ الخاطئ كاملاً في أي وقت تكتشفه." },
+        { h: "6. الاستبدال" },
+        { p: "الاشتراك خدمة رقمية، فلا يوجد استبدال لمنتجات. تقدر تنتقل بين الاشتراك الشهري والسنوي من صفحة الاشتراك في لوحة التحكم." },
+        { h: "7. كيف تطلب الاسترجاع" },
+        { ul: [
+          "راسلنا على {email} أو واتساب {whatsapp} من الإيميل المسجل في حسابك، مع رقم الفاتورة (تجده في لوحة التحكم ← الاشتراك ← الفواتير).",
+          "نرد على طلبك خلال يومي عمل.",
+        ] },
+        { h: "8. متى يصلك المبلغ" },
+        { p: "نعيد المبلغ إلى وسيلة الدفع نفسها التي دفعت بها، عن طريق {gateway}. يظهر عادةً في حسابك خلال 5 إلى 14 يوم عمل حسب البنك المصدر للبطاقة." },
+      ],
+    },
   },
   en: {
     terms: {
@@ -215,7 +252,7 @@ export const LEGAL_TEXT: Record<"ar" | "en", Record<LegalKind, LegalDoc>> = {
         { h: "6. Cancellation and refunds" },
         { ul: [
           "You can cancel anytime. You keep paid features until the end of your current billing period.",
-          "We do not refund the current period or unused portions of it, unless required by law or in case of a billing error.",
+          "On your first paid subscription you can get a full refund within 7 days of payment. After that, and for renewals, we do not refund the current period or unused portions of it, unless required by law or in case of a billing error. Details in the Cancellation and Refund Policy: https://wsool.link/refund",
           "When a subscription ends, your page stays on the Free plan and paid features (such as some templates and PDF media kit export) may stop.",
         ] },
         { h: "7. Affiliate program" },
@@ -329,6 +366,43 @@ export const LEGAL_TEXT: Record<"ar" | "en", Record<LegalKind, LegalDoc>> = {
         { p: "We may update this policy and will notify you of material changes by email or in your dashboard." },
         { h: "12. Contact" },
         { p: "Privacy questions and requests: {email} or WhatsApp {whatsapp}" },
+      ],
+    },
+    refund: {
+      title: "Cancellation and Refund Policy",
+      intro: "This policy explains how to cancel your Wsool Pro subscription and when you can get your money back. Wsool is operated by {entity}, {registration}, and this policy is part of the Terms of Use.",
+      blocks: [
+        { h: "1. Free trial" },
+        { p: "Every new account gets 14 days of Pro free, with no card required, so nothing is charged during the trial. If you don't subscribe afterwards, your page moves to the Basic plan and your data is kept." },
+        { h: "2. Cancelling" },
+        { ul: [
+          "You can turn off auto-renewal anytime from Dashboard → Subscription, at no cost.",
+          "After cancelling you are not charged again, and Pro features stay available until the end of the paid period.",
+          "When the period ends your page moves to the Basic plan. None of your data is deleted.",
+        ] },
+        { h: "3. 7-day full refund" },
+        { ul: [
+          "When you subscribe to Pro for the first time (monthly or yearly), you can ask for a full refund within 7 days of the payment date, no reason needed.",
+          "This applies to the first paid subscription on an account only, not to renewals.",
+          "Once refunded, the subscription ends right away and your page moves to the Basic plan; your data is kept.",
+          "If you paid with a discount code, we refund the amount you actually paid and the code can't be used again.",
+        ] },
+        { h: "4. After 7 days and renewals" },
+        { ul: [
+          "After the first 7 days, and for all monthly and yearly renewals, we do not refund the current period or any unused part of it, unless the law requires it.",
+          "We remind you 7 days before a yearly renewal, and you can cancel before the renewal date to avoid the charge.",
+        ] },
+        { h: "5. Billing errors" },
+        { p: "If you were charged by mistake (for example twice, after cancelling auto-renewal, or a different amount than the listed price), we refund the wrong charge in full whenever you notice it." },
+        { h: "6. Exchanges" },
+        { p: "The subscription is a digital service, so there are no product exchanges. You can switch between monthly and yearly billing on the Subscription page in your dashboard." },
+        { h: "7. How to ask for a refund" },
+        { ul: [
+          "Write to {email} or WhatsApp {whatsapp} from the email on your account, with the invoice number (Dashboard → Subscription → Invoices).",
+          "We reply within 2 business days.",
+        ] },
+        { h: "8. When the money arrives" },
+        { p: "We refund to the same payment method you used, through {gateway}. It usually shows up within 5 to 14 business days, depending on your card's bank." },
       ],
     },
   },

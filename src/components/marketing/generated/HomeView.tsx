@@ -1154,15 +1154,18 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
               <Link href="/privacy" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
                 {t(196)}
               </Link>
+              <Link href="/refund" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
+                {t(197)}
+              </Link>
             </div>
           </div>
         </div>
         <div style={{"display": "flex", "flexWrap": "wrap", "justifyContent": "space-between", "gap": "12px", "paddingTop": "24px", "borderTop": "1px solid rgba(var(--mk-ink),0.09)", "fontSize": "13px", "color": "var(--mk-muted)"}}>
-          <span dir="ltr">
-            {t(197)}
-          </span>
           <span>
             {t(198)}
+          </span>
+          <span>
+            {t(199)}
           </span>
         </div>
       </footer>

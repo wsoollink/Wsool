@@ -11,8 +11,8 @@ const BLANKS = {
 };
 
 const UI = {
-  ar: { effective: "تاريخ السريان:", home: "الرئيسية", other: { terms: "سياسة الخصوصية", privacy: "شروط الاستخدام" }, contents: "المحتويات" },
-  en: { effective: "Effective date:", home: "Home", other: { terms: "Privacy Policy", privacy: "Terms of Use" }, contents: "Contents" },
+  ar: { effective: "تاريخ السريان:", home: "الرئيسية", names: { terms: "الشروط", privacy: "الخصوصية", refund: "الاسترجاع" }, contents: "المحتويات" },
+  en: { effective: "Effective date:", home: "Home", names: { terms: "Terms", privacy: "Privacy", refund: "Refunds" }, contents: "Contents" },
 };
 
 /** Bare (https://…) addresses become links, e.g. the YouTube / Google pages Google requires us to cite. */
@@ -26,7 +26,7 @@ function fill(text: string, lang: Locale) {
   const values: Record<string, string> = {
     entity: (lang === "en" ? LEGAL.entityEn : LEGAL.entity) || b.entity,
     registration: LEGAL.registration ? (lang === "en" ? `CR No. ${LEGAL.registration}` : `سجل تجاري رقم ${LEGAL.registration}`) : b.registration,
-    gateway: LEGAL.paymentGateway || b.gateway,
+    gateway: (lang === "en" ? LEGAL.paymentGatewayEn : LEGAL.paymentGateway) || b.gateway,
     mailer: LEGAL.emailProvider,
     servers: lang === "en" ? LEGAL.serverLocationEn : LEGAL.serverLocation,
   };
@@ -44,7 +44,7 @@ function effectiveDate(lang: Locale) {
   return new Intl.DateTimeFormat(toIntlLocale(lang), { dateStyle: "long", timeZone: "UTC" }).format(new Date(LEGAL.effectiveDate));
 }
 
-/** Terms of Use / Privacy Policy (content in src/content/legal.ts). */
+/** Terms of Use / Privacy Policy / Refund Policy (content in src/content/legal.ts). */
 export function LegalPage({ lang, kind }: { lang: Locale; kind: LegalKind }) {
   const doc = LEGAL_TEXT[lang][kind];
   const ui = UI[lang];
@@ -57,9 +57,11 @@ export function LegalPage({ lang, kind }: { lang: Locale; kind: LegalKind }) {
           <Link href="/" className="flex min-h-11 items-center" aria-label={ui.home}>
             <BrandLogo lang={lang === "en" ? "en" : "ar"} alt={lang === "en" ? "Wsool" : "وصول"} priority />
           </Link>
-          <Link href={kind === "terms" ? "/privacy" : "/terms"} className="min-h-11 content-center text-sm font-semibold text-blue">
-            {ui.other[kind]}
-          </Link>
+          <nav className="flex items-center gap-1">
+            {(["terms", "privacy", "refund"] as const).filter((k) => k !== kind).map((k) => (
+              <Link key={k} href={`/${k}`} className="min-h-11 content-center rounded-full px-2.5 text-sm font-semibold text-blue">{ui.names[k]}</Link>
+            ))}
+          </nav>
         </div>
       </header>
       <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-8 md:py-12">

@@ -617,6 +617,7 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   height, small island); the template deck's arrow row sits above the tilted cards (they covered the arrows and swallowed taps).
   Friends feedback 2 (Nov 2026): the monthly/yearly switch is one navy pill that slides (`div[role="group"]:has(...)`, `marketing.css`);
   pricing FAQ ends with «ما لقيت جوابك؟» + a «تواصل معنا» button on the same line; demo brand logos are icons only (`public/demo/logo-*.png`).
+  Footer bottom row (Nov 2026, for Moyasar / Ministry of Commerce): © company name · CR · VAT number, and "سياسة الاسترجاع" in the legal column.
   Text changes are made in the `design/marketing/*.dc.html` files, then the script is re-run.
   Adding an element to a design shifts the generated `mk-home-N` numbers after it: update the numbers used in
   `marketing.css` (check each against `generated/home.css` before and after).
@@ -662,7 +663,9 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   audited); CSV helper `src/lib/csv.ts`. Audit entries are shown as sentences by `auditSentences()`
   (`src/lib/audit-text.ts`, messages `Admin.sentence.<action>`): **every new audit action needs a
   sentence in both languages**.
-- **Terms / Privacy** (`/terms`, `/privacy`): text in `src/content/legal.ts` (from the owner's doc,
+- **Terms / Privacy / Refund** (`/terms`, `/privacy`, `/refund`; refund page for Moyasar, owner Nov 2026: full refund within 7 days of
+  the account's first paid subscription, no refunds on renewals except billing errors; linked from the footer "قانوني" column and the
+  Subscription page `refundNote`): text in `src/content/legal.ts` (from the owner's doc,
   adjusted to the real stack), rendered by `src/components/legal/LegalPage.tsx`. Blanks (entity,
   registration, payment gateway, effective date) come from `LEGAL` in `src/config/site.ts`; empty
   ones show as [placeholders]. Login shows "by continuing you agree…" with both links.

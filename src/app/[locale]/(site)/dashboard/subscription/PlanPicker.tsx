@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { Card } from "@/components/ui/Card";
@@ -122,7 +123,10 @@ export function PlanPicker({ defaultCurrency, canPay, renew, showTrial }: { defa
           <span className="text-[12.5px]">{t("trialBody")}</span>
         </div>
       )}
-      <p className="text-xs text-muted">{t("vatNote")}</p>
+      <p className="text-xs text-muted">
+        {t("vatNote")}{" "}
+        {t.rich("refundNote", { link: (c) => <Link href="/refund" className="text-blue underline underline-offset-2">{c}</Link> })}
+      </p>
 
       {free ? (
         <div className="flex flex-col gap-3 rounded-2xl bg-good/8 p-4">

@@ -6,7 +6,7 @@ export const en: typeof ar = {
   common: {
     back: "Back", retry: "Try again", loading: "Loading…", error: "Something went wrong. Please try again.", offline: "No internet connection.",
     restartForDirection: "Close the app and open it again to apply the page direction.", close: "Close",
-    soon: "Coming soon to the app", openOnWeb: "Open on the website",
+    soon: "Coming soon to the app", openOnWeb: "Open on the website", cancel: "Cancel",
   },
   login: {
     headline: "Your media kit in your pocket", tagline: "Edit your page, follow your visitors and share your link with brands from anywhere.",
@@ -68,7 +68,7 @@ export const en: typeof ar = {
   },
   section: {
     edit: "Edit page", accounts: "Accounts & numbers", work: "Brands & work", rates: "Ad rates", links: "Links & services", coupons: "Discount coupons",
-    contact: "Contact", verification: "Verification", appearance: "Appearance", analytics: "Analytics", referrals: "Commission", subscription: "Subscription",
+    contact: "Contact", verification: "Verification", appearance: "Appearance", analytics: "Analytics", referrals: "Commission", subscription: "Subscription", private: "Private view",
   },
 
   editor: {
@@ -88,9 +88,28 @@ export const en: typeof ar = {
     modeLight: "Light", modeDark: "Dark", accent: "Accent colour", accentDefault: "Template colour", auto: "Auto",
     icons: "Account icons style", iconSolid: "Solid circle", iconColor: "Brand colours", iconOutline: "Outline",
     hideBranding: "Hide “Made with Wsool”", hideBrandingPro: "Available on Pro", proOnly: "This option is available on Pro.",
-    sections: "Page sections", sectionsHint: "Turn off any section you don't want on your page and PDF. Its data stays saved and comes back when you turn it on.",
-    section: { numbers: "Numbers", brands: "Brands", works: "Past work", rates: "Ad rates" },
-    sectionHint: { numbers: "Followers, views and audience. Your account icons and verified badge stay.", brands: "The strip of brand logos.", works: "Your past work and its videos.", rates: "Your ad rates and bundle; the whole section disappears." },
+    sections: "Page sections", sectionsHint: "For each section choose: everyone, private (opens with your password or a private link) or hidden. The data stays saved.",
+    section: { numbers: "Numbers", brands: "Brands", works: "Past work", rates: "Ad rates", services: "My services", links: "My links", coupons: "Discount coupons" },
+    sectionHint: { numbers: "Followers, views and audience. Your account icons and verified badge stay.", brands: "The strip of brand logos.", works: "Your past work and its videos.", rates: "Your ad rates and bundle; the whole section disappears.", services: "The services you offer and their prices.", links: "Your own links.", coupons: "Store discount codes." },
+    visibility: { public: "Everyone", private: "Private", hidden: "Hidden" },
+    lockWhole: "Make the whole page private", lockWholeHint: "Visitors see your photo, name and specialty only; the rest opens with your password or a private link.",
+    privatePro: "The private view is a Pro feature.",
+  },
+  private: {
+    subtitle: "Password and private links for brands", proOnly: "The private view (password and private links) is a Pro feature.",
+    whatTitle: "What's in the private view?", whatWhole: "Your whole page is private: visitors see your photo, name and specialty only.",
+    whatSections: "Private sections: {list}. Visitors see the rest of your page as usual.", whatNone: "You haven't made any section private. Choose in Appearance → Page sections.",
+    chooseSections: "Choose sections", passwordTitle: "Password", on: "On", off: "Off",
+    passwordHint: "Anyone with the password can open the private view on your page. Change it and everyone who used the old one is locked out.",
+    password: "Password", newPassword: "New password", passwordRule: "At least 4 letters or numbers.",
+    setPassword: "Save password", change: "Change password", remove: "Remove password",
+    removeConfirm: "Remove the password? Everyone who opened it with the password is locked out; private links keep working.", saved: "Password saved.", removed: "Password removed.",
+    linksTitle: "Private links", linksHint: "Make a link for each brand. It opens your full page straight away, no password; revoke it anytime and see how often it's opened.",
+    linkName: "Who is it for?", linkNamePh: "e.g. Almarai", linkDays: "Works for", noEnd: "No end", days: "{n} days",
+    makeLink: "Make link", madeShort: "Link made.", made: "Ready! Send this link to {name}:", noLinks: "You haven't made any private links yet.",
+    views: "Opened: {n}", lastOpened: "last opened {date}", endsOn: "ends {date}", expired: "Expired", revoke: "Revoke link",
+    revokeConfirm: "Revoke the link for {name}? Everyone who opened it is locked out.", revoked: "Link revoked.",
+    errors: { invalid: "Check the details.", pro_only: "This is a Pro feature.", limit: "You've reached the limit (50 links). Revoke an old one first." },
   },
   coupons: {
     subtitle: "Your store discount codes and tracking links", store: "Store name", storeEn: "Store name in English", storePh: "e.g. Noon",

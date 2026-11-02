@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import { Alert, Linking, Pressable, RefreshControl, Share, View } from "react-native";
 import { router, useFocusEffect } from "expo-router";
-import { BadgeCheck, Briefcase, Link2, MessageCircle, Palette, Pencil, Share2, Tag, TicketPercent, Users } from "lucide-react-native";
+import { BadgeCheck, Briefcase, Link2, MessageCircle, Palette, Pencil, Share2, Tag, TicketPercent, Users, LockKeyhole } from "lucide-react-native";
 import { Toggle } from "../../../components/editor";
 import { Avatar, Button, Card, Group, IconTile, ListRow, Pill, Row, Screen, Status, T } from "../../../components/ui";
 import { useI18n } from "../../../i18n";
@@ -96,6 +96,7 @@ export default function PageTab() {
 
       <Group title={t("pageTab.look")}>
         <ListRow icon={<IconTile color="#DB2777"><Palette size={17} color="#fff" /></IconTile>} label={t("section.appearance")} onPress={go("appearance")} />
+        <ListRow icon={<IconTile color="#334155"><LockKeyhole size={17} color="#fff" /></IconTile>} label={t("section.private")} badge={data.plan.pro ? undefined : <Pill tone="blue">PRO</Pill>} onPress={go("private")} />
         <ListRow icon={<IconTile color="#0369A1"><BadgeCheck size={17} color="#fff" /></IconTile>} label={t("section.verification")} badge={pending ? <Pill tone="warn">{t("pageTab.pending", { n: num(pending) })}</Pill> : undefined} onPress={go("verification")} />
       </Group>
     </Screen>

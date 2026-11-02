@@ -1,10 +1,13 @@
 import { createHash } from "node:crypto";
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import { notFound, permanentRedirect, redirect } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
 import { HiddenPage } from "@/components/marketing/Pages";
 import { toIntlLocale } from "@/i18n/config";
-import { loadCreatorPage } from "@/lib/creator-page";
+import { loadCreatorPage, withPrivateView } from "@/lib/creator-page";
+import type { PublishedPage } from "@/lib/public-page";
+import type { Locale } from "@/i18n/config";
 import { siteOrigin } from "@/lib/site-url";
 import { CreatorProfile } from "./CreatorProfile";
 
@@ -12,6 +15,8 @@ export async function generateMetadata({ params }: PageProps<"/[locale]/[usernam
   const { locale, username } = await params;
   const { data, lang } = await loadCreatorPage(locale, username);
   if (data?.status !== "published") return { robots: { index: false } };
+  // Whole page private: no bio in previews, and search engines leave it out.
+  const locked = data.privacy.locked;
   const tr = data.translations.find((x) => x.lang === lang) ?? data.translations[0];
   const name = tr?.fullName || data.username;
   const title = tr?.specialty ? `${name} · ${tr.specialty}` : name;
@@ -25,6 +30,7 @@ export async function generateMetadata({ params }: PageProps<"/[locale]/[usernam
     metadataBase: new URL(siteOrigin()),
     title,
     description: tr?.bio || undefined,
+    ...(locked && { robots: { index: false } }),
     alternates: { canonical: `/${data.username}` },
     openGraph: { type: "profile", title, description: tr?.bio || undefined, url: `/${data.username}`, siteName: "Wsool", images: [image] },
     twitter: { card: "summary_large_image", title, description: tr?.bio || undefined, images: [image] },
@@ -44,5 +50,18 @@ export default async function CreatorPage({ params }: PageProps<"/[locale]/[user
   // Unpublished, deleted or suspended: the design's "page hidden" state.
   if (data.status === "hidden") return <HiddenPage lang={lang} />;
 
+  // Pages with a private view: the visitor's unlock cookie decides which variant renders.
+  if (data.privacy.canUnlock) {
+    return (
+      <Suspense fallback={null}>
+        <Unlockable page={data} lang={lang} />
+      </Suspense>
+    );
+  }
   return <CreatorProfile page={data} lang={lang} />;
+}
+
+async function Unlockable({ page, lang }: { page: PublishedPage; lang: Locale }) {
+  const data = await withPrivateView(page);
+  return <CreatorProfile page={data?.status === "published" ? data : page} lang={lang} />;
 }

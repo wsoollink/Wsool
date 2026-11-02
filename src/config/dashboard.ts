@@ -14,6 +14,7 @@ export const DASHBOARD_SECTIONS = [
   { key: "contact", href: "/dashboard/contact" },
   { key: "verification", href: "/dashboard/verification", group: "account" },
   { key: "appearance", href: "/dashboard/appearance", group: "account" },
+  { key: "private", href: "/dashboard/private", group: "account" },
   { key: "analytics", href: "/dashboard/analytics", group: "account" },
   { key: "referrals", href: "/dashboard/referrals", group: "account" },
   { key: "agency", href: "/dashboard/agency", group: "account" },

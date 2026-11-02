@@ -45,6 +45,7 @@ export const NOTIFICATIONS = {
   agency_removed: { href: "/dashboard/agency", reminder: false },
   agency_accepted: { href: "/agency", reminder: false },
   agency_ended: { href: "/agency", reminder: false },
+  private_link_opened: { href: "/dashboard/private", reminder: false },
 } as const;
 export type NotificationType = keyof typeof NOTIFICATIONS;
 

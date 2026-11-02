@@ -33,6 +33,8 @@ async function Editor() {
         hideBranding: page.hideBranding,
         iconStyle: page.iconStyle,
         hiddenSections: page.hiddenSections.filter((s): s is PageSection => (PAGE_SECTIONS as readonly string[]).includes(s)),
+        privateSections: page.privateSections.filter((s): s is PageSection => (PAGE_SECTIONS as readonly string[]).includes(s)),
+        lockWhole: page.lockWhole,
       }}
       preview={{
         name: tr?.fullName ?? "",

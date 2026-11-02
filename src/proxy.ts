@@ -22,6 +22,17 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(landing, 307);
   }
 
+  // Private links to a creator's full page (wsool.link/<username>?k=<token>): /api/unlock checks the token, sets the
+  // unlock cookie and comes back to the clean page URL.
+  const key = request.nextUrl.searchParams.get("k");
+  const single = /^\/[^/]+$/.exec(request.nextUrl.pathname);
+  if (key !== null && single && request.method === "GET") {
+    const landing = new URL("/api/unlock", request.url);
+    landing.searchParams.set("u", decodeURIComponent(request.nextUrl.pathname.slice(1)).slice(0, 40));
+    landing.searchParams.set("k", key.slice(0, 64));
+    return NextResponse.redirect(landing, 307);
+  }
+
   const locale = resolveLocale(
     request.cookies.get(LOCALE_COOKIE)?.value,
     request.headers.get("accept-language"),

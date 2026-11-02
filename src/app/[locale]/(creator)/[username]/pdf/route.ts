@@ -1,6 +1,6 @@
 import type { NextRequest } from "next/server";
 import { isLocale } from "@/i18n/config";
-import { loadCreatorPage } from "@/lib/creator-page";
+import { loadCreatorPage, withPrivateView } from "@/lib/creator-page";
 import { pageLanguages } from "@/lib/page-language";
 import { buildMediaKit } from "@/lib/pdf/media-kit";
 
@@ -10,8 +10,11 @@ import { buildMediaKit } from "@/lib/pdf/media-kit";
  */
 export async function GET(request: NextRequest, { params }: RouteContext<"/[locale]/[username]/pdf">) {
   const { locale, username } = await params;
-  const { data, lang: defaultLang } = await loadCreatorPage(locale, username);
-  if (data?.status !== "published" || !data.isPro) return new Response("Not found", { status: 404 });
+  const loaded = await loadCreatorPage(locale, username);
+  const defaultLang = loaded.lang;
+  // Private sections are in the PDF only for a visitor who unlocked the private view (same cookie as the page).
+  const data = await withPrivateView(loaded.data);
+  if (data?.status !== "published" || !data.isPro || data.privacy.locked) return new Response("Not found", { status: 404 });
 
   const asked = request.nextUrl.searchParams.get("lang");
   const lang = asked && isLocale(asked) && pageLanguages(data.primaryLang, data.enEnabled).includes(asked) ? asked : defaultLang;

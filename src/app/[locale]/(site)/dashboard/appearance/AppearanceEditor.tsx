@@ -169,20 +169,47 @@ export function AppearanceEditor({ initial, isPro, freeTemplates, preview }: { i
             <h2 className="font-bold">{t("sections")}</h2>
             <p className="text-xs text-muted">{t("sectionsHint")}</p>
           </div>
-          <div className="flex flex-col divide-y divide-line-soft">
+          <Switch
+            checked={!!value.lockWhole} disabled={!isPro && !value.lockWhole}
+            onChange={(on) => set({ lockWhole: on })}
+            label={t("lockWhole")} hint={isPro ? t("lockWholeHint") : t("privatePro")}
+          />
+          <div className={`flex flex-col divide-y divide-line-soft border-t border-line-soft pt-1 ${value.lockWhole ? "opacity-50" : ""}`}>
             {PAGE_SECTIONS.map((key) => {
               const hidden = value.hiddenSections ?? [];
+              const priv = value.privateSections ?? [];
+              const state = hidden.includes(key) ? "hidden" : priv.includes(key) ? "private" : "public";
+              const choose = (next: typeof state) => set({
+                hiddenSections: next === "hidden" ? [...hidden.filter((k) => k !== key), key] : hidden.filter((k) => k !== key),
+                privateSections: next === "private" ? [...priv.filter((k) => k !== key), key] : priv.filter((k) => k !== key),
+              });
               return (
-                <div key={key} className="py-3 first:pt-0 last:pb-0">
-                  <Switch
-                    checked={!hidden.includes(key)}
-                    onChange={(on) => set({ hiddenSections: on ? hidden.filter((k) => k !== key) : [...hidden, key] })}
-                    label={t(`section.${key}`)} hint={t(`sectionHint.${key}`)}
-                  />
+                <div key={key} className="flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold">{t(`section.${key}`)}</p>
+                    <p className="text-xs text-muted">{t(`sectionHint.${key}`)}</p>
+                  </div>
+                  <div role="radiogroup" aria-label={t(`section.${key}`)} className="flex shrink-0 gap-1 self-start rounded-full border border-line bg-bg p-1 sm:self-auto">
+                    {(["public", "private", "hidden"] as const).map((opt) => {
+                      const proLocked = opt === "private" && !isPro && state !== "private";
+                      return (
+                        <button
+                          key={opt} type="button" role="radio" aria-checked={state === opt} disabled={proLocked || !!value.lockWhole}
+                          onClick={() => choose(opt)}
+                          className={`inline-flex min-h-10 items-center gap-1 rounded-full px-3 text-[13px] font-bold pointer-fine:min-h-8 ${state === opt ? "bg-navy text-on-navy" : "text-muted hover:text-navy"} disabled:cursor-not-allowed disabled:opacity-50`}
+                        >
+                          {opt === "private" && <Lock aria-hidden="true" size={12} />}{t(`visibility.${opt}`)}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
               );
             })}
           </div>
+          <p className="text-xs text-muted">
+            {isPro ? t.rich("privateNote", { a: (c) => <Link href="/dashboard/private" className="font-semibold text-blue">{c}</Link> }) : t("privatePro")}
+          </p>
         </Card>
 
         <Card>

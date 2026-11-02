@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { ArrowUpRight, Link2, MapPin, Play, ShoppingBag, Store } from "lucide-react";
+import { ArrowUpRight, FileDown, Link2, Lock, LockOpen, MapPin, Play, ShoppingBag, Store } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { getTranslations } from "next-intl/server";
@@ -14,6 +14,7 @@ import { glassCard } from "@/components/creator/styles";
 import { PlatformIcon } from "@/components/creator/PlatformIcon";
 import { SocialIcon } from "@/components/creator/SocialIcon";
 import { Tracker } from "@/components/creator/Tracker";
+import { UnlockForm } from "@/components/creator/UnlockForm";
 import { WorkItem } from "@/components/creator/WorkItem";
 import { pageTheme, themeStyle } from "@/components/creator/theme";
 import { PLATFORM_NAMES } from "@/config/platforms";
@@ -223,6 +224,7 @@ export async function CreatorProfile({ page, lang, preview = false }: ProfilePro
         </aside>
 
         <main className="flex min-w-0 flex-1 flex-col gap-8 px-5 md:gap-9 md:px-0">
+          <PrivateView page={page} lang={lang} t={t} name={name} />
           {page.showNumbers && (page.monthlyViews !== null || page.accounts.length > 0) && (
             <Section title={t("numbers")} aside={numbersNote || undefined}>
               {/* Owner decision: monthly views stay before the platform cards (CLAUDE.md section 5). */}
@@ -307,6 +309,50 @@ export async function CreatorProfile({ page, lang, preview = false }: ProfilePro
         </main>
       </div>
     </div>
+  );
+}
+
+/**
+ * Private view (owner, Nov 2026): a card asking for the password (or saying a private link opens it) while private
+ * sections are locked; once unlocked, a note that this is the private view + the full PDF.
+ */
+function PrivateView({ page, lang, t, name }: Props & { t: T; name: string }) {
+  const p = page.privacy;
+  if (p.unlocked) {
+    return (
+      <div className={`${glassCard} flex flex-wrap items-center justify-between gap-3 rounded-[18px] px-4 py-3`}>
+        <p className="flex items-center gap-2 text-sm font-semibold"><LockOpen aria-hidden="true" size={17} className="text-[var(--page-accent)]" />{t("privateUnlocked")}</p>
+        {page.isPro && (
+          <a href={`/${page.username}/pdf?lang=${lang}&download`} className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-[var(--page-line)] px-4 text-[13px] font-bold">
+            <FileDown aria-hidden="true" size={15} />{t("privatePdf")}
+          </a>
+        )}
+      </div>
+    );
+  }
+  if (!p.locked && p.lockedSections.length === 0) return null;
+  // Free page with a locked page: it can't be opened, just say it's private.
+  if (!p.canUnlock && !p.locked) return null;
+  return (
+    <section className={`${glassCard} flex flex-col gap-4 rounded-[20px] p-5 md:p-6`} aria-labelledby="private-title">
+      <div className="flex items-start gap-3">
+        <span aria-hidden="true" className="inline-flex size-11 shrink-0 items-center justify-center rounded-full bg-[var(--page-soft)] text-[var(--page-accent)]"><Lock size={20} /></span>
+        <div className="flex flex-col gap-1">
+          <h2 id="private-title" className="text-lg font-bold">{p.locked ? t("privateTitleWhole") : t("privateTitle")}</h2>
+          <p className="text-sm leading-6 text-[var(--page-muted)]">
+            {!p.canUnlock ? t("privateUnavailable") : p.hasPassword ? t("privateBodyPassword", { name }) : t("privateBodyLink", { name })}
+          </p>
+        </div>
+      </div>
+      {!p.locked && (
+        <ul className="flex flex-wrap gap-2" aria-label={t("privateIncludes")}>
+          {p.lockedSections.map((s) => (
+            <li key={s} className="rounded-full border border-[var(--page-line)] px-3 py-1 text-[12.5px] font-medium">{t(`privateSection.${s}` as "privateSection.rates")}</li>
+          ))}
+        </ul>
+      )}
+      {p.canUnlock && p.hasPassword && <UnlockForm username={page.username} />}
+    </section>
   );
 }
 

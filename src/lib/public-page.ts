@@ -5,6 +5,7 @@ import { autoFilled } from "@/config/platforms";
 import type { Prisma } from "@/generated/prisma/client";
 import { db } from "@/lib/db";
 import type { Locale } from "@/i18n/config";
+import { PAGE_SECTIONS } from "@/lib/validation/appearance";
 
 /** Cache tag to revalidate whenever a creator's public page data changes. */
 export const pageCacheTag = (username: string) => `page:${username}`;
@@ -34,8 +35,8 @@ export function pageChanged(username: string) {
 
 /** Every column the public page needs (public fields only, never the owner's account email). */
 const PAGE_SELECT = {
-  id: true, username: true, primaryLang: true, enEnabled: true, template: true,
-  customColors: true, accent: true, photoShape: true, iconStyle: true, hideBranding: true, hiddenSections: true, noteTitle: true, noteBody: true, noteTitleEn: true, noteBodyEn: true,
+  id: true, userId: true, username: true, primaryLang: true, enEnabled: true, template: true,
+  customColors: true, accent: true, photoShape: true, iconStyle: true, hideBranding: true, hiddenSections: true, privateSections: true, lockWhole: true, privatePassword: true, privateVersion: true, noteTitle: true, noteBody: true, noteTitleEn: true, noteBodyEn: true,
   isPublished: true, deletedAt: true, photoUrl: true, logoUrl: true, whatsapp: true, contactEmail: true, whatsappVisible: true, emailVisible: true,
   user: { select: { suspendedAt: true, subscription: { select: { plan: true, status: true, trialEndsAt: true } } } },
   translations: true,
@@ -76,7 +77,11 @@ export async function getUsernameRedirect(name: string) {
   return row?.page.username ?? null;
 }
 
-export async function getPublicPage(username: string) {
+/**
+ * `open` = the visitor unlocked the private view (checked by the caller from the unlock cookie): the private sections
+ * are included. Without it they are left out entirely, so they never reach the browser. Cached separately per variant.
+ */
+export async function getPublicPage(username: string, open = false) {
   "use cache";
   cacheTag(pageCacheTag(username));
 
@@ -100,7 +105,7 @@ export async function getPublicPage(username: string) {
   }
   else cacheLife("hours");
 
-  return shapePage(page, now);
+  return shapePage(page, now, open);
 }
 
 /**
@@ -109,21 +114,40 @@ export async function getPublicPage(username: string) {
  */
 export async function getPreviewPage(pageId: string) {
   const page = await db.page.findUnique({ where: { id: pageId }, select: PAGE_SELECT });
-  return page ? shapePage(page, Date.now()) : null;
+  return page ? shapePage(page, Date.now(), true) : null;
 }
 
 /** Applies the plan limits and turns a page row into what the creator page renders. */
-function shapePage(page: PageRow, now: number) {
+function shapePage(page: PageRow, now: number, open: boolean) {
   const isPro = hasPro(page.user.subscription, now);
+  // Private view (Pro): only a Pro page can be unlocked. On Free, private sections stay hidden (never exposed).
+  const unlocked = open && isPro;
+  const privateSections = page.privateSections.filter((s) => !page.hiddenSections.includes(s));
+  const lockedSections = unlocked ? [] : page.lockWhole ? [...PAGE_SECTIONS] : privateSections;
+  const locked = page.lockWhole && !unlocked;
   // Free pages hide rates and audience data (FREE_LIMITS); nothing is deleted.
   // Sections the creator hid (Appearance → "Page sections"): their data is kept, just not shown (page, PDF, link preview).
-  const hidden = new Set(page.hiddenSections);
+  const hidden = new Set<string>([...page.hiddenSections, ...lockedSections]);
   const showNumbers = !hidden.has("numbers");
   const showRates = (isPro || FREE_LIMITS.rates) && !hidden.has("rates");
   const showAudience = (isPro || FREE_LIMITS.audience) && showNumbers;
-  return {
+  const shaped = {
     status: "published" as const,
     username: page.username,
+    privacy: {
+      /** Whole page private and not unlocked: only the photo, name and specialty are filled in. */
+      locked,
+      /** Sections left out because they are private (empty once unlocked). */
+      lockedSections: lockedSections.filter((s) => !page.hiddenSections.includes(s)),
+      /** The private view can be opened (Pro): show the lock card / screen. */
+      canUnlock: isPro && (page.lockWhole || privateSections.length > 0),
+      hasPassword: isPro && !!page.privatePassword,
+      unlocked: unlocked && (page.lockWhole || privateSections.length > 0),
+      /** For the unlock cookie check on the server (never rendered). */
+      pageId: page.id,
+      ownerId: page.userId,
+      version: page.privateVersion,
+    },
     primaryLang: page.primaryLang as Locale,
     enEnabled: page.enEnabled,
     // Free pages can only use the Free templates (CLAUDE.md section 6).
@@ -181,15 +205,31 @@ function shapePage(page: PageRow, now: number) {
     /** Free text block (all plans); null when there is no text. */
     note: page.noteBody ? { title: page.noteTitle, body: page.noteBody, titleEn: page.noteTitleEn, bodyEn: page.noteBodyEn } : null,
     // Free pages show the first few (FREE_LIMITS); the dashboard keeps them all.
-    links: (isPro ? page.links : page.links.slice(0, FREE_LIMITS.links)).map((l) => ({ id: l.id, title: l.title, titleEn: l.titleEn, url: l.url, imageUrl: l.imageUrl })),
-    services: (isPro ? page.services : page.services.slice(0, FREE_LIMITS.services)).map((s) => ({
+    links: hidden.has("links") ? [] : (isPro ? page.links : page.links.slice(0, FREE_LIMITS.links)).map((l) => ({ id: l.id, title: l.title, titleEn: l.titleEn, url: l.url, imageUrl: l.imageUrl })),
+    services: hidden.has("services") ? [] : (isPro ? page.services : page.services.slice(0, FREE_LIMITS.services)).map((s) => ({
       id: s.id, name: s.name, nameEn: s.nameEn, description: s.description, descriptionEn: s.descriptionEn,
       price: s.price === null ? null : Number(s.price), unit: s.unit, unitEn: s.unitEn,
     })),
-    coupons: liveCoupons(page.coupons, now).slice(0, isPro ? undefined : FREE_LIMITS.coupons).map((c) => ({
+    coupons: hidden.has("coupons") ? [] : liveCoupons(page.coupons, now).slice(0, isPro ? undefined : FREE_LIMITS.coupons).map((c) => ({
       id: c.id, store: c.store, storeEn: c.storeEn, description: c.description, descriptionEn: c.descriptionEn,
       code: c.code, url: c.url, logoUrl: c.logoUrl, expiresOn: c.expiresOn ? c.expiresOn.toISOString().slice(0, 10) : null,
     })),
+  };
+  if (!locked) return shaped;
+  // Whole page private: keep only who it is (photo, name, specialty) and the look.
+  return {
+    ...shaped,
+    showNumbers: false,
+    whatsapp: null,
+    contactEmail: null,
+    logoUrl: null,
+    translations: page.translations.map((t) => ({ ...t, bio: "", city: "", country: "" })),
+    tags: [],
+    licenses: [],
+    accounts: [],
+    monthlyViews: null,
+    monthlyViewsMonth: null,
+    note: null,
   };
 }
 

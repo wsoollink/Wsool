@@ -4,8 +4,11 @@ const hex = z.string().regex(/^#[0-9a-fA-F]{6}$/).transform((v) => v.toLowerCase
 
 export const ICON_STYLES = ["solid", "color", "outline"] as const;
 
-/** Public page sections a creator can hide (Appearance → "Page sections"); the data stays saved. */
-export const PAGE_SECTIONS = ["numbers", "brands", "works", "rates"] as const;
+/**
+ * Public page sections a creator can hide or keep for the private view (Appearance → "Page sections"); the data stays
+ * saved. Each section is public (default), private (owner, Nov 2026, Pro: opened with the password or a private link) or hidden.
+ */
+export const PAGE_SECTIONS = ["numbers", "rates", "brands", "works", "services", "links", "coupons"] as const;
 export type PageSection = (typeof PAGE_SECTIONS)[number];
 
 export const TEMPLATES = ["white", "black", "sand", "pink", "black_gold", "vivid", "green", "custom"] as const;
@@ -21,6 +24,10 @@ export const appearanceSchema = z
     iconStyle: z.enum(ICON_STYLES),
     /** Hidden sections; left out (older app versions) = keep what is saved. */
     hiddenSections: z.array(z.enum(PAGE_SECTIONS)).max(PAGE_SECTIONS.length).transform((v) => [...new Set(v)]).optional(),
+    /** Sections for the private view only; left out (older app versions) = keep what is saved. A hidden section wins. */
+    privateSections: z.array(z.enum(PAGE_SECTIONS)).max(PAGE_SECTIONS.length).transform((v) => [...new Set(v)]).optional(),
+    /** Whole page private (only the photo, name and specialty show until unlocked). */
+    lockWhole: z.boolean().optional(),
   })
   .refine((v) => v.template !== "custom" || v.customColors !== null, { path: ["customColors"] });
 

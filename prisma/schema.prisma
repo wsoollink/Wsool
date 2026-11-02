@@ -128,6 +128,16 @@ model Page {
   hideBranding      Boolean    @default(false) @map("hide_branding")
   /// Public page sections the creator hid (owner, Oct 2026): numbers | brands | works | rates. Data is kept.
   hiddenSections    String[]   @default([]) @map("hidden_sections")
+  /// Sections shown only in the private view (owner, Nov 2026, Pro): opened with the page password or a private link.
+  privateSections   String[]   @default([]) @map("private_sections")
+  /// Whole page private: visitors see the photo, name and specialty only until they unlock it.
+  lockWhole         Boolean    @default(false) @map("lock_whole")
+  /// scrypt hash of the private-view password ("salt:hash"); null = no password (private links still work).
+  privatePassword   String?    @map("private_password")
+  /// Bumped when the password changes or is removed: earlier unlocks stop working.
+  privateVersion    Int        @default(1) @map("private_version")
+  /// Listed in the Wsool creator directory for companies (owner, Nov 2026; creator opts in, all plans).
+  inDirectory       Boolean    @default(false) @map("in_directory")
   /// Free text block in "Links & services" (owner, Oct 2026): a short title + up to 300 characters, shown before My services.
   noteTitle         String?    @map("note_title") @db.VarChar(40)
   noteBody          String?    @map("note_body") @db.VarChar(300)
@@ -167,6 +177,7 @@ model Page {
   pageViews      PageView[]
   contactClicks  ContactClick[]
   agencyLinks    AgencyLink[]
+  privateLinks   PrivateLink[]
 
   @@map("pages")
 }
@@ -804,6 +815,8 @@ model Expense {
 model InvestorLink {
   id           String    @id @default(uuid()) @db.Uuid
   tokenHash    String    @unique @map("token_hash") @db.VarChar(64)
+  /// The token sealed with TOKEN_ENCRYPTION_KEY, so the creator can copy the link again (null = shown once only).
+  tokenSealed  String?   @map("token_sealed")
   label        String    @db.VarChar(80)
   sections     Json
   months       Int
@@ -1204,4 +1217,25 @@ model AgencyActivity {
 
   @@index([pageId, createdAt])
   @@map("agency_activity")
+}
+
+/// A private link to the full page for one company (owner, Nov 2026): wsool.link/<username>?k=<token>. Only the token's SHA-256 is stored.
+model PrivateLink {
+  id           String    @id @default(uuid()) @db.Uuid
+  pageId       String    @map("page_id") @db.Uuid
+  /// Who it was made for (e.g. the brand's name), shown to the creator only.
+  name         String    @db.VarChar(60)
+  tokenHash    String    @unique @map("token_hash") @db.VarChar(64)
+  /// The token sealed with TOKEN_ENCRYPTION_KEY, so the creator can copy the link again (null = shown once only).
+  tokenSealed  String?   @map("token_sealed")
+  expiresAt    DateTime? @map("expires_at") @db.Timestamptz
+  revokedAt    DateTime? @map("revoked_at") @db.Timestamptz
+  views        Int       @default(0)
+  lastViewedAt DateTime? @map("last_viewed_at") @db.Timestamptz
+  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  page Page @relation(fields: [pageId], references: [id], onDelete: Cascade)
+
+  @@index([pageId])
+  @@map("private_links")
 }

@@ -220,7 +220,8 @@
     "referrals": "Commission",
     "whatsapp": "WhatsApp support",
     "whatsappText": "Hi, I have a question about my Wsool account",
-    "agency": "Agency"
+    "agency": "Agency",
+    "private": "Private view"
   },
   "CreatorPage": {
     "demoBadge": "Demo page",
@@ -293,7 +294,29 @@
     "shopNow": "Shop now",
     "couponDisclosure": "Sponsored codes",
     "couponCode": "Discount code {code}",
-    "couponEnds": "Ends {date}"
+    "couponEnds": "Ends {date}",
+    "privateTitle": "The rest is for brands",
+    "privateTitleWhole": "This page is private",
+    "privateBodyPassword": "Enter the password, or open the private link {name} sent you.",
+    "privateBodyLink": "It opens with the private link {name} sends to brands.",
+    "privateUnavailable": "The owner has made this page private for now.",
+    "privateIncludes": "Includes",
+    "privatePassword": "Password",
+    "privateOpen": "Open",
+    "privateOpening": "Opening…",
+    "privateWrong": "That password isn't right.",
+    "privateLimit": "Too many tries. Try again in 15 minutes.",
+    "privateUnlocked": "You're seeing the full media kit",
+    "privatePdf": "Download PDF",
+    "privateSection": {
+      "numbers": "Numbers & audience",
+      "rates": "Ad rates",
+      "brands": "Brands",
+      "works": "Past work",
+      "services": "Services",
+      "links": "Links",
+      "coupons": "Coupons"
+    }
   },
   "MediaKit": {
     "wsool": "Wsool",
@@ -764,18 +787,33 @@
       "outline": "Outline"
     },
     "sections": "Page sections",
-    "sectionsHint": "Turn off any section you don't want on your page and PDF. Its data stays saved and comes back when you turn it on.",
+    "sectionsHint": "For each section choose: shown to everyone, private view only (opens with your password or a private link), or hidden. The data stays saved.",
     "section": {
       "numbers": "Numbers",
       "brands": "Brands",
       "works": "Past work",
-      "rates": "Ad rates"
+      "rates": "Ad rates",
+      "services": "My services",
+      "links": "My links",
+      "coupons": "Discount coupons"
     },
     "sectionHint": {
       "numbers": "Total followers, each platform's count, monthly views and audience. Your account icons and verified badge stay.",
       "brands": "The strip of brands you've worked with.",
       "works": "Your past work and its videos.",
-      "rates": "Your ad rates and bundle. Turned off, the whole section disappears."
+      "rates": "Your ad rates and bundle. Hidden or private removes the whole section.",
+      "services": "The services you offer and their prices.",
+      "links": "Your own links.",
+      "coupons": "Store discount codes."
+    },
+    "lockWhole": "Make the whole page private",
+    "lockWholeHint": "Visitors see your photo, name and specialty only; the rest opens with your password or a private link.",
+    "privatePro": "The private view is a Pro feature.",
+    "privateNote": "Manage the password and private links in <a>Private view</a>.",
+    "visibility": {
+      "public": "Everyone",
+      "private": "Private",
+      "hidden": "Hidden"
     }
   },
   "Suspended": {
@@ -2102,6 +2140,12 @@
       "body": "You've been invited to {agency}'s team on Wsool.\nSign in with this email ({email}) to open the agency dashboard.",
       "cta": "Sign in",
       "footer": "You received this because an agency added your email to its team on Wsool."
+    },
+    "private_link_opened": {
+      "subject": "{name} opened your private page",
+      "title": "Your private link was opened",
+      "body": "The private link you made for {name} was just opened for the first time.\nSee how often it's opened, or revoke it, in Private view.",
+      "cta": "Open Private view"
     }
   },
   "Notifications": {
@@ -2308,7 +2352,8 @@
     "links": "Your store and course links, and services besides ads",
     "coupons": "Your store discount codes and tracking links",
     "referrals": "Earn from every subscriber who comes through your link",
-    "agency": "The marketing agency managing your page, with permissions you choose"
+    "agency": "The marketing agency managing your page, with permissions you choose",
+    "private": "Password and private links for brands"
   },
   "SaveBar": {
     "save": "Save changes",
@@ -2844,5 +2889,49 @@
     "emptyTitle": "No agency",
     "emptyBody": "If you work with a marketing agency, ask them to invite you from their agency dashboard using your username; the invite shows up here.",
     "error": "Something went wrong. Refresh and try again."
+  },
+  "PrivatePage": {
+    "proOnly": "The private view (password and private links) is a Pro feature.",
+    "whatTitle": "What's in the private view?",
+    "whatWhole": "Your whole page is private: visitors see your photo, name and specialty only.",
+    "whatSections": "Private sections: {list}. Visitors see the rest of your page as usual.",
+    "whatNone": "You haven't made any section private. Choose in Appearance → Page sections.",
+    "chooseSections": "Choose sections →",
+    "passwordTitle": "Password",
+    "passwordOn": "On",
+    "passwordOff": "Off",
+    "passwordHint": "Anyone with the password can open the private view on your page. Change it and everyone who used the old one is locked out.",
+    "password": "Password",
+    "newPassword": "New password",
+    "passwordRule": "At least {min} letters or numbers.",
+    "setPassword": "Save password",
+    "change": "Change password",
+    "remove": "Remove password",
+    "removeConfirm": "Remove the password? Everyone who opened it with the password is locked out; private links keep working.",
+    "passwordSaved": "Password saved.",
+    "passwordRemoved": "Password removed.",
+    "linksTitle": "Private links",
+    "linksHint": "Make a link for each brand. It opens your full page straight away, no password; revoke it anytime and see how often it's opened.",
+    "linkName": "Who is it for?",
+    "linkNamePh": "e.g. Almarai",
+    "linkDays": "Works for",
+    "noEnd": "No end date",
+    "days": "{n} days",
+    "makeLink": "Make link",
+    "made": "Ready! Send this link to {name}:",
+    "copy": "Copy",
+    "copied": "Copied",
+    "noLinks": "You haven't made any private links yet.",
+    "views": "{n, plural, =0 {Not opened yet} one {Opened once} other {Opened # times}}",
+    "lastOpened": "last opened {date}",
+    "endsOn": "ends {date}",
+    "expired": "Expired",
+    "revoke": "Revoke",
+    "revokeConfirm": "Revoke the link for {name}? Everyone who opened it is locked out.",
+    "errors": {
+      "invalid": "Check the details.",
+      "pro_only": "This is a Pro feature.",
+      "limit": "You've reached the limit (50 links). Revoke an old one first."
+    }
   }
 }

@@ -5,6 +5,7 @@ import * as appearance from "@/app/[locale]/(site)/dashboard/appearance/actions"
 import * as contact from "@/app/[locale]/(site)/dashboard/contact/actions";
 import * as coupons from "@/app/[locale]/(site)/dashboard/coupons/actions";
 import * as edit from "@/app/[locale]/(site)/dashboard/edit/actions";
+import * as privateView from "@/app/[locale]/(site)/dashboard/private/actions";
 import * as links from "@/app/[locale]/(site)/dashboard/links/actions";
 import * as rates from "@/app/[locale]/(site)/dashboard/rates/actions";
 import * as referrals from "@/app/[locale]/(site)/dashboard/referrals/actions";
@@ -57,6 +58,10 @@ const ACTIONS: Record<string, (...args: never[]) => Promise<unknown>> = {
   saveCoupons: coupons.saveCoupons,
   saveContact: contact.saveContact,
   saveAppearance: appearance.saveAppearance,
+  // Private view (password + private links)
+  savePagePassword: privateView.savePagePassword,
+  addPrivateLink: privateView.addPrivateLink,
+  removePrivateLink: privateView.removePrivateLink,
   // Verification (screenshot read by the AI first, like the website)
   checkScreenshot: verification.checkScreenshot,
   applyReadFollowers: verification.applyReadFollowers,

@@ -19,7 +19,18 @@ export async function saveAppearance(input: AppearanceInput): Promise<Appearance
   if (!hasPro(sub)) {
     if (!FREE_LIMITS.templates.includes(value.template)) return { error: "pro_only" };
     if (value.hideBranding && !FREE_LIMITS.hideBranding) return { error: "pro_only" };
+    // The private view is Pro: on Free a creator can keep or undo what they had, never make more private.
+    const current = await db.page.findUnique({ where: { id: page.id }, select: { privateSections: true, lockWhole: true } });
+    if (value.privateSections?.some((s) => !current?.privateSections.includes(s))) return { error: "pro_only" };
+    if (value.lockWhole && !current?.lockWhole) return { error: "pro_only" };
   }
+  // Older app versions send hidden sections for the first four only: keep the newer ones as they are.
+  const known = ["numbers", "brands", "works", "rates"];
+  const hiddenSections = value.hiddenSections && value.privateSections === undefined
+    ? [...new Set([...value.hiddenSections, ...page.hiddenSections.filter((s) => !known.includes(s))])]
+    : value.hiddenSections;
+  // A section is in one place only: hidden wins over private.
+  const privateSections = value.privateSections?.filter((s) => !(hiddenSections ?? page.hiddenSections).includes(s));
 
   await db.page.update({
     where: { id: page.id },
@@ -30,7 +41,9 @@ export async function saveAppearance(input: AppearanceInput): Promise<Appearance
       accent: value.accent,
       hideBranding: value.hideBranding,
       iconStyle: value.iconStyle,
-      ...(value.hiddenSections && { hiddenSections: value.hiddenSections }),
+      ...(hiddenSections && { hiddenSections }),
+      ...(privateSections && { privateSections }),
+      ...(value.lockWhole !== undefined && { lockWhole: value.lockWhole }),
     },
   });
   pageChanged(page.username);

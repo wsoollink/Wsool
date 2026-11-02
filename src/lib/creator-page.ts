@@ -3,7 +3,9 @@ import { cache } from "react";
 import { defaultLocale, isLocale, type Locale } from "@/i18n/config";
 import { normalizeUsername, usernameFormatError } from "@/config/usernames";
 import { resolvePageLang } from "@/lib/page-language";
-import { getPublicPage, getUsernameRedirect } from "@/lib/public-page";
+import { getCurrentUser } from "@/lib/auth";
+import { isUnlocked } from "@/lib/private-view";
+import { getPublicPage, getUsernameRedirect, type PublicPage } from "@/lib/public-page";
 
 /**
  * Shared by the creator layout, page and metadata: the page data and the
@@ -21,3 +23,15 @@ export const loadCreatorPage = cache(async (localeParam: string, usernameParam: 
   const lang = data?.status === "published" ? resolvePageLang(visitor, data.primaryLang, data.enEnabled) : visitor;
   return { raw, username, data, lang, movedTo };
 });
+
+/**
+ * The page with its private view when this visitor unlocked it (password or private link cookie); otherwise the
+ * public variant as given. Reads cookies, so callers render it inside <Suspense> (page) or in a route handler (PDF).
+ */
+export async function withPrivateView<P extends PublicPage | null>(data: P): Promise<P | PublicPage> {
+  if (data?.status !== "published" || !data.privacy.canUnlock) return data;
+  // The creator always sees their own page and PDF in full.
+  const open = (await isUnlocked(data.privacy.pageId, data.privacy.version)) || (await getCurrentUser())?.id === data.privacy.ownerId;
+  if (!open) return data;
+  return (await getPublicPage(data.username, true)) ?? data;
+}

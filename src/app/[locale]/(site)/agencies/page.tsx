@@ -121,15 +121,23 @@ export default async function AgenciesPage({ params }: PageProps<"/[locale]/agen
           </div>
         </section>
 
-        {/* Platforms strip */}
+        {/* Platforms strip: a slow endless scroll (two copies of the list), like the home page */}
         <section className="border-y border-line bg-card/60">
-          <div className="mx-auto flex max-w-[1180px] flex-wrap items-center justify-center gap-x-8 gap-y-4 px-4 py-6">
-            <p className="text-sm font-semibold text-muted">{t("stripTitle")}</p>
-            {STRIP.map((p) => (
-              <span key={p} className="flex items-center gap-2 text-[15px] font-bold text-muted" dir="ltr">
-                <PlatformIcon platform={p} size={18} /> {STRIP_NAMES[p]}
-              </span>
-            ))}
+          <div className="mx-auto flex max-w-[1180px] items-center gap-6 px-4 py-6">
+            <p className="hidden shrink-0 text-sm font-semibold text-muted sm:block">{t("stripTitle")}</p>
+            <div className="relative min-w-0 flex-1 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
+              <div className="ag-marq flex w-max">
+                {[0, 1].map((copy) => (
+                  <div key={copy} aria-hidden={copy === 1 || undefined} className="flex shrink-0 items-center gap-10 pe-10">
+                    {STRIP.map((p) => (
+                      <span key={p} className="flex items-center gap-2 text-[15px] font-bold whitespace-nowrap text-muted" dir="ltr">
+                        <PlatformIcon platform={p} size={18} /> {STRIP_NAMES[p]}
+                      </span>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </section>
 
@@ -325,9 +333,10 @@ export default async function AgenciesPage({ params }: PageProps<"/[locale]/agen
       {/* Footer */}
       <footer className="border-t border-line bg-bg-marketing">
         <div className="mx-auto flex max-w-[1180px] flex-col gap-6 px-4 py-10 md:flex-row md:items-start md:justify-between">
-          <div className="max-w-xs">
+          <div>
             <BrandLogo lang={lang} alt={en ? "Wsool" : "وصول"} />
-            <p className="mt-3 text-sm leading-7 text-muted">{t("footerTag")}</p>
+            {/* One line (customers, Nov 2026); shrinks with the width on small phones. */}
+            <p className="mt-3 text-[clamp(11px,3.2vw,14px)] leading-7 whitespace-nowrap text-muted">{t("footerTag")}</p>
           </div>
           <nav aria-label={t("nav.menu")} className="grid grid-cols-2 gap-x-10 gap-y-3 text-sm text-muted sm:grid-cols-3">
             <Link href="/" className="hover:text-blue">{t("footerLinks.creators")}</Link>

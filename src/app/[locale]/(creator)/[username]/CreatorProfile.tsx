@@ -351,8 +351,9 @@ function Rates({ page, lang, t, numbersFont }: Props & { t: T; numbersFont: stri
             <div className="flex flex-wrap items-center gap-2 text-[13px] text-[var(--page-muted)]">
               <span>{t("bundleIncludes")}</span>
               {platforms.map((a) => (
-                <span key={a.id} className="inline-flex h-7 items-center gap-1.5 rounded-full bg-[var(--page-soft)] px-2.5 text-[12.5px] font-medium text-[var(--page-text)]">
-                  <PlatformIcon platform={a.platform} size={14} /> {PLATFORM_NAMES[a.platform]}
+                // Logos only (owner, Nov 2026); the platform name stays as the accessible label.
+                <span key={a.id} role="img" aria-label={PLATFORM_NAMES[a.platform]} title={PLATFORM_NAMES[a.platform]} className="inline-flex size-8 items-center justify-center rounded-full bg-[var(--page-soft)] text-[var(--page-text)]">
+                  <PlatformIcon platform={a.platform} size={16} />
                 </span>
               ))}
             </div>

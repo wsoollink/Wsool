@@ -625,13 +625,16 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   height, small island); the template deck's arrow row sits above the tilted cards (they covered the arrows and swallowed taps).
   Friends feedback 2 (Nov 2026): the monthly/yearly switch is one navy pill that slides (`div[role="group"]:has(...)`, `marketing.css`);
   pricing FAQ ends with «ما لقيت جوابك؟» + a «تواصل معنا» button on the same line; demo brand logos are icons only (`public/demo/logo-*.png`).
+  Customer feedback (Nov 2026, `marketing.css`): the Pro card follows the monthly/yearly switch (a blue wash fades in and the glow
+  drifts on "yearly", `section:has(... aria-pressed="true")`); on phones the FAQ label gets a line on both sides and «ما لقيت جوابك؟ +
+  تواصل معنا» stays centred when it wraps. The home platform strip already scrolls (`.ws-marq`; stops only with Reduce Motion).
   Footer bottom row (Nov 2026, for Moyasar / Ministry of Commerce): © company name · CR · VAT number, and "سياسة الاسترجاع" in the legal column.
   Text changes are made in the `design/marketing/*.dc.html` files, then the script is re-run.
   Adding an element to a design shifts the generated `mk-home-N` numbers after it: update the numbers used in
   `marketing.css` (check each against `generated/home.css` before and after).
 - **For agencies page** `/agencies` (owner, Nov 2026, draft): landing page for marketing agencies (hand-built, texts `Agencies`;
   hero with a dashboard mock, why, how it works, features + coming soon, "the page belongs to the creator", draft plan prices,
-  FAQ). CTAs go to `/contact?topic=partnership` (the contact form preselects `?topic=`). Linked as «للوكالات» / "For agencies" in
+  FAQ; the platform strip scrolls endlessly, `.ag-marq` in `globals.css`). CTAs go to `/contact?topic=partnership` (the contact form preselects `?topic=`). Linked as «للوكالات» / "For agencies" in
   the marketing header nav (desktop) and the footer Product column (`LINKS`). Agency accounts: see "Marketing agencies" below.
 - Home "claim your link": live check (`checkLink`), then cookie `wsool_claim` → `/login`;
   onboarding pre-fills that name.

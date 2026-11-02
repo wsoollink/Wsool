@@ -164,3 +164,9 @@
 @media (prefers-reduced-motion: reduce) {
   .ag-float, .ag-float-2 { animation: none; }
 }
+/* Agencies page platform strip: endless scroll; the track holds two copies, so moving by half loops seamlessly. */
+@keyframes ag-marq { to { transform: translateX(-50%); } }
+@keyframes ag-marq-rtl { to { transform: translateX(50%); } }
+.ag-marq { animation: ag-marq 30s linear infinite; }
+[dir="rtl"] .ag-marq { animation-name: ag-marq-rtl; }
+@media (prefers-reduced-motion: reduce) { .ag-marq { animation: none; } }

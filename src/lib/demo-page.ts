@@ -72,7 +72,7 @@ const BRANDS = [
   ["alwaha-dates", "تمور الواحة", "Alwaha Dates"],
 ] as const;
 
-// Past work: one per brand above (cover in public/demo/work-N.jpg, the same sample video).
+// Past work: one per brand above (cover public/demo/work-N.jpg + clip work-N.mp4, drawn by scripts/demo-works.py).
 const WORKS: { platform: Platform; brand: number; type: [string, string] }[] = [
   { platform: "tiktok", brand: 0, type: ["تجربة منتج", "Product review"] },
   { platform: "snapchat", brand: 1, type: ["تغطية رحلة", "Trip coverage"] },
@@ -161,7 +161,7 @@ export async function buildDemoPage(db: PrismaClient, opts: DemoOptions = {}) {
         portfolioItems: {
           create: WORKS.map((w, sort) => ({
             platform: w.platform,
-            videoUrl: asset("/demo/sample-work.mp4"),
+            videoUrl: asset(`/demo/work-${sort + 1}.mp4`),
             thumbUrl: asset(`/demo/work-${sort + 1}.jpg`),
             sort,
             translations: { create: [{ lang: "ar" as const, brand: BRANDS[w.brand][1], type: w.type[0] }, { lang: "en" as const, brand: BRANDS[w.brand][2], type: w.type[1] }] },

@@ -167,3 +167,44 @@ div[role="group"]:has(> button[aria-pressed] + button[aria-pressed])::before {
 div[role="group"]:has(> button[aria-pressed="false"] + button[aria-pressed="true"])::before { transform: translateX(calc(100% + 4px)); }
 [dir="rtl"] div[role="group"]:has(> button[aria-pressed="false"] + button[aria-pressed="true"])::before { transform: translateX(calc(-100% - 4px)); }
 @media (prefers-reduced-motion: reduce) { div[role="group"]:has(> button[aria-pressed] + button[aria-pressed])::before { transition: none; } }
+
+/* Pro plan card follows the monthly/yearly switch (owner, Nov 2026): on "yearly" a brighter blue wash fades in and the
+   glow drifts across the card, both eased so the change feels smooth (home + pricing). */
+div.ws-reveal[style*="#0B2F6E"]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(200deg, rgba(10, 108, 255, 0.55), rgba(34, 184, 240, 0.12) 45%, rgba(2, 25, 65, 0) 75%);
+  opacity: 0;
+  transition: opacity 0.7s ease;
+  pointer-events: none;
+}
+div.ws-reveal[style*="#0B2F6E"] > div[aria-hidden="true"]:first-child {
+  transition: transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+section:has(div[role="group"] > button[aria-pressed] + button[aria-pressed="true"]) div.ws-reveal[style*="#0B2F6E"]::before {
+  opacity: 1;
+}
+section:has(div[role="group"] > button[aria-pressed] + button[aria-pressed="true"]) div.ws-reveal[style*="#0B2F6E"] > div[aria-hidden="true"]:first-child {
+  transform: translate(240px, 60px) scale(1.25);
+}
+@media (prefers-reduced-motion: reduce) {
+  div.ws-reveal[style*="#0B2F6E"]::before,
+  div.ws-reveal[style*="#0B2F6E"] > div[aria-hidden="true"]:first-child { transition: none; }
+}
+
+/* FAQ heading on phones (customers, Nov 2026): the "— FAQ" label gets a matching line on its other side so the word sits in
+   the true centre, and "Didn't find your answer? [Contact us]" stays centred even when the button wraps to its own line. */
+@media (max-width: 767px) {
+  #faq span:has(> span:first-child:empty)::after {
+    content: "";
+    width: 18px;
+    height: 2px;
+    border-radius: 2px;
+    background: #0a6cff;
+  }
+  #faq p:has(> a[href="/contact"]) {
+    justify-content: center;
+    text-align: center;
+  }
+}

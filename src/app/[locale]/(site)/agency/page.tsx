@@ -1,0 +1,218 @@
+import { Suspense } from "react";
+import type { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
+import { notFound, redirect } from "next/navigation";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { BadgeCheck, ExternalLink, FileText, Link2, LogOut } from "lucide-react";
+import { BrandLogo } from "@/components/BrandLogo";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { LangPill } from "@/components/dashboard/LangPill";
+import { Panel } from "@/components/ui/Card";
+import { Pill } from "@/components/ui/Pill";
+import { isLocale, toIntlLocale, type Locale } from "@/i18n/config";
+import { getMembership, roleAtLeast } from "@/lib/agency";
+import { getCurrentUser } from "@/lib/auth";
+import { db } from "@/lib/db";
+import { formatCompact, formatNumber } from "@/lib/format";
+import { initials } from "@/lib/initials";
+import { signOut } from "../login/actions";
+import { AddMember, ConfirmAction, InviteCreator, ManageButton } from "./Controls";
+
+export const metadata: Metadata = { robots: { index: false } };
+
+type SP = Promise<Record<string, string | string[] | undefined>>;
+
+/** The agency's dashboard: linked creators with their numbers, invites, and the team (owner, Nov 2026, phase 1). */
+async function AgencyDashboard({ lang, searchParams }: { lang: Locale; searchParams: SP }) {
+  const me = await getCurrentUser();
+  if (!me) redirect("/login");
+  const m = await getMembership(me);
+  if (!m) notFound();
+  const t = await getTranslations("AgencyApp");
+  const tab = (await searchParams).tab === "team" ? "team" : "creators";
+  const canInvite = roleAtLeast(m.member.role, "manager");
+  const canEdit = roleAtLeast(m.member.role, "editor");
+  const date = new Intl.DateTimeFormat(toIntlLocale(lang), { dateStyle: "medium" });
+
+  const [links, members, ownPage] = await Promise.all([
+    db.agencyLink.findMany({
+      where: { agencyId: m.agency.id, status: { in: ["active", "pending"] } },
+      orderBy: { invitedAt: "desc" },
+      include: {
+        page: {
+          select: {
+            username: true, photoUrl: true, primaryLang: true,
+            translations: { select: { lang: true, fullName: true } },
+            socialAccounts: { select: { followers: true, verificationStatus: true, connection: { select: { status: true } } } },
+          },
+        },
+      },
+    }),
+    tab === "team" ? db.agencyMember.findMany({ where: { agencyId: m.agency.id }, orderBy: { invitedAt: "asc" } }) : Promise.resolve([]),
+    db.page.findUnique({ where: { userId: me.id }, select: { username: true } }),
+  ]);
+  const active = links.filter((l) => l.status === "active");
+  const pending = links.filter((l) => l.status === "pending");
+  const nameOf = (p: (typeof links)[number]["page"]) => p.translations.find((x) => x.lang === p.primaryLang)?.fullName || p.translations[0]?.fullName || p.username;
+  const followersOf = (p: (typeof links)[number]["page"]) => p.socialAccounts.reduce((s, a) => s + Number(a.followers ?? 0), 0);
+  const total = active.reduce((s, l) => s + followersOf(l.page), 0);
+  const accounts = active.flatMap((l) => l.page.socialAccounts);
+  const verified = accounts.filter((a) => a.verificationStatus === "verified").length;
+
+  return (
+    <div className="flex flex-col gap-5">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <p className="text-sm font-semibold text-blue">{m.agency.name}</p>
+          <h1 className="text-2xl font-black md:text-3xl">{t("title")}</h1>
+          <p className="text-sm text-muted">{t("sub")}</p>
+        </div>
+        <nav aria-label={t("title")} className="flex gap-1 rounded-full border border-line bg-card p-1">
+          {(["creators", "team"] as const).map((k) => (
+            <Link key={k} href={k === "creators" ? "/agency" : "/agency?tab=team"} aria-current={tab === k ? "page" : undefined}
+              className={`inline-flex min-h-10 items-center rounded-full px-4 text-sm font-bold ${tab === k ? "bg-navy text-on-navy" : "text-muted hover:text-navy"}`}>
+              {t(`tabs.${k}`)}
+            </Link>
+          ))}
+        </nav>
+      </div>
+
+      {tab === "creators" ? (
+        <>
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+            {[
+              { k: "creators", v: formatNumber(active.length, lang), hot: true },
+              { k: "followers", v: formatCompact(total, lang) },
+              { k: "verified", v: `${formatNumber(verified, lang)} / ${formatNumber(accounts.length, lang)}` },
+              { k: "pending", v: formatNumber(pending.length, lang) },
+            ].map((x) => (
+              <div key={x.k} className={`rounded-card p-4 ${x.hot ? "bg-gradient-to-br from-[#021941] to-[#0A3A8C] text-white" : "border border-line bg-card shadow-card"}`}>
+                <p className={`text-xs ${x.hot ? "opacity-75" : "text-muted"}`}>{t(`kpi.${x.k}`)}</p>
+                <p className="font-numbers mt-1 text-2xl font-black" dir="ltr">{x.v}</p>
+              </div>
+            ))}
+          </div>
+
+          <Panel title={t("creatorsTitle")} flush>
+            {active.length === 0 ? (
+              <p className="p-5 text-sm text-muted">{t("empty")}</p>
+            ) : (
+              <ul className="divide-y divide-line-soft">
+                {active.map((l) => {
+                  const name = nameOf(l.page);
+                  const linked = l.page.socialAccounts.filter((a) => a.connection?.status === "active").length;
+                  const ver = l.page.socialAccounts.filter((a) => a.verificationStatus === "verified").length;
+                  return (
+                    <li key={l.id} className="flex flex-wrap items-center gap-3 px-5 py-3.5">
+                      {l.page.photoUrl ? (
+                        <Image src={l.page.photoUrl} alt="" width={44} height={44} unoptimized className="size-11 shrink-0 rounded-full object-cover" />
+                      ) : (
+                        <span aria-hidden="true" className="brand-gradient inline-flex size-11 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white uppercase">{initials(name)}</span>
+                      )}
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate font-bold">{name}</p>
+                        <p className="text-xs text-muted" dir="ltr"><span className="rtl:float-right">wsool.link/{l.page.username}</span></p>
+                      </div>
+                      <div className="text-end">
+                        <p className="font-numbers text-lg font-black" dir="ltr">{formatCompact(followersOf(l.page), lang)}</p>
+                        <p className="flex items-center gap-2 text-[11.5px] text-muted">
+                          <span className="inline-flex items-center gap-1"><Link2 aria-hidden="true" size={12} />{t("linked", { n: linked })}</span>
+                          <span className="inline-flex items-center gap-1"><BadgeCheck aria-hidden="true" size={12} />{t("verifiedN", { n: ver })}</span>
+                        </p>
+                      </div>
+                      <div className="flex w-full flex-wrap items-center gap-1.5 sm:w-auto">
+                        {(["content", "rates", "contact"] as const).filter((k) => ({ content: l.canContent, rates: l.canRates, contact: l.canContact })[k]).map((k) => (
+                          <Pill key={k} tone="blue" dot={false}>{t(`perm.${k}`)}</Pill>
+                        ))}
+                      </div>
+                      <div className="flex w-full items-center gap-1 sm:w-auto">
+                        {canEdit && <ManageButton linkId={l.id} />}
+                        <a href={`/${l.page.username}`} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-10 items-center gap-1 rounded-full px-3 text-[13px] font-bold hover:bg-hover"><ExternalLink aria-hidden="true" size={14} />{t("page")}</a>
+                        <a href={`/${l.page.username}/pdf?download`} className="inline-flex min-h-10 items-center gap-1 rounded-full px-3 text-[13px] font-bold hover:bg-hover"><FileText aria-hidden="true" size={14} />{t("pdf")}</a>
+                        {canInvite && <ConfirmAction kind="removeCreator" id={l.id} label={t("remove")} confirm={t("confirmRemove", { name })} />}
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </Panel>
+
+          {pending.length > 0 && (
+            <Panel title={t("pendingTitle")} flush>
+              <ul className="divide-y divide-line-soft">
+                {pending.map((l) => (
+                  <li key={l.id} className="flex flex-wrap items-center gap-3 px-5 py-3">
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate font-bold">{nameOf(l.page)}</p>
+                      <p className="text-xs text-muted">{t("invitedOn", { date: date.format(l.invitedAt) })}</p>
+                    </div>
+                    <Pill tone="warn">{t("pendingTitle")}</Pill>
+                    {canInvite && <ConfirmAction kind="cancelInvite" id={l.id} label={t("cancel")} />}
+                  </li>
+                ))}
+              </ul>
+            </Panel>
+          )}
+
+          {canInvite ? <Panel title={t("inviteTitle")}><InviteCreator /></Panel> : <p className="text-sm text-muted">{t("viewerNote")}</p>}
+        </>
+      ) : (
+        <Panel title={t("teamTitle")} flush>
+          <p className="px-5 pt-4 text-sm text-muted">{t("teamHint")}</p>
+          <ul className="divide-y divide-line-soft">
+            {members.map((mem) => (
+              <li key={mem.id} className="flex flex-wrap items-center gap-3 px-5 py-3">
+                <span aria-hidden="true" className="brand-gradient inline-flex size-9 shrink-0 items-center justify-center rounded-full text-[13px] font-bold text-white uppercase">{mem.email[0]}</span>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-bold" dir="ltr"><span className="rtl:float-right">{mem.email}</span></p>
+                  {!mem.userId && <p className="text-xs text-muted">{t("memberPending")}</p>}
+                </div>
+                <Pill tone={mem.role === "owner" ? "blue" : "grey"} dot={false}>{t(`roles.${mem.role}`)}</Pill>
+                {canInvite && mem.role !== "owner" && mem.id !== m.member.id && (mem.role !== "manager" || m.member.role === "owner") && (
+                  <ConfirmAction kind="removeMember" id={mem.id} label={t("removeMember")} confirm={t("confirmRemoveMember", { email: mem.email })} />
+                )}
+              </li>
+            ))}
+          </ul>
+          {canInvite && <div className="border-t border-line-soft p-5"><AddMember /></div>}
+        </Panel>
+      )}
+
+      {ownPage && (
+        <p className="text-sm text-muted"><Link href="/dashboard" className="font-semibold text-blue">{t("myPage")}</Link> · <span dir="ltr">wsool.link/{ownPage.username}</span></p>
+      )}
+    </div>
+  );
+}
+
+export default async function AgencyPage({ params, searchParams }: PageProps<"/[locale]/agency">) {
+  const { locale } = await params;
+  if (!isLocale(locale)) notFound();
+  setRequestLocale(toIntlLocale(locale));
+  const t = await getTranslations("AgencyApp");
+  return (
+    <div className="app-backdrop flex min-h-dvh flex-1 flex-col">
+      <header className="sticky top-0 z-20 border-b border-line bg-bg/85 backdrop-blur">
+        <div className="mx-auto flex max-w-[1100px] items-center justify-between gap-3 px-4 py-3">
+          <Link href="/agency" className="flex min-h-11 items-center" aria-label={t("title")}>
+            <BrandLogo lang={locale === "en" ? "en" : "ar"} alt={locale === "en" ? "Wsool" : "وصول"} className="h-7 w-auto" priority />
+          </Link>
+          <div className="flex items-center gap-2">
+            <ThemeToggle bare />
+            <LangPill current={locale} />
+            <form action={signOut}>
+              <button type="submit" aria-label={t("signOut")} className="inline-flex size-11 items-center justify-center rounded-full hover:bg-hover"><LogOut aria-hidden="true" size={18} /></button>
+            </form>
+          </div>
+        </div>
+      </header>
+      <main className="mx-auto w-full max-w-[1100px] flex-1 px-4 py-6 md:py-8">
+        <Suspense fallback={<div className="h-64 animate-pulse rounded-card bg-card" />}>
+          <AgencyDashboard lang={locale} searchParams={searchParams} />
+        </Suspense>
+      </main>
+    </div>
+  );
+}

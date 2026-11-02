@@ -11,7 +11,7 @@ import { PageHeader } from "@/components/dashboard/PageHeader";
 import { SectionSkeleton } from "@/components/dashboard/SectionSkeleton";
 
 async function Editor() {
-  const { user, page } = await requireCreator();
+  const { user, page } = await requireCreator("rates");
   const t = await getTranslations("RatesPage");
   // Scoped to the creator's own page from the verified session.
   const [settings, accounts, bundles, sub] = await Promise.all([

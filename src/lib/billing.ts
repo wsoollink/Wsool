@@ -1,6 +1,7 @@
 import "server-only";
 import { addCycle, PRICES, RENEWAL_RETRY_DAYS, vatPart } from "@/config/plans";
 import type { BillingCycle, Currency } from "@/generated/prisma/enums";
+import { agencyCovered } from "@/lib/agency";
 import { db } from "@/lib/db";
 import { checkDiscountCode, discountedPrice, type CodeError } from "@/lib/discounts";
 import { paymentProvider, type Payment } from "@/lib/payments";
@@ -37,6 +38,8 @@ export async function startCheckout(user: { id: string; email: string }, cycle: 
   const sub = await db.subscription.findUnique({ where: { userId: user.id } });
   if (!sub) return { error: "failed" };
   if (sub.status === "active" && !sub.cancelAtPeriodEnd) return { error: "already_active" };
+  // Pro paid by an agency: nothing to buy until the link ends (the grace period ends within 14 days).
+  if (agencyCovered(sub)) return { error: "already_active" };
 
   // A discount code (first payment only) is checked again here, whatever the browser showed.
   const discount = discountCode ? await checkDiscountCode(discountCode, user) : null;
@@ -90,6 +93,7 @@ export async function redeemFreeCode(user: { id: string; email: string }, input:
   if (!sub) return { error: "failed" };
   // Already paying with auto-renew: a free code would only overlap a paid plan.
   if (sub.status === "active" && !sub.cancelAtPeriodEnd) return { error: "already_active" };
+  if (agencyCovered(sub)) return { error: "already_active" };
   const now = new Date();
   const end = addCycle(periodStart(sub, now), code.freeCycle);
   const ok = await db.$transaction(async (tx) => {

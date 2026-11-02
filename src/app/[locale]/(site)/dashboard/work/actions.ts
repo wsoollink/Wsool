@@ -15,7 +15,7 @@ export type WorkResult = { ok?: boolean; error?: "failed" | "missing_file" | "ba
 
 /** Replaces the creator's brand logos (order = list order). Every brand needs a logo. */
 export async function saveBrands(items: BrandInput[]): Promise<WorkResult> {
-  const { user, page } = await requireCreator();
+  const { user, page } = await requireCreator("content");
   const parsed = brandsSchema.safeParse(items);
   if (!parsed.success) return { error: "failed" };
 
@@ -40,7 +40,7 @@ export async function saveBrands(items: BrandInput[]): Promise<WorkResult> {
  * optional. Texts are saved for the page's languages only.
  */
 export async function saveWorks(items: WorkInput[]): Promise<WorkResult> {
-  const { user, page } = await requireCreator();
+  const { user, page } = await requireCreator("content");
   const parsed = worksSchema.safeParse(items);
   if (!parsed.success) return { error: "failed" };
 
@@ -95,7 +95,7 @@ export type LinkCheck = { link?: string; platform?: WorkLinkPlatform; cover?: { 
  * folder like an upload. Instagram: no cover (the creator can add one).
  */
 export async function checkWorkLink(input: string): Promise<LinkCheck> {
-  const { user } = await requireCreator();
+  const { user } = await requireCreator("content");
   const link = await resolveWorkLink(String(input ?? "").slice(0, 400));
   if (!link) return { error: "bad_link" };
   const image = await workLinkCover(link);

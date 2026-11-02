@@ -14,6 +14,7 @@ import { formatNumber, formatPrice } from "@/lib/format";
 import { CreditCard, FileText } from "lucide-react";
 import { paymentProvider } from "@/lib/payments";
 import { DangerZone } from "./DangerZone";
+import { agencyCovered } from "@/lib/agency";
 import { ManageCard } from "./ManageCard";
 import { PlanPicker } from "./PlanPicker";
 import { PageHeader } from "@/components/dashboard/PageHeader";
@@ -38,7 +39,9 @@ async function Subscription({ lang, searchParams }: { lang: Locale; searchParams
   const purgeDate = page.deletedAt ? date.format(new Date(page.deletedAt.getTime() + DELETE_AFTER_DAYS * 86_400_000)) : null;
 
   let status: string;
-  if (sub?.status === "past_due") status = t("status.pastDue", { date: sub.nextRetryAt ? date.format(sub.nextRetryAt) : "" });
+  const covered = agencyCovered(sub);
+  if (covered) status = t("status.agency");
+  else if (sub?.status === "past_due") status = t("status.pastDue", { date: sub.nextRetryAt ? date.format(sub.nextRetryAt) : "" });
   else if (active && sub?.currentPeriodEnd) status = !sub.cancelAtPeriodEnd ? t("status.renewsOn", { date: date.format(sub.currentPeriodEnd) })
       // No card on file = a free plan from a 100% code.
       : !sub.paymentToken ? t("status.freeUntil", { date: date.format(sub.currentPeriodEnd) })
@@ -83,7 +86,7 @@ async function Subscription({ lang, searchParams }: { lang: Locale; searchParams
         )}
       </Card>
 
-      {!(active && sub?.cycle && !sub.cancelAtPeriodEnd) && (!active || !sub?.paymentToken) && (
+      {!covered && !(active && sub?.cycle && !sub.cancelAtPeriodEnd) && (!active || !sub?.paymentToken) && (
         <PlanPicker
           defaultCurrency={sub?.currency ?? (lang === "en" ? "USD" : "SAR")} canPay={canPay}
           renew={active && !!sub?.cycle} showTrial={!sub || sub.status === "trialing"}

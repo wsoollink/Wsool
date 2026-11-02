@@ -104,6 +104,7 @@ model User {
   referralClicks       ReferralClick[]
   referralPayouts      ReferralPayout[]
   pushTokens           PushToken[]
+  agencyMemberships    AgencyMember[]
 
   @@index([referredById])
   @@map("users")
@@ -165,6 +166,7 @@ model Page {
   oldUsernames   UsernameRedirect[]
   pageViews      PageView[]
   contactClicks  ContactClick[]
+  agencyLinks    AgencyLink[]
 
   @@map("pages")
 }
@@ -1112,4 +1114,94 @@ model PushToken {
 
   @@index([userId])
   @@map("push_tokens")
+}
+
+/// Marketing agency (owner, Nov 2026, phase 1): created by Wsool staff for the free beta. Server only.
+model Agency {
+  id          String         @id @default(uuid()) @db.Uuid
+  name        String         @db.VarChar(80)
+  status      AgencyStatus   @default(active)
+  createdBy   String         @map("created_by") @db.Uuid
+  createdAt   DateTime       @default(now()) @map("created_at") @db.Timestamptz
+  members     AgencyMember[]
+  links       AgencyLink[]
+  activity    AgencyActivity[]
+
+  @@map("agencies")
+}
+
+enum AgencyStatus {
+  active
+  inactive
+}
+
+/// A person on the agency's team. Invited by email; linked to the account on first visit.
+model AgencyMember {
+  id        String     @id @default(uuid()) @db.Uuid
+  agencyId  String     @map("agency_id") @db.Uuid
+  agency    Agency     @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  /// Lowercase.
+  email     String     @db.VarChar(254)
+  userId    String?    @map("user_id") @db.Uuid
+  user      User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      AgencyRole @default(editor)
+  invitedAt DateTime   @default(now()) @map("invited_at") @db.Timestamptz
+  joinedAt  DateTime?  @map("joined_at") @db.Timestamptz
+
+  @@unique([agencyId, email])
+  @@index([email])
+  @@index([userId])
+  @@map("agency_members")
+}
+
+enum AgencyRole {
+  owner
+  manager
+  editor
+  viewer
+}
+
+/// An agency managing a creator's page, with the permissions the creator chose. The page always stays the creator's.
+model AgencyLink {
+  id         String     @id @default(uuid()) @db.Uuid
+  agencyId   String     @map("agency_id") @db.Uuid
+  agency     Agency     @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  pageId     String     @map("page_id") @db.Uuid
+  page       Page       @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  status     LinkStatus @default(pending)
+  canContent Boolean    @default(true) @map("can_content")
+  canRates   Boolean    @default(true) @map("can_rates")
+  canContact Boolean    @default(false) @map("can_contact")
+  invitedBy  String     @map("invited_by") @db.Uuid
+  invitedAt  DateTime   @default(now()) @map("invited_at") @db.Timestamptz
+  decidedAt  DateTime?  @map("decided_at") @db.Timestamptz
+  endedAt    DateTime?  @map("ended_at") @db.Timestamptz
+  /// "creator" (unlinked) or "agency" (removed the creator, or the agency was stopped).
+  endedBy    String?    @map("ended_by") @db.VarChar(10)
+
+  @@index([pageId, status])
+  @@index([agencyId, status])
+  @@map("agency_links")
+}
+
+enum LinkStatus {
+  pending
+  active
+  declined
+  cancelled
+  ended
+}
+
+/// What agency members changed on a creator's page (the creator sees it in their Agency section).
+model AgencyActivity {
+  id        String   @id @default(uuid()) @db.Uuid
+  agencyId  String   @map("agency_id") @db.Uuid
+  agency    Agency   @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  pageId    String   @map("page_id") @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  section   String   @db.VarChar(30)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([pageId, createdAt])
+  @@map("agency_activity")
 }

@@ -41,6 +41,10 @@ export const NOTIFICATIONS = {
   commission_paid: { href: "/dashboard/referrals", reminder: false, billing: true },
   commission_credit: { href: "/dashboard/subscription", reminder: false, billing: true },
   connection_lost: { href: "/dashboard/accounts", reminder: false },
+  agency_invite: { href: "/dashboard/agency", reminder: false },
+  agency_removed: { href: "/dashboard/agency", reminder: false },
+  agency_accepted: { href: "/agency", reminder: false },
+  agency_ended: { href: "/agency", reminder: false },
 } as const;
 export type NotificationType = keyof typeof NOTIFICATIONS;
 
@@ -134,6 +138,17 @@ export async function sendTeamInvite(email: string, role: string, lang: Locale =
   const t = createTranslator({ locale: toIntlLocale(lang), messages: MESSAGES[lang], namespace: "Notify.team_invite" });
   const roleName = createTranslator({ locale: toIntlLocale(lang), messages: MESSAGES[lang], namespace: "Admin.team.roles" });
   const values = { role: roleName.has(role as never) ? roleName(role as never) : role, email };
+  const content = renderEmail({
+    lang, preheader: t("body", values), title: t("title", values), paragraphs: t("body", values).split("\n"),
+    cta: { label: t("cta"), url: `${siteOrigin()}/login` }, footer: t("footer"),
+  });
+  await sendEmail({ to: email, subject: t("subject", values), ...content });
+}
+
+/** Agency team invitation (the invitee may not have an account yet, so email only). */
+export async function sendAgencyTeamInvite(email: string, agency: string, lang: Locale = "ar") {
+  const t = createTranslator({ locale: toIntlLocale(lang), messages: MESSAGES[lang], namespace: "Notify.agency_team_invite" });
+  const values = { agency, email };
   const content = renderEmail({
     lang, preheader: t("body", values), title: t("title", values), paragraphs: t("body", values).split("\n"),
     cta: { label: t("cta"), url: `${siteOrigin()}/login` }, footer: t("footer"),

@@ -9,7 +9,7 @@ import { PageHeader } from "@/components/dashboard/PageHeader";
 import { SectionSkeleton } from "@/components/dashboard/SectionSkeleton";
 
 async function Editor() {
-  const { user, page } = await requireCreator();
+  const { user, page } = await requireCreator("contact");
   // Taps this month (UTC), counted from the page's own analytics.
   const now = new Date();
   const since = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));

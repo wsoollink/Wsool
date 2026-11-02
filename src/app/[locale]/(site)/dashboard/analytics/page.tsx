@@ -47,7 +47,7 @@ function ShareList({ title, hint, rows, total, label, lang, empty }: { title: st
 }
 
 async function Report({ lang, searchParams }: { lang: Locale; searchParams: SP }) {
-  const { user, page } = await requireCreator();
+  const { user, page } = await requireCreator("view");
   const t = await getTranslations("Analytics");
   const raw = Number((await searchParams).range);
   const range: Range = (RANGES as readonly number[]).includes(raw) ? (raw as Range) : 30;

@@ -15,7 +15,7 @@ type SP = Promise<Record<string, string | string[] | undefined>>;
 /** Action kinds staff filter by (action keys start with these). */
 const GROUPS = {
   verification: ["verification.", "license."],
-  users: ["user.", "page.", "creators.", "demo."],
+  users: ["user.", "page.", "creators.", "demo.", "agency."],
   money: ["invoice.", "vat.", "expense.", "investor_link.", "discount.", "referral."],
   newsletter: ["newsletter."],
   categories: ["category."],

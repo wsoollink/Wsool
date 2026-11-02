@@ -10,7 +10,7 @@ import { LinksEditor } from "./LinksEditor";
 import { SectionSkeleton } from "@/components/dashboard/SectionSkeleton";
 
 async function Editor() {
-  const { page } = await requireCreator();
+  const { page } = await requireCreator("content");
   // Scoped to the creator's own page from the verified session.
   const [links, services, settings, sub] = await Promise.all([
     db.pageLink.findMany({ where: { pageId: page.id }, orderBy: { sort: "asc" } }),

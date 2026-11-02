@@ -14,7 +14,7 @@ export type CouponsResult = { ok?: boolean; error?: "failed" | "invalid_url" | "
  * replaced logos are deleted.
  */
 export async function saveCoupons(coupons: CouponInput[]): Promise<CouponsResult> {
-  const { user, page } = await requireCreator();
+  const { user, page } = await requireCreator("content");
   const parsed = couponsSchema.safeParse(coupons);
   if (!parsed.success) {
     const bad = parsed.error.issues.find((i) => i.path[1] === "url" || i.path[1] === "code");

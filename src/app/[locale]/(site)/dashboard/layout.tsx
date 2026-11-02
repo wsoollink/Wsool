@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { ExternalLink, LifeBuoy, LogOut } from "lucide-react";
+import { Building2, ExternalLink, LifeBuoy, LogOut } from "lucide-react";
 import { BrandLogo } from "@/components/BrandLogo";
 import { ThemeMenuItem, ThemeToggle } from "@/components/ThemeToggle";
 import { SidebarNav } from "@/components/dashboard/DashboardNav";
@@ -28,7 +28,7 @@ const primaryName = cache((pageId: string, lang: Lang) =>
 
 /** Who is signed in: photo / initial, name and page link (top of the sidebar and the phone menu). */
 async function CreatorCard() {
-  const { page } = await requireCreator();
+  const { page } = await requireCreator("view");
   const tr = await primaryName(page.id, page.primaryLang);
   const name = tr?.fullName || page.username;
   return (
@@ -44,6 +44,23 @@ async function CreatorCard() {
       </span>
       <ExternalLink aria-hidden="true" size={14} className="shrink-0 text-faint" />
     </a>
+  );
+}
+
+/** Shown while an agency member manages a creator's page (acting mode, src/lib/agency.ts). */
+async function ActingBanner() {
+  const { page, acting } = await requireCreator("view");
+  if (!acting) return null;
+  const t = await getTranslations("Acting");
+  const tr = await primaryName(page.id, page.primaryLang);
+  return (
+    <div role="status" className="mb-5 flex flex-wrap items-center gap-3 rounded-2xl border border-blue/25 bg-blue/8 px-4 py-3">
+      <Building2 aria-hidden="true" size={18} className="shrink-0 text-blue" />
+      <p className="min-w-0 flex-1 text-sm">{t.rich("banner", { b: (c) => <b>{c}</b>, creator: tr?.fullName || page.username, agency: acting.agencyName })}</p>
+      {/* Full page load: a route handler clears the acting cookies. */}
+      {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+      <a href="/agency/exit" className="inline-flex min-h-10 items-center rounded-full bg-navy px-4 text-[13px] font-bold text-on-navy">{t("exit")}</a>
+    </div>
   );
 }
 
@@ -104,7 +121,10 @@ export default async function DashboardLayout({ children, params }: LayoutProps<
           </Link>
           <LangPill current={locale} />
         </header>
-        <main className="mx-auto flex w-full max-w-[1240px] flex-1 flex-col px-4 pt-5 pb-10 md:px-8 md:pt-7">{children}</main>
+        <main className="mx-auto flex w-full max-w-[1240px] flex-1 flex-col px-4 pt-5 pb-10 md:px-8 md:pt-7">
+          <Suspense fallback={null}><ActingBanner /></Suspense>
+          {children}
+        </main>
       </div>
     </div>
   );

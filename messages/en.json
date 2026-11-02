@@ -219,7 +219,8 @@
     "noResults": "No section with that name",
     "referrals": "Commission",
     "whatsapp": "WhatsApp support",
-    "whatsappText": "Hi, I have a question about my Wsool account"
+    "whatsappText": "Hi, I have a question about my Wsool account",
+    "agency": "Agency"
   },
   "CreatorPage": {
     "demoBadge": "Demo page",
@@ -880,7 +881,8 @@
       "insights": "Creator insights",
       "categories": "Categories",
       "groupOwner": "Owner",
-      "referrals": "Commissions"
+      "referrals": "Commissions",
+      "agencies": "Agencies"
     },
     "overview": {
       "demoTitle": "Demo page wsool.link/demo",
@@ -1314,7 +1316,8 @@
       "discounts": "First-payment discounts for people you choose",
       "insights": "Creators by category, country, city, platform and size",
       "categories": "The list creators pick their content category from",
-      "referrals": "What creators earned on the customers they brought, and bank transfers"
+      "referrals": "What creators earned on the customers they brought, and bank transfers",
+      "agencies": "Marketing agencies in the free beta"
     },
     "sentence": {
       "demo": {
@@ -1380,6 +1383,10 @@
       },
       "vat": {
         "export": "Downloaded the VAT report ({count} invoices)"
+      },
+      "agency": {
+        "create": "Opened the agency {name} ({email})",
+        "deactivate": "Stopped the agency {name}"
       }
     },
     "newsletter": {
@@ -1671,6 +1678,27 @@
         "not_bank": "This creator didn't choose bank transfer.",
         "failed": "Something went wrong, try again."
       }
+    },
+    "agencies": {
+      "createTitle": "Open an agency account",
+      "name": "Agency name",
+      "ownerEmail": "Agency owner's email",
+      "hint": "They get an invitation email; signing in with that email opens the agency dashboard, where they add their team and invite creators.",
+      "create": "Open account",
+      "created": "✓ Agency opened and the owner was invited.",
+      "listTitle": "Agencies",
+      "empty": "No agencies yet.",
+      "counts": "{creators} creators · {team} on the team",
+      "status": {
+        "active": "Active",
+        "inactive": "Stopped"
+      },
+      "stop": "Stop",
+      "confirmStop": "Stop {name}? Its links with all creators end (they keep their pages, plus 14 days of Pro), and its team loses access.",
+      "errors": {
+        "invalid": "Check the name and email.",
+        "exists": "This email is already on an agency team."
+      }
     }
   },
   "Billing": {
@@ -1701,7 +1729,8 @@
       "endsOn": "Auto-renew is off. Pro until {date}.",
       "pastDue": "We couldn't renew your payment. We'll retry on {date}, or pay again.",
       "free": "Basic plan. Subscribe to get Pro back; all your data is kept.",
-      "freeUntil": "🎁 Basic plan until {date}. It doesn't renew automatically."
+      "freeUntil": "🎁 Basic plan until {date}. It doesn't renew automatically.",
+      "agency": "Pro is covered by your agency while your page is linked to it."
     },
     "manage": "Manage subscription",
     "autoRenewOn": "Auto-renew is on.",
@@ -2042,6 +2071,37 @@
       "title": "Connect your account again",
       "body": "We couldn't update your {platform} account {handle} because the link stopped (for example, the password changed or access was removed).\nConnect it again from Accounts & numbers so your numbers keep updating by themselves.",
       "cta": "Connect again"
+    },
+    "agency_invite": {
+      "subject": "{agency} invites you on Wsool",
+      "title": "Agency invitation",
+      "body": "{agency} would like to manage your Wsool page.\nYou choose what they can edit, your page stays yours, and you can unlink anytime. While you're linked, your page is on Pro.",
+      "cta": "See the invitation"
+    },
+    "agency_removed": {
+      "subject": "Your link with {agency} ended",
+      "title": "Agency link ended",
+      "body": "{agency} ended its link with your page. Your page and all your data stay yours.\nIf the agency covered your plan, Pro stays on for {days} days; then subscribe or move to Basic.",
+      "cta": "Open your dashboard"
+    },
+    "agency_accepted": {
+      "subject": "{creator} accepted your agency's invitation",
+      "title": "New creator in your agency",
+      "body": "{creator} accepted your agency's invitation and now appears in your agency dashboard.",
+      "cta": "Open agency dashboard"
+    },
+    "agency_ended": {
+      "subject": "{creator} unlinked from your agency",
+      "title": "A creator unlinked",
+      "body": "{creator} unlinked their page from your agency; you no longer have access to it.",
+      "cta": "Open agency dashboard"
+    },
+    "agency_team_invite": {
+      "subject": "Join {agency}'s team on Wsool",
+      "title": "Join {agency}'s team",
+      "body": "You've been invited to {agency}'s team on Wsool.\nSign in with this email ({email}) to open the agency dashboard.",
+      "cta": "Sign in",
+      "footer": "You received this because an agency added your email to its team on Wsool."
     }
   },
   "Notifications": {
@@ -2247,7 +2307,8 @@
     "home": "Here's your page today",
     "links": "Your store and course links, and services besides ads",
     "coupons": "Your store discount codes and tracking links",
-    "referrals": "Earn from every subscriber who comes through your link"
+    "referrals": "Earn from every subscriber who comes through your link",
+    "agency": "The marketing agency managing your page, with permissions you choose"
   },
   "SaveBar": {
     "save": "Save changes",
@@ -2662,5 +2723,126 @@
     },
     "footer": "© 2026 Safhat Wsool Company For Information Technology",
     "ctaShort": "Free trial"
+  },
+  "Acting": {
+    "banner": "You're managing <b>{creator}</b>'s page for <b>{agency}</b>. Only the sections the creator allowed are shown.",
+    "exit": "Back to agency"
+  },
+  "AgencyApp": {
+    "title": "Agency dashboard",
+    "sub": "Your creators and their numbers in one place",
+    "myPage": "My page",
+    "signOut": "Sign out",
+    "tabs": {
+      "creators": "Creators",
+      "team": "Team"
+    },
+    "kpi": {
+      "creators": "Creators",
+      "followers": "Total followers",
+      "verified": "Verified accounts",
+      "pending": "Pending invites"
+    },
+    "creatorsTitle": "Agency creators",
+    "empty": "No creators yet. Invite your first one below.",
+    "col": {
+      "creator": "Creator",
+      "followers": "Followers",
+      "accounts": "Accounts",
+      "perms": "Permissions",
+      "actions": ""
+    },
+    "linked": "{n} linked",
+    "verifiedN": "{n} verified",
+    "perm": {
+      "content": "Content",
+      "rates": "Rates",
+      "contact": "Contact"
+    },
+    "manage": "Manage",
+    "page": "Page",
+    "pdf": "PDF",
+    "remove": "Remove",
+    "confirmRemove": "End {name}'s link with the agency? They'll be notified and keep their page.",
+    "inviteTitle": "Invite a creator",
+    "inviteHint": "Type their Wsool username or account email. The creator sets the final permissions when accepting.",
+    "invitePh": "Username or email",
+    "askPerms": "Permissions requested",
+    "send": "Send invite",
+    "sending": "Sending…",
+    "sent": "✓ The creator got your invite.",
+    "pendingTitle": "Pending invites",
+    "cancel": "Cancel invite",
+    "invitedOn": "Sent {date}",
+    "errors": {
+      "not_found": "No creator with that username or email.",
+      "self": "That's your own page.",
+      "already": "This creator is already invited or linked to your agency.",
+      "linked_elsewhere": "This creator is linked to another agency.",
+      "invalid": "Check the details.",
+      "rate": "Too many tries, wait a bit.",
+      "exists": "This email is already on an agency team."
+    },
+    "teamTitle": "Agency team",
+    "teamHint": "Each member signs in with their email and lands on the agency dashboard.",
+    "roles": {
+      "owner": "Owner",
+      "manager": "Manager",
+      "editor": "Editor",
+      "viewer": "Viewer"
+    },
+    "roleHelp": {
+      "manager": "Invites creators and team, edits",
+      "editor": "Edits creators' pages",
+      "viewer": "View only"
+    },
+    "memberPending": "Not signed in yet",
+    "addMember": "Add member",
+    "emailPh": "Email",
+    "removeMember": "Remove",
+    "confirmRemoveMember": "Remove {email} from the team?",
+    "viewerNote": "You have view-only access."
+  },
+  "AgencySection": {
+    "inviteTitle": "Invitation from {agency}",
+    "inviteBody": "{agency} would like to manage your page. Choose what they can edit; you can change it or unlink anytime.",
+    "perms": "Permissions",
+    "perm": {
+      "content": "Edit content",
+      "rates": "Ad rates",
+      "contact": "Contact details"
+    },
+    "permHelp": {
+      "content": "Bio, photos, work, brands, links, coupons and appearance",
+      "rates": "Ad rates and the bundle",
+      "contact": "The WhatsApp number and email on your page"
+    },
+    "proNote": "While you're linked to the agency, your page is on Pro at the agency's cost.",
+    "accept": "Accept",
+    "decline": "Decline",
+    "accepting": "Working…",
+    "activeTitle": "Linked to {agency}",
+    "since": "Since {date}",
+    "never": "The agency can never change your username, subscription, commissions, verification or account links, or delete your account.",
+    "saved": "✓ Permissions saved",
+    "activityTitle": "Recent agency changes",
+    "noActivity": "The agency hasn't changed anything yet.",
+    "edited": "edited {section}",
+    "section": {
+      "edit": "Edit page",
+      "work": "Brands & work",
+      "links": "Links & services",
+      "coupons": "Coupons",
+      "appearance": "Appearance",
+      "rates": "Ad rates",
+      "contact": "Contact",
+      "content": "Content"
+    },
+    "unlink": "Unlink",
+    "confirmUnlink": "Unlink your page from {agency}? They won't be able to reach your page, and your page and data stay yours. If the agency changed your contact details, put yours back.",
+    "graceNote": "If the agency covered your plan, Pro stays on for {days} days after unlinking.",
+    "emptyTitle": "No agency",
+    "emptyBody": "If you work with a marketing agency, ask them to invite you from their agency dashboard using your username; the invite shows up here.",
+    "error": "Something went wrong. Refresh and try again."
   }
 }

@@ -29,7 +29,7 @@ const DAY = 86_400_000;
 
 /** Dashboard home from the design: link card, plan/trial, 30-day stats, visits, completion, verification. */
 async function Home({ lang }: { lang: Locale }) {
-  const { user, page } = await requireCreator();
+  const { user, page } = await requireCreator("view");
   const t = await getTranslations("Home");
   const tpl = await getTranslations("AppearancePage.templates");
   const locale = toIntlLocale(lang);

@@ -22,7 +22,7 @@ import { SectionSkeleton } from "@/components/dashboard/SectionSkeleton";
 const empty = { fullName: "", specialty: "", bio: "", city: "", country: "" };
 
 async function Editor({ lang }: { lang: Locale }) {
-  const { page } = await requireCreator();
+  const { page, acting } = await requireCreator("content");
   // Scoped to the creator's own page from the verified session.
   const [translations, tags, licenses, categories, picked] = await Promise.all([
     db.pageTranslation.findMany({ where: { pageId: page.id } }),
@@ -47,7 +47,7 @@ async function Editor({ lang }: { lang: Locale }) {
       <PagePreview username={page.username} langs={langs} />
     <div className="flex flex-col gap-4 lg:col-start-1 lg:row-start-1">
       <PublishCard username={page.username} published={page.isPublished} />
-      <UsernameCard key={page.username} username={page.username} nextChange={nextChange} />
+      {!acting && <UsernameCard key={page.username} username={page.username} nextChange={nextChange} />}
       <PhotoCard photoUrl={page.photoUrl} shape={page.photoShape} />
       <LogoCard logoUrl={page.logoUrl} />
       <ProfileForm primaryLang={page.primaryLang as Locale} enEnabled={page.enEnabled} texts={texts} />

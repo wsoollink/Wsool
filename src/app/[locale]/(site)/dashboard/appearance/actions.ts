@@ -10,7 +10,7 @@ export type AppearanceResult = { ok?: boolean; error?: "failed" | "pro_only" };
 
 /** Template, custom colors, accent, icon style, hidden page sections, Wsool footer. Pro-only choices are checked here. */
 export async function saveAppearance(input: AppearanceInput): Promise<AppearanceResult> {
-  const { user, page } = await requireCreator();
+  const { user, page } = await requireCreator("content");
   const parsed = appearanceSchema.safeParse(input);
   if (!parsed.success) return { error: "failed" };
   const value = parsed.data;

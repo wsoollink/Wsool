@@ -863,6 +863,35 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   CSV `/api/admin/referrals` (audited `referral.export`). Finance counts commissions as expense category `affiliate` (and in
   marketing for CAC). Terms section 7 + privacy (data row, 30-day cookie) describe it. Data export includes it.
 
+### Marketing agencies (owner, Nov 2026 — phase 1 built)
+- Owner decisions: the agency plan covers Pro for linked creators; unlinking leaves 14 days of Pro (`UNLINK_GRACE_DAYS`); pages an
+  agency creates for new creators stay hidden until claimed (phase 2, not built); the agency may change the contact details only
+  with the creator's "contact" permission. The page always belongs to the creator. Landing page: `/agencies` (see Launch pieces).
+- Tables (migration `*_agencies`, RLS on, no policies = server only): `agencies` (name, status active|inactive), `agency_members`
+  (email lowercase, user linked on first sign-in like admin members, role owner|manager|editor|viewer; one agency per email),
+  `agency_links` (agency × page, status pending|active|declined|cancelled|ended, `can_content` / `can_rates` / `can_contact`;
+  partial unique indexes: one active link per page, one open invite per agency + page), `agency_activity` (member, page, section).
+- Logic: `src/lib/agency.ts`. Free beta: the owner opens agencies at `admin/agencies` (owner only, `createAgency` / `stopAgency`,
+  audited `agency.create` / `agency.deactivate`; the agency owner gets an invitation email `sendAgencyTeamInvite`).
+- Agency dashboard `/agency` (`requireAgency(minRole)` → 404 to non-members): KPIs, linked creators (followers, linked/verified
+  accounts, permissions, Page / PDF / Manage / Remove), pending invites, invite by username or account email (`inviteCreator`,
+  manager+, 60/h), Team tab (add by email with a role, remove; managers can't remove managers).
+- **Acting mode**: "Manage" (`manageCreator`, editor+) sets the httpOnly `wsool_act` cookie (link id) + a readable `wsool_act_nav`
+  (allowed menu keys, `SidebarNav` filters with it). `requireCreator(scope)` (`src/lib/creator.ts`) then returns the creator's page
+  only for scopes the creator allowed: `view` (home, analytics, layout card/banner), `content` (edit, work, links, coupons,
+  appearance, uploads), `rates`, `contact`. **Calls without a scope are refused** (redirect `/dashboard?denied=1`): subscription,
+  referrals, verification, accounts, notifications, username change, the creator's Agency section. So every NEW dashboard
+  section/action is private unless it passes a scope on purpose. Server-action calls are logged in `agency_activity` (section from
+  the referer, deduped per minute). Banner `ActingBanner` in the dashboard layout; `/agency/exit` clears the cookies.
+- Pro coverage: `applyAgencyPro` on accept (skipped for a creator already paying with auto-renew) = subscription `provider:
+  "agency"`, active, `currentPeriodEnd` 2099, `cancelAtPeriodEnd`; `endLink` moves the end to now + 14 days (hourly job then drops
+  to Free). `agencyCovered()` blocks checkout / free codes while covered (Subscription page status `Billing.status.agency`).
+- Creator side: dashboard section `dashboard/agency` ("الوكالة", account group, unscoped): invite cards (set permissions, accept /
+  decline; accepting closes other invites), active agency (permission switches saved on change, unlink with a note to restore
+  contact details), recent agency changes. Notifications `agency_invite` / `agency_removed` (creator), `agency_accepted` /
+  `agency_ended` (agency owners + managers). App: no agency screen yet (push opens Notifications). Terms section 2 + privacy
+  "who we share it with" describe agencies.
+
 ### Platform connections (owner, Oct 2026)
 - Creators link an account through the platform's own sign-in (OAuth); followers + audience then update daily and the account
   counts as verified while linked. Plan, platform order and the owner's Google setup: **`docs/platform-connections.md`**.

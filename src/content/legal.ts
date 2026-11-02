@@ -23,6 +23,7 @@ export const LEGAL_TEXT: Record<"ar" | "en", Record<LegalKind, LegalDoc>> = {
           "تلتزم بتقديم معلومات صحيحة وتحديثها عند تغيّرها.",
           "أنت مسؤول عن حماية بريدك الإلكتروني الذي تدخل به، وعن كل ما يتم من خلال حسابك.",
           "الرابط الخاص (اسم المستخدم) يُمنح حسب التوفر، ولنا استرجاعه إذا كان مضللاً أو ينتحل اسم شخص أو علامة تجارية.",
+          "وكالات التسويق: يمكنك ربط صفحتك بوكالة تسويق تدعوك، فتدير صفحتك بالصلاحيات التي تختارها (المحتوى، أسعار الإعلانات، بيانات التواصل). تبقى الصفحة ملكك، وترى كل تعديل تقوم به الوكالة، ويمكنك فك الارتباط في أي وقت. الوكالة لا تستطيع تغيير اسم المستخدم أو اشتراكك أو حذف حسابك، وهي مسؤولة عن تعديلاتها أمامك.",
         ] },
         { h: "3. المحتوى الذي تنشره" },
         { ul: [
@@ -124,6 +125,7 @@ export const LEGAL_TEXT: Record<"ar" | "en", Record<LegalKind, LegalDoc>> = {
         { ul: [
           "Supabase: قاعدة البيانات وتسجيل الدخول وتخزين الملفات.",
           "Google: تسجيل الدخول بحساب Google لمن يختاره.",
+          "وكالة التسويق التي تربط صفحتك بها (إن وجدت): تطّلع على بيانات صفحتك وأرقامها وإحصائياتها بالقدر الذي تسمح به، ولا تصل لاشتراكك أو بيانات الدفع أو العمولة. ينتهي وصولها بمجرد فك الارتباط.",
           "YouTube (خدمات YouTube API): إذا ربطت قناتك نقرأ عدد المشتركين وإحصائيات الجمهور المجمّعة لعرضها في صفحتك. باستخدامك الربط توافق على شروط YouTube (https://www.youtube.com/t/terms)، وتخضع بياناتك لدى Google لسياسة خصوصية Google (https://policies.google.com/privacy). تقدر تفك الربط من لوحة التحكم، أو تسحب صلاحية وصول من صفحة أمان حسابك في Google (https://myaccount.google.com/permissions)، وعندها نوقف التحديث ونحذف مفتاح الربط.",
           "Instagram: إذا ربطت حسابك الاحترافي (صانع محتوى أو تجاري) نقرأ اسم المستخدم والاسم الظاهر وعدد المتابعين، وإحصائيات مجمّعة لجمهورك (الجنس والأعمار وأكثر الدول والمدن بالنسب) ومشاهدات حسابك الشهرية، لعرضها في صفحتك. ما نقرأ رسائلك ولا ننشر شي باسمك. تقدر تفك الربط من لوحة التحكم أو من إعدادات Instagram (التطبيقات والمواقع)، وإذا طلبت من Instagram حذف بياناتك عندنا نحذف الربط وبيانات الجمهور اللي جات منه.",
           "Threads: إذا ربطت حسابك نقرأ اسم المستخدم والاسم الظاهر وعدد المتابعين، وإحصائيات مجمّعة لجمهورك (الجنس والأعمار وأكثر الدول والمدن بالنسب) ومشاهدات حسابك الشهرية، لعرضها في صفحتك. ما ننشر شي باسمك. تقدر تفك الربط من لوحة التحكم أو من إعدادات Threads (أذونات المواقع)، وإذا طلبت من Threads حذف بياناتك عندنا نحذف الربط وبيانات الجمهور اللي جات منه.",
@@ -221,6 +223,7 @@ export const LEGAL_TEXT: Record<"ar" | "en", Record<LegalKind, LegalDoc>> = {
           "You agree to provide accurate information and keep it up to date.",
           "You are responsible for securing the email address you sign in with and for all activity under your account.",
           "Usernames are assigned on availability. We may reclaim a username that is misleading or impersonates a person or brand.",
+          "Marketing agencies: you can link your page to an agency that invites you; it then manages your page with the permissions you choose (content, ad rates, contact details). The page stays yours, you see every change the agency makes, and you can unlink at any time. An agency can't change your username or subscription or delete your account, and it is responsible to you for its changes.",
         ] },
         { h: "3. Your content" },
         { ul: [
@@ -322,6 +325,7 @@ export const LEGAL_TEXT: Record<"ar" | "en", Record<LegalKind, LegalDoc>> = {
         { ul: [
           "Supabase: database, sign-in and file storage.",
           "Google: sign-in with a Google account, for those who choose it.",
+          "The marketing agency you link your page to (if any): it sees your page data, numbers and analytics as far as you allow, never your subscription, payment or commission details. Its access ends as soon as you unlink.",
           "YouTube (YouTube API Services): if you connect your channel, we read its subscriber count and aggregated audience stats to show them on your page. By using the connection you agree to the YouTube Terms of Service (https://www.youtube.com/t/terms), and Google's handling of your data is covered by the Google Privacy Policy (https://policies.google.com/privacy). You can disconnect from your dashboard, or revoke Wsool's access on your Google account's security page (https://myaccount.google.com/permissions); we then stop updating and delete the connection key.",
           "Instagram: if you connect your professional (creator or business) account, we read your username, display name and follower count, aggregated audience stats (gender, age groups, top countries and cities as percentages) and your account's monthly views, to show them on your page. We never read your messages or post on your behalf. You can disconnect from your dashboard or in Instagram's settings (Apps and websites); if you ask Instagram to delete your data with us, we delete the link and the audience data it provided.",
           "Threads: if you connect your account, we read your username, display name and follower count, aggregated audience stats (gender, age groups, top countries and cities as percentages) and your account's monthly views, to show them on your page. We never post on your behalf. You can disconnect from your dashboard or in Threads' settings (Website permissions); if you ask Threads to delete your data with us, we delete the link and the audience data it provided.",

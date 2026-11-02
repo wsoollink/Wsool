@@ -15,7 +15,7 @@ export type LinksResult = { ok?: boolean; error?: "failed" | "invalid_url"; inde
  * their links already had; replaced images are deleted.
  */
 export async function saveLinksAndServices(links: LinkInput[], services: ServiceInput[], note?: NoteInput): Promise<LinksResult> {
-  const { user, page } = await requireCreator();
+  const { user, page } = await requireCreator("content");
   const parsedLinks = linksSchema.safeParse(links);
   if (!parsedLinks.success) {
     const bad = parsedLinks.error.issues.find((i) => i.path[1] === "url");

@@ -50,7 +50,8 @@ export function appRoute(href: string | undefined | null): string {
   if (!href) return "/";
   const section = href.match(/^\/dashboard\/([a-z]+)/)?.[1];
   if (!section) return "/";
-  if (section === "notifications") return "/notifications";
+  // The agency section is web-only for now: show the notification itself.
+  if (section === "notifications" || section === "agency") return "/notifications";
   if (section === "analytics") return "/insights";
   if (section === "referrals" || section === "subscription") return `/account/${section}`;
   return `/page/${section}`;

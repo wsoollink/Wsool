@@ -9,7 +9,7 @@ export type ContactResult = { ok?: boolean; whatsapp?: string; email?: string; e
 
 /** Saves the WhatsApp number and contact email (empty = hidden on the page). */
 export async function saveContact(input: ContactInput): Promise<ContactResult> {
-  const { page } = await requireCreator();
+  const { page } = await requireCreator("contact");
   const parsed = contactSchema.safeParse(input);
   if (!parsed.success) {
     const fields = new Set(parsed.error.issues.map((i) => i.path[0]));

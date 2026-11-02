@@ -10,7 +10,7 @@ import { CouponsEditor } from "./CouponsEditor";
 import { SectionSkeleton } from "@/components/dashboard/SectionSkeleton";
 
 async function Editor() {
-  const { page } = await requireCreator();
+  const { page } = await requireCreator("content");
   // Scoped to the creator's own page from the verified session.
   const [coupons, sub] = await Promise.all([
     db.coupon.findMany({ where: { pageId: page.id }, orderBy: { sort: "asc" } }),

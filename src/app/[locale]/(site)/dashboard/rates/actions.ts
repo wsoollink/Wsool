@@ -12,7 +12,7 @@ export type RatesResult = { ok?: boolean; error?: "failed" };
 
 /** Show on page / in PDF, currency, VAT. */
 export async function saveRateSettings(input: RateSettingsInput): Promise<RatesResult> {
-  const { page } = await requireCreator();
+  const { page } = await requireCreator("rates");
   const parsed = rateSettingsSchema.safeParse(input);
   if (!parsed.success) return { error: "failed" };
   await db.rateSettings.upsert({ where: { pageId: page.id }, create: { pageId: page.id, ...parsed.data }, update: parsed.data });
@@ -22,7 +22,7 @@ export async function saveRateSettings(input: RateSettingsInput): Promise<RatesR
 
 /** Replaces the rate types of one of the creator's own accounts. */
 export async function saveRates(accountId: string, items: RateInput[]): Promise<RatesResult> {
-  const { page } = await requireCreator();
+  const { page } = await requireCreator("rates");
   const parsed = ratesSchema.safeParse(items);
   if (!parsed.success) return { error: "failed" };
   // Ownership check: the account must be on this creator's page.
@@ -41,7 +41,7 @@ export async function saveRates(accountId: string, items: RateInput[]): Promise<
 
 /** Replaces the creator's bundles. Every platform in a bundle must be one of their accounts. */
 export async function saveBundles(items: BundleInput[]): Promise<RatesResult> {
-  const { page } = await requireCreator();
+  const { page } = await requireCreator("rates");
   const parsed = bundlesSchema.safeParse(items);
   if (!parsed.success) return { error: "failed" };
 

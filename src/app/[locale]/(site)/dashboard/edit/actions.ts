@@ -16,7 +16,7 @@ export type SaveState = { ok?: boolean; errors?: Record<string, string>; error?:
 
 /** Saves languages and the texts for each language of the signed-in creator's page. */
 export async function saveProfile(_prev: SaveState, formData: FormData): Promise<SaveState> {
-  const { page } = await requireCreator();
+  const { page } = await requireCreator("content");
   const read = (lang: "ar" | "en") =>
     Object.fromEntries(TRANSLATION_FIELDS.map((f) => [f, String(formData.get(`${lang}.${f}`) ?? "")]));
 
@@ -55,7 +55,7 @@ export async function saveProfile(_prev: SaveState, formData: FormData): Promise
 
 /** Publishes or hides the page. Publishing needs a name in the primary language. */
 export async function setPublished(publish: boolean): Promise<SaveState> {
-  const { page } = await requireCreator();
+  const { page } = await requireCreator("content");
   if (publish) {
     const tr = await db.pageTranslation.findUnique({
       where: { pageId_lang: { pageId: page.id, lang: page.primaryLang } },
@@ -70,7 +70,7 @@ export async function setPublished(publish: boolean): Promise<SaveState> {
 
 /** Sets (path) or removes (null) the hero photo; deletes the previous file. */
 export async function savePhoto(path: string | null): Promise<SaveState & { url?: string | null }> {
-  const { user, page } = await requireCreator();
+  const { user, page } = await requireCreator("content");
   if (path !== null && (typeof path !== "string" || !(await isOwnUploadedFile(user.id, "photo", path)))) {
     return { error: "failed" };
   }
@@ -85,7 +85,7 @@ const photoShape = z.enum(["full", "circle"]);
 
 /** How the photo shows on the page: full (square fading down) or circle. */
 export async function savePhotoShape(shape: "full" | "circle"): Promise<SaveState> {
-  const { page } = await requireCreator();
+  const { page } = await requireCreator("content");
   const parsed = photoShape.safeParse(shape);
   if (!parsed.success) return { error: "failed" };
   await db.page.update({ where: { id: page.id }, data: { photoShape: parsed.data } });
@@ -95,7 +95,7 @@ export async function savePhotoShape(shape: "full" | "circle"): Promise<SaveStat
 
 /** The creator's own logo for the PDF media kit (fresh upload in their folder, or null to remove). */
 export async function saveLogo(path: string | null): Promise<SaveState & { url?: string | null }> {
-  const { user, page } = await requireCreator();
+  const { user, page } = await requireCreator("content");
   if (path !== null && (typeof path !== "string" || !(await isOwnUploadedFile(user.id, "logo", path)))) {
     return { error: "failed" };
   }
@@ -108,7 +108,7 @@ export async function saveLogo(path: string | null): Promise<SaveState & { url?:
 
 /** Replaces the creator's tags for one language (order = list order). */
 export async function saveTags(lang: "ar" | "en", labels: string[]): Promise<SaveState> {
-  const { page } = await requireCreator();
+  const { page } = await requireCreator("content");
   const parsed = tagsSchema.safeParse({ lang, labels });
   if (!parsed.success) return { error: "failed" };
   const unique = [...new Set(parsed.data.labels)];
@@ -124,7 +124,7 @@ const categoryIds = z.array(z.uuid()).max(MAX_PAGE_CATEGORIES);
 
 /** Replaces the creator's categories (ids must exist in the owner's list). */
 export async function saveCategories(ids: string[]): Promise<SaveState> {
-  const { page } = await requireCreator();
+  const { page } = await requireCreator("content");
   const parsed = categoryIds.safeParse([...new Set(ids)]);
   if (!parsed.success) return { error: "failed" };
   const found = await db.category.count({ where: { id: { in: parsed.data } } });
@@ -144,7 +144,7 @@ export type LicenseInput = { name: string; nameEn: string; number: string; fileP
  * any other URL is refused. Files no longer used are deleted.
  */
 export async function saveLicenses(items: LicenseInput[]): Promise<SaveState> {
-  const { user, page } = await requireCreator();
+  const { user, page } = await requireCreator("content");
   const parsed = licensesSchema.safeParse(items);
   if (!parsed.success) return { error: "failed" };
 

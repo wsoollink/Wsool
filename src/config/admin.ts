@@ -44,6 +44,7 @@ export const ADMIN_SECTIONS = [
   { key: "referrals", href: "/admin/referrals", permission: "referrals.manage" },
   { key: "newsletter", href: "/admin/newsletter", permission: "newsletter.send" },
   { key: "categories", href: "/admin/categories", permission: "owner" },
+  { key: "agencies", href: "/admin/agencies", permission: "owner" },
   { key: "team", href: "/admin/team", permission: "owner" },
   { key: "audit", href: "/admin/audit", permission: "owner" },
 ] as const;

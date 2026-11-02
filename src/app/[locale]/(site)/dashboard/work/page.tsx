@@ -12,7 +12,7 @@ import { PageHeader } from "@/components/dashboard/PageHeader";
 import { SectionSkeleton } from "@/components/dashboard/SectionSkeleton";
 
 async function Editor() {
-  const { user, page } = await requireCreator();
+  const { user, page } = await requireCreator("content");
   // Scoped to the creator's own page from the verified session.
   const [brands, works, sub] = await Promise.all([
     db.brandLogo.findMany({ where: { pageId: page.id }, orderBy: { sort: "asc" } }),

@@ -14,7 +14,7 @@ const input = z.object({
 
 /** Gives the signed-in creator a one-time upload URL inside their own folder. */
 export async function requestUpload(kind: UploadKind, contentType: string, size: number) {
-  const { user } = await requireCreator();
+  const { user } = await requireCreator("content");
   const parsed = input.safeParse({ kind, contentType, size });
   if (!parsed.success) return { error: "type" as const };
   // Generous for normal editing, stops scripted bulk uploads.

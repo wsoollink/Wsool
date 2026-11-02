@@ -12,7 +12,7 @@ import { ACCENT_SWATCHES, PAGE_SECTIONS, type PageSection } from "@/lib/validati
 import { SectionSkeleton } from "@/components/dashboard/SectionSkeleton";
 
 async function Editor() {
-  const { user, page } = await requireCreator();
+  const { user, page } = await requireCreator("content");
   // Scoped to the creator's own page from the verified session.
   const [sub, tr, accounts] = await Promise.all([
     db.subscription.findUnique({ where: { userId: user.id }, select: { status: true, trialEndsAt: true } }),

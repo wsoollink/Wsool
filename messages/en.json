@@ -2431,5 +2431,21 @@
     "waBody": "Chat with us on WhatsApp, Sunday to Thursday",
     "waButton": "Chat on WhatsApp",
     "waText": "Hi, I have a question about Wsool"
+  },
+  "Checkout": {
+    "title": "Complete your subscription",
+    "testMode": "Test mode (test keys): Wsool team only",
+    "staffOnly": "Test-mode payments are for the Wsool team only.",
+    "done": "This checkout is finished. Go back to the Subscription page.",
+    "plan": "Pro plan · {cycle}",
+    "cycle": {
+      "monthly": "Monthly",
+      "yearly": "Yearly"
+    },
+    "discounted": "After discount code",
+    "loadError": "We couldn't load the payment form. Refresh the page and try again.",
+    "saveNote": "Payments are processed securely by Moyasar; we never store your card details. The card is saved with Moyasar for auto-renewal, which you can turn off anytime on the Subscription page.",
+    "refund": "Full refund within 7 days of your first subscription: <link>refund policy</link>.",
+    "back": "Back to Subscription"
   }
 }

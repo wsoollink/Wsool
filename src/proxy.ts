@@ -37,6 +37,6 @@ export const config = {
   // dots, so only real asset extensions are excluded (keep in sync with
   // ASSET_EXTENSIONS in src/config/usernames.ts).
   matcher: [
-    "/((?!api/|_next/|.*\\.(?:ico|png|jpe?g|gif|svg|webp|avif|txt|xml|webmanifest|json|css|js|map|woff2?|ttf|otf|pdf|mp4|webm|mov|m4v)$).*)",
+    "/((?!api/|_next/|\\.well-known/|.*\\.(?:ico|png|jpe?g|gif|svg|webp|avif|txt|xml|webmanifest|json|css|js|map|woff2?|ttf|otf|pdf|mp4|webm|mov|m4v)$).*)",
   ],
 };

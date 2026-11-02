@@ -531,9 +531,17 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
 
 ### Payments (Phase 5)
 - Provider interface: `src/lib/payments/types.ts`; active provider from `PAYMENT_PROVIDER`
-  (`src/lib/payments/index.ts`). Only `mock` exists (Moyasar not connected until approved): signed
-  fake payment ids, tokens `mock_tok_ok` / `mock_tok_fail`. **Test providers are staff-only**
-  (checkout refuses non-staff), so leaving `mock` on never gives Pro for free. Unset = payments off.
+  (`src/lib/payments/index.ts`): `moyasar` or `mock` (signed fake payment ids, tokens `mock_tok_ok` / `mock_tok_fail`).
+  **Test providers are staff-only** (checkout refuses non-staff), so leaving `mock` on never gives Pro for free. Unset = payments off.
+- **Moyasar** (`src/lib/payments/moyasar.ts`, owner Nov 2026; setup steps in `docs/moyasar.md`): `MOYASAR_PUBLISHABLE_KEY`,
+  `MOYASAR_SECRET_KEY` (test keys = staff only), `MOYASAR_WEBHOOK_SECRET` (webhook `secret_token`, checked timing-safe).
+  Checkout page `/billing/pay/<invoice>` (texts `Checkout`) runs Moyasar's own form (npm `moyasar-payment-form`, bundled, no CDN;
+  card, mada, Apple Pay) with `save_card: true` and `metadata.invoice_id`; `on_completed` stores the payment id on the invoice
+  (`rememberPayment`); the paid payment's `source.token` becomes `subscriptions.payment_token`. Renewals: `chargeToken` = POST
+  /v1/payments with `source: {type: "token", "3ds": false}` and `given_id` = the renewal invoice id (a retried call can't charge
+  twice); a token charge still asking for 3-D Secure counts as failed. Refund = POST /v1/payments/<id>/refund. Amounts in
+  halalas/cents. Apple Pay needs Moyasar's domain file at `public/.well-known/apple-developer-merchantid-domain-association`
+  (the proxy skips `.well-known/`). Local tests: `MOYASAR_API_BASE` → a fake server (the browser form only talks to api.moyasar.com).
 - Adding the real provider: implement `PaymentProvider` next to `mock.ts`, register it in
   `paymentProvider()`, set `PAYMENT_PROVIDER` + its keys. Nothing else changes.
 - Flow (`src/lib/billing.ts`): `startCheckout` creates a pending invoice with the price from

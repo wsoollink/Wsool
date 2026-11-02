@@ -2450,86 +2450,134 @@
   },
   "Agencies": {
     "metaTitle": "Wsool for agencies and marketing companies",
-    "metaDesc": "Manage every creator you work with from one dashboard: verified numbers that update automatically, and ready media kits that convince any client.",
+    "metaDesc": "Manage every creator you work with from one dashboard: verified numbers that update automatically, and media kits that win clients.",
     "nav": {
-      "home": "Home",
+      "features": "Features",
+      "how": "How it works",
+      "pricing": "Plans",
+      "faq": "FAQ",
       "creators": "For creators",
-      "pricing": "Pricing",
-      "contact": "Contact us"
+      "home": "Home",
+      "menu": "Page links"
     },
-    "badge": "Coming soon · trial requests open now",
-    "heroTitle": "All your creators in one place,\nwith verified numbers your clients trust",
-    "heroBody": "Wsool for agencies and marketing companies: manage the pages of the creators you work with, follow numbers that update automatically from the platforms, and send their media kits to brands in one click.",
+    "chipNew": "New",
+    "chip": "Plan for agencies and marketing companies",
+    "heroA": "All your creators",
+    "heroB": "in one dashboard",
+    "heroBody": "Follow every creator's numbers as they update automatically from the platforms, and send their media kit to any client in seconds. Wsool helps your agency present its creators in a way that convinces at first glance.",
     "ctaTrial": "Request a free trial",
     "ctaDemo": "See a demo creator page",
-    "mock": {
-      "title": "Agency creators",
-      "search": "Search creators…",
-      "followers": "followers",
-      "verified": "Verified",
-      "linked": "Linked",
-      "pdf": "PDF",
-      "total": "Total followers",
-      "creators": "creators"
-    },
-    "whyTitle": "Why Wsool for agencies?",
-    "why": [
-      {
-        "t": "One dashboard for all your creators",
-        "b": "Every creator with their numbers and verification status, filtered by platform, size and category."
-      },
-      {
-        "t": "Verified numbers, updated daily",
-        "b": "Creators link Instagram, TikTok, YouTube, X and more; followers and audience update every day. No more old screenshots."
-      },
-      {
-        "t": "A media kit in one click",
-        "b": "Each creator has a professional page with their own link and a PDF in their template, ready to send in seconds."
-      }
+    "heroChecks": [
+      "Free trial for early agencies",
+      "No contracts",
+      "Creators keep their pages"
     ],
-    "howTitle": "How it works",
+    "dash": {
+      "url": "wsool.link/agency",
+      "title": "Agency creators",
+      "creators": "Creators",
+      "total": "Total followers",
+      "verified": "Verified",
+      "filterAll": "All",
+      "filterBig": "1M+",
+      "search": "Search creators…",
+      "linked": "Linked",
+      "updated": "Updated today"
+    },
+    "float": {
+      "invite": "Sara accepted your invite",
+      "pdf": "PDF ready",
+      "week": "Visits this week",
+      "verifiedAll": "All accounts verified"
+    },
+    "stripTitle": "Numbers update automatically from",
+    "featEyebrow": "Features",
+    "featTitleA": "Everything your agency needs",
+    "featTitleB": "to win the client",
+    "featBody": "Instead of Word files and old screenshots, your creators with live numbers and professional pages.",
+    "f1t": "All your creators in one dashboard",
+    "f1b": "Every creator with their numbers, verification status and updates, filtered by platform, size and category.",
+    "f2t": "Verified numbers, updated daily",
+    "f2b": "Creators link their accounts once; followers and audience update every day. Clients see real numbers, not a month-old screenshot.",
+    "f3t": "Your team, with roles",
+    "f3b": "Invite your staff, each with a role: manager, editor or viewer.",
+    "roles": [
+      "Manager",
+      "Editor",
+      "Viewer"
+    ],
+    "f4t": "A PDF for every creator in one click",
+    "f4b": "A media kit in the creator's template and colours, ready to send or print.",
+    "f5t": "See who attracts brands",
+    "f5b": "Visits to each creator's page, from which countries, and how many contact taps.",
+    "f6t": "A clear activity log",
+    "f6b": "Every change is recorded: who, what and when.",
+    "log": [
+      [
+        "Noura",
+        "updated ad rates",
+        "1h ago"
+      ],
+      [
+        "Fahad",
+        "added a new work",
+        "Yesterday"
+      ],
+      [
+        "Sara",
+        "linked TikTok",
+        "2 days ago"
+      ]
+    ],
+    "compareEyebrow": "The difference",
+    "compareTitle": "Instead of the old way",
+    "oldTitle": "Without Wsool",
+    "old": [
+      "Old screenshots of numbers",
+      "Word and PDF files edited by hand",
+      "Clients can't check the numbers",
+      "Every creator in a different file and chat"
+    ],
+    "newTitle": "With Wsool",
+    "new": [
+      "Verified numbers updated every day",
+      "Page and PDF that update themselves",
+      "A verified badge that builds client trust",
+      "All your creators in one dashboard"
+    ],
+    "howEyebrow": "How it works",
+    "howTitle": "Ready in three steps",
     "how": [
       {
         "t": "Create your agency account",
-        "b": "Register your agency and add your team, each with the right role: manager, editor or viewer."
+        "b": "Register your agency and add your team with the right roles."
       },
       {
         "t": "Add your creators",
-        "b": "Invite creators who already have a Wsool page, or create a new page that the creator claims with their email."
+        "b": "Invite creators who have a page, or create a new page they claim with their email."
       },
       {
-        "t": "Share and follow",
-        "b": "Send creator links and media kits to brands, and follow their numbers and changes from your dashboard."
+        "t": "Present them to clients",
+        "b": "Send their links and media kits, and follow their numbers from your dashboard."
       }
     ],
-    "featuresTitle": "Everything your agency needs",
-    "features": [
-      {
-        "t": "Agency team",
-        "b": "Invite your staff and set each one's role."
-      },
-      {
-        "t": "Clear permissions",
-        "b": "The creator decides what the agency can edit: content, rates, contact."
-      },
-      {
-        "t": "Pro for all your creators",
-        "b": "The agency plan unlocks Pro features for every linked creator."
-      },
-      {
-        "t": "Activity log",
-        "b": "Every change is recorded: who, what and when."
-      },
-      {
-        "t": "Visit analytics",
-        "b": "See how many companies opened each creator's page, from which countries, and how many contact taps."
-      },
-      {
-        "t": "Ad rates and bundles",
-        "b": "Organise each creator's rates and bundles in one professional format."
-      }
+    "ownEyebrow": "Trust",
+    "ownTitle": "The page always belongs to the creator",
+    "ownBody": "The agency manages a page with the creator's consent and the permissions they choose, and the creator can unlink anytime. That reassures your creators and makes them happy to join your agency.",
+    "ownPoints": [
+      "No link without the creator's approval",
+      "The creator sees every change the agency makes",
+      "Unlink in one tap, without losing anything"
     ],
-    "soonTitle": "Coming soon",
+    "perm": {
+      "title": "Agency permissions",
+      "content": "Edit content",
+      "rates": "Ad rates",
+      "contact": "Contact details",
+      "unlink": "Unlink"
+    },
+    "soonEyebrow": "Coming soon",
+    "soonTitle": "And more on the way",
     "soon": [
       {
         "t": "Public agency page",
@@ -2541,18 +2589,13 @@
       },
       {
         "t": "Campaign video stats",
-        "b": "After a creator posts the ad, get that video's own numbers straight from the platform to share with the client."
+        "b": "After a creator posts the ad, that video's own numbers straight from the platform."
       }
     ],
-    "ownTitle": "The page always belongs to the creator",
-    "ownBody": "The agency manages a page with the creator's consent and the permissions they choose, and the creator can unlink at any time. Their page, link and data stay theirs. That builds creators' trust in you and in Wsool.",
-    "ownPoints": [
-      "No link without the creator's approval",
-      "The creator sees every change the agency makes",
-      "Unlink in one tap, without losing anything"
-    ],
-    "pricingTitle": "Agency plans",
-    "pricingNote": "Draft prices, VAT included. The first agencies get a free trial.",
+    "soonPill": "Soon",
+    "priceEyebrow": "Plans",
+    "priceTitle": "A plan that grows with your agency",
+    "priceNote": "Draft prices, VAT included. Early agencies get a free trial.",
     "plans": [
       {
         "name": "Small",
@@ -2570,11 +2613,19 @@
       {
         "name": "Large",
         "creators": "More than 30 creators",
-        "price": "Contact us",
+        "price": "Custom",
         "per": ""
       }
     ],
-    "planIncludes": "Includes the agency dashboard, your team, and Pro for every linked creator.",
+    "planFeatures": [
+      "Agency dashboard and team",
+      "Pro for every linked creator",
+      "A PDF for every creator",
+      "Visit analytics",
+      "Activity log"
+    ],
+    "planCtaBig": "Contact us",
+    "faqEyebrow": "FAQ",
     "faqTitle": "Agency questions",
     "faq": [
       {
@@ -2592,10 +2643,24 @@
       {
         "q": "Can the agency link a creator's platform accounts?",
         "a": "Linking Instagram, TikTok and others must be done by the creator, because the platforms require the account owner's consent. After that the numbers update automatically in your dashboard."
+      },
+      {
+        "q": "When will the agency plan be available?",
+        "a": "Soon. We're starting with a limited number of agencies on a free trial. Request the trial and we'll get in touch."
       }
     ],
-    "finalTitle": "Ready to try Wsool with your creators?",
-    "finalBody": "We're opening the trial to a limited number of agencies. Write to us and we'll get in touch.",
-    "footer": "© 2026 Safhat Wsool Company For Information Technology"
+    "finalTitle": "Your creators deserve pages that convince",
+    "finalBody": "We're opening the trial to a limited number of agencies. Write to us and we'll reply within two business days.",
+    "footerTag": "Professional media kits for Arab creators, and a dashboard to manage them.",
+    "footerLinks": {
+      "creators": "For creators",
+      "pricing": "Creator pricing",
+      "contact": "Contact us",
+      "terms": "Terms of use",
+      "privacy": "Privacy policy",
+      "refund": "Refund policy"
+    },
+    "footer": "© 2026 Safhat Wsool Company For Information Technology",
+    "ctaShort": "Free trial"
   }
 }

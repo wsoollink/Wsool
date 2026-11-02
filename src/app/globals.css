@@ -142,3 +142,25 @@
     margin: 12mm;
   }
 }
+
+/* Agencies landing page (/agencies): grid backdrop and slow floating cards, like the home hero. */
+.ag-grid {
+  background-image:
+    linear-gradient(rgba(2, 25, 65, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(2, 25, 65, 0.045) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+[data-theme="dark"] .ag-grid {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+}
+@keyframes ag-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.ag-float { animation: ag-float 6s ease-in-out infinite; }
+.ag-float-2 { animation: ag-float 7s ease-in-out 1.2s infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .ag-float, .ag-float-2 { animation: none; }
+}

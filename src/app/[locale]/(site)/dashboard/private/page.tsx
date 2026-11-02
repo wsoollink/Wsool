@@ -13,6 +13,8 @@ import { db } from "@/lib/db";
 import { listPrivateLinks, privateLinkUrl } from "@/lib/private-view";
 import { siteOrigin } from "@/lib/site-url";
 import { PAGE_SECTIONS } from "@/lib/validation/appearance";
+import { directoryReady, directoryStats } from "@/lib/directory";
+import { DirectoryCard } from "./DirectoryCard";
 import { PrivateEditor } from "./PrivateEditor";
 
 async function Editor() {
@@ -20,15 +22,18 @@ async function Editor() {
   const { user, page } = await requireCreator();
   const t = await getTranslations("PrivatePage");
   const tc = await getTranslations("CreatorPage");
-  const [sub, links] = await Promise.all([
+  const [sub, links, categories, stats] = await Promise.all([
     db.subscription.findUnique({ where: { userId: user.id }, select: { status: true, trialEndsAt: true } }),
     listPrivateLinks(page.id),
+    db.pageCategory.count({ where: { pageId: page.id } }),
+    directoryStats(page.id),
   ]);
   const isPro = hasPro(sub);
   const origin = siteOrigin();
   const sections = page.lockWhole ? null : PAGE_SECTIONS.filter((s) => page.privateSections.includes(s) && !page.hiddenSections.includes(s));
   return (
     <div className="flex flex-col gap-4">
+      <DirectoryCard initial={page.inDirectory} ready={directoryReady(page, categories)} stats={stats} />
       {!isPro && <ProNotice text={t("proOnly")} />}
       <Card className="flex flex-col gap-2">
         <h2 className="font-bold">{t("whatTitle")}</h2>

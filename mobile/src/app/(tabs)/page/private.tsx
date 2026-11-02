@@ -2,15 +2,16 @@ import { useState } from "react";
 import { Alert, Share, View } from "react-native";
 import { router } from "expo-router";
 import * as Clipboard from "expo-clipboard";
-import { Copy, KeyRound, Link2, Share2, Trash2 } from "lucide-react-native";
-import { ProNote, SectionScreen, useSection } from "../../../components/editor";
+import { Check, Circle, Copy, KeyRound, Link2, Search, Share2, Trash2 } from "lucide-react-native";
+import { ProNote, SectionScreen, SwitchRow, useSection } from "../../../components/editor";
 import { Button, Card, Field, Pill, Row, Segmented, T } from "../../../components/ui";
 import { useI18n } from "../../../i18n";
 import { rpc } from "../../../lib/api";
 import { useTheme } from "../../../lib/theme";
 
 type LinkRow = { id: string; name: string; url: string | null; views: number; lastViewedAt: string | null; expiresAt: string | null; expired: boolean };
-type Data = { isPro: boolean; hasPassword: boolean; lockWhole: boolean; privateSections: string[]; links: LinkRow[] };
+type Directory = { on: boolean; ready: { published: boolean; photo: boolean; category: boolean }; stats: { impressions: number; opens: number } };
+type Data = { isPro: boolean; hasPassword: boolean; directory?: Directory; lockWhole: boolean; privateSections: string[]; links: LinkRow[] };
 type Result = { ok?: boolean; url?: string; error?: "invalid" | "pro_only" | "limit" };
 const DAYS = [0, 7, 30, 90] as const;
 
@@ -26,6 +27,12 @@ export default function PrivateView() {
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const [made, setMade] = useState<{ name: string; url: string } | null>(null);
   const [copied, setCopied] = useState("");
+  const [listed, setListed] = useState<boolean | null>(null);
+  const dirOn = listed ?? !!data?.directory?.on;
+  const toggleDirectory = async (v: boolean) => {
+    setListed(v);
+    try { const r = await rpc<Result>("saveDirectory", v); if (!r.ok) setListed(!v); else await reload(); } catch { setListed(!v); }
+  };
   const date = new Intl.DateTimeFormat(lang === "ar" ? "ar-u-nu-latn" : "en", { dateStyle: "medium" });
 
   const run = async (call: () => Promise<Result>, ok: string, after?: (r: Result) => void) => {
@@ -45,6 +52,27 @@ export default function PrivateView() {
     <SectionScreen title={t("section.private")} subtitle={t("private.subtitle")} loading={!data && !error} error={error} onRetry={reload}>
       {data && (
         <>
+          {data.directory ? (
+            <Card>
+              <Row><Search size={18} color={colors.blue} /><T weight="bold">{t("private.dirTitle")}</T></Row>
+              <T size={13.5} tone="muted">{t("private.dirHint")}</T>
+              <SwitchRow label={t("private.dirSwitch")} hint={t("private.dirSwitchHint")} value={dirOn} onChange={toggleDirectory} />
+              {dirOn && !(data.directory.ready.published && data.directory.ready.photo && data.directory.ready.category) ? (
+                <View style={{ gap: 6 }}>
+                  <T size={13.5} weight="bold" tone="warn">{t("private.dirNotYet")}</T>
+                  {(["published", "photo", "category"] as const).map((k) => (
+                    <Row key={k}>
+                      {data.directory!.ready[k] ? <Check size={15} color={colors.good} /> : <Circle size={15} color={colors.muted} />}
+                      <T size={13.5}>{t(`private.dirNeed.${k}`)}</T>
+                    </Row>
+                  ))}
+                </View>
+              ) : dirOn ? <T size={13.5} weight="bold" tone="good">{t("private.dirListed")}</T> : null}
+              {data.directory.stats.impressions || data.directory.stats.opens ? (
+                <T size={12.5} tone="muted">{t("private.dirStats", { shown: data.directory.stats.impressions, opened: data.directory.stats.opens })}</T>
+              ) : null}
+            </Card>
+          ) : null}
           {!data.isPro ? <ProNote text={t("private.proOnly")} /> : null}
           <Card>
             <T weight="bold">{t("private.whatTitle")}</T>

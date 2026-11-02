@@ -62,6 +62,7 @@ const ACTIONS: Record<string, (...args: never[]) => Promise<unknown>> = {
   savePagePassword: privateView.savePagePassword,
   addPrivateLink: privateView.addPrivateLink,
   removePrivateLink: privateView.removePrivateLink,
+  saveDirectory: privateView.saveDirectory,
   // Verification (screenshot read by the AI first, like the website)
   checkScreenshot: verification.checkScreenshot,
   applyReadFollowers: verification.applyReadFollowers,

@@ -68,7 +68,7 @@ export const en: typeof ar = {
   },
   section: {
     edit: "Edit page", accounts: "Accounts & numbers", work: "Brands & work", rates: "Ad rates", links: "Links & services", coupons: "Discount coupons",
-    contact: "Contact", verification: "Verification", appearance: "Appearance", analytics: "Analytics", referrals: "Commission", subscription: "Subscription", private: "Private view",
+    contact: "Contact", verification: "Verification", appearance: "Appearance", analytics: "Analytics", referrals: "Commission", subscription: "Subscription", private: "Privacy & visibility",
   },
 
   editor: {
@@ -96,7 +96,7 @@ export const en: typeof ar = {
     privatePro: "The private view is a Pro feature.",
   },
   private: {
-    subtitle: "Password and private links for brands", proOnly: "The private view (password and private links) is a Pro feature.",
+    subtitle: "Brand directory listing, password and private links", proOnly: "The private view (password and private links) is a Pro feature.",
     whatTitle: "What's in the private view?", whatWhole: "Your whole page is private: visitors see your photo, name and specialty only.",
     whatSections: "Private sections: {list}. Visitors see the rest of your page as usual.", whatNone: "You haven't made any section private. Choose in Appearance → Page sections.",
     chooseSections: "Choose sections", passwordTitle: "Password", on: "On", off: "Off",
@@ -110,6 +110,10 @@ export const en: typeof ar = {
     views: "Opened: {n}", lastOpened: "last opened {date}", endsOn: "ends {date}", expired: "Expired", revoke: "Revoke link",
     revokeConfirm: "Revoke the link for {name}? Everyone who opened it is locked out.", revoked: "Link revoked.",
     errors: { invalid: "Check the details.", pro_only: "This is a Pro feature.", limit: "You've reached the limit (50 links). Revoke an old one first." },
+    dirTitle: "Wsool directory for brands", dirHint: "Brands and agencies on Wsool can search for creators by category, city, platform and audience size. The directory shows your public page only: nothing private or hidden, and never your phone or email.",
+    dirSwitch: "Show my page in the directory", dirSwitchHint: "Turn it off anytime and your page leaves the search right away.",
+    dirNotYet: "Your page isn't listed yet. Still needed:", dirNeed: { published: "Your page is published", photo: "Add your photo", category: "Pick your category in Edit page" },
+    dirListed: "Your page is in the directory ✓", dirStats: "Last 30 days: shown in searches {shown} times, opened from the directory {opened} times.",
   },
   coupons: {
     subtitle: "Your store discount codes and tracking links", store: "Store name", storeEn: "Store name in English", storePh: "e.g. Noon",

@@ -17,6 +17,7 @@ import { db } from "@/lib/db";
 import { formatCompact, formatNumber } from "@/lib/format";
 import { initials } from "@/lib/initials";
 import { signOut } from "../login/actions";
+import { Directory } from "./Directory";
 import { AddMember, ConfirmAction, InviteCreator, ManageButton } from "./Controls";
 
 export const metadata: Metadata = { robots: { index: false } };
@@ -30,13 +31,17 @@ async function AgencyDashboard({ lang, searchParams }: { lang: Locale; searchPar
   const m = await getMembership(me);
   if (!m) notFound();
   const t = await getTranslations("AgencyApp");
-  const tab = (await searchParams).tab === "team" ? "team" : "creators";
+  const sp = await searchParams;
+  const brand = m.agency.kind === "brand";
+  // Brand accounts only search the directory; agencies also manage creators.
+  const tabs = brand ? (["directory", "team"] as const) : (["creators", "directory", "team"] as const);
+  const tab = (tabs as readonly string[]).includes(sp.tab as string) ? (sp.tab as (typeof tabs)[number]) : tabs[0];
   const canInvite = roleAtLeast(m.member.role, "manager");
   const canEdit = roleAtLeast(m.member.role, "editor");
   const date = new Intl.DateTimeFormat(toIntlLocale(lang), { dateStyle: "medium" });
 
   const [links, members, ownPage] = await Promise.all([
-    db.agencyLink.findMany({
+    tab !== "creators" ? Promise.resolve([]) : db.agencyLink.findMany({
       where: { agencyId: m.agency.id, status: { in: ["active", "pending"] } },
       orderBy: { invitedAt: "desc" },
       include: {
@@ -65,20 +70,22 @@ async function AgencyDashboard({ lang, searchParams }: { lang: Locale; searchPar
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <p className="text-sm font-semibold text-blue">{m.agency.name}</p>
-          <h1 className="text-2xl font-black md:text-3xl">{t("title")}</h1>
-          <p className="text-sm text-muted">{t("sub")}</p>
+          <h1 className="text-2xl font-black md:text-3xl">{tab === "directory" ? t("directoryTitle") : t("title")}</h1>
+          <p className="text-sm text-muted">{tab === "directory" ? t("directorySub") : t("sub")}</p>
         </div>
-        <nav aria-label={t("title")} className="flex gap-1 rounded-full border border-line bg-card p-1">
-          {(["creators", "team"] as const).map((k) => (
-            <Link key={k} href={k === "creators" ? "/agency" : "/agency?tab=team"} aria-current={tab === k ? "page" : undefined}
-              className={`inline-flex min-h-10 items-center rounded-full px-4 text-sm font-bold ${tab === k ? "bg-navy text-on-navy" : "text-muted hover:text-navy"}`}>
+        <nav aria-label={t("title")} className="flex max-w-full gap-1 overflow-x-auto rounded-full border border-line bg-card p-1">
+          {tabs.map((k) => (
+            <Link key={k} href={k === tabs[0] ? "/agency" : `/agency?tab=${k}`} aria-current={tab === k ? "page" : undefined}
+              className={`inline-flex min-h-10 shrink-0 items-center rounded-full px-4 text-sm font-bold whitespace-nowrap ${tab === k ? "bg-navy text-on-navy" : "text-muted hover:text-navy"}`}>
               {t(`tabs.${k}`)}
             </Link>
           ))}
         </nav>
       </div>
 
-      {tab === "creators" ? (
+      {tab === "directory" ? (
+        <Directory lang={lang} sp={sp} userId={me.id} canInvite={!brand && canInvite} />
+      ) : tab === "creators" ? (
         <>
           <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
             {[

@@ -14,6 +14,7 @@ export function CreateAgency() {
   const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [kind, setKind] = useState<"agency" | "brand">("agency");
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const [pending, start] = useTransition();
   return (
@@ -21,13 +22,22 @@ export function CreateAgency() {
       onSubmit={(e) => {
         e.preventDefault();
         start(async () => {
-          const r = await createAgency(name, email);
+          const r = await createAgency(name, email, kind);
           if (r.ok) { setMsg({ ok: true, text: t("created") }); setName(""); setEmail(""); router.refresh(); }
           else setMsg({ ok: false, text: t(`errors.${r.error ?? "invalid"}`) });
         });
       }}
       className="flex flex-col gap-3"
     >
+      <fieldset className="flex flex-wrap gap-2">
+        <legend className="mb-1.5 text-[13px] font-medium">{t("kind")}</legend>
+        {(["agency", "brand"] as const).map((k) => (
+          <button key={k} type="button" aria-pressed={kind === k} onClick={() => setKind(k)}
+            className={`inline-flex min-h-10 items-center rounded-full px-4 text-sm font-bold ${kind === k ? "bg-blue/10 text-blue ring-1 ring-blue/30" : "bg-card text-muted ring-1 ring-line"}`}>
+            {t(`kinds.${k}`)}
+          </button>
+        ))}
+      </fieldset>
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
         <label className="flex flex-col gap-1.5 text-[13px] font-medium">{t("name")}
           <input value={name} onChange={(e) => setName(e.target.value)} maxLength={80} required className={field} />

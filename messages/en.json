@@ -221,7 +221,7 @@
     "whatsapp": "WhatsApp support",
     "whatsappText": "Hi, I have a question about my Wsool account",
     "agency": "Agency",
-    "private": "Private view"
+    "private": "Privacy & visibility"
   },
   "CreatorPage": {
     "demoBadge": "Demo page",
@@ -809,7 +809,7 @@
     "lockWhole": "Make the whole page private",
     "lockWholeHint": "Visitors see your photo, name and specialty only; the rest opens with your password or a private link.",
     "privatePro": "The private view is a Pro feature.",
-    "privateNote": "Manage the password and private links in <a>Private view</a>.",
+    "privateNote": "Manage the password and private links in <a>Privacy & visibility</a>.",
     "visibility": {
       "public": "Everyone",
       "private": "Private",
@@ -1736,7 +1736,13 @@
       "errors": {
         "invalid": "Check the name and email.",
         "exists": "This email is already on an agency team."
-      }
+      },
+      "kind": "Account type",
+      "kinds": {
+        "agency": "Agency (manages creators + directory)",
+        "brand": "Brand (directory search only)"
+      },
+      "brandShort": "Brand"
     }
   },
   "Billing": {
@@ -2144,8 +2150,8 @@
     "private_link_opened": {
       "subject": "{name} opened your private page",
       "title": "Your private link was opened",
-      "body": "The private link you made for {name} was just opened for the first time.\nSee how often it's opened, or revoke it, in Private view.",
-      "cta": "Open Private view"
+      "body": "The private link you made for {name} was just opened for the first time.\nSee how often it's opened, or revoke it, in Privacy & visibility.",
+      "cta": "Open Privacy & visibility"
     }
   },
   "Notifications": {
@@ -2353,7 +2359,7 @@
     "coupons": "Your store discount codes and tracking links",
     "referrals": "Earn from every subscriber who comes through your link",
     "agency": "The marketing agency managing your page, with permissions you choose",
-    "private": "Password and private links for brands"
+    "private": "Brand directory listing, password and private links"
   },
   "SaveBar": {
     "save": "Save changes",
@@ -2780,7 +2786,8 @@
     "signOut": "Sign out",
     "tabs": {
       "creators": "Creators",
-      "team": "Team"
+      "team": "Team",
+      "directory": "Directory"
     },
     "kpi": {
       "creators": "Creators",
@@ -2846,7 +2853,9 @@
     "emailPh": "Email",
     "removeMember": "Remove",
     "confirmRemoveMember": "Remove {email} from the team?",
-    "viewerNote": "You have view-only access."
+    "viewerNote": "You have view-only access.",
+    "directoryTitle": "Creator directory",
+    "directorySub": "Find creators who chose to be listed for brands"
   },
   "AgencySection": {
     "inviteTitle": "Invitation from {agency}",
@@ -2932,6 +2941,61 @@
       "invalid": "Check the details.",
       "pro_only": "This is a Pro feature.",
       "limit": "You've reached the limit (50 links). Revoke an old one first."
+    },
+    "directory": {
+      "title": "Wsool directory for brands",
+      "hint": "Brands and agencies on Wsool can search for creators by category, city, platform and audience size. The directory shows your public page only: nothing private or hidden, and never your phone or email.",
+      "switch": "Show my page in the directory",
+      "switchHint": "Turn it off anytime and your page leaves the search right away.",
+      "failed": "Couldn't save. Try again.",
+      "notYet": "Your page isn't listed yet. Still needed:",
+      "need": {
+        "published": "Your page is published",
+        "photo": "Add your photo",
+        "category": "Pick your category in Edit page"
+      },
+      "listed": "Your page is in the directory ✓",
+      "stats": "Last 30 days: shown in searches {shown} times, opened from the directory {opened} times."
     }
+  },
+  "Directory": {
+    "title": "Creator directory",
+    "search": "Search",
+    "searchPh": "Search by name or specialty",
+    "category": "Category",
+    "country": "Country",
+    "city": "City",
+    "platform": "Platform",
+    "size": "Audience size",
+    "lang": "Page language",
+    "any": "Any",
+    "verifiedOnly": "Verified only",
+    "clear": "Clear",
+    "go": "Search",
+    "sizes": {
+      "nano": "Under 10K",
+      "micro": "10K - 100K",
+      "mid": "100K - 1M",
+      "macro": "Over 1M"
+    },
+    "langs": {
+      "ar": "العربية",
+      "en": "English"
+    },
+    "count": "{n, plural, =0 {No results} one {1 result} other {# results}}",
+    "empty": "No creators match these filters. Try fewer filters.",
+    "verified": "Verified",
+    "platforms": "Platforms",
+    "privateNumbers": "Numbers private",
+    "privatePage": "Private page",
+    "open": "Open page",
+    "invite": "Invite to agency",
+    "invited": "Invitation sent",
+    "pages": "Pages",
+    "prev": "Previous",
+    "next": "Next",
+    "pageOf": "Page {p} of {n}",
+    "limit": "You've reached today's search limit. Try again tomorrow.",
+    "note": "Only creators who chose to be listed appear, with what their pages show publicly. Use it for professional contact only; copying or collecting the data is not allowed under the Terms."
   }
 }

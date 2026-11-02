@@ -1,5 +1,6 @@
 import "server-only";
 import { listPrivateLinks, privateLinkUrl } from "@/lib/private-view";
+import { directoryReady, directoryStats } from "@/lib/directory";
 import { FREE_LIMITS, hasPro } from "@/config/plans";
 import { parseCustomColors } from "@/components/creator/theme";
 import type { Locale } from "@/i18n/config";
@@ -243,11 +244,14 @@ const LOADERS = {
   },
   /** Private view: password set or not + private links (the password itself is never sent back). */
   async private(page: Page) {
-    const [isPro, links] = await Promise.all([pro(page.userId), listPrivateLinks(page.id)]);
+    const [isPro, links, categories, stats] = await Promise.all([
+      pro(page.userId), listPrivateLinks(page.id), db.pageCategory.count({ where: { pageId: page.id } }), directoryStats(page.id),
+    ]);
     const origin = siteOrigin();
     return {
       isPro,
       hasPassword: !!page.privatePassword,
+      directory: { on: page.inDirectory, ready: directoryReady(page, categories), stats },
       lockWhole: page.lockWhole,
       privateSections: page.privateSections.filter((s) => !page.hiddenSections.includes(s)),
       links: links.map((l) => ({

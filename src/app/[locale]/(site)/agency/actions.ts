@@ -12,6 +12,8 @@ const perms = z.object({ content: z.boolean(), rates: z.boolean(), contact: z.bo
 /** Invite a creator who already has a Wsool page (managers and the owner). */
 export async function inviteCreatorAction(query: string, p: z.input<typeof perms>): Promise<{ ok?: true; error?: InviteError | "invalid" | "rate" }> {
   const m = await requireAgency("manager");
+  // Brand accounts only search the directory; managing creators is for agencies.
+  if (m.agency.kind !== "agency") return { error: "invalid" };
   const q = z.string().trim().min(3).max(254).safeParse(query);
   const pp = perms.safeParse(p);
   if (!q.success || !pp.success) return { error: "invalid" };

@@ -33,7 +33,7 @@ async function Agencies({ lang }: { lang: Locale }) {
               return (
                 <li key={a.id} className="flex flex-wrap items-center gap-3 px-5 py-3.5">
                   <div className="min-w-0 flex-1">
-                    <p className="font-bold">{a.name}</p>
+                    <p className="flex items-center gap-2 font-bold">{a.name}{a.kind === "brand" && <Pill tone="blue" dot={false}>{t("brandShort")}</Pill>}</p>
                     <p className="text-xs text-muted"><bdi dir="ltr">{owner?.email ?? "—"}</bdi> · {date.format(a.createdAt)}</p>
                   </div>
                   <span className="text-sm text-muted">{t("counts", { creators: formatNumber(a._count.links, lang), team: formatNumber(a.members.length, lang) })}</span>

@@ -46,3 +46,11 @@ export async function removePrivateLink(id: string): Promise<Result> {
   if (!z.uuid().safeParse(id).success) return { error: "invalid" };
   return (await revokePrivateLink(page.id, id)) ? { ok: true } : { error: "invalid" };
 }
+
+/** Show / hide the page in the Wsool creator directory for companies (all plans; the creator's own choice). */
+export async function saveDirectory(on: boolean): Promise<Result> {
+  const { page } = await requireCreator();
+  if (typeof on !== "boolean") return { error: "invalid" };
+  await db.page.update({ where: { id: page.id }, data: { inDirectory: on } });
+  return { ok: true };
+}

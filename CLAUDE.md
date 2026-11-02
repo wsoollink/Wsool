@@ -11,7 +11,7 @@ The owner (Ibrahim) is not a professional developer: explain what you did in sho
 Wsool is a media-kit platform for content creators. Each creator gets a public page at
 `wsool.link/<username>` showing their profile, verified follower numbers, brands they worked
 with, past work, ad rates, and direct contact (WhatsApp + email). Brands open the link the
-creator shares. There is **no brand directory** in v1.
+creator shares. Brands can also search the **creator directory** (owner, Nov 2026), but only creators who opt in are listed (see "Creator directory").
 
 Surfaces:
 1. **Public creator page** — `wsool.link/<username>` (8 templates, Arabic + English).
@@ -866,6 +866,34 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   (`recordBankPayout`: whole payable balance, row-locked, reference, audited `referral.payout`, notifies `commission_paid`),
   CSV `/api/admin/referrals` (audited `referral.export`). Finance counts commissions as expense category `affiliate` (and in
   marketing for CAC). Terms section 7 + privacy (data row, 30-day cookie) describe it. Data export includes it.
+
+### Private view (owner, Nov 2026, Pro)
+- Appearance «أقسام صفحتي»: each section in `PAGE_SECTIONS` (numbers, rates, brands, works, services, links, coupons) is public, private
+  (`pages.private_sections`) or hidden (`hidden_sections`; hidden wins). "Make the whole page private" (`pages.lock_whole`) keeps only photo,
+  name and specialty. `shapePage(page, now, open)`: without `open` the private parts are left out entirely (separate `"use cache"` variant
+  of `getPublicPage(username, open)`), so they never reach the browser; `privacy` = {locked, lockedSections, canUnlock, hasPassword, unlocked,
+  pageId, ownerId, version} (pageId/ownerId/version are for the server check only). Only Pro pages can be unlocked; on Free private parts stay hidden.
+- Unlocking (`src/lib/private-view.ts`): httpOnly cookie `wsool_pv_<hash(pageId)>` = `p.<version>.<hmac>` (page password, scrypt hash in
+  `pages.private_password`; changing/removing it bumps `private_version`) or `l.<linkId>.<hmac>` (table `private_links`: name, token SHA-256,
+  token sealed with `TOKEN_ENCRYPTION_KEY` so the creator can copy it again, optional end date, revoke, views). Password form = `unlockPage`
+  (10 tries / 15 min per IP + page). Private link `wsool.link/<username>?k=<token>`: `src/proxy.ts` → `/api/unlock` (sets the cookie, counts a
+  non-bot visit, notifies `private_link_opened` on the first, back to the clean URL). `withPrivateView()` (`src/lib/creator-page.ts`) picks the
+  variant for the page (inside `<Suspense>`, only when `canUnlock`) and the PDF; the page owner always gets the full one. Whole-page lock → noindex,
+  no bio in previews, PDF 404 until unlocked. Public page: `PrivateView` card (lock + password field, or "you're seeing the full media kit" + PDF).
+- Dashboard section `private` («الخصوصية والظهور», unscoped = never an agency): directory switch, what's private, password, private links
+  (`savePagePassword`, `addPrivateLink`, `removePrivateLink`, `saveDirectory`). App: `page/private.tsx` + Appearance three-way chips; same actions
+  through the rpc route. Older app versions saving Appearance keep the newer hidden/private sections untouched.
+
+### Creator directory (owner, Nov 2026)
+- Creators opt in (`pages.in_directory`, off by default, all plans) in «الخصوصية والظهور»; listed only when published, with a photo and a
+  category (`directoryReady`). Listing = what the public page shows: no private/hidden sections, no contact details; whole-page-locked pages show
+  photo, name and specialty only (no city, platforms or numbers); followers only when "numbers" is public.
+- Search: `/agency?tab=directory` (`Directory.tsx`, plain GET form) for any active agency member; `agencies.kind` = `agency` (manages creators +
+  directory) or `brand` (directory + team only; can't invite). Owner picks the kind when creating the account (`admin/agencies`). Filters: text,
+  category, country, city, platform, size band (`DIRECTORY_SIZES`), page language, verified only; 24 per page, verified then biggest first;
+  `DIRECTORY_DAILY_LIMIT` = 300 searches per member per day; no export. Agencies get "Invite" (content + rates asked).
+- Stats (`directory_stats`, page × day): impressions per result shown, opens via `/agency/open?u=` (members only, counts then redirects). The
+  creator sees the last 30 days in their card. Logic: `src/lib/directory.ts`. Terms section 2 + privacy (who we share with, cookies) describe both.
 
 ### Marketing agencies (owner, Nov 2026 — phase 1 built)
 - Owner decisions: the agency plan covers Pro for linked creators; unlinking leaves 14 days of Pro (`UNLINK_GRACE_DAYS`); pages an

@@ -6,18 +6,22 @@ import { audit, requireAdmin } from "@/lib/admin";
 import { db } from "@/lib/db";
 import { sendAgencyTeamInvite } from "@/lib/notify";
 
-const input = z.object({ name: z.string().trim().min(2).max(80), email: z.string().trim().toLowerCase().pipe(z.email().max(254)) });
+const input = z.object({
+  name: z.string().trim().min(2).max(80),
+  email: z.string().trim().toLowerCase().pipe(z.email().max(254)),
+  kind: z.enum(["agency", "brand"]),
+});
 
-/** Owner only: opens an agency for the free beta, with its owner's email (they get an invitation email). */
-export async function createAgency(name: string, email: string): Promise<{ ok?: true; error?: "invalid" | "exists" }> {
+/** Owner only: opens an agency (or a brand account that only searches the creator directory) for the free beta, with its owner's email (they get an invitation email). */
+export async function createAgency(name: string, email: string, kind: "agency" | "brand" = "agency"): Promise<{ ok?: true; error?: "invalid" | "exists" }> {
   const admin = await requireAdmin("owner");
-  const parsed = input.safeParse({ name, email });
+  const parsed = input.safeParse({ name, email, kind });
   if (!parsed.success) return { error: "invalid" };
   if (await db.agencyMember.count({ where: { email: parsed.data.email } })) return { error: "exists" };
   await db.$transaction(async (tx) => {
-    const agency = await tx.agency.create({ data: { name: parsed.data.name, createdBy: admin.userId } });
+    const agency = await tx.agency.create({ data: { name: parsed.data.name, kind: parsed.data.kind, createdBy: admin.userId } });
     await tx.agencyMember.create({ data: { agencyId: agency.id, email: parsed.data.email, role: "owner" } });
-    await audit(admin, "agency.create", { type: "agency", id: agency.id }, { name: parsed.data.name, email: parsed.data.email }, tx);
+    await audit(admin, "agency.create", { type: "agency", id: agency.id }, { name: parsed.data.name, email: parsed.data.email, kind: parsed.data.kind }, tx);
   });
   await sendAgencyTeamInvite(parsed.data.email, parsed.data.name);
   return { ok: true };

@@ -117,3 +117,27 @@ export function AddMember() {
     </form>
   );
 }
+
+/** "Invite" on a directory result: asks for content + rates (the creator decides what to allow when accepting). */
+export function InviteFromDirectory({ username }: { username: string }) {
+  const t = useTranslations("Directory");
+  const ta = useTranslations("AgencyApp");
+  const [result, setResult] = useState<{ sent: boolean; error?: string } | null>(null);
+  const [pending, start] = useTransition();
+  const sent = result?.sent;
+  return (
+    <div className="flex flex-1 flex-col gap-1">
+      <button
+        type="button" disabled={pending || sent}
+        onClick={() => start(async () => {
+          const r = await inviteCreatorAction(username, { content: true, rates: true, contact: false });
+          setResult(r.ok || r.error === "already" ? { sent: true } : { sent: false, error: ta(`errors.${r.error ?? "invalid"}`) });
+        })}
+        className={buttonClasses(sent ? "secondary" : "primary", "w-full")}
+      >
+        {sent ? t("invited") : t("invite")}
+      </button>
+      {result?.error && <p role="alert" className="text-xs text-bad">{result.error}</p>}
+    </div>
+  );
+}

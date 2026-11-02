@@ -629,6 +629,10 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   Text changes are made in the `design/marketing/*.dc.html` files, then the script is re-run.
   Adding an element to a design shifts the generated `mk-home-N` numbers after it: update the numbers used in
   `marketing.css` (check each against `generated/home.css` before and after).
+- **For agencies page** `/agencies` (owner, Nov 2026, draft): landing page for marketing agencies (hand-built, texts `Agencies`;
+  hero with a dashboard mock, why, how it works, features + coming soon, "the page belongs to the creator", draft plan prices,
+  FAQ). CTAs go to `/contact?topic=partnership` (the contact form preselects `?topic=`). Linked as «للوكالات» / "For agencies" in
+  the marketing header nav (desktop) and the footer Product column (`LINKS`). The agency accounts themselves are not built yet.
 - Home "claim your link": live check (`checkLink`), then cookie `wsool_claim` → `/login`;
   onboarding pre-fills that name.
 - **Newsletter** (`src/lib/newsletter.ts`, table `newsletter_subscribers`): double opt-in, HMAC

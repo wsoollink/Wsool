@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -10,6 +11,7 @@ import { buttonClasses } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { SELLER, SUPPORT_EMAIL, SUPPORT_WHATSAPP_DISPLAY, supportWhatsappUrl } from "@/config/site";
 import { isLocale, toIntlLocale } from "@/i18n/config";
+import { CONTACT_TOPICS, type ContactTopic } from "@/lib/validation/support-message";
 import { ContactForm } from "./ContactForm";
 
 export async function generateMetadata({ params }: PageProps<"/[locale]/contact">): Promise<Metadata> {
@@ -20,7 +22,7 @@ export async function generateMetadata({ params }: PageProps<"/[locale]/contact"
 }
 
 /** "Contact us" (owner, Oct 2026): form to support@, company details and a WhatsApp card. Linked from the marketing footer. */
-export default async function ContactPage({ params }: PageProps<"/[locale]/contact">) {
+export default async function ContactPage({ params, searchParams }: PageProps<"/[locale]/contact">) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   setRequestLocale(toIntlLocale(locale));
@@ -56,7 +58,9 @@ export default async function ContactPage({ params }: PageProps<"/[locale]/conta
         <div className="grid grid-cols-1 gap-5 md:grid-cols-[1.5fr_1fr]">
           <Card className="p-5 md:p-6">
             <h2 className="mb-4 text-lg font-bold">{t("formTitle")}</h2>
-            <ContactForm lang={en ? "en" : "ar"} />
+            <Suspense fallback={<ContactForm lang={en ? "en" : "ar"} />}>
+              <FormWithTopic lang={en ? "en" : "ar"} searchParams={searchParams} />
+            </Suspense>
           </Card>
 
           <aside className="flex flex-col gap-5">
@@ -94,4 +98,11 @@ export default async function ContactPage({ params }: PageProps<"/[locale]/conta
       <footer className="border-t border-line py-6 text-center text-sm text-muted">© wsool.link</footer>
     </div>
   );
+}
+
+/** "?topic=partnership" (from the agencies page) preselects the form's topic. */
+async function FormWithTopic({ lang, searchParams }: { lang: "ar" | "en"; searchParams: Promise<Record<string, string | string[] | undefined>> }) {
+  const sp = await searchParams;
+  const topic = CONTACT_TOPICS.find((k) => k === sp.topic) as ContactTopic | undefined;
+  return <ContactForm lang={lang} topic={topic} />;
 }

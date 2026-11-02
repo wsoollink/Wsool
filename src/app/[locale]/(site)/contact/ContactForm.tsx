@@ -13,9 +13,9 @@ import { sendSupportMessage, type ContactResult } from "./actions";
 const EMPTY = { name: "", email: "", topic: "billing" as ContactTopic, username: "", message: "", website: "" };
 
 /** The "Contact us" form. Controlled fields, so a failed send keeps what was typed (CLAUDE.md, Forms). */
-export function ContactForm({ lang }: { lang: "ar" | "en" }) {
+export function ContactForm({ lang, topic }: { lang: "ar" | "en"; topic?: ContactTopic }) {
   const t = useTranslations("Contact");
-  const [form, setForm] = useState(EMPTY);
+  const [form, setForm] = useState({ ...EMPTY, topic: topic ?? EMPTY.topic });
   const [result, setResult] = useState<ContactResult | null>(null);
   const [pending, startTransition] = useTransition();
   const set = (key: keyof typeof EMPTY) => (e: { target: { value: string } }) => setForm((f) => ({ ...f, [key]: e.target.value }));

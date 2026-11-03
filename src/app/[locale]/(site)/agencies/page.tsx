@@ -10,9 +10,10 @@ import {
   ActivityLog, DashboardMock, FloatInvite, FloatPdf, FloatWeek, LinkedRows, PdfStack, PermissionsMock, TeamRoles, VisitsBars,
 } from "./Visuals";
 import { AgenciesFooter, AgenciesHeader, APPLY } from "./Header";
+import { AgencyPlans, type AgencyPlan } from "./Plans";
 
 type Item = { t: string; b: string };
-type Plan = { name: string; creators: string; price: string; per: string; popular?: string };
+type Plan = AgencyPlan;
 type Faq = { q: string; a: string };
 
 export async function generateMetadata({ params }: PageProps<"/[locale]/agencies">): Promise<Metadata> {
@@ -245,38 +246,12 @@ export default async function AgenciesPage({ params }: PageProps<"/[locale]/agen
         <section id="pricing" className="mx-auto max-w-[1180px] scroll-mt-24 px-4 pb-20 md:pb-28">
           <Eyebrow>{t("priceEyebrow")}</Eyebrow>
           <Title a={t("priceTitle")} />
-          <p className="mt-4 mb-12 text-center text-muted">{t("priceNote")}</p>
-          <div className="grid grid-cols-1 items-stretch gap-4 lg:grid-cols-3">
-            {plans.map((p) => {
-              const hot = !!p.popular;
-              return (
-                <div key={p.name} className={hot
-                  ? "relative flex flex-col overflow-hidden rounded-[28px] bg-gradient-to-br from-[#0A3A8C] via-[#021941] to-[#021941] p-7 text-white shadow-[0_40px_80px_-40px_rgba(2,25,65,0.8)] lg:-my-4 lg:py-11"
-                  : "flex flex-col rounded-[28px] border border-line bg-card p-7"}>
-                  {hot && <div aria-hidden="true" className="absolute -top-24 -end-16 size-64 rounded-full bg-[#22B8F0]/25 blur-3xl" />}
-                  <div className="relative mb-1 flex items-center justify-between gap-2">
-                    <h3 className="text-xl font-black">{p.name}</h3>
-                    {hot && <span className="rounded-full bg-white/15 px-3 py-1 text-xs font-bold">{p.popular}</span>}
-                  </div>
-                  <p className={`relative mb-6 text-sm ${hot ? "opacity-75" : "text-muted"}`}>{p.creators}</p>
-                  <p className="relative mb-6 flex items-end gap-2">
-                    <span className={`font-numbers leading-none font-black ${p.per ? "text-6xl" : "text-4xl"}`}>{p.price}</span>
-                    {p.per && <span className={`pb-1.5 text-sm ${hot ? "opacity-75" : "text-muted"}`}>{p.per}</span>}
-                  </p>
-                  <Link href={TRIAL} className={hot
-                    ? "relative mb-7 inline-flex min-h-12 items-center justify-center rounded-full bg-white text-[15px] font-bold text-[#021941] hover:bg-white/90"
-                    : "mb-7 inline-flex min-h-12 items-center justify-center rounded-full border border-line text-[15px] font-bold hover:bg-hover"}>
-                    {p.per ? t("ctaTrial") : t("planCtaBig")}
-                  </Link>
-                  <ul className={`relative flex flex-col gap-3 text-sm ${hot ? "" : "text-muted"}`}>
-                    {raw<string[]>("planFeatures").map((f) => (
-                      <li key={f} className="flex items-center gap-2.5"><Check aria-hidden="true" size={16} className={hot ? "text-[#7DD3FC]" : "text-good"} />{f}</li>
-                    ))}
-                  </ul>
-                </div>
-              );
-            })}
-          </div>
+          <p className="mt-4 mb-8 text-center text-muted">{t("priceNote")}</p>
+          <AgencyPlans
+            plans={plans}
+            href={TRIAL}
+            texts={{ monthly: t("billMonthly"), yearly: t("billYearly"), yearlyBadge: t("billYearlyBadge"), switchLabel: t("billSwitch"), cta: t("ctaTrial"), ctaBig: t("planCtaBig"), features: raw<string[]>("planFeatures") }}
+          />
         </section>
 
         {/* FAQ */}

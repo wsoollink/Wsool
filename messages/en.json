@@ -2720,14 +2720,18 @@
         "name": "Small",
         "creators": "Up to 10 creators",
         "price": "79",
-        "per": "USD / month"
+        "per": "USD / month",
+        "yearPrice": "790",
+        "yearPer": "USD / year"
       },
       {
         "name": "Medium",
         "creators": "Up to 30 creators",
         "price": "186",
         "per": "USD / month",
-        "popular": "Most popular"
+        "popular": "Most popular",
+        "yearPrice": "1,860",
+        "yearPer": "USD / year"
       },
       {
         "name": "Large",
@@ -2782,7 +2786,11 @@
     "footer": "© 2026 Safhat Wsool Company For Information Technology",
     "ctaShort": "Free trial",
     "madeIn": "Made in Saudi Arabia",
-    "footerNav": "Useful links"
+    "footerNav": "Useful links",
+    "billMonthly": "Monthly",
+    "billYearly": "Yearly",
+    "billYearlyBadge": "2 months free",
+    "billSwitch": "Billing period"
   },
   "Acting": {
     "banner": "You're managing <b>{creator}</b>'s page for <b>{agency}</b>. Only the sections the creator allowed are shown.",

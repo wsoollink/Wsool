@@ -205,3 +205,12 @@ export async function actingFor(user: CurrentUser, scope?: ActScope) {
     acting: { linkId: link.id, agencyName: link.agency.name, perms, role },
   };
 }
+
+/** Join requests not accepted (new or declined) are deleted 12 months after they were sent (agencies privacy policy). */
+export const AGENCY_REQUEST_KEEP_MONTHS = 12;
+export async function purgeAgencyRequests(now = new Date()) {
+  const before = new Date(now);
+  before.setUTCMonth(before.getUTCMonth() - AGENCY_REQUEST_KEEP_MONTHS);
+  const { count } = await db.agencyRequest.deleteMany({ where: { status: { in: ["new", "declined"] }, createdAt: { lt: before } } });
+  return count;
+}

@@ -637,7 +637,7 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   hero with a dashboard mock, why, how it works, features + coming soon, "the page belongs to the creator", draft plan prices,
   FAQ; plans with a monthly / yearly switch (`Plans.tsx`, yearly = 10 months: SAR 2,990 / 6,990, owner Nov 2026; Arabic copy says مؤثر / مؤثرين); the platform strip scrolls endlessly, `.ag-marq` in `globals.css`). Header `AgenciesHeader` (`agencies/Header.tsx`): section links, theme, language
   (`LangPill compact`), log in, apply. CTAs go to **`/agencies/apply`** (owner, Nov 2026): form name / agency / email to open the account with /
-  phone / note (`agencyRequestSchema`, honeypot, 5/h per IP + 3/day per email) → table `agency_requests` + email to support@; the owner opens
+  phone / note (`agencyRequestSchema`, honeypot, 5/h per IP + 3/day per email) → table `agency_requests` + email to support@ (not accepted ones are deleted after 12 months by the hourly job, `purgeAgencyRequests`); the owner opens
   it from `admin/agencies` "Join requests" (as agency or brand = `createAgency` + invitation email; decline audited `agency.decline_request`).
   Agency members without a creator page land on `/agency` after sign-in (`requireCreator`); creators on a team get an "Open agency
   dashboard" bar in the dashboard. Marketing/agencies pages scroll smoothly to `#sections` below the sticky header (`globals.css`); the

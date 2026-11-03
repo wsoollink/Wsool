@@ -5,6 +5,7 @@ import { syncConnections } from "@/lib/connect";
 import { ensureTelegramWebhook } from "@/lib/connect/telegram";
 import { siteOrigin } from "@/lib/site-url";
 import { purgeRateLimits } from "@/lib/rate-limit";
+import { purgeAgencyRequests } from "@/lib/agency";
 import { runReminders } from "@/lib/reminders";
 
 /**
@@ -20,6 +21,7 @@ export async function POST(req: Request) {
   const report = await runBillingJob();
   const purged = await purgeDeletedAccounts();
   await purgeRateLimits();
+  await purgeAgencyRequests();
   const reminders = await runReminders();
   // Linked platform accounts (YouTube…): followers + audience, once a day each.
   const connections = await syncConnections().catch((err) => ({ error: String(err) }));

@@ -840,6 +840,10 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   member's agency notifications ("Latest updates"); `/contact` and the legal pages have `SiteFooter`; the agencies header logo always
   goes to `/agencies`. `DashboardSwitch` (`src/components/DashboardSwitch.tsx`) in the agency and admin headers links the person's
   other dashboards (own creator dashboard / agency / admin). Agency dashboard copy says مؤثر / مؤثرين (owner), like the agencies page.
+- Responsiveness (owner, Nov 2026): `NavProgress` (site root layout) = a top loading bar from an internal link click (or a `form[data-nav]`
+  submit, e.g. sign out) until the address changes; sign-out buttons are `PendingSubmit` (spinner + disabled while the action runs);
+  every tappable element dips in colour and presses in on `:active` (zero-specificity `:where()` rules in `globals.css`, plus `active:`
+  colours in `buttonClasses` / `navRow`); the agencies pages' glows are radial gradients (`.ag-glow`), not big CSS blurs (iPhone lag).
 
 ### Speed (owner, Oct 2026)
 - Netlify functions run in **Frankfurt** (owner changed "Functions region"), next to Supabase (`wsool-eu`). Every database

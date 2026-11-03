@@ -67,7 +67,7 @@ export default async function AgenciesPage({ params }: PageProps<"/[locale]/agen
       <main className="flex-1 overflow-x-clip">
         {/* Hero */}
         <section className="relative">
-          <div aria-hidden="true" className="pointer-events-none absolute -top-40 start-1/2 size-[640px] rounded-full bg-[#22B8F0]/15 blur-[120px]" />
+          <div aria-hidden="true" className="pointer-events-none absolute -top-40 start-1/2 size-[640px] rounded-full ag-glow [--glow:#22B8F036]" />
           <div className="relative mx-auto grid max-w-[1180px] grid-cols-1 items-center gap-12 px-4 pt-12 pb-16 md:pt-20 lg:grid-cols-[1fr_1.05fr] lg:gap-10">
             <div className="flex flex-col items-start gap-6">
               <span className="inline-flex items-center gap-2 rounded-full border border-line bg-card py-1 ps-1 pe-3 text-[13px] font-semibold shadow-card">
@@ -92,7 +92,7 @@ export default async function AgenciesPage({ params }: PageProps<"/[locale]/agen
             </div>
 
             <div className="relative" aria-hidden="true">
-              <div aria-hidden="true" className="absolute inset-x-10 -bottom-6 h-24 rounded-full bg-[#0060E6]/25 blur-3xl" />
+              <div aria-hidden="true" className="absolute inset-x-10 -bottom-6 h-24 rounded-full ag-glow [--glow:#0060E659]" />
               <div className="relative"><DashboardMock t={raw("dash")} lang={lang} /></div>
               <div className="ag-float absolute -top-14 start-8 hidden sm:block"><FloatInvite text={t("float.invite")} /></div>
               <div className="ag-float-2 absolute -bottom-14 end-6 hidden sm:block"><FloatWeek text={t("float.week")} /></div>
@@ -147,7 +147,7 @@ export default async function AgenciesPage({ params }: PageProps<"/[locale]/agen
             </div>
 
             <div className="relative overflow-hidden rounded-[24px] bg-gradient-to-br from-[#0A2A5E] via-[#021941] to-[#021941] p-6 text-white md:p-7 lg:col-span-3">
-              <div aria-hidden="true" className="absolute -top-20 -end-16 size-72 rounded-full bg-[#22B8F0]/25 blur-3xl" />
+              <div aria-hidden="true" className="absolute -top-20 -end-16 size-72 rounded-full ag-glow [--glow:#22B8F059]" />
               <h3 className="relative mb-2 text-2xl font-black">{t("f4t")}</h3>
               <p className="relative mb-8 leading-7 opacity-80">{t("f4b")}</p>
               <PdfStack lang={lang} />
@@ -210,7 +210,7 @@ export default async function AgenciesPage({ params }: PageProps<"/[locale]/agen
         {/* Ownership */}
         <section className="mx-auto max-w-[1180px] px-4 pb-20 md:pb-28">
           <div className="relative overflow-hidden rounded-[32px] bg-gradient-to-br from-[#0A3A8C] via-[#021941] to-[#021941] p-7 text-white md:p-14">
-            <div aria-hidden="true" className="absolute -top-32 -start-24 size-96 rounded-full bg-[#22B8F0]/20 blur-3xl" />
+            <div aria-hidden="true" className="absolute -top-32 -start-24 size-96 rounded-full ag-glow [--glow:#22B8F047]" />
             <div className="relative grid grid-cols-1 items-center gap-10 lg:grid-cols-[1.15fr_1fr]">
               <div>
                 <p className="mb-3 flex items-center gap-2 text-sm font-bold text-[#7DD3FC]"><ShieldCheck aria-hidden="true" size={18} />{t("ownEyebrow")}</p>
@@ -276,7 +276,7 @@ export default async function AgenciesPage({ params }: PageProps<"/[locale]/agen
         {/* Final call */}
         <section className="mx-auto max-w-[1180px] px-4 pb-20">
           <div className="relative overflow-hidden rounded-[32px] bg-gradient-to-br from-[#0060E6] via-[#0A3A8C] to-[#021941] px-6 py-16 text-center text-white md:py-20">
-            <div aria-hidden="true" className="absolute -bottom-32 start-1/2 size-[520px] -translate-x-1/2 rounded-full bg-[#22B8F0]/30 blur-[100px]" />
+            <div aria-hidden="true" className="absolute -bottom-32 start-1/2 size-[520px] -translate-x-1/2 rounded-full ag-glow [--glow:#22B8F06B]" />
             <h2 className="relative mx-auto mb-4 max-w-2xl text-3xl leading-tight font-black md:text-6xl">{t("finalTitle")}</h2>
             <p className="relative mx-auto mb-8 max-w-3xl text-lg text-balance opacity-85">{t("finalBody")}</p>
             <Link href={TRIAL} className="relative inline-flex min-h-12 items-center justify-center rounded-full bg-white px-8 text-[15px] font-bold text-[#021941] shadow-[0_14px_30px_-12px_rgba(0,0,0,0.5)] hover:bg-white/90">{t("ctaTrial")}</Link>

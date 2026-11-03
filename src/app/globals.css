@@ -181,3 +181,28 @@ html:has(header > .mk-home-1, header > .mk-pricing-1, .ag-grid) {
     scroll-behavior: smooth;
   }
 }
+
+/* Page-load bar (NavProgress, owner Nov 2026): grows quickly, then slows down until the page arrives. */
+.nav-progress { width: 0; animation: nav-progress 8s cubic-bezier(0.1, 0.7, 0.2, 1) forwards; }
+.nav-progress-done { width: 100% !important; animation: none; opacity: 0; transition: width 0.2s ease, opacity 0.3s ease 0.15s; }
+@keyframes nav-progress { 0% { width: 0; } 10% { width: 35%; } 100% { width: 92%; } }
+[dir="rtl"] .nav-progress { margin-inline-start: 0; }
+
+/* Press feedback for everything you can tap (owner, Nov 2026): a quick colour dip and a small press-in, on the
+   whole site. :where() keeps the specificity at zero, so a component's own styles still win. */
+:where(button, [role="button"], [role="tab"], [role="radio"], a) { -webkit-tap-highlight-color: transparent; }
+:where(button, [role="button"], [role="tab"], [role="radio"], a.inline-flex, a.flex, a[class*="rounded"]):not(:disabled):not([aria-disabled="true"]):active {
+  filter: brightness(0.9);
+  transform: scale(0.97);
+}
+:where([data-theme="dark"]) :where(button, [role="button"], [role="tab"], [role="radio"], a.inline-flex, a.flex, a[class*="rounded"]):not(:disabled):active {
+  filter: brightness(1.25);
+}
+@media (prefers-reduced-motion: reduce) {
+  :where(button, [role="button"], [role="tab"], [role="radio"], a.inline-flex, a.flex, a[class*="rounded"]):active { transform: none; }
+  .nav-progress { animation-duration: 0.01s; }
+}
+
+/* Soft colour glows on the agencies pages: a radial gradient instead of a huge CSS blur, which made scrolling and
+   taps lag on iPhones (owner, Nov 2026). --glow = the colour with its alpha. */
+.ag-glow { background: radial-gradient(closest-side, var(--glow), transparent); }

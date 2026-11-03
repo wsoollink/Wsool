@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
@@ -6,6 +7,7 @@ import { getDirection, isLocale, locales, toIntlLocale } from "@/i18n/config";
 import { fontVariables } from "@/styles/fonts";
 import { siteOrigin } from "@/lib/site-url";
 import { THEME_SCRIPT } from "@/components/ThemeToggle";
+import { NavProgress } from "@/components/NavProgress";
 import "../../globals.css";
 
 export function generateStaticParams() {
@@ -43,6 +45,7 @@ export default async function SiteLayout({ children, params }: LayoutProps<"/[lo
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
       </head>
       <body className="min-h-full flex flex-col">
+        <Suspense fallback={null}><NavProgress /></Suspense>
         <NextIntlClientProvider>{children}</NextIntlClientProvider>
       </body>
     </html>

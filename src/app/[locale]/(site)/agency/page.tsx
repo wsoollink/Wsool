@@ -7,6 +7,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { BadgeCheck, ExternalLink, FileText, Link2, LogOut } from "lucide-react";
 import { BrandLogo } from "@/components/BrandLogo";
 import { DashboardSwitch } from "@/components/DashboardSwitch";
+import { PendingSubmit } from "@/components/PendingSubmit";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LangPill } from "@/components/dashboard/LangPill";
 import { Panel } from "@/components/ui/Card";
@@ -230,8 +231,8 @@ export default async function AgencyPage({ params, searchParams }: PageProps<"/[
             <Suspense fallback={null}><DashboardSwitch current="agency" /></Suspense>
             <ThemeToggle bare />
             <LangPill current={locale} />
-            <form action={signOut}>
-              <button type="submit" aria-label={t("signOut")} className="inline-flex size-11 items-center justify-center rounded-full hover:bg-hover"><LogOut aria-hidden="true" size={18} /></button>
+            <form action={signOut} data-nav>
+              <PendingSubmit label={t("signOut")} className="inline-flex size-11 items-center justify-center rounded-full hover:bg-hover" icon={<LogOut aria-hidden="true" size={18} />} />
             </form>
           </div>
         </div>

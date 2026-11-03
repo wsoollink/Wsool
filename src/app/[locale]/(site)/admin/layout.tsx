@@ -16,6 +16,7 @@ import { can, getAdmin } from "@/lib/admin";
 import { db } from "@/lib/db";
 import { signOut } from "../login/actions";
 import { DashboardSwitch } from "@/components/DashboardSwitch";
+import { PendingSubmit } from "@/components/PendingSubmit";
 
 /** Only the sections this staff member may open; nothing for everyone else. */
 async function Nav() {
@@ -55,11 +56,8 @@ export default async function AdminLayout({ children, params }: LayoutProps<"/[l
   const logo = locale === "en" ? "en" : "ar";
   const badge = <span className="inline-flex h-[22px] items-center rounded-full bg-hover px-2.5 text-[11px] font-semibold text-muted">{t("panel")}</span>;
   const signOutRow = (
-    <form action={signOut}>
-      <button type="submit" className={`${navRow} w-full`}>
-        <LogOut aria-hidden="true" size={17} />
-        {nav("signOut")}
-      </button>
+    <form action={signOut} data-nav>
+      <PendingSubmit className={`${navRow} w-full`} icon={<LogOut aria-hidden="true" size={17} />}>{nav("signOut")}</PendingSubmit>
     </form>
   );
 

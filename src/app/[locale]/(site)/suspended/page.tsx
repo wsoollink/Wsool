@@ -24,7 +24,7 @@ export default async function SuspendedPage({ params }: PageProps<"/[locale]/sus
         <a href={supportWhatsappUrl(t("whatsappText"))} target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-blue underline">
           {t("whatsapp")} <span dir="ltr">{SUPPORT_WHATSAPP_DISPLAY}</span>
         </a>
-        <form action={signOut}>
+        <form action={signOut} data-nav>
           <SubmitButton variant="secondary" pendingText={t("signingOut")}>{t("signOut")}</SubmitButton>
         </form>
       </Card>

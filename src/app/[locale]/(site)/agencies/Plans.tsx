@@ -32,7 +32,7 @@ export function AgencyPlans({ plans, texts, href }: { plans: AgencyPlan[]; texts
             <div key={p.name} className={hot
               ? "relative flex flex-col overflow-hidden rounded-[28px] bg-gradient-to-br from-[#0A3A8C] via-[#021941] to-[#021941] p-7 text-white shadow-[0_40px_80px_-40px_rgba(2,25,65,0.8)] lg:-my-4 lg:py-11"
               : "flex flex-col rounded-[28px] border border-line bg-card p-7"}>
-              {hot && <div aria-hidden="true" className="absolute -top-24 -end-16 size-64 rounded-full bg-[#22B8F0]/25 blur-3xl" />}
+              {hot && <div aria-hidden="true" className="absolute -top-24 -end-16 size-64 rounded-full ag-glow [--glow:#22B8F059]" />}
               <div className="relative mb-1 flex items-center justify-between gap-2">
                 <h3 className="text-xl font-black">{p.name}</h3>
                 {hot && <span className="rounded-full bg-white/15 px-3 py-1 text-xs font-bold">{p.popular}</span>}

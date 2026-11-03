@@ -17,6 +17,7 @@ import { PlatformIcon } from "@/components/creator/PlatformIcon";
 import { SUPPORT_EMAIL, supportWhatsappUrl } from "@/config/site";
 import { isLocale, toIntlLocale } from "@/i18n/config";
 import { getAdmin } from "@/lib/admin";
+import { PendingSubmit } from "@/components/PendingSubmit";
 import { DeniedNotice } from "@/components/dashboard/DeniedNotice";
 import { getMembership } from "@/lib/agency";
 import { requireCreator } from "@/lib/creator";
@@ -110,11 +111,8 @@ export default async function DashboardLayout({ children, params }: LayoutProps<
         <PlatformIcon platform="whatsapp" size={17} />
         {t("whatsapp")}
       </a>
-      <form action={signOut}>
-        <button type="submit" className={`${navRow} w-full`}>
-          <LogOut aria-hidden="true" size={17} />
-          {t("signOut")}
-        </button>
+      <form action={signOut} data-nav>
+        <PendingSubmit className={`${navRow} w-full`} icon={<LogOut aria-hidden="true" size={17} />}>{t("signOut")}</PendingSubmit>
       </form>
     </>
   );

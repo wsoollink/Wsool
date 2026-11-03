@@ -6,7 +6,7 @@ export const iconButton =
 
 /** Sidebar / menu row. Active rows add `navRowActive`. */
 export const navRow =
-  "flex min-h-11 md:min-h-9 items-center gap-2.5 rounded-lg border border-transparent px-2.5 text-[13.5px] font-medium text-muted transition-colors hover:bg-hover hover:text-navy [&_svg]:shrink-0 [&_svg]:text-faint";
+  "flex min-h-11 md:min-h-9 items-center gap-2.5 rounded-lg border border-transparent px-2.5 text-[13.5px] font-medium text-muted transition-colors hover:bg-hover hover:text-navy active:bg-blue/10 active:text-blue [&_svg]:shrink-0 [&_svg]:text-faint";
 export const navRowActive =
   "!border-line bg-card !text-blue font-semibold shadow-card hover:bg-card [&_svg]:!text-blue";
 

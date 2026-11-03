@@ -1,6 +1,7 @@
 import "server-only";
 import { cache } from "react";
 import { redirect } from "next/navigation";
+import { getAdmin } from "@/lib/admin";
 import { actingFor, getMembership, type ActScope } from "@/lib/agency";
 import { requireUser } from "@/lib/auth";
 import { db } from "@/lib/db";
@@ -30,6 +31,8 @@ export const requireCreator = cache(async (scope?: ActScope) => {
     if (account?.suspendedAt) redirect("/suspended");
     // Invited to an agency / brand team (no creator page of their own): their home is the agency dashboard.
     if (await getMembership(user)) redirect("/agency");
+    // Staff without a creator page of their own: their home is the admin panel.
+    if (await getAdmin()) redirect("/admin");
     redirect("/onboarding");
   }
   // Staff suspended the account: no dashboard access (pages and actions).

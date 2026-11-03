@@ -18,7 +18,7 @@ const expenseSchema = z.object({
 });
 
 export async function addExpense(input: z.input<typeof expenseSchema>) {
-  const admin = await requireAdmin("revenue.view");
+  const admin = await requireAdmin("expenses.edit");
   const parsed = expenseSchema.safeParse(input);
   if (!parsed.success) return { ok: false };
   const e = parsed.data;
@@ -32,7 +32,7 @@ export async function addExpense(input: z.input<typeof expenseSchema>) {
 }
 
 export async function deleteExpense(id: string) {
-  const admin = await requireAdmin("revenue.view");
+  const admin = await requireAdmin("expenses.edit");
   const row = await db.expense.findUnique({ where: { id: String(id) } });
   if (!row) return { ok: false };
   await db.$transaction(async (tx) => {

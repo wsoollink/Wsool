@@ -6,6 +6,8 @@ const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const nextConfig: NextConfig = {
   cacheComponents: true,
+  // One branded 404 for addresses that match no route (the app has several root layouts): src/app/global-not-found.tsx.
+  experimental: { globalNotFound: true },
   // Fonts read at runtime by the link-preview image route.
   outputFileTracingIncludes: {
     "/[locale]/[username]/og": ["./assets/fonts/**/*"],

@@ -25,6 +25,12 @@ const ACT_NAV_COOKIE = "wsool_act_nav";
 const subscribe = () => () => {};
 const readActNav = () => document.cookie.split("; ").find((c) => c.startsWith(`${ACT_NAV_COOKIE}=`))?.slice(ACT_NAV_COOKIE.length + 1) ?? "";
 
+/** Hides its children while an agency member manages a creator's page (e.g. the bell: those notifications are the member's own). */
+export function HideWhileActing({ children }: { children: React.ReactNode }) {
+  const actNav = useSyncExternalStore(subscribe, readActNav, () => "");
+  return actNav ? null : <>{children}</>;
+}
+
 /** Every section, page sections first, then the "Account" group: desktop sidebar and the phone menu (which closes on tap). */
 export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
   const t = useTranslations("DashboardNav");

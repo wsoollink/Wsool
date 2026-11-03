@@ -15,7 +15,8 @@ export type ExpenseRow = { id: string; label: string; amount: string; category: 
 const control = "min-h-11 w-full min-w-0 rounded-[10px] border border-navy/15 bg-card px-3 text-base outline-none shadow-card transition-[border-color,box-shadow] focus:border-blue focus:ring-3 focus:ring-blue/15";
 
 /** Manual expenses: add (one-off or recurring) and delete. Each change is in the audit log. */
-export function ExpensesCard({ rows, today }: { rows: ExpenseRow[]; today: string }) {
+/** canEdit = permission "expenses.edit" (owner or finance staff); otherwise the list is read-only. */
+export function ExpensesCard({ rows, today, canEdit }: { rows: ExpenseRow[]; today: string; canEdit: boolean }) {
   const t = useTranslations("Finance");
   const router = useRouter();
   const [form, setForm] = useState({ date: today, endDate: "", amount: "", currency: "SAR" as "SAR" | "USD", category: "hosting" as (typeof EXPENSE_CATEGORIES)[number], recurrence: "none" as (typeof RECURRENCES)[number], description: "" });
@@ -35,7 +36,7 @@ export function ExpensesCard({ rows, today }: { rows: ExpenseRow[]; today: strin
   return (
     <Card className="flex flex-col gap-4">
       <h2 className="font-bold">{t("expensesTitle")}</h2>
-      <form onSubmit={add} className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      {canEdit && <form onSubmit={add} className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <div className="flex flex-col gap-1"><label htmlFor="exp-date" className="text-xs font-medium">{t("date")}</label><input id="exp-date" type="date" value={form.date} onChange={(e) => set({ date: e.target.value })} required className={control} /></div>
         <div className="flex flex-col gap-1"><label htmlFor="exp-amount" className="text-xs font-medium">{t("amount")}</label>
           <div className="flex gap-2">
@@ -61,7 +62,7 @@ export function ExpensesCard({ rows, today }: { rows: ExpenseRow[]; today: strin
           <button type="submit" disabled={pending || !form.amount} className={buttonClasses("primary")}>{t("addExpense")}</button>
           <span role="status" className="text-sm text-good">{message}</span>
         </div>
-      </form>
+      </form>}
 
       {rows.length === 0 ? (
         <p className="text-sm text-muted">{t("noExpenses")}</p>
@@ -82,13 +83,13 @@ export function ExpensesCard({ rows, today }: { rows: ExpenseRow[]; today: strin
                   <td className="p-2 text-muted">{r.description}</td>
                   <td className="p-2 font-medium whitespace-nowrap">{r.amount}</td>
                   <td className="p-2">
-                    <button
+                    {canEdit && <button
                       type="button" aria-label={t("deleteExpense", { what: r.description || r.amount })}
                       onClick={() => { if (window.confirm(t("confirmDelete"))) startTransition(async () => { await deleteExpense(r.id); router.refresh(); }); }}
                       className="inline-flex size-11 items-center justify-center rounded-full text-muted hover:bg-navy/5"
                     >
                       <Trash2 aria-hidden="true" size={16} />
-                    </button>
+                    </button>}
                   </td>
                 </tr>
               ))}

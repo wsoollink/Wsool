@@ -13,6 +13,7 @@ import { SELLER, SUPPORT_EMAIL, SUPPORT_WHATSAPP_DISPLAY, supportWhatsappUrl } f
 import { isLocale, toIntlLocale } from "@/i18n/config";
 import { CONTACT_TOPICS, type ContactTopic } from "@/lib/validation/support-message";
 import { ContactForm } from "./ContactForm";
+import { SiteFooter } from "@/components/site/SiteFooter";
 
 export async function generateMetadata({ params }: PageProps<"/[locale]/contact">): Promise<Metadata> {
   const { locale } = await params;
@@ -95,7 +96,7 @@ export default async function ContactPage({ params, searchParams }: PageProps<"/
         </div>
       </main>
 
-      <footer className="border-t border-line py-6 text-center text-sm text-muted">© wsool.link</footer>
+      <SiteFooter lang={en ? "en" : "ar"} />
     </div>
   );
 }

@@ -3,10 +3,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Building2, ExternalLink, LifeBuoy, LogOut } from "lucide-react";
+import { Building2, ExternalLink, LifeBuoy, LogOut, ShieldCheck } from "lucide-react";
 import { BrandLogo } from "@/components/BrandLogo";
 import { ThemeMenuItem, ThemeToggle } from "@/components/ThemeToggle";
-import { SidebarNav } from "@/components/dashboard/DashboardNav";
+import { HideWhileActing, SidebarNav } from "@/components/dashboard/DashboardNav";
 import { LangPill } from "@/components/dashboard/LangPill";
 import { MobileMenu } from "@/components/dashboard/MobileMenu";
 import { SectionIcon } from "@/components/dashboard/SectionIcon";
@@ -16,6 +16,8 @@ import { iconButton, navRow, topBar } from "@/components/ui/styles";
 import { PlatformIcon } from "@/components/creator/PlatformIcon";
 import { SUPPORT_EMAIL, supportWhatsappUrl } from "@/config/site";
 import { isLocale, toIntlLocale } from "@/i18n/config";
+import { getAdmin } from "@/lib/admin";
+import { DeniedNotice } from "@/components/dashboard/DeniedNotice";
 import { getMembership } from "@/lib/agency";
 import { requireCreator } from "@/lib/creator";
 import { db } from "@/lib/db";
@@ -53,14 +55,25 @@ async function ActingBanner() {
   const { user, page, acting } = await requireCreator("view");
   const t = await getTranslations("Acting");
   if (!acting) {
-    // A creator who is also on an agency / brand team: a way back to the agency dashboard.
-    const m = await getMembership(user);
-    if (!m) return null;
+    // A creator who is also on an agency / brand team or on the Wsool staff: a way to their other dashboard.
+    const [m, admin] = await Promise.all([getMembership(user), getAdmin()]);
+    if (!m && !admin) return null;
     return (
-      <div className="mb-5 flex flex-wrap items-center gap-3 rounded-2xl border border-line bg-card px-4 py-3 shadow-card">
-        <Building2 aria-hidden="true" size={18} className="shrink-0 text-blue" />
-        <p className="min-w-0 flex-1 text-sm">{t.rich("member", { b: (c) => <b>{c}</b>, agency: m.agency.name })}</p>
-        <Link href="/agency" className="inline-flex min-h-10 items-center rounded-full bg-navy px-4 text-[13px] font-bold text-on-navy">{t("openAgency")}</Link>
+      <div className="mb-5 flex flex-col gap-2">
+        {m && (
+          <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-line bg-card px-4 py-3 shadow-card">
+            <Building2 aria-hidden="true" size={18} className="shrink-0 text-blue" />
+            <p className="min-w-0 flex-1 text-sm">{t.rich("member", { b: (c) => <b>{c}</b>, agency: m.agency.name })}</p>
+            <Link href="/agency" className="inline-flex min-h-10 items-center rounded-full bg-navy px-4 text-[13px] font-bold text-on-navy">{t("openAgency")}</Link>
+          </div>
+        )}
+        {admin && (
+          <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-line bg-card px-4 py-3 shadow-card">
+            <ShieldCheck aria-hidden="true" size={18} className="shrink-0 text-blue" />
+            <p className="min-w-0 flex-1 text-sm">{t("staff")}</p>
+            <Link href="/admin" className="inline-flex min-h-10 items-center rounded-full bg-navy px-4 text-[13px] font-bold text-on-navy">{t("openAdmin")}</Link>
+          </div>
+        )}
       </div>
     );
   }
@@ -72,6 +85,7 @@ async function ActingBanner() {
       {/* Full page load: a route handler clears the acting cookies. */}
       {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
       <a href="/agency/exit" className="inline-flex min-h-10 items-center rounded-full bg-navy px-4 text-[13px] font-bold text-on-navy">{t("exit")}</a>
+      <Suspense fallback={null}><DeniedNotice /></Suspense>
     </div>
   );
 }
@@ -127,10 +141,12 @@ export default async function DashboardLayout({ children, params }: LayoutProps<
           <div className="hidden flex-1 md:block"><SectionSearch /></div>
           <span className="flex-1 md:hidden" />
           <ThemeToggle bare className="hidden md:inline-flex" />
-          <Link href="/dashboard/notifications" aria-label={t("notifications")} className={iconButton}>
-            <SectionIcon section="notifications" size={18} />
-            <Suspense fallback={null}><UnreadDot label={t("unread")} /></Suspense>
-          </Link>
+          <HideWhileActing>
+            <Link href="/dashboard/notifications" aria-label={t("notifications")} className={iconButton}>
+              <SectionIcon section="notifications" size={18} />
+              <Suspense fallback={null}><UnreadDot label={t("unread")} /></Suspense>
+            </Link>
+          </HideWhileActing>
           <LangPill current={locale} />
         </header>
         <main className="mx-auto flex w-full max-w-[1240px] flex-1 flex-col px-4 pt-5 pb-10 md:px-8 md:pt-7">

@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { REF_PARAM } from "@/config/referrals";
 import { LOCALE_COOKIE, resolveLocale } from "@/i18n/config";
 import { rewriteWithSession } from "@/lib/supabase/proxy";
+import { PATH_HEADER } from "@/lib/next-path";
 
 /**
  * Public URLs never carry a language prefix (wsool.link/pricing,
@@ -40,7 +41,8 @@ export async function proxy(request: NextRequest) {
 
   const url = request.nextUrl.clone();
   url.pathname = `/${locale}${url.pathname === "/" ? "" : url.pathname}`;
-  return rewriteWithSession(request, url);
+  // The path the visitor asked for, so a page that needs sign-in can send them back there (src/lib/auth.ts loginUrl).
+  return rewriteWithSession(request, url, { [PATH_HEADER]: request.nextUrl.pathname + request.nextUrl.search });
 }
 
 export const config = {

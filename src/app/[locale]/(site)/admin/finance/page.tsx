@@ -5,7 +5,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { FinanceView } from "@/components/finance/FinanceView";
 import { FINANCE_PERIODS, INVESTOR_SECTIONS } from "@/config/finance";
 import { isLocale, toIntlLocale, type Locale } from "@/i18n/config";
-import { requireAdmin } from "@/lib/admin";
+import { requireAdmin, can } from "@/lib/admin";
 import { db } from "@/lib/db";
 import { financeReport, growthCounts } from "@/lib/finance";
 import { formatPrice } from "@/lib/format";
@@ -50,6 +50,7 @@ async function Finance({ lang, searchParams }: { lang: Locale; searchParams: SP 
       <VatSection report={vat} months={months} lang={lang} />
       <div className="print:hidden">
       <ExpensesCard
+        canEdit={can(admin, "expenses.edit")}
         today={now.toISOString().slice(0, 10)}
         rows={expenses.map((e) => ({
           id: e.id, label: date.format(e.date), amount: formatPrice(Number(e.amount), e.currency, lang),

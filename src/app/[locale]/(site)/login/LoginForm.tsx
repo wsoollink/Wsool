@@ -1,9 +1,10 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { Suspense, useActionState, useState } from "react";
 import { useTranslations } from "next-intl";
 import { buttonClasses } from "@/components/ui/Button";
 import { requestCode, verifyCode, type LoginState } from "./actions";
+import { NextField } from "./NextField";
 
 const inputClasses =
   "min-h-11 w-full rounded-xl border border-line bg-card px-4 text-base text-navy placeholder:text-muted/70";
@@ -43,6 +44,7 @@ export function LoginForm() {
         {t("codeSent")} <span dir="ltr" className="font-medium text-navy">{sent.email}</span>
       </p>
       <input type="hidden" name="email" value={sent.email} />
+      <Suspense fallback={null}><NextField /></Suspense>
       <div className="flex flex-col gap-2">
         <label htmlFor="code" className="text-sm font-medium">{t("codeLabel")}</label>
         <input

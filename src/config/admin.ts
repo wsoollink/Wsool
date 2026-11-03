@@ -10,6 +10,8 @@ export const PERMISSIONS = [
   "trial.extend",
   "users.suspend",
   "revenue.view",
+  /** Add / delete expenses (changes P&L and investor numbers); viewing revenue alone doesn't allow it. */
+  "expenses.edit",
   "refunds",
   "newsletter.send",
   "discounts.manage",
@@ -21,7 +23,7 @@ export type Permission = (typeof PERMISSIONS)[number];
 export const ROLE_PRESETS: Record<"verifier" | "support" | "finance" | "custom", Permission[]> = {
   verifier: ["verifications.view", "verifications.decide", "users.view"],
   support: ["users.view", "users.edit", "trial.extend", "verifications.view"],
-  finance: ["revenue.view", "refunds", "users.view"],
+  finance: ["revenue.view", "expenses.edit", "refunds", "users.view"],
   custom: [],
 };
 
@@ -29,7 +31,7 @@ export const ROLE_PRESETS: Record<"verifier" | "support" | "finance" | "custom",
 export const PERMISSION_GROUPS: Record<"verification" | "users" | "money" | "newsletter", Permission[]> = {
   verification: ["verifications.view", "verifications.decide"],
   users: ["users.view", "users.edit", "users.suspend", "trial.extend"],
-  money: ["revenue.view", "refunds", "discounts.manage", "referrals.manage"],
+  money: ["revenue.view", "expenses.edit", "refunds", "discounts.manage", "referrals.manage"],
   newsletter: ["newsletter.send"],
 };
 

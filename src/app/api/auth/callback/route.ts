@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { ensureAccount } from "@/lib/account";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { NEXT_COOKIE, safeNextPath } from "@/lib/next-path";
 
 /**
  * Google sign-in comes back here (through Supabase) with a one-time code.
@@ -18,5 +19,8 @@ export async function GET(request: NextRequest) {
   if (error || !data.user?.email) return back("/login?error=google");
 
   await ensureAccount({ id: data.user.id, email: data.user.email.toLowerCase() });
-  return back("/dashboard");
+  // The page that asked for sign-in, remembered by signInWithGoogle (same-site paths only).
+  const res = back(safeNextPath(request.cookies.get(NEXT_COOKIE)?.value) ?? "/dashboard");
+  res.cookies.delete(NEXT_COOKIE);
+  return res;
 }

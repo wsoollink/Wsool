@@ -827,6 +827,19 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   Audience reads use effort `medium` and `AUDIENCE_TASK` (pair each age label with the percent on its row, RTL apps
   swap sides, never estimate from bar length); ages not adding up to 100 ±3 show a "check the ages" warning (`agesUncertain`).
 
+### Site audit (owner, Nov 2026)
+- Crawled every page as visitor / creator / agency member / owner + read every link target: no broken internal links. Fixes made:
+  suspended accounts lose agency access (`getMembership`, `actingFor`); `signOut` clears `ACT_COOKIE` / `ACT_NAV_COOKIE` and
+  `/agency/exit` goes to `/dashboard` for non-members; staff without a creator page land on `/admin` (`requireCreator`), creators who
+  are staff or on an agency team get a bar with a link to that dashboard; expenses need the new permission `expenses.edit` (finance
+  preset), `revenue.view` is read-only; `src/app/global-not-found.tsx` (`experimental.globalNotFound`) = branded bilingual 404 for
+  unmatched URLs (several root layouts); the pricing header's FAQ link stays on the page (`#billing`; the generator keeps in-page anchors
+  whose id exists on that page); sign-in returns to the page that asked for it: the proxy adds `x-wsool-path`, `loginUrl()` builds
+  `/login?next=` (`safeNextPath`, `src/lib/next-path.ts`), `NextField` carries it into the code form and Google (`wsool_next` cookie read
+  by `/api/auth/callback`); while acting, the bell is hidden (`HideWhileActing`) and `?denied=1` shows `DeniedNotice`; `/agency` shows the
+  member's agency notifications ("Latest updates"); `/contact` and the legal pages have `SiteFooter`; the agencies header logo always
+  goes to `/agencies`.
+
 ### Speed (owner, Oct 2026)
 - Netlify functions run in **Frankfurt** (owner changed "Functions region"), next to Supabase (`wsool-eu`). Every database
   query is a network round trip, so: Prisma `relationJoins` (nested reads = one query), queries that don't depend on each

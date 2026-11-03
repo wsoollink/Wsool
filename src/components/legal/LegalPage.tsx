@@ -4,6 +4,7 @@ import { Fragment } from "react";
 import { LEGAL, SUPPORT_WHATSAPP_DISPLAY, supportWhatsappUrl } from "@/config/site";
 import { LEGAL_TEXT, type LegalKind } from "@/content/legal";
 import { AGENCY_LEGAL_TEXT } from "@/content/agency-legal";
+import { SiteFooter } from "@/components/site/SiteFooter";
 import { AgenciesFooter, AgenciesHeader } from "@/app/[locale]/(site)/agencies/Header";
 import { toIntlLocale, type Locale } from "@/i18n/config";
 
@@ -127,9 +128,7 @@ export function LegalPage({ lang, kind, audience = "creator" }: { lang: Locale; 
         </article>
       </main>
       {agency ? <AgenciesFooter lang={lang === "en" ? "en" : "ar"} /> : (
-        <footer className="border-t border-line py-6 text-center text-sm text-muted">
-          © wsool.link
-        </footer>
+        <SiteFooter lang={lang === "en" ? "en" : "ar"} />
       )}
     </div>
   );

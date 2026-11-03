@@ -1,7 +1,9 @@
 "use server";
 
-import { headers } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { ACT_COOKIE, ACT_NAV_COOKIE } from "@/lib/agency";
+import { NEXT_COOKIE, NEXT_PARAM, safeNextPath } from "@/lib/next-path";
 import { z } from "zod";
 import { ensureAccount } from "@/lib/account";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
@@ -70,11 +72,15 @@ export async function verifyCode(_prev: LoginState, formData: FormData): Promise
   }
 
   await ensureAccount({ id: data.user.id, email: data.user.email ?? email.data });
-  redirect("/dashboard");
+  // Back to the page that asked for sign-in (e.g. an invoice link from an email), else the dashboard.
+  redirect(safeNextPath(formData.get(NEXT_PARAM)) ?? "/dashboard");
 }
 
 /** Google: Supabase sends the visitor to Google, then back to /api/auth/callback. */
-export async function signInWithGoogle() {
+export async function signInWithGoogle(formData?: FormData) {
+  // Google goes through Supabase and back to /api/auth/callback: remember where to land in a short cookie.
+  const next = safeNextPath(formData?.get(NEXT_PARAM));
+  if (next) (await cookies()).set(NEXT_COOKIE, next, { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/", maxAge: 600 });
   const h = await headers();
   const host = h.get("x-forwarded-host") ?? h.get("host");
   const proto = h.get("x-forwarded-proto") ?? (host?.startsWith("localhost") ? "http" : "https");
@@ -90,5 +96,9 @@ export async function signInWithGoogle() {
 export async function signOut() {
   const supabase = await createSupabaseServerClient();
   await supabase.auth.signOut();
+  // An agency member's "managing a creator" cookies must not carry over to the next person on this browser.
+  const jar = await cookies();
+  jar.delete(ACT_COOKIE);
+  jar.delete(ACT_NAV_COOKIE);
   redirect("/login");
 }

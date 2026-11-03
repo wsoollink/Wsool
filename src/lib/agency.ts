@@ -18,6 +18,8 @@ import { expirePage } from "@/lib/public-page";
  * verification, accounts, username…) are refused, so anything not opted in stays the creator's alone.
  */
 export const ACT_COOKIE = "wsool_act";
+/** Readable menu keys for the dashboard nav while acting. */
+export const ACT_NAV_COOKIE = "wsool_act_nav";
 export const UNLINK_GRACE_DAYS = 14;
 /** An agency-covered Pro plan "ends" here (it never renews; unlinking moves the end to now + 14 days). */
 const AGENCY_PRO_END = new Date("2099-12-31T00:00:00Z");
@@ -32,6 +34,9 @@ export const roleAtLeast = (role: AgencyRole, min: AgencyRole) => RANK[role] >= 
 export const getMembership = cache(async (user?: CurrentUser | null) => {
   const me = user === undefined ? await getCurrentUser() : user;
   if (!me) return null;
+  // A suspended account loses agency access too (like staff access in src/lib/admin.ts).
+  const account = await db.user.findUnique({ where: { id: me.id }, select: { suspendedAt: true } });
+  if (account?.suspendedAt) return null;
   let member = await db.agencyMember.findFirst({ where: { userId: me.id, agency: { status: "active" } }, include: { agency: true } });
   if (!member && me.email) {
     const invited = await db.agencyMember.findFirst({ where: { email: me.email.toLowerCase(), userId: null, agency: { status: "active" } }, include: { agency: true } });
@@ -178,7 +183,7 @@ export async function actingFor(user: CurrentUser, scope?: ActScope) {
   const linkId = (await cookies()).get(ACT_COOKIE)?.value;
   if (!linkId || !/^[0-9a-f-]{36}$/.test(linkId)) return null;
   const link = await db.agencyLink.findFirst({
-    where: { id: linkId, status: "active", agency: { status: "active", members: { some: { userId: user.id } } } },
+    where: { id: linkId, status: "active", agency: { status: "active", members: { some: { userId: user.id, user: { suspendedAt: null } } } } },
     include: {
       agency: { select: { id: true, name: true, members: { where: { userId: user.id }, select: { role: true } } } },
       page: { include: { user: { select: { email: true, suspendedAt: true } } } },

@@ -2,7 +2,7 @@
 
 import { cookies } from "next/headers";
 import { z } from "zod";
-import { ACT_COOKIE, endLink, inviteCreator, requireAgency, roleAtLeast, type InviteError } from "@/lib/agency";
+import { ACT_COOKIE, ACT_NAV_COOKIE, endLink, inviteCreator, requireAgency, roleAtLeast, type InviteError } from "@/lib/agency";
 import { db } from "@/lib/db";
 import { sendAgencyTeamInvite } from "@/lib/notify";
 import { rateLimit } from "@/lib/rate-limit";
@@ -49,7 +49,7 @@ export async function manageCreator(linkId: string): Promise<{ url?: string; err
   const jar = await cookies();
   const opts = { path: "/", sameSite: "lax" as const, secure: process.env.NODE_ENV === "production", maxAge: 60 * 60 * 12 };
   jar.set(ACT_COOKIE, link.id, { ...opts, httpOnly: true });
-  jar.set("wsool_act_nav", navFor(link), opts);
+  jar.set(ACT_NAV_COOKIE, navFor(link), opts);
   return { url: "/dashboard" };
 }
 

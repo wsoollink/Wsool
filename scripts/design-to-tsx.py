@@ -254,6 +254,8 @@ class Gen:
         self.mob_of, self.hidden = align(page, ar, mob)
         self.mob_en_of, self.hidden_en = align(page, en, mob_en)
         self.root_id = id(ar)
+        # Section ids on this page: in-page anchors to them stay in-page.
+        self.ids = {n.attrs.get("id") for n in elements(ar) if n.attrs.get("id")}
 
     def text(self, ar_text, en_text):
         self.texts_ar.append(ar_text)
@@ -332,7 +334,8 @@ class Gen:
             action = BUTTONS.get(link_text(node))
             if action:
                 out.append(f"onClick={{{action}}}")
-        elif node.tag == "a" and (node.attrs.get("href") or "").startswith("#") and self.page != "Home":
+        elif node.tag == "a" and (node.attrs.get("href") or "").startswith("#") and self.page != "Home" and node.attrs["href"][1:] not in self.ids:
+            # A section of the home page; anchors to a section on this same page stay in-page (pricing FAQ = #billing).
             node.attrs["href"] = "/" + node.attrs["href"]
         for k in list(node.attrs):
             if k in ("style", "class") or k in TEXT_ATTRS or node.attrs[k] is None:

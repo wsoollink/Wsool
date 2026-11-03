@@ -3,7 +3,7 @@ import { cache } from "react";
 import { notFound, redirect } from "next/navigation";
 import type { Prisma } from "@/generated/prisma/client";
 import { PERMISSIONS, type Permission } from "@/config/admin";
-import { getCurrentUser } from "@/lib/auth";
+import { getCurrentUser, loginUrl } from "@/lib/auth";
 import { db } from "@/lib/db";
 
 export type Admin = { userId: string; email: string; isOwner: boolean; permissions: Set<Permission> };
@@ -49,7 +49,7 @@ export function can(admin: Admin, permission: Permission | "owner") {
  */
 export async function requireAdmin(permission?: Permission | "owner"): Promise<Admin> {
   const user = await getCurrentUser();
-  if (!user) redirect("/login");
+  if (!user) redirect(await loginUrl());
   const admin = await getAdmin();
   if (!admin || (permission && !can(admin, permission))) notFound();
   return admin;

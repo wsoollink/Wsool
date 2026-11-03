@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { bearerUserFromHeader } from "@/lib/mobile/bearer";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { NEXT_PARAM, PATH_HEADER, safeNextPath } from "@/lib/next-path";
 
 export type CurrentUser = { id: string; email: string };
 
@@ -28,6 +29,12 @@ export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
 /** Like getCurrentUser, but sends signed-out visitors to the login page. */
 export async function requireUser(): Promise<CurrentUser> {
   const user = await getCurrentUser();
-  if (!user) redirect("/login");
+  if (!user) redirect(await loginUrl());
   return user;
+}
+
+/** /login?next=<the page the visitor asked for> (from the proxy's path header), so signing in lands back there. */
+export async function loginUrl() {
+  const next = safeNextPath((await headers()).get(PATH_HEADER));
+  return next && next !== "/dashboard" ? `/login?${NEXT_PARAM}=${encodeURIComponent(next)}` : "/login";
 }

@@ -12,9 +12,10 @@ import { Panel } from "@/components/ui/Card";
 import { Pill } from "@/components/ui/Pill";
 import { isLocale, toIntlLocale, type Locale } from "@/i18n/config";
 import { getMembership, roleAtLeast } from "@/lib/agency";
-import { getCurrentUser } from "@/lib/auth";
+import { getCurrentUser, loginUrl } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { formatCompact, formatNumber } from "@/lib/format";
+import { notificationText } from "@/lib/notify";
 import { initials } from "@/lib/initials";
 import { signOut } from "../login/actions";
 import { Directory } from "./Directory";
@@ -27,7 +28,7 @@ type SP = Promise<Record<string, string | string[] | undefined>>;
 /** The agency's dashboard: linked creators with their numbers, invites, and the team (owner, Nov 2026, phase 1). */
 async function AgencyDashboard({ lang, searchParams }: { lang: Locale; searchParams: SP }) {
   const me = await getCurrentUser();
-  if (!me) redirect("/login");
+  if (!me) redirect(await loginUrl());
   const m = await getMembership(me);
   if (!m) notFound();
   const t = await getTranslations("AgencyApp");
@@ -40,7 +41,7 @@ async function AgencyDashboard({ lang, searchParams }: { lang: Locale; searchPar
   const canEdit = roleAtLeast(m.member.role, "editor");
   const date = new Intl.DateTimeFormat(toIntlLocale(lang), { dateStyle: "medium" });
 
-  const [links, members, ownPage] = await Promise.all([
+  const [links, members, ownPage, updates] = await Promise.all([
     tab !== "creators" ? Promise.resolve([]) : db.agencyLink.findMany({
       where: { agencyId: m.agency.id, status: { in: ["active", "pending"] } },
       orderBy: { invitedAt: "desc" },
@@ -56,6 +57,8 @@ async function AgencyDashboard({ lang, searchParams }: { lang: Locale; searchPar
     }),
     tab === "team" ? db.agencyMember.findMany({ where: { agencyId: m.agency.id }, orderBy: { invitedAt: "asc" } }) : Promise.resolve([]),
     db.page.findUnique({ where: { userId: me.id }, select: { username: true } }),
+    // Agency notifications (a creator accepted / unlinked): members without a creator page have no bell, so they show here.
+    tab === "creators" ? db.notification.findMany({ where: { userId: me.id, type: { in: ["agency_accepted", "agency_ended"] } }, orderBy: { createdAt: "desc" }, take: 5 }) : Promise.resolve([]),
   ]);
   const active = links.filter((l) => l.status === "active");
   const pending = links.filter((l) => l.status === "pending");
@@ -164,6 +167,22 @@ async function AgencyDashboard({ lang, searchParams }: { lang: Locale; searchPar
           )}
 
           {canInvite ? <Panel title={t("inviteTitle")}><InviteCreator /></Panel> : <p className="text-sm text-muted">{t("viewerNote")}</p>}
+
+          {updates.length > 0 && (
+            <Panel title={t("updatesTitle")} flush>
+              <ul className="divide-y divide-line-soft">
+                {updates.map((n) => {
+                  const text = notificationText(n.type, n.data, lang);
+                  return text ? (
+                    <li key={n.id} className="flex flex-wrap items-baseline justify-between gap-2 px-5 py-3">
+                      <p className="min-w-0 flex-1 text-sm"><b>{text.title}</b> <span className="text-muted">{text.body.split("\n")[0]}</span></p>
+                      <span className="text-xs text-muted">{date.format(n.createdAt)}</span>
+                    </li>
+                  ) : null;
+                })}
+              </ul>
+            </Panel>
+          )}
         </>
       ) : (
         <Panel title={t("teamTitle")} flush>

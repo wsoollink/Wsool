@@ -1,7 +1,9 @@
 import { getTranslations } from "next-intl/server";
 import { SubmitButton } from "@/components/SubmitButton";
 import { googleSignInEnabled } from "@/lib/google-auth";
+import { Suspense } from "react";
 import { signInWithGoogle } from "./actions";
+import { NextField } from "./NextField";
 
 /** Google's "G" mark (official colors), for the sign-in button. */
 function GoogleMark() {
@@ -22,6 +24,7 @@ export async function GoogleSignIn() {
   return (
     <>
       <form action={signInWithGoogle}>
+        <Suspense fallback={null}><NextField /></Suspense>
         <SubmitButton variant="secondary" className="w-full gap-3" pendingText={t("googleRedirecting")}>
           <GoogleMark /> {t("google")}
         </SubmitButton>

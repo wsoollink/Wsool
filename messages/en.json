@@ -1228,6 +1228,9 @@
         },
         "referrals": {
           "manage": "See commissions and record transfers"
+        },
+        "expenses": {
+          "edit": "Adds and deletes expenses"
         }
       },
       "invite": "Add",
@@ -2577,7 +2580,8 @@
       "creators": "For creators",
       "home": "Home",
       "menu": "Page links",
-      "login": "Log in"
+      "login": "Log in",
+      "agenciesHome": "Agencies home"
     },
     "chipNew": "New",
     "chip": "Plan for agencies and marketing companies",
@@ -2796,7 +2800,10 @@
     "banner": "You're managing <b>{creator}</b>'s page for <b>{agency}</b>. Only the sections the creator allowed are shown.",
     "exit": "Back to agency",
     "member": "You're on the <b>{agency}</b> team on Wsool.",
-    "openAgency": "Open agency dashboard"
+    "openAgency": "Open agency dashboard",
+    "staff": "You're on the Wsool team.",
+    "openAdmin": "Open admin panel",
+    "denied": "That section is the creator's own; you can't open it while managing their page."
   },
   "AgencyApp": {
     "title": "Agency dashboard",
@@ -2874,7 +2881,8 @@
     "confirmRemoveMember": "Remove {email} from the team?",
     "viewerNote": "You have view-only access.",
     "directoryTitle": "Creator directory",
-    "directorySub": "Find creators who chose to be listed for brands"
+    "directorySub": "Find creators who chose to be listed for brands",
+    "updatesTitle": "Latest updates"
   },
   "AgencySection": {
     "inviteTitle": "Invitation from {agency}",

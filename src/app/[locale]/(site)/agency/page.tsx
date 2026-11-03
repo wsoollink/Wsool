@@ -129,7 +129,7 @@ async function AgencyDashboard({ lang, searchParams }: { lang: Locale; searchPar
             ].map((x) => (
               <div key={x.k} className={`rounded-card p-4 ${x.hot ? "bg-gradient-to-br from-[#021941] to-[#0A3A8C] text-white" : "border border-line bg-card shadow-card"}`}>
                 <p className={`text-xs ${x.hot ? "opacity-75" : "text-muted"}`}>{t(`kpi.${x.k}`)}</p>
-                <p className="font-numbers mt-1 text-2xl font-black" dir="ltr">{x.v}</p>
+                <p className="font-numbers mt-1 text-2xl font-black" dir={x.k === "verified" ? "ltr" : undefined}>{x.v}</p>
               </div>
             ))}
           </div>
@@ -155,7 +155,7 @@ async function AgencyDashboard({ lang, searchParams }: { lang: Locale; searchPar
                         <p className="text-xs text-muted" dir="ltr"><span className="rtl:float-right">wsool.link/{l.page.username}</span></p>
                       </div>
                       <div className="text-end">
-                        <p className="font-numbers text-lg font-black" dir="ltr">{formatCompact(followersOf(l.page), lang)}</p>
+                        <p className="font-numbers text-lg font-black">{formatCompact(followersOf(l.page), lang)}</p>
                         <p className="flex items-center gap-2 text-[11.5px] text-muted">
                           <span className="inline-flex items-center gap-1"><Link2 aria-hidden="true" size={12} />{t("linked", { n: linked })}</span>
                           <span className="inline-flex items-center gap-1"><BadgeCheck aria-hidden="true" size={12} />{t("verifiedN", { n: ver })}</span>

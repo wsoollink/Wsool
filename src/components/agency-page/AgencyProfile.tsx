@@ -123,18 +123,19 @@ export async function AgencyProfile({ agency, lang, preview, demo }: { agency: P
       <div className={`${wrap} relative z-10 -mt-14 md:-mt-16`}>
         <dl className="grid grid-cols-2 overflow-hidden rounded-3xl border border-[var(--ag-line)] bg-[var(--ag-surface)] shadow-[0_20px_50px_-24px_rgba(0,0,0,0.35)] md:grid-cols-4">
           {stats.map((s, i) => (
-            <div key={s.k} className={`flex flex-col gap-1 p-5 md:p-7 ${i % 2 === 1 ? "border-s border-[var(--ag-line)]" : ""} ${i >= 2 ? "border-t border-[var(--ag-line)] md:border-t-0" : ""} ${i === 2 ? "md:border-s" : ""}`}>
-              <dd className="font-numbers text-3xl font-black md:text-[2.6rem]" dir="ltr">{s.v}</dd>
-              <dt className="text-sm text-[var(--ag-muted)]">{t(`stat.${s.k}`)}</dt>
+            <div key={s.k} className={`flex flex-col-reverse items-center justify-center gap-1.5 p-5 text-center md:p-6 ${i % 2 === 1 ? "border-s border-[var(--ag-line)]" : ""} ${i >= 2 ? "border-t border-[var(--ag-line)] md:border-t-0" : ""} ${i === 2 ? "md:border-s" : ""}`}>
+              <dt className="text-[15px] font-medium text-[var(--ag-muted)] md:text-base">{t(`stat.${s.k}`)}</dt>
+              {/* Number first, then "مليون" / "ألف" (natural order, no forced direction). */}
+              <dd className="font-numbers text-2xl leading-tight font-black md:text-[1.9rem]">{s.v}</dd>
             </div>
           ))}
-          <div className="flex flex-col gap-2 border-s border-t border-[var(--ag-line)] p-5 md:border-t-0 md:p-7">
-            <dd className="flex min-h-9 flex-wrap items-center gap-2 md:min-h-[3.25rem]">
+          <div className="flex flex-col-reverse items-center justify-center gap-1.5 border-s border-t border-[var(--ag-line)] p-5 text-center md:border-t-0 md:p-6">
+            <dt className="text-[15px] font-medium text-[var(--ag-muted)] md:text-base">{t("stat.platforms")}</dt>
+            <dd className="flex min-h-9 flex-wrap items-center justify-center gap-2">
               {agency.stats.platforms.length ? agency.stats.platforms.slice(0, 7).map((p) => (
                 <span key={p} title={PLATFORM_NAMES[p]} className="text-[var(--ag-ink)]"><PlatformIcon platform={p} size={20} /></span>
-              )) : <span className="font-numbers text-3xl font-black">0</span>}
+              )) : <span className="font-numbers text-2xl font-black">0</span>}
             </dd>
-            <dt className="text-sm text-[var(--ag-muted)]">{t("stat.platforms")}</dt>
           </div>
         </dl>
       </div>
@@ -163,7 +164,7 @@ export async function AgencyProfile({ agency, lang, preview, demo }: { agency: P
               </div>
               <dl className="flex flex-col divide-y divide-[var(--ag-line)] self-start rounded-3xl border border-[var(--ag-line)] bg-[var(--ag-bg)] px-6">
                 {agency.city && <Fact icon={<MapPin size={17} />} label={t("facts.city")}>{agency.city}</Fact>}
-                <Fact label={t("facts.creators")}><span className="font-numbers font-black" dir="ltr">{formatNumber(agency.stats.creators, lang)}</span></Fact>
+                <Fact label={t("facts.creators")}><span className="font-numbers font-black">{formatNumber(agency.stats.creators, lang)}</span></Fact>
                 {agency.stats.platforms.length > 0 && (
                   <Fact label={t("facts.platforms")}>{agency.stats.platforms.map((p) => PLATFORM_NAMES[p]).join(lang === "ar" ? "، " : ", ")}</Fact>
                 )}

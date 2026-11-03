@@ -112,7 +112,7 @@ export async function Directory({ lang, sp, userId, canInvite }: { lang: Locale;
                 </ul>
                 <p className="flex items-center gap-1 text-sm">
                   <Users aria-hidden="true" size={14} className="text-muted" />
-                  {r.followers === null ? <span className="text-xs text-muted">{r.locked ? t("privatePage") : t("privateNumbers")}</span> : <b className="font-numbers" dir="ltr">{formatCompact(r.followers, lang)}</b>}
+                  {r.followers === null ? <span className="text-xs text-muted">{r.locked ? t("privatePage") : t("privateNumbers")}</span> : <b className="font-numbers">{formatCompact(r.followers, lang)}</b>}
                 </p>
               </div>
               {r.categories.length > 0 && (

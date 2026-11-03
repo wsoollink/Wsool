@@ -218,8 +218,9 @@ export async function buildAgencyKit(agency: PublicAgency, lang: Locale): Promis
   stats.forEach((s, i) => {
     const sx = startX(PAD, CONTENT, sw, i * (sw + 16));
     box(sx, sy, sw, 110, { fill: mix(th.heroInk, th.heroBg, 0.92), stroke: mix(th.heroInk, th.heroBg, 0.8), r: 18 });
-    text(s.v, sx + 20, sy + 18, { size: big(s.v) ? 34 : 28, weight: 700, color: th.heroInk, width: sw - 40, numbers: big(s.v) });
-    text(s.l, sx + 20, sy + 70, { size: 14, color: th.heroMuted, width: sw - 40 });
+    // Centred, number first then "مليون"; label close in size to the number.
+    text(s.v, sx + 20, sy + 20, { size: 26, weight: 700, color: th.heroInk, width: sw - 40, align: "center" });
+    text(s.l, sx + 20, sy + 66, { size: 16, color: th.heroMuted, width: sw - 40, align: "center" });
   });
   text(shortLink, PAD, PH - 58, { size: 15, weight: 700, color: th.heroInk, width: CONTENT, align: "start" });
   link(PAD, PH - 64, CONTENT, 30, pageUrl);
@@ -257,9 +258,9 @@ export async function buildAgencyKit(agency: PublicAgency, lang: Locale): Promis
     facts.forEach(([k, v], i) => {
       const ry = y + 8 + i * 58;
       if (i) pg.drawLine({ start: { x: (PAD + 24) * PX, y: H - ry * PX }, end: { x: (PAD + CONTENT - 24) * PX, y: H - ry * PX }, thickness: PX, color: paint(th.line).color });
-      text(k, PAD + 24, ry + 18, { size: 14, color: th.muted, width: 200 * 1, align: "start" });
+      text(k, rtl ? PAD + CONTENT - 24 - 160 : PAD + 24, ry + 18, { size: 14, color: th.muted, width: 160, align: "start" });
       // Value in the end part of the row, clear of the label.
-      text(v, rtl ? PAD + 24 : PAD + 24 + 160, ry + 17, { size: 15, weight: 700, color: th.ink, width: CONTENT - 48 - 160, align: "end" });
+      text(v, rtl ? PAD + 24 : PAD + 24 + 170, ry + 17, { size: 15, weight: 700, color: th.ink, width: CONTENT - 48 - 170, align: "end" });
     });
     y += fh + 30;
     // Contact cards
@@ -310,8 +311,10 @@ export async function buildAgencyKit(agency: PublicAgency, lang: Locale): Promis
       if (c.verified) tick(startX(x, cw, 16, 16 + nameW + 6), ny + 3, 16);
       if (c.specialty) text(c.specialty, x + 16, ny + 24, { size: 12, color: th.muted, width: cw - 32 });
       const fy = yy + cardH - 30;
-      const num = c.followers !== null ? formatCompact(c.followers, lang) : t("private");
-      text(num, rtl ? x + 16 + 84 : x + 16, fy - 4, { size: c.followers !== null ? 16 : 11, weight: 700, color: th.ink, width: cw - 32 - 84, numbers: c.followers !== null && big(num) });
+      // "2.6 مليون متابع": number first (right in Arabic), word sizes close to the number's.
+      const num = c.followers !== null ? `${formatCompact(c.followers, lang)} ${t("followers")}` : t("private");
+      const iconsW = Math.min(4, c.platforms.length) * 20 + 6;
+      text(num, rtl ? x + 16 + iconsW : x + 16, fy - 3, { size: c.followers !== null ? 13 : 12, weight: 700, color: th.ink, width: cw - 32 - iconsW });
       c.platforms.slice(0, 4).forEach((p, i) => platformIcon(p, rtl ? x + 16 + i * 20 : x + cw - 16 - 14 - i * 20, fy, 14, th.muted));
       link(x, yy, cw, cardH, `${origin}/${c.username}`);
     }

@@ -76,17 +76,18 @@ export function Roster({ creators, lang }: { creators: AgencyCreator[]; lang: Lo
                       <span className="truncate">{c.name}</span>
                       {c.verified && <VerifiedBadge size={16} />}
                     </p>
-                    {c.specialty && <p className="mt-0.5 truncate text-[12.5px] text-white/80">{c.specialty}</p>}
+                    {c.specialty && <p className="mt-0.5 truncate text-[13.5px] text-white/85">{c.specialty}</p>}
                   </div>
                 </div>
                 <div className="flex flex-col items-start gap-1.5 px-0.5 sm:flex-row sm:items-center sm:justify-between sm:gap-2">
                   {c.followers !== null ? (
-                    <p className="flex items-baseline gap-1">
-                      <span className="font-numbers text-lg font-black text-[var(--ag-ink)]" dir="ltr">{formatCompact(c.followers, lang)}</span>
-                      <span className="text-xs text-[var(--ag-muted)]">{t("followers")}</span>
+                    <p className="flex items-baseline gap-1.5">
+                      {/* Number first, then "مليون" / "ألف" (no forced direction). */}
+                      <span className="font-numbers text-base font-black text-[var(--ag-ink)]">{formatCompact(c.followers, lang)}</span>
+                      <span className="text-[13px] text-[var(--ag-muted)]">{t("followers")}</span>
                     </p>
                   ) : (
-                    <p className="text-xs text-[var(--ag-muted)]">{t("private")}</p>
+                    <p className="text-[13px] text-[var(--ag-muted)]">{t("private")}</p>
                   )}
                   <span className="flex items-center gap-1.5 text-[var(--ag-muted)]">
                     {c.platforms.slice(0, 4).map((p) => (

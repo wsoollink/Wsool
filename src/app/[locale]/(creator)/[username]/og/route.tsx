@@ -160,7 +160,7 @@ async function agencyImage(agency: PublicAgency, lang: Locale) {
   const kindImg = textImage({ text: L.kind, size: 24, color: theme.heroAccent, weight: 700, rtl, maxWidth: textWidth, maxLines: 1 });
   const nameImg = textImage({ text: agency.name, size: 68, color: theme.heroInk, weight: 700, rtl, maxWidth: textWidth });
   const taglineImg = agency.tagline ? textImage({ text: agency.tagline, size: 30, color: theme.heroMuted, rtl, maxWidth: textWidth }) : null;
-  const statImg = (n: string, label: string) => ({ n: textImage({ text: n, size: 60, color: theme.heroInk, weight: 700, rtl, maxWidth: 360, maxLines: 1, numbers: true }), label: textImage({ text: label, size: 24, color: theme.heroMuted, rtl, maxWidth: 260, maxLines: 1 }) });
+  const statImg = (n: string, label: string) => ({ n: textImage({ text: n, size: 50, color: theme.heroInk, weight: 700, rtl, maxWidth: 360, maxLines: 1, numbers: true }), label: textImage({ text: label, size: 28, color: theme.heroMuted, rtl, maxWidth: 260, maxLines: 1 }) });
   const stats = [
     statImg(formatNumber(agency.stats.creators, lang), L.creators),
     ...(agency.stats.followers ? [statImg(formatCompact(agency.stats.followers, lang), L.followers)] : []),

@@ -2794,7 +2794,8 @@
     "billMonthly": "Monthly",
     "billYearly": "Yearly",
     "billYearlyBadge": "2 months free",
-    "billSwitch": "Billing period"
+    "billSwitch": "Billing period",
+    "ctaAgencyDemo": "See a demo agency page"
   },
   "Acting": {
     "banner": "You're managing <b>{creator}</b>'s page for <b>{agency}</b>. Only the sections the creator allowed are shown.",
@@ -3123,7 +3124,9 @@
       "midnight": "Midnight",
       "graphite": "Graphite",
       "ivory": "Ivory"
-    }
+    },
+    "demoBar": "Demo agency page for preview only: the agency, creators and numbers aren't real.",
+    "demoCta": "Get your agency page"
   },
   "AgencyPageEditor": {
     "tab": "Agency page",

@@ -18,7 +18,7 @@ const eyebrow = "text-[12.5px] font-bold tracking-[0.08em] text-[var(--ag-accent
  * Public agency page wsool.link/<slug>: editorial layout (hero with a creator mosaic, stats strip, talent roster,
  * about, contact band), coloured by the agency's template. `preview` adds a bar for the agency's own preview.
  */
-export async function AgencyProfile({ agency, lang, preview }: { agency: PublicAgency; lang: Locale; preview?: boolean }) {
+export async function AgencyProfile({ agency, lang, preview, demo }: { agency: PublicAgency; lang: Locale; preview?: boolean; /** /agencies/demo: fictional data, a bar says so. */ demo?: boolean }) {
   const t = await getTranslations("AgencyPage");
   const theme = agencyTheme(agency.template, agency.accent);
   const link = `${siteOrigin().replace(/^https?:\/\//, "")}/${agency.slug}`;
@@ -35,6 +35,12 @@ export async function AgencyProfile({ agency, lang, preview }: { agency: PublicA
   return (
     <div style={agencyThemeStyle(theme)} className="flex min-h-dvh flex-1 flex-col bg-[var(--ag-bg)] text-[var(--ag-ink)]">
       {preview && <p className="bg-[#B45309] px-4 py-2 text-center text-sm font-bold text-white">{t("previewBar")}</p>}
+      {demo && (
+        <p className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 bg-[#0060E6] px-4 py-2 text-center text-[13.5px] font-semibold text-white">
+          {t("demoBar")}
+          <Link href="/agencies/apply" className="inline-flex min-h-8 items-center rounded-full bg-white px-3.5 text-[13px] font-bold text-[#0060E6]">{t("demoCta")}</Link>
+        </p>
+      )}
 
       {/* Header */}
       <header className="sticky top-0 z-30 border-b border-[var(--ag-hero-line)] bg-[var(--ag-hero-bg)]/90 text-[var(--ag-hero-ink)] backdrop-blur-md">

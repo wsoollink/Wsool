@@ -964,6 +964,9 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   image and PDF (`src/lib/pdf/agency-kit.ts`: cover, about + contact, 3-column creator cards linking to each page, contact page with QR).
 - Editor: `/agency?tab=page` (`PageEditor`, managers + owner, `saveAgencyPage` / `checkAgencySlug` / `requestAgencyUpload` (upload kind
   `agencyLogo`) in `agency/page-actions.ts`); team preview at `/agency/preview` (works while unpublished). PDF buttons: download ar/en + share.
+- Demo agency `/agencies/demo` (+ `/pdf`): fictional "وكالة نجوم" from `buildDemoAgency()` (`src/lib/demo-agency.ts`, nothing stored, noindex,
+  blue "demo" bar linking `/agencies/apply`, every card opens `/demo`), linked from the agencies hero ("شاهد صفحة وكالة تجريبية"). Portraits in
+  `public/demo/agency/` are small AI images (Canva previews, upscaled): replace with sharper ones when the owner has them.
 
 ### Platform connections (owner, Oct 2026)
 - Creators link an account through the platform's own sign-in (OAuth); followers + audience then update daily and the account

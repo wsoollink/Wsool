@@ -82,8 +82,8 @@ export default async function AgenciesPage({ params }: PageProps<"/[locale]/agen
               <p className="max-w-xl text-lg leading-9 text-muted">{t("heroBody")}</p>
               <div className="flex flex-wrap items-center gap-4">
                 <Link href={TRIAL} className={primaryCta}>{t("ctaTrial")}</Link>
-                <Link href="/demo" className="inline-flex min-h-11 items-center gap-1.5 text-[15px] font-bold text-blue">
-                  {t("ctaDemo")} <Arrow aria-hidden="true" size={17} />
+                <Link href="/agencies/demo" className="inline-flex min-h-11 items-center gap-1.5 text-[15px] font-bold text-blue">
+                  {t("ctaAgencyDemo")} <Arrow aria-hidden="true" size={17} />
                 </Link>
               </div>
               <ul className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted">

@@ -258,7 +258,8 @@ export async function buildAgencyKit(agency: PublicAgency, lang: Locale): Promis
       const ry = y + 8 + i * 58;
       if (i) pg.drawLine({ start: { x: (PAD + 24) * PX, y: H - ry * PX }, end: { x: (PAD + CONTENT - 24) * PX, y: H - ry * PX }, thickness: PX, color: paint(th.line).color });
       text(k, PAD + 24, ry + 18, { size: 14, color: th.muted, width: 200 * 1, align: "start" });
-      text(v, PAD + 24, ry + 17, { size: 15, weight: 700, color: th.ink, width: CONTENT - 48, align: "end" });
+      // Value in the end part of the row, clear of the label.
+      text(v, rtl ? PAD + 24 : PAD + 24 + 160, ry + 17, { size: 15, weight: 700, color: th.ink, width: CONTENT - 48 - 160, align: "end" });
     });
     y += fh + 30;
     // Contact cards

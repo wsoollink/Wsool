@@ -303,7 +303,7 @@ export default async function AgenciesPage({ params }: PageProps<"/[locale]/agen
           <div className="relative overflow-hidden rounded-[32px] bg-gradient-to-br from-[#0060E6] via-[#0A3A8C] to-[#021941] px-6 py-16 text-center text-white md:py-20">
             <div aria-hidden="true" className="absolute -bottom-32 start-1/2 size-[520px] -translate-x-1/2 rounded-full bg-[#22B8F0]/30 blur-[100px]" />
             <h2 className="relative mx-auto mb-4 max-w-2xl text-3xl leading-tight font-black md:text-6xl">{t("finalTitle")}</h2>
-            <p className="relative mx-auto mb-8 max-w-xl text-lg opacity-85">{t("finalBody")}</p>
+            <p className="relative mx-auto mb-8 max-w-3xl text-lg text-balance opacity-85">{t("finalBody")}</p>
             <Link href={TRIAL} className="relative inline-flex min-h-12 items-center justify-center rounded-full bg-white px-8 text-[15px] font-bold text-[#021941] shadow-[0_14px_30px_-12px_rgba(0,0,0,0.5)] hover:bg-white/90">{t("ctaTrial")}</Link>
           </div>
         </section>

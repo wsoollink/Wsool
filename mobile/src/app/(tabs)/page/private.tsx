@@ -137,7 +137,7 @@ export default function PrivateView() {
                   <Button title={t("private.revoke")} variant="ghost" titleColor={colors.bad} icon={<Trash2 size={16} color={colors.bad} />} disabled={busy}
                     onPress={() => Alert.alert(t("private.revoke"), t("private.revokeConfirm", { name: l.name }), [
                       { text: t("common.cancel"), style: "cancel" },
-                      { text: t("private.revoke"), style: "destructive", onPress: () => run(() => rpc<Result>("removePrivateLink", l.id), t("private.revoked")) },
+                      { text: t("private.revoke"), style: "destructive", onPress: () => run(() => rpc<Result>("removePrivateLink", l.id), t("private.revoked"), () => { if (made?.url === l.url) setMade(null); }) },
                     ])} />
                 </Row>
               </View>

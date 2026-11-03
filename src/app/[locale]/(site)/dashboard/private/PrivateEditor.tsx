@@ -136,7 +136,7 @@ export function PrivateEditor({ isPro, hasPassword, links }: { isPro: boolean; h
                 {l.url && !l.expired && <CopyButton text={l.url} label={l.name} />}
                 <button
                   type="button" disabled={pending}
-                  onClick={() => { if (window.confirm(t("revokeConfirm", { name: l.name }))) start(async () => { await removePrivateLink(l.id); router.refresh(); }); }}
+                  onClick={() => { if (window.confirm(t("revokeConfirm", { name: l.name }))) start(async () => { const r = await removePrivateLink(l.id); if (r.ok && made?.url === l.url) setMade(null); router.refresh(); }); }}
                   className="inline-flex min-h-10 items-center gap-1 rounded-full px-3 text-[13px] font-bold text-bad hover:bg-bad/5"
                 >
                   <Trash2 aria-hidden="true" size={14} />{t("revoke")}

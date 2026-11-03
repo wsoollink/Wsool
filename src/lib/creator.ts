@@ -1,7 +1,7 @@
 import "server-only";
 import { cache } from "react";
 import { redirect } from "next/navigation";
-import { actingFor, type ActScope } from "@/lib/agency";
+import { actingFor, getMembership, type ActScope } from "@/lib/agency";
 import { requireUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 
@@ -27,7 +27,10 @@ export const requireCreator = cache(async (scope?: ActScope) => {
   if (!row) {
     // A suspended account without a page still can't create one.
     const account = await db.user.findUnique({ where: { id: user.id }, select: { suspendedAt: true } });
-    redirect(account?.suspendedAt ? "/suspended" : "/onboarding");
+    if (account?.suspendedAt) redirect("/suspended");
+    // Invited to an agency / brand team (no creator page of their own): their home is the agency dashboard.
+    if (await getMembership(user)) redirect("/agency");
+    redirect("/onboarding");
   }
   // Staff suspended the account: no dashboard access (pages and actions).
   if (row.user.suspendedAt) redirect("/suspended");

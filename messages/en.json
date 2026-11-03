@@ -2777,7 +2777,9 @@
   },
   "Acting": {
     "banner": "You're managing <b>{creator}</b>'s page for <b>{agency}</b>. Only the sections the creator allowed are shown.",
-    "exit": "Back to agency"
+    "exit": "Back to agency",
+    "member": "You're on the <b>{agency}</b> team on Wsool.",
+    "openAgency": "Open agency dashboard"
   },
   "AgencyApp": {
     "title": "Agency dashboard",

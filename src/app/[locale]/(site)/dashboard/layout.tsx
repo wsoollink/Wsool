@@ -16,6 +16,7 @@ import { iconButton, navRow, topBar } from "@/components/ui/styles";
 import { PlatformIcon } from "@/components/creator/PlatformIcon";
 import { SUPPORT_EMAIL, supportWhatsappUrl } from "@/config/site";
 import { isLocale, toIntlLocale } from "@/i18n/config";
+import { getMembership } from "@/lib/agency";
 import { requireCreator } from "@/lib/creator";
 import { db } from "@/lib/db";
 import type { Lang } from "@/generated/prisma/client";
@@ -49,9 +50,20 @@ async function CreatorCard() {
 
 /** Shown while an agency member manages a creator's page (acting mode, src/lib/agency.ts). */
 async function ActingBanner() {
-  const { page, acting } = await requireCreator("view");
-  if (!acting) return null;
+  const { user, page, acting } = await requireCreator("view");
   const t = await getTranslations("Acting");
+  if (!acting) {
+    // A creator who is also on an agency / brand team: a way back to the agency dashboard.
+    const m = await getMembership(user);
+    if (!m) return null;
+    return (
+      <div className="mb-5 flex flex-wrap items-center gap-3 rounded-2xl border border-line bg-card px-4 py-3 shadow-card">
+        <Building2 aria-hidden="true" size={18} className="shrink-0 text-blue" />
+        <p className="min-w-0 flex-1 text-sm">{t.rich("member", { b: (c) => <b>{c}</b>, agency: m.agency.name })}</p>
+        <Link href="/agency" className="inline-flex min-h-10 items-center rounded-full bg-navy px-4 text-[13px] font-bold text-on-navy">{t("openAgency")}</Link>
+      </div>
+    );
+  }
   const tr = await primaryName(page.id, page.primaryLang);
   return (
     <div role="status" className="mb-5 flex flex-wrap items-center gap-3 rounded-2xl border border-blue/25 bg-blue/8 px-4 py-3">

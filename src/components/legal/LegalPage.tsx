@@ -3,6 +3,8 @@ import { BrandLogo } from "@/components/BrandLogo";
 import { Fragment } from "react";
 import { LEGAL, SUPPORT_WHATSAPP_DISPLAY, supportWhatsappUrl } from "@/config/site";
 import { LEGAL_TEXT, type LegalKind } from "@/content/legal";
+import { AGENCY_LEGAL_TEXT } from "@/content/agency-legal";
+import { AgenciesFooter, AgenciesHeader } from "@/app/[locale]/(site)/agencies/Header";
 import { toIntlLocale, type Locale } from "@/i18n/config";
 
 const BLANKS = {
@@ -44,14 +46,19 @@ function effectiveDate(lang: Locale) {
   return new Intl.DateTimeFormat(toIntlLocale(lang), { dateStyle: "long", timeZone: "UTC" }).format(new Date(LEGAL.effectiveDate));
 }
 
-/** Terms of Use / Privacy Policy / Refund Policy (content in src/content/legal.ts). */
-export function LegalPage({ lang, kind }: { lang: Locale; kind: LegalKind }) {
-  const doc = LEGAL_TEXT[lang][kind];
+/**
+ * Terms of Use / Privacy Policy / Refund Policy (content in src/content/legal.ts). `audience="agency"` = the versions for
+ * agency and brand accounts (src/content/agency-legal.ts) at /agencies/<kind>, with the agencies header and footer.
+ */
+export function LegalPage({ lang, kind, audience = "creator" }: { lang: Locale; kind: LegalKind; audience?: "creator" | "agency" }) {
+  const agency = audience === "agency";
+  const doc = (agency ? AGENCY_LEGAL_TEXT : LEGAL_TEXT)[lang][kind];
   const ui = UI[lang];
   const headings = doc.blocks.flatMap((b, i) => ("h" in b ? [{ id: `s${i}`, text: b.h }] : []));
 
   return (
     <div className="flex flex-1 flex-col bg-bg-marketing">
+      {agency ? <AgenciesHeader lang={lang === "en" ? "en" : "ar"} sections={false} /> : (
       <header className="border-b border-line bg-card/80">
         <div className="mx-auto flex max-w-3xl items-center justify-between gap-4 px-4 py-3">
           <Link href="/" className="flex min-h-11 items-center" aria-label={ui.home}>
@@ -64,9 +71,17 @@ export function LegalPage({ lang, kind }: { lang: Locale; kind: LegalKind }) {
           </nav>
         </div>
       </header>
+      )}
       <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-8 md:py-12">
         <h1 className="text-3xl font-black md:text-4xl">{doc.title}</h1>
         <p className="mt-2 text-sm text-muted">{ui.effective} {effectiveDate(lang)}</p>
+        {agency && (
+          <nav aria-label={ui.contents} className="mt-3 flex flex-wrap gap-1">
+            {(["terms", "privacy", "refund"] as const).filter((k) => k !== kind).map((k) => (
+              <Link key={k} href={`/agencies/${k}`} className="min-h-11 content-center rounded-full px-2.5 text-sm font-semibold text-blue">{ui.names[k]}</Link>
+            ))}
+          </nav>
+        )}
         <p className="mt-6 leading-8">{fill(doc.intro, lang)}</p>
 
         <nav aria-label={ui.contents} className="mt-6 rounded-[20px] border border-line bg-card p-5">
@@ -111,9 +126,11 @@ export function LegalPage({ lang, kind }: { lang: Locale; kind: LegalKind }) {
           })}
         </article>
       </main>
-      <footer className="border-t border-line py-6 text-center text-sm text-muted">
-        © wsool.link
-      </footer>
+      {agency ? <AgenciesFooter lang={lang === "en" ? "en" : "ar"} /> : (
+        <footer className="border-t border-line py-6 text-center text-sm text-muted">
+          © wsool.link
+        </footer>
+      )}
     </div>
   );
 }

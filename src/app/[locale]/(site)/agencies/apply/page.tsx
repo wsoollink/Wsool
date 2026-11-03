@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { CheckCircle2 } from "lucide-react";
 import { isLocale, toIntlLocale } from "@/i18n/config";
-import { AgenciesHeader } from "../Header";
+import { AgenciesFooter, AgenciesHeader } from "../Header";
 import { ApplyForm } from "./ApplyForm";
 
 export async function generateMetadata({ params }: PageProps<"/[locale]/agencies/apply">): Promise<Metadata> {
@@ -38,6 +38,7 @@ export default async function AgencyApplyPage({ params }: PageProps<"/[locale]/a
           <ApplyForm lang={lang} />
         </div>
       </main>
+      <AgenciesFooter lang={lang} />
     </div>
   );
 }

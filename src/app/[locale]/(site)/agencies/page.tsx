@@ -9,8 +9,7 @@ import { isLocale, toIntlLocale } from "@/i18n/config";
 import {
   ActivityLog, DashboardMock, FloatInvite, FloatPdf, FloatWeek, LinkedRows, PdfStack, PermissionsMock, TeamRoles, VisitsBars,
 } from "./Visuals";
-import { AgenciesHeader, APPLY } from "./Header";
-import { BrandLogo } from "@/components/BrandLogo";
+import { AgenciesFooter, AgenciesHeader, APPLY } from "./Header";
 
 type Item = { t: string; b: string };
 type Plan = { name: string; creators: string; price: string; per: string; popular?: string };
@@ -310,25 +309,7 @@ export default async function AgenciesPage({ params }: PageProps<"/[locale]/agen
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-line bg-bg-marketing">
-        <div className="mx-auto flex max-w-[1180px] flex-col gap-6 px-4 py-10 md:flex-row md:items-start md:justify-between">
-          <div>
-            <BrandLogo lang={lang} alt={en ? "Wsool" : "وصول"} />
-            {/* One line (customers, Nov 2026); shrinks with the width on small phones. */}
-            <p className="mt-3 text-[clamp(11px,3.2vw,14px)] leading-7 whitespace-nowrap text-muted">{t("footerTag")}</p>
-          </div>
-          <nav aria-label={t("nav.menu")} className="grid grid-cols-2 gap-x-10 gap-y-3 text-sm text-muted sm:grid-cols-3">
-            <Link href="/" className="hover:text-blue">{t("footerLinks.creators")}</Link>
-            <Link href="/pricing" className="hover:text-blue">{t("footerLinks.pricing")}</Link>
-            <Link href="/contact" className="hover:text-blue">{t("footerLinks.contact")}</Link>
-            <Link href="/terms" className="hover:text-blue">{t("footerLinks.terms")}</Link>
-            <Link href="/privacy" className="hover:text-blue">{t("footerLinks.privacy")}</Link>
-            <Link href="/refund" className="hover:text-blue">{t("footerLinks.refund")}</Link>
-          </nav>
-        </div>
-        <p className="border-t border-line py-5 text-center text-[13px] text-muted">{t("footer")}</p>
-      </footer>
+      <AgenciesFooter lang={lang} />
     </div>
   );
 }

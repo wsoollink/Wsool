@@ -641,7 +641,10 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   it from `admin/agencies` "Join requests" (as agency or brand = `createAgency` + invitation email; decline audited `agency.decline_request`).
   Agency members without a creator page land on `/agency` after sign-in (`requireCreator`); creators on a team get an "Open agency
   dashboard" bar in the dashboard. Marketing/agencies pages scroll smoothly to `#sections` below the sticky header (`globals.css`); the
-  generated marketing root's `overflow-x: hidden` is overridden to `clip` in `marketing.css` so the header stays sticky. Linked as «للوكالات» / "For agencies" in
+  generated marketing root's `overflow-x: hidden` is overridden to `clip` in `marketing.css` so the header stays sticky. Footer `AgenciesFooter` (same file) links only
+  the agencies' own pages: `/agencies/contact` (contact form preset to "partnership" + join-form card), `/agencies/terms`, `/agencies/privacy`,
+  `/agencies/refund` (`LegalPage audience="agency"`, texts in `src/content/agency-legal.ts`, update with the general ones), and ends with the
+  company line (© year · company · CR · VAT from `SELLER`) + "صُنع في السعودية" like the home page. Linked as «للوكالات» / "For agencies" in
   the marketing header nav (desktop) and the footer Product column (`LINKS`). Agency accounts: see "Marketing agencies" below.
 - Home "claim your link": live check (`checkLink`), then cookie `wsool_claim` → `/login`;
   onboarding pre-fills that name.

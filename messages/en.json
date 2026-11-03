@@ -2780,7 +2780,9 @@
       "refund": "Refund policy"
     },
     "footer": "© 2026 Safhat Wsool Company For Information Technology",
-    "ctaShort": "Free trial"
+    "ctaShort": "Free trial",
+    "madeIn": "Made in Saudi Arabia",
+    "footerNav": "Useful links"
   },
   "Acting": {
     "banner": "You're managing <b>{creator}</b>'s page for <b>{agency}</b>. Only the sections the creator allowed are shown.",
@@ -3039,5 +3041,14 @@
       "rate": "Too many requests. Try again shortly.",
       "failed": "Couldn't send the request. Try again."
     }
+  },
+  "AgencyContact": {
+    "title": "Contact the agencies team",
+    "lead": "Questions about the agency dashboard, the creator directory or plans? Message us and we'll reply within one business day.",
+    "applyTitle": "Want an account for your agency or brand?",
+    "applyBody": "Fill in the join form and we'll open it for you.",
+    "formTitle": "Send us a message",
+    "waBody": "Talk to us directly on WhatsApp Business.",
+    "waText": "Hi, I have a question about agency accounts on Wsool"
   }
 }

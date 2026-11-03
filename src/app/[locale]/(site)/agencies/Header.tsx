@@ -4,6 +4,7 @@ import { UserRound } from "lucide-react";
 import { BrandLogo } from "@/components/BrandLogo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LangPill } from "@/components/dashboard/LangPill";
+import { SELLER } from "@/config/site";
 
 export const APPLY = "/agencies/apply";
 
@@ -43,3 +44,34 @@ export async function AgenciesHeader({ lang, sections = true }: { lang: "ar" | "
     </header>
   );
 }
+
+/** Footer of the agencies pages: tagline, the agencies' own contact + legal pages, company line (like the home page). */
+export async function AgenciesFooter({ lang }: { lang: "ar" | "en" }) {
+  const t = await getTranslations("Agencies");
+  const en = lang === "en";
+  const company = en
+    ? `© ${YEAR} ${SELLER.nameEn} · CR ${SELLER.crNumber} · VAT ${SELLER.vatNumber}`
+    : `© ${YEAR} ${SELLER.name} · س.ت ${SELLER.crNumber} · الرقم الضريبي ${SELLER.vatNumber}`;
+  return (
+    <footer className="border-t border-line bg-bg-marketing">
+      <div className="mx-auto flex max-w-[1180px] flex-col gap-6 px-4 py-10 md:flex-row md:items-start md:justify-between">
+        <div>
+          <BrandLogo lang={lang} alt={en ? "Wsool" : "وصول"} />
+          {/* One line (customers, Nov 2026); shrinks with the width on small phones. */}
+          <p className="mt-3 text-[clamp(11px,3.2vw,14px)] leading-7 whitespace-nowrap text-muted">{t("footerTag")}</p>
+        </div>
+        <nav aria-label={t("footerNav")} className="grid grid-cols-2 gap-x-10 gap-y-3 text-sm text-muted">
+          {(["contact", "terms", "privacy", "refund"] as const).map((k) => (
+            <Link key={k} href={`/agencies/${k}`} className="inline-flex min-h-11 items-center hover:text-blue md:min-h-6">{t(`footerLinks.${k}`)}</Link>
+          ))}
+        </nav>
+      </div>
+      <div className="mx-auto flex max-w-[1180px] flex-wrap justify-between gap-3 border-t border-line px-4 py-6 text-[13px] text-muted">
+        <span>{company}</span>
+        <span>{t("madeIn")}</span>
+      </div>
+    </footer>
+  );
+}
+
+const YEAR = 2026;

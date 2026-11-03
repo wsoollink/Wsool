@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import { Building2, Check, Unlink, X } from "lucide-react";
 import { buttonClasses } from "@/components/ui/Button";
 import { Switch } from "@/components/ui/Switch";
-import { acceptAgency, declineAgency, unlinkAgency, updateAgencyPerms } from "./actions";
+import { acceptAgency, declineAgency, setAgencyPageVisibility, unlinkAgency, updateAgencyPerms } from "./actions";
 
 type Perms = { content: boolean; rates: boolean; contact: boolean };
 const KEYS = ["content", "rates", "contact"] as const;
@@ -57,10 +57,11 @@ export function InviteCard({ linkId, agency, requested }: { linkId: string; agen
 }
 
 /** The active agency: permissions saved on each switch, and unlinking. */
-export function ActiveAgency({ agency, initial, graceDays }: { agency: string; initial: Perms; graceDays: number }) {
+export function ActiveAgency({ agency, initial, graceDays, onPage, pageUrl }: { agency: string; initial: Perms; graceDays: number; onPage: boolean; pageUrl: string | null }) {
   const t = useTranslations("AgencySection");
   const router = useRouter();
   const [perms, setPerms] = useState(initial);
+  const [shown, setShown] = useState(onPage);
   const [msg, setMsg] = useState("");
   const [pending, start] = useTransition();
   const change = (p: Perms) => {
@@ -74,6 +75,14 @@ export function ActiveAgency({ agency, initial, graceDays }: { agency: string; i
   return (
     <div className="flex flex-col gap-4">
       <PermRows value={perms} onChange={change} disabled={pending} />
+      <div className="rounded-xl border border-line px-4 py-1.5">
+        <Switch id="agency-page-show" checked={shown} disabled={pending} label={t("showOnPage")}
+          hint={pageUrl ? t("showOnPageHintLink", { link: pageUrl }) : t("showOnPageHint")}
+          onChange={(on) => {
+            setShown(on);
+            start(async () => { const r = await setAgencyPageVisibility(on); if (r.ok) setMsg(t("saved")); else { setShown(!on); setMsg(t("error")); } });
+          }} />
+      </div>
       {msg && <p role="status" className="text-sm text-good">{msg}</p>}
       <p className="text-xs leading-6 text-muted">{t("never")}</p>
       <div className="flex flex-col items-start gap-1.5 border-t border-line-soft pt-4">

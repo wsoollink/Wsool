@@ -7,6 +7,7 @@ import { getCurrentUser, type CurrentUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { notify } from "@/lib/notify";
 import { expirePage } from "@/lib/public-page";
+import { refreshAgencyPage } from "@/lib/agency-page";
 
 /**
  * Marketing agencies (owner, Nov 2026, phase 1). An agency manages creators' pages with each creator's
@@ -135,6 +136,7 @@ export async function acceptInvite(page: { id: string; userId: string }, linkId:
   await db.agencyLink.updateMany({ where: { pageId: page.id, status: "pending" }, data: { status: "declined", decidedAt: new Date() } });
   await applyAgencyPro(page.userId);
   await refresh(page.id);
+  refreshAgencyPage(link.agency.slug);
   const name = await db.pageTranslation.findFirst({ where: { pageId: page.id }, select: { fullName: true }, orderBy: { lang: "asc" } });
   for (const id of await agencyManagers(link.agencyId)) await notify(id, "agency_accepted", { creator: name?.fullName ?? "" });
   return true;
@@ -149,13 +151,14 @@ export async function declineInvite(pageId: string, linkId: string) {
 export async function endLink(linkId: string, by: "creator" | "agency", scope: { pageId?: string; agencyId?: string }) {
   const link = await db.agencyLink.findFirst({
     where: { id: linkId, status: "active", ...(scope.pageId && { pageId: scope.pageId }), ...(scope.agencyId && { agencyId: scope.agencyId }) },
-    include: { page: { select: { userId: true, translations: { select: { fullName: true }, take: 1 } } }, agency: { select: { name: true } } },
+    include: { page: { select: { userId: true, translations: { select: { fullName: true }, take: 1 } } }, agency: { select: { name: true, slug: true } } },
   });
   if (!link) return false;
   const { count } = await db.agencyLink.updateMany({ where: { id: link.id, status: "active" }, data: { status: "ended", endedAt: new Date(), endedBy: by } });
   if (count !== 1) return false;
   await endAgencyPro(link.page.userId);
   await refresh(link.pageId);
+  refreshAgencyPage(link.agency.slug);
   if (by === "creator") {
     for (const id of await agencyManagers(link.agencyId)) await notify(id, "agency_ended", { creator: link.page.translations[0]?.fullName ?? "" });
   } else {
@@ -169,7 +172,8 @@ export async function deactivateAgency(agencyId: string) {
   const links = await db.agencyLink.findMany({ where: { agencyId, status: "active" }, select: { id: true } });
   for (const l of links) await endLink(l.id, "agency", { agencyId });
   await db.agencyLink.updateMany({ where: { agencyId, status: "pending" }, data: { status: "cancelled" } });
-  await db.agency.update({ where: { id: agencyId }, data: { status: "inactive" } });
+  const a = await db.agency.update({ where: { id: agencyId }, data: { status: "inactive" } });
+  refreshAgencyPage(a.slug);
 }
 
 /** Path segment → section name stored in the activity log. */

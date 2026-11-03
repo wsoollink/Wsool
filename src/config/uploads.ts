@@ -7,6 +7,8 @@ export const UPLOAD_KINDS = {
   photo: { types: ["image/jpeg", "image/png", "image/webp", "image/avif"], maxBytes: 8 * 1024 * 1024, bucket: MEDIA_BUCKET },
   logo: { types: ["image/jpeg", "image/png", "image/webp", "image/avif"], maxBytes: 4 * 1024 * 1024, bucket: MEDIA_BUCKET },
   license: { types: ["image/jpeg", "image/png", "image/webp", "application/pdf"], maxBytes: 10 * 1024 * 1024, bucket: MEDIA_BUCKET },
+  /** Logo on the public agency page (agency managers, their own folder). */
+  agencyLogo: { types: ["image/jpeg", "image/png", "image/webp", "image/avif"], maxBytes: 4 * 1024 * 1024, bucket: MEDIA_BUCKET },
   linkImage: { types: ["image/jpeg", "image/png", "image/webp", "image/avif"], maxBytes: 4 * 1024 * 1024, bucket: MEDIA_BUCKET },
   /** Store logo on a coupon. */
   couponLogo: { types: ["image/jpeg", "image/png", "image/webp", "image/avif"], maxBytes: 4 * 1024 * 1024, bucket: MEDIA_BUCKET },

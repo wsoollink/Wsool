@@ -6,6 +6,7 @@ import { resolvePageLang } from "@/lib/page-language";
 import { getCurrentUser } from "@/lib/auth";
 import { isUnlocked } from "@/lib/private-view";
 import { getPublicPage, getUsernameRedirect, type PublicPage } from "@/lib/public-page";
+import { agencyLang, getPublicAgency } from "@/lib/agency-page";
 
 /**
  * Shared by the creator layout, page and metadata: the page data and the
@@ -20,8 +21,14 @@ export const loadCreatorPage = cache(async (localeParam: string, usernameParam: 
   const data = formatError && formatError !== "reserved" ? null : await getPublicPage(username);
   // A creator who changed their username: the old link keeps working for 30 days.
   const movedTo = !data && !formatError ? await getUsernameRedirect(username) : null;
-  const lang = data?.status === "published" ? resolvePageLang(visitor, data.primaryLang, data.enEnabled) : visitor;
-  return { raw, username, data, lang, movedTo };
+  // No creator page: maybe an agency's public page (same namespace, wsool.link/<slug>).
+  let agency = !data && !movedTo && !formatError ? await getPublicAgency(username, visitor) : null;
+  let lang = data?.status === "published" ? resolvePageLang(visitor, data.primaryLang, data.enEnabled) : visitor;
+  if (agency) {
+    lang = agencyLang(visitor, agency.hasEnglish, true);
+    if (lang !== visitor) agency = await getPublicAgency(username, lang);
+  }
+  return { raw, username, data, lang, movedTo, agency };
 });
 
 /**

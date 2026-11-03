@@ -1,5 +1,5 @@
 import "server-only";
-import type { Platform } from "@/generated/prisma/client";
+import type { Platform, Prisma } from "@/generated/prisma/client";
 import { hasPro } from "@/config/plans";
 import { db } from "@/lib/db";
 import { cityKey, countryCode } from "@/lib/places";
@@ -51,11 +51,19 @@ export type DirectoryRow = {
 
 /** Every listed creator, in the visitor's language where the creator wrote one. */
 export async function directoryRows(lang: Locale, now = new Date()): Promise<DirectoryRow[]> {
+  return listingRows({
+    inDirectory: true, isPublished: true, deletedAt: null, photoUrl: { not: null },
+    user: { suspendedAt: null }, categories: { some: {} },
+  }, lang, now);
+}
+
+/**
+ * Creator cards with only what each public page shows (no private/hidden numbers; whole-page-locked = photo, name,
+ * specialty). Shared by the directory and the public agency page (src/lib/agency-page.ts).
+ */
+export async function listingRows(where: Prisma.PageWhereInput, lang: Locale, now = new Date()): Promise<DirectoryRow[]> {
   const pages = await db.page.findMany({
-    where: {
-      inDirectory: true, isPublished: true, deletedAt: null, photoUrl: { not: null },
-      user: { suspendedAt: null }, categories: { some: {} },
-    },
+    where,
     select: {
       id: true, username: true, photoUrl: true, primaryLang: true, enEnabled: true, hiddenSections: true, privateSections: true, lockWhole: true,
       translations: { select: { lang: true, fullName: true, specialty: true, city: true, country: true } },
@@ -77,7 +85,7 @@ export async function directoryRows(lang: Locale, now = new Date()): Promise<Dir
     return {
       pageId: p.id,
       username: p.username,
-      photoUrl: p.photoUrl!,
+      photoUrl: p.photoUrl ?? "",
       name: pick("fullName") || p.username,
       specialty: pick("specialty"),
       city,

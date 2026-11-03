@@ -10,6 +10,11 @@ import { getDirection, toIntlLocale } from "@/i18n/config";
 import { loadCreatorPage } from "@/lib/creator-page";
 import { textImage } from "@/lib/og-text";
 import { BADGE_CHECK, BADGE_PATH, VERIFIED_BLUE } from "@/lib/verified-badge";
+import { agencyTheme } from "@/components/agency-page/theme";
+import type { PublicAgency } from "@/lib/agency-page";
+import { formatCompact, formatNumber } from "@/lib/format";
+import { initials } from "@/lib/initials";
+import type { Locale } from "@/i18n/config";
 
 // Link preview image for wsool.link/<username> (1200x630), in the page's
 // template colors and language. Served at /<username>/og.
@@ -42,7 +47,8 @@ export async function GET(request: NextRequest, { params }: RouteContext<"/[loca
   const { locale, username } = await params;
   // ?lang= from the page's metadata (crawlers send no language); falls back to the page's own rule.
   const asked = request.nextUrl.searchParams.get("lang");
-  const { data, lang } = await loadCreatorPage(asked === "ar" || asked === "en" ? asked : locale, username);
+  const { data, lang, agency } = await loadCreatorPage(asked === "ar" || asked === "en" ? asked : locale, username);
+  if (agency) return agencyImage(agency, lang);
   if (data?.status !== "published") return new Response("Not found", { status: 404 });
 
   const [kufi400, kufi700, kufiBlack] = await fontsPromise;
@@ -132,6 +138,86 @@ export async function GET(request: NextRequest, { params }: RouteContext<"/[loca
     },
   );
   // Let the CDN keep it; it is regenerated after a day or a deploy.
+  image.headers.set("Cache-Control", "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800");
+  return image;
+}
+
+const AGENCY_LABELS = {
+  ar: { creators: "مؤثر", followers: "متابع", kind: "وكالة تسويق مؤثرين" },
+  en: { creators: "creators", followers: "followers", kind: "Influencer marketing agency" },
+} as const;
+
+/** Agency page preview: name, tagline and numbers on the hero colour, a 2 × 2 mosaic of creator photos. */
+async function agencyImage(agency: PublicAgency, lang: Locale) {
+  const [kufi400, kufi700, kufiBlack] = await fontsPromise;
+  const theme = agencyTheme(agency.template, agency.accent);
+  const rtl = getDirection(lang) === "rtl";
+  const L = AGENCY_LABELS[lang];
+  const [logo, ...faces] = await Promise.all([imageDataUrl(agency.logoUrl), ...agency.creators.filter((c) => c.photoUrl).slice(0, 4).map((c) => imageDataUrl(c.photoUrl))]);
+  const photos = faces.filter((f): f is string => !!f);
+  const textWidth = photos.length ? 600 : 1080;
+  const initialsImg = textImage({ text: initials(agency.name), size: 26, color: theme.heroOnAccent, weight: 700, rtl, maxWidth: 60, maxLines: 1 });
+  const kindImg = textImage({ text: L.kind, size: 24, color: theme.heroAccent, weight: 700, rtl, maxWidth: textWidth, maxLines: 1 });
+  const nameImg = textImage({ text: agency.name, size: 68, color: theme.heroInk, weight: 700, rtl, maxWidth: textWidth });
+  const taglineImg = agency.tagline ? textImage({ text: agency.tagline, size: 30, color: theme.heroMuted, rtl, maxWidth: textWidth }) : null;
+  const statImg = (n: string, label: string) => ({ n: textImage({ text: n, size: 60, color: theme.heroInk, weight: 700, rtl, maxWidth: 360, maxLines: 1, numbers: true }), label: textImage({ text: label, size: 24, color: theme.heroMuted, rtl, maxWidth: 260, maxLines: 1 }) });
+  const stats = [
+    statImg(formatNumber(agency.stats.creators, lang), L.creators),
+    ...(agency.stats.followers ? [statImg(formatCompact(agency.stats.followers, lang), L.followers)] : []),
+  ];
+  const align = rtl ? "flex-end" : "flex-start";
+  const image = new ImageResponse(
+    (
+      <div style={{ display: "flex", width: "100%", height: "100%", padding: 64, gap: 56, alignItems: "center", flexDirection: rtl ? "row-reverse" : "row", backgroundColor: theme.heroBg, backgroundImage: `radial-gradient(circle at ${rtl ? "0%" : "100%"} 0%, ${theme.heroAccent}55, transparent 55%)`, fontFamily: "KufiText" }}>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: align, flex: 1, gap: 20 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 16, flexDirection: rtl ? "row-reverse" : "row" }}>
+            {logo ? (
+              // eslint-disable-next-line @next/next/no-img-element -- rendered by next/og
+              <img src={logo} width={64} height={64} alt="" style={{ borderRadius: 14, background: "#fff", objectFit: "contain" }} />
+            ) : (
+              <div style={{ display: "flex", width: 64, height: 64, borderRadius: 14, background: theme.heroAccent, alignItems: "center", justifyContent: "center" }}>
+                {/* eslint-disable-next-line @next/next/no-img-element -- rendered by next/og; Arabic text is drawn as outlines */}
+                <img src={initialsImg.src} width={initialsImg.width} height={initialsImg.height} alt="" />
+              </div>
+            )}
+            {/* eslint-disable-next-line @next/next/no-img-element -- rendered by next/og */}
+            <img src={kindImg.src} width={kindImg.width} height={kindImg.height} alt="" />
+          </div>
+          {/* eslint-disable-next-line @next/next/no-img-element -- rendered by next/og */}
+          <img src={nameImg.src} width={nameImg.width} height={nameImg.height} alt="" />
+          {/* eslint-disable-next-line @next/next/no-img-element -- rendered by next/og */}
+          {taglineImg && <img src={taglineImg.src} width={taglineImg.width} height={taglineImg.height} alt="" />}
+          <div style={{ display: "flex", gap: 48, marginTop: 18, flexDirection: rtl ? "row-reverse" : "row" }}>
+            {stats.map((s, i) => (
+              <div key={i} style={{ display: "flex", flexDirection: "column", alignItems: align }}>
+                {/* eslint-disable-next-line @next/next/no-img-element -- rendered by next/og; "مليون" needs outlines */}
+                <img src={s.n.src} width={s.n.width} height={s.n.height} alt="" />
+                {/* eslint-disable-next-line @next/next/no-img-element -- rendered by next/og */}
+                <img src={s.label.src} width={s.label.width} height={s.label.height} alt="" />
+              </div>
+            ))}
+          </div>
+          <div style={{ display: "flex", marginTop: "auto", fontSize: 26, color: theme.heroMuted }}>wsool.link/{agency.slug}</div>
+        </div>
+        {photos.length > 0 && (
+          <div style={{ display: "flex", flexWrap: "wrap", width: 420, gap: 16 }}>
+            {photos.map((p, i) => (
+              // eslint-disable-next-line @next/next/no-img-element -- rendered by next/og
+              <img key={i} src={p} width={202} height={photos.length > 2 ? 240 : 486} alt="" style={{ borderRadius: 24, objectFit: "cover" }} />
+            ))}
+          </div>
+        )}
+      </div>
+    ),
+    {
+      ...SIZE,
+      fonts: [
+        { name: "KufiText", data: kufi400, weight: 400 },
+        { name: "KufiText", data: kufi700, weight: 700 },
+        { name: "KufiNumbers", data: kufiBlack, weight: 900 },
+      ],
+    },
+  );
   image.headers.set("Cache-Control", "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800");
   return image;
 }

@@ -1135,6 +1135,23 @@ model Agency {
   status      AgencyStatus   @default(active)
   /// agency = manages creators + directory; brand = a company that only searches the creator directory (owner, Nov 2026).
   kind        AgencyKind     @default(agency)
+  /// Public agency page wsool.link/<slug> (owner, Nov 2026). Shares the username namespace with creator pages.
+  slug        String?        @unique @db.VarChar(20)
+  pagePublished Boolean      @default(false) @map("page_published")
+  nameEn      String?        @map("name_en") @db.VarChar(80)
+  tagline     String?        @db.VarChar(100)
+  taglineEn   String?        @map("tagline_en") @db.VarChar(100)
+  bio         String?        @db.VarChar(800)
+  bioEn       String?        @map("bio_en") @db.VarChar(800)
+  city        String?        @db.VarChar(60)
+  cityEn      String?        @map("city_en") @db.VarChar(60)
+  logoUrl     String?        @map("logo_url")
+  /// International digits, like pages.whatsapp.
+  whatsapp    String?        @db.VarChar(15)
+  email       String?        @db.VarChar(254)
+  website     String?        @db.VarChar(200)
+  template    AgencyTemplate @default(executive)
+  accent      String?        @db.VarChar(7)
   createdBy   String         @map("created_by") @db.Uuid
   createdAt   DateTime       @default(now()) @map("created_at") @db.Timestamptz
   members     AgencyMember[]
@@ -1152,6 +1169,14 @@ enum AgencyStatus {
 enum AgencyKind {
   agency
   brand
+}
+
+/// Designs of the public agency page (src/components/agency-page/theme.ts).
+enum AgencyTemplate {
+  executive
+  midnight
+  graphite
+  ivory
 }
 
 /// A person on the agency's team. Invited by email; linked to the account on first visit.
@@ -1197,6 +1222,12 @@ model AgencyLink {
   endedAt    DateTime?  @map("ended_at") @db.Timestamptz
   /// "creator" (unlinked) or "agency" (removed the creator, or the agency was stopped).
   endedBy    String?    @map("ended_by") @db.VarChar(10)
+  /// Listed on the agency's public page (on by default; the creator can turn it off, the agency can hide them too).
+  showOnPage Boolean    @default(true) @map("show_on_page")
+  /// Hidden by the agency from its public page (the creator's own switch is showOnPage).
+  agencyHidden Boolean  @default(false) @map("agency_hidden")
+  /// Order on the agency page (smaller first).
+  sort       Int        @default(0)
 
   @@index([pageId, status])
   @@index([agencyId, status])

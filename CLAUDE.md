@@ -951,6 +951,20 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   `agency_ended` (agency owners + managers). App: no agency screen yet (push opens Notifications). Terms section 2 + privacy
   "who we share it with" describe agencies.
 
+### Agency public page (owner, Nov 2026)
+- `wsool.link/<slug>` for agencies (kind `agency`; brand accounts have none): the slug shares the username namespace (`slugError()` in
+  `src/lib/agency-page.ts`; `usernameError()` also refuses agency slugs). `loadCreatorPage()` returns `agency` when no creator page has that
+  name; the `[username]` page, `og` and `pdf` routes branch on it. Data: `getPublicAgency(slug, lang)` (`"use cache"`, tag `agencyCacheTag`,
+  15 min, `refreshAgencyPage()` after agency edits / link changes / stop) builds creator cards with `listingRows()` (`src/lib/directory.ts`,
+  same privacy rules as the directory). Fields on `agencies` (slug, page_published, name_en, tagline/bio/city ar+en, logo_url, whatsapp,
+  email, website, template, accent); `agency_links.show_on_page` (creator's switch, on by default, Agency section), `agency_hidden` + `sort`
+  (agency's). English shows when the agency wrote any English (`agencyLang`).
+- Design: `src/components/agency-page/` (`AgencyProfile` server, `Roster` client search + category chips), templates in `theme.ts`
+  (`AGENCY_TEMPLATES` executive / midnight / graphite / ivory, `AGENCY_ACCENTS`, `agencyTheme()` with contrast guards) used by the page, OG
+  image and PDF (`src/lib/pdf/agency-kit.ts`: cover, about + contact, 3-column creator cards linking to each page, contact page with QR).
+- Editor: `/agency?tab=page` (`PageEditor`, managers + owner, `saveAgencyPage` / `checkAgencySlug` / `requestAgencyUpload` (upload kind
+  `agencyLogo`) in `agency/page-actions.ts`); team preview at `/agency/preview` (works while unpublished). PDF buttons: download ar/en + share.
+
 ### Platform connections (owner, Oct 2026)
 - Creators link an account through the platform's own sign-in (OAuth); followers + audience then update daily and the account
   counts as verified while linked. Plan, platform order and the owner's Google setup: **`docs/platform-connections.md`**.

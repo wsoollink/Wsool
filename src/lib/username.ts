@@ -19,12 +19,15 @@ export async function usernameError(rawName: string, userId?: string): Promise<U
   const formatError = usernameFormatError(name);
   if (formatError) return formatError;
 
-  const [reserved, page, moved] = await Promise.all([
+  const [reserved, page, moved, agency] = await Promise.all([
     db.reservedUsername.findUnique({ where: { name }, select: { name: true } }),
     db.page.findUnique({ where: { username: name }, select: { userId: true } }),
     // A name another creator left less than 30 days ago still points to them.
     db.usernameRedirect.findFirst({ where: { name, releasedAt: { gt: new Date() } }, select: { page: { select: { userId: true } } } }),
+    // Agency pages share the namespace (wsool.link/<slug>).
+    db.agency.findUnique({ where: { slug: name }, select: { id: true } }),
   ]);
+  if (agency) return "taken";
   if (reserved) return "reserved";
   if (page && page.userId !== userId) return "taken";
   if (moved && moved.page.userId !== userId) return "taken";

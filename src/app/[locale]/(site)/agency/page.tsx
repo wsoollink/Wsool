@@ -22,6 +22,32 @@ import { initials } from "@/lib/initials";
 import { signOut } from "../login/actions";
 import { Directory } from "./Directory";
 import { AddMember, ConfirmAction, InviteCreator, ManageButton } from "./Controls";
+import { PageEditor, type EditorInitial } from "./PageEditor";
+import { siteOrigin } from "@/lib/site-url";
+
+/** "صفحة الوكالة" tab: the public page editor (managers and the owner). */
+async function PageTab({ agencyId }: { agencyId: string }) {
+  const a = await db.agency.findUniqueOrThrow({
+    where: { id: agencyId },
+    include: {
+      links: {
+        where: { status: "active" },
+        orderBy: [{ sort: "asc" }, { decidedAt: "asc" }],
+        select: { id: true, agencyHidden: true, showOnPage: true, page: { select: { username: true, photoUrl: true, primaryLang: true, translations: { select: { lang: true, fullName: true } } } } },
+      },
+    },
+  });
+  const initial: EditorInitial = {
+    slug: a.slug ?? "", published: a.pagePublished, name: a.name, nameEn: a.nameEn ?? "", tagline: a.tagline ?? "", taglineEn: a.taglineEn ?? "",
+    bio: a.bio ?? "", bioEn: a.bioEn ?? "", city: a.city ?? "", cityEn: a.cityEn ?? "", logoUrl: a.logoUrl, whatsapp: a.whatsapp ?? "",
+    email: a.email ?? "", website: a.website ?? "", template: a.template, accent: a.accent,
+    creators: a.links.map((l) => ({
+      linkId: l.id, username: l.page.username, photoUrl: l.page.photoUrl, hidden: l.agencyHidden, creatorHidden: !l.showOnPage,
+      name: l.page.translations.find((x) => x.lang === l.page.primaryLang)?.fullName || l.page.translations[0]?.fullName || l.page.username,
+    })),
+  };
+  return <PageEditor initial={initial} origin={siteOrigin()} />;
+}
 
 export const metadata: Metadata = { robots: { index: false } };
 
@@ -37,7 +63,7 @@ async function AgencyDashboard({ lang, searchParams }: { lang: Locale; searchPar
   const sp = await searchParams;
   const brand = m.agency.kind === "brand";
   // Brand accounts only search the directory; agencies also manage creators.
-  const tabs = brand ? (["directory", "team"] as const) : (["creators", "directory", "team"] as const);
+  const tabs = brand ? (["directory", "team"] as const) : (["creators", "page", "directory", "team"] as const);
   const tab = (tabs as readonly string[]).includes(sp.tab as string) ? (sp.tab as (typeof tabs)[number]) : tabs[0];
   const canInvite = roleAtLeast(m.member.role, "manager");
   const canEdit = roleAtLeast(m.member.role, "editor");
@@ -88,7 +114,9 @@ async function AgencyDashboard({ lang, searchParams }: { lang: Locale; searchPar
         </nav>
       </div>
 
-      {tab === "directory" ? (
+      {tab === "page" ? (
+        canInvite ? <PageTab agencyId={m.agency.id} /> : <p className="text-sm text-muted">{(await getTranslations("AgencyPageEditor"))("viewerNote")}</p>
+      ) : tab === "directory" ? (
         <Directory lang={lang} sp={sp} userId={me.id} canInvite={!brand && canInvite} />
       ) : tab === "creators" ? (
         <>

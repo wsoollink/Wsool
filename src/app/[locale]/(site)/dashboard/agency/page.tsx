@@ -20,7 +20,7 @@ async function AgencySection({ lang }: { lang: Locale }) {
   const dateTime = new Intl.DateTimeFormat(toIntlLocale(lang), { dateStyle: "medium", timeStyle: "short" });
   const links = await db.agencyLink.findMany({
     where: { pageId: page.id, status: { in: ["pending", "active"] }, agency: { status: "active" } },
-    include: { agency: { select: { name: true } } },
+    include: { agency: { select: { name: true, slug: true, pagePublished: true } } },
     orderBy: { invitedAt: "desc" },
   });
   const active = links.find((l) => l.status === "active");
@@ -52,7 +52,8 @@ async function AgencySection({ lang }: { lang: Locale }) {
         ))}
         {active && (
           <Panel title={t("activeTitle", { agency: active.agency.name })} aside={active.decidedAt ? t("since", { date: date.format(active.decidedAt) }) : undefined}>
-            <ActiveAgency agency={active.agency.name} initial={{ content: active.canContent, rates: active.canRates, contact: active.canContact }} graceDays={UNLINK_GRACE_DAYS} />
+            <ActiveAgency agency={active.agency.name} initial={{ content: active.canContent, rates: active.canRates, contact: active.canContact }} graceDays={UNLINK_GRACE_DAYS}
+              onPage={active.showOnPage} pageUrl={active.agency.slug && active.agency.pagePublished ? `wsool.link/${active.agency.slug}` : null} />
           </Panel>
         )}
       </div>

@@ -4,6 +4,7 @@ import { z } from "zod";
 import { acceptInvite, declineInvite, endLink } from "@/lib/agency";
 import { requireCreator } from "@/lib/creator";
 import { db } from "@/lib/db";
+import { refreshAgencyOfPage } from "@/lib/agency-page";
 
 // Unscoped requireCreator(): only the creator themself, never an agency acting for them.
 const perms = z.object({ content: z.boolean(), rates: z.boolean(), contact: z.boolean() });
@@ -39,4 +40,14 @@ export async function unlinkAgency(): Promise<Result> {
   const link = await db.agencyLink.findFirst({ where: { pageId: page.id, status: "active" }, select: { id: true } });
   if (!link) return { error: "invalid" };
   return (await endLink(link.id, "creator", { pageId: page.id })) ? { ok: true } : { error: "invalid" };
+}
+
+/** The creator's own switch: listed on the agency's public page or not (on by default). */
+export async function setAgencyPageVisibility(show: boolean): Promise<Result> {
+  const { page } = await requireCreator();
+  if (typeof show !== "boolean") return { error: "invalid" };
+  const { count } = await db.agencyLink.updateMany({ where: { pageId: page.id, status: "active" }, data: { showOnPage: show } });
+  if (!count) return { error: "invalid" };
+  await refreshAgencyOfPage(page.id);
+  return { ok: true };
 }

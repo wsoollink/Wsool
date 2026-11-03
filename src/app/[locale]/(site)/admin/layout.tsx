@@ -15,6 +15,7 @@ import { isLocale, toIntlLocale } from "@/i18n/config";
 import { can, getAdmin } from "@/lib/admin";
 import { db } from "@/lib/db";
 import { signOut } from "../login/actions";
+import { DashboardSwitch } from "@/components/DashboardSwitch";
 
 /** Only the sections this staff member may open; nothing for everyone else. */
 async function Nav() {
@@ -91,6 +92,7 @@ export default async function AdminLayout({ children, params }: LayoutProps<"/[l
           </Link>
           <div className="hidden flex-1 md:block"><Suspense fallback={null}><CreatorSearch /></Suspense></div>
           <span className="flex-1 md:hidden" />
+          <Suspense fallback={null}><DashboardSwitch current="admin" /></Suspense>
           <ThemeToggle bare className="hidden md:inline-flex" />
           <LangPill current={locale} />
         </header>

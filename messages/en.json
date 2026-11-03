@@ -3066,5 +3066,11 @@
     "formTitle": "Send us a message",
     "waBody": "Talk to us directly on WhatsApp Business.",
     "waText": "Hi, I have a question about agency accounts on Wsool"
+  },
+  "DashboardSwitch": {
+    "label": "My dashboards",
+    "creator": "My dashboard",
+    "agency": "Agency dashboard",
+    "admin": "Admin panel"
   }
 }

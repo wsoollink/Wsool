@@ -838,7 +838,8 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   `/login?next=` (`safeNextPath`, `src/lib/next-path.ts`), `NextField` carries it into the code form and Google (`wsool_next` cookie read
   by `/api/auth/callback`); while acting, the bell is hidden (`HideWhileActing`) and `?denied=1` shows `DeniedNotice`; `/agency` shows the
   member's agency notifications ("Latest updates"); `/contact` and the legal pages have `SiteFooter`; the agencies header logo always
-  goes to `/agencies`.
+  goes to `/agencies`. `DashboardSwitch` (`src/components/DashboardSwitch.tsx`) in the agency and admin headers links the person's
+  other dashboards (own creator dashboard / agency / admin). Agency dashboard copy says مؤثر / مؤثرين (owner), like the agencies page.
 
 ### Speed (owner, Oct 2026)
 - Netlify functions run in **Frankfurt** (owner changed "Functions region"), next to Supabase (`wsool-eu`). Every database

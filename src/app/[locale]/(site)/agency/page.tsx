@@ -6,6 +6,7 @@ import { notFound, redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { BadgeCheck, ExternalLink, FileText, Link2, LogOut } from "lucide-react";
 import { BrandLogo } from "@/components/BrandLogo";
+import { DashboardSwitch } from "@/components/DashboardSwitch";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LangPill } from "@/components/dashboard/LangPill";
 import { Panel } from "@/components/ui/Card";
@@ -225,7 +226,8 @@ export default async function AgencyPage({ params, searchParams }: PageProps<"/[
           <Link href="/agency" className="flex min-h-11 items-center" aria-label={t("title")}>
             <BrandLogo lang={locale === "en" ? "en" : "ar"} alt={locale === "en" ? "Wsool" : "وصول"} className="h-7 w-auto" priority />
           </Link>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <Suspense fallback={null}><DashboardSwitch current="agency" /></Suspense>
             <ThemeToggle bare />
             <LangPill current={locale} />
             <form action={signOut}>

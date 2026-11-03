@@ -141,7 +141,7 @@ export async function sendTeamInvite(email: string, role: string, lang: Locale =
   const values = { role: roleName.has(role as never) ? roleName(role as never) : role, email };
   const content = renderEmail({
     lang, preheader: t("body", values), title: t("title", values), paragraphs: t("body", values).split("\n"),
-    cta: { label: t("cta"), url: `${siteOrigin()}/login` }, footer: t("footer"),
+    cta: { label: t("cta"), url: `${siteOrigin()}/login?next=%2Fagency` }, footer: t("footer"),
   });
   await sendEmail({ to: email, subject: t("subject", values), ...content });
 }

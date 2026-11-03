@@ -8,22 +8,45 @@ import { isLocale, toIntlLocale, type Locale } from "@/i18n/config";
 import { requireAdmin } from "@/lib/admin";
 import { db } from "@/lib/db";
 import { formatNumber } from "@/lib/format";
-import { CreateAgency, StopAgency } from "./AgencyAdmin";
+import { CreateAgency, RequestActions, StopAgency } from "./AgencyAdmin";
 
 /** Agencies (owner only, free beta): open one with its owner's email, see its size, stop it. */
 async function Agencies({ lang }: { lang: Locale }) {
   await requireAdmin("owner");
   const t = await getTranslations("Admin.agencies");
   const date = new Intl.DateTimeFormat(toIntlLocale(lang), { dateStyle: "medium" });
-  const rows = await db.agency.findMany({
+  const [requests, rows] = await Promise.all([
+    db.agencyRequest.findMany({ where: { status: "new" }, orderBy: { createdAt: "desc" }, take: 50 }),
+    db.agency.findMany({
     orderBy: { createdAt: "desc" },
     include: {
       members: { select: { email: true, role: true, userId: true } },
       _count: { select: { links: { where: { status: "active" } } } },
     },
-  });
+    }),
+  ]);
   return (
     <div className="flex flex-col gap-4">
+      {requests.length > 0 && (
+        <Panel title={t("requestsTitle", { n: requests.length })} flush>
+          <ul className="divide-y divide-line-soft">
+            {requests.map((r) => (
+              <li key={r.id} className="flex flex-col gap-2 px-5 py-4">
+                <div className="flex flex-wrap items-baseline justify-between gap-2">
+                  <p className="font-bold">{r.agencyName} <span className="font-normal text-muted">· {r.name}</span></p>
+                  <span className="text-xs text-muted">{date.format(r.createdAt)}</span>
+                </div>
+                <p className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
+                  <a href={`mailto:${r.email}`} dir="ltr" className="text-blue">{r.email}</a>
+                  <a href={`https://wa.me/${r.phone}`} target="_blank" rel="noopener noreferrer" dir="ltr" className="text-blue">+{r.phone}</a>
+                </p>
+                {r.note && <p className="text-sm whitespace-pre-line text-muted"><bdi>{r.note}</bdi></p>}
+                <RequestActions id={r.id} agency={r.agencyName} />
+              </li>
+            ))}
+          </ul>
+        </Panel>
+      )}
       <Panel title={t("createTitle")}><CreateAgency /></Panel>
       <Panel title={t("listTitle")} flush>
         {rows.length === 0 ? <p className="p-5 text-sm text-muted">{t("empty")}</p> : (

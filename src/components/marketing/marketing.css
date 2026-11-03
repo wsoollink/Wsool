@@ -208,3 +208,10 @@ section:has(div[role="group"] > button[aria-pressed] + button[aria-pressed="true
     text-align: center;
   }
 }
+
+/* Owner feedback (Nov 2026): the header stays on top while scrolling. The design's root wrapper has
+   overflow-x: hidden, which turns it into a scroll container and breaks position: sticky; clip hides the
+   same overflow without that side effect. */
+div:has(> header > :is(.mk-home-1, .mk-pricing-1, .mk-notfound-1, .mk-hidden-1, .mk-servererror-1)) {
+  overflow-x: clip !important;
+}

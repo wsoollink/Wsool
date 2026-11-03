@@ -37,3 +37,27 @@ export async function stopAgency(id: string): Promise<{ ok?: true; error?: "inva
   await audit(admin, "agency.deactivate", { type: "agency", id }, { name: agency.name });
   return { ok: true };
 }
+
+/** Owner only: opens the agency account from a "Join as an agency" request (same as the form above, then marks it done). */
+export async function openFromRequest(id: string, kind: "agency" | "brand" = "agency"): Promise<{ ok?: true; error?: "invalid" | "exists" }> {
+  await requireAdmin("owner");
+  if (!z.uuid().safeParse(id).success) return { error: "invalid" };
+  const req = await db.agencyRequest.findFirst({ where: { id, status: "new" } });
+  if (!req) return { error: "invalid" };
+  const res = await createAgency(req.agencyName, req.email, kind);
+  if (res.ok) await db.agencyRequest.update({ where: { id }, data: { status: "opened", decidedAt: new Date() } });
+  return res;
+}
+
+/** Owner only: closes a request without opening an account. */
+export async function declineRequest(id: string): Promise<{ ok?: true; error?: "invalid" }> {
+  const admin = await requireAdmin("owner");
+  if (!z.uuid().safeParse(id).success) return { error: "invalid" };
+  const req = await db.agencyRequest.findFirst({ where: { id, status: "new" } });
+  if (!req) return { error: "invalid" };
+  await db.$transaction(async (tx) => {
+    await tx.agencyRequest.update({ where: { id }, data: { status: "declined", decidedAt: new Date() } });
+    await audit(admin, "agency.decline_request", { type: "agency_request", id }, { name: req.agencyName, email: req.email }, tx);
+  });
+  return { ok: true };
+}

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Plus } from "lucide-react";
 import { buttonClasses } from "@/components/ui/Button";
-import { createAgency, stopAgency } from "./actions";
+import { createAgency, declineRequest, openFromRequest, stopAgency } from "./actions";
 
 const field = "h-11 w-full min-w-0 rounded-[10px] border border-navy/15 bg-card px-3 text-[15px] outline-none shadow-card focus:border-blue focus:ring-3 focus:ring-blue/15";
 
@@ -65,5 +65,32 @@ export function StopAgency({ id, name }: { id: string; name: string }) {
     >
       {t("stop")}
     </button>
+  );
+}
+
+/** Open the account from a request (as an agency or a brand) or close the request. */
+export function RequestActions({ id, agency }: { id: string; agency: string }) {
+  const t = useTranslations("Admin.agencies");
+  const router = useRouter();
+  const [error, setError] = useState("");
+  const [pending, start] = useTransition();
+  const open = (kind: "agency" | "brand") => start(async () => {
+    setError("");
+    const r = await openFromRequest(id, kind);
+    if (r.ok) router.refresh(); else setError(t(`errors.${r.error ?? "invalid"}`));
+  });
+  return (
+    <div className="flex flex-wrap items-center gap-1.5">
+      <button type="button" disabled={pending} onClick={() => open("agency")} className={buttonClasses("primary")}>{t("openAgency")}</button>
+      <button type="button" disabled={pending} onClick={() => open("brand")} className={buttonClasses("secondary")}>{t("openBrand")}</button>
+      <button
+        type="button" disabled={pending}
+        onClick={() => { if (window.confirm(t("confirmDecline", { name: agency }))) start(async () => { await declineRequest(id); router.refresh(); }); }}
+        className="inline-flex min-h-10 items-center rounded-full px-3 text-[13px] font-bold text-bad hover:bg-bad/5"
+      >
+        {t("decline")}
+      </button>
+      {error && <p role="alert" className="w-full text-sm text-bad">{error}</p>}
+    </div>
   );
 }

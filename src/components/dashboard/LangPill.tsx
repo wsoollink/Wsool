@@ -6,7 +6,8 @@ import { setLocale } from "@/i18n/actions";
 import type { Locale } from "@/i18n/config";
 
 /** Globe pill that switches the dashboard language (design header). */
-export function LangPill({ current }: { current: Locale }) {
+/** `compact`: only the globe on phones (the word shows from the sm breakpoint). */
+export function LangPill({ current, compact = false }: { current: Locale; compact?: boolean }) {
   const router = useRouter();
   const [pending, start] = useTransition();
   const next = current === "ar" ? "en" : "ar";
@@ -14,6 +15,7 @@ export function LangPill({ current }: { current: Locale }) {
     <button
       type="button"
       lang={next}
+      aria-label={compact ? (next === "en" ? "English" : "العربية") : undefined}
       disabled={pending}
       onClick={() =>
         start(async () => {
@@ -23,12 +25,12 @@ export function LangPill({ current }: { current: Locale }) {
           router.refresh();
         })
       }
-      className="inline-flex h-11 pointer-fine:h-9 shrink-0 items-center gap-1.5 rounded-full border border-line bg-card px-3.5 text-[13px] font-medium shadow-card transition-colors hover:bg-hover disabled:opacity-60"
+      className={`inline-flex h-11 pointer-fine:h-9 shrink-0 items-center justify-center gap-1.5 rounded-full border border-line bg-card ${compact ? "w-11 sm:w-auto sm:px-3.5" : "px-3.5"} text-[13px] font-medium shadow-card transition-colors hover:bg-hover disabled:opacity-60`}
     >
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <circle cx="12" cy="12" r="9" /><path d="M3 12h18" /><path d="M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z" />
       </svg>
-      {next === "en" ? "English" : "العربية"}
+      <span className={compact ? "hidden sm:inline" : undefined}>{next === "en" ? "English" : "العربية"}</span>
     </button>
   );
 }

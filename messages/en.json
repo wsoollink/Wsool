@@ -1424,7 +1424,8 @@
       },
       "agency": {
         "create": "Opened the agency {name} ({email})",
-        "deactivate": "Stopped the agency {name}"
+        "deactivate": "Stopped the agency {name}",
+        "decline_request": "Declined the agency request from {name} ({email})"
       }
     },
     "newsletter": {
@@ -1742,7 +1743,12 @@
         "agency": "Agency (manages creators + directory)",
         "brand": "Brand (directory search only)"
       },
-      "brandShort": "Brand"
+      "brandShort": "Brand",
+      "requestsTitle": "Join requests ({n})",
+      "openAgency": "Open as agency",
+      "openBrand": "Open as brand",
+      "decline": "Decline",
+      "confirmDecline": "Decline the request from {name}?"
     }
   },
   "Billing": {
@@ -2570,7 +2576,8 @@
       "faq": "FAQ",
       "creators": "For creators",
       "home": "Home",
-      "menu": "Page links"
+      "menu": "Page links",
+      "login": "Log in"
     },
     "chipNew": "New",
     "chip": "Plan for agencies and marketing companies",
@@ -2999,5 +3006,38 @@
     "pageOf": "Page {p} of {n}",
     "limit": "You've reached today's search limit. Try again tomorrow.",
     "note": "Only creators who chose to be listed appear, with what their pages show publicly. Use it for professional contact only; copying or collecting the data is not allowed under the Terms."
+  },
+  "AgencyApply": {
+    "metaTitle": "Agency sign-up request · Wsool",
+    "eyebrow": "For agencies",
+    "title": "Request your agency account",
+    "body": "Fill in your details and we'll get back to you within one business day. We open the agency account on the email you give us, and you get an invitation email that takes you straight to the agency dashboard.",
+    "points": [
+      "Free trial for now",
+      "One dashboard for all your creators and your team",
+      "Creators approve and choose permissions; their page stays theirs"
+    ],
+    "name": "Your name",
+    "agencyName": "Agency name",
+    "email": "Email to open the account with",
+    "emailHint": "You'll sign in to the agency dashboard with it and can add your team later.",
+    "phone": "Phone number",
+    "phoneHint": "We'll call or WhatsApp you on it.",
+    "note": "Anything else (optional)",
+    "send": "Send request",
+    "sending": "Sending…",
+    "privacy": "We use your details only to contact you about this request and open the account.",
+    "sentTitle": "Request received ✓",
+    "sentBody": "We'll review it and get back to you within one business day; the invitation email arrives when your account is open.",
+    "back": "Back to the agencies page",
+    "errors": {
+      "name": "Enter your name.",
+      "agencyName": "Enter the agency name.",
+      "email": "Enter a valid email.",
+      "phone": "Enter a valid phone number.",
+      "note": "That note is too long.",
+      "rate": "Too many requests. Try again shortly.",
+      "failed": "Couldn't send the request. Try again."
+    }
   }
 }

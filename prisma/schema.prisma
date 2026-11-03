@@ -1258,3 +1258,28 @@ model DirectoryStat {
   @@id([pageId, day])
   @@map("directory_stats")
 }
+
+/// "Join as an agency" requests from /agencies/apply (owner, Nov 2026). The owner opens the account from admin/agencies.
+model AgencyRequest {
+  id         String              @id @default(uuid()) @db.Uuid
+  name       String              @db.VarChar(80)
+  agencyName String              @map("agency_name") @db.VarChar(80)
+  /// The email the agency account will be opened with (lowercase).
+  email      String              @db.VarChar(254)
+  /// International digits, e.g. 9665XXXXXXXX.
+  phone      String              @db.VarChar(20)
+  note       String?             @db.VarChar(1000)
+  lang       Lang                @default(ar)
+  status     AgencyRequestStatus @default(new)
+  createdAt  DateTime            @default(now()) @map("created_at") @db.Timestamptz
+  decidedAt  DateTime?           @map("decided_at") @db.Timestamptz
+
+  @@index([status, createdAt])
+  @@map("agency_requests")
+}
+
+enum AgencyRequestStatus {
+  new
+  opened
+  declined
+}

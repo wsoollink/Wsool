@@ -3,14 +3,14 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ArrowLeft, ArrowRight, Check, ChevronDown, Megaphone, ShieldCheck, Sparkles, X } from "lucide-react";
-import { BrandLogo } from "@/components/BrandLogo";
-import { ThemeToggle } from "@/components/ThemeToggle";
 import { PlatformIcon } from "@/components/creator/PlatformIcon";
 import type { Platform } from "@/generated/prisma/enums";
 import { isLocale, toIntlLocale } from "@/i18n/config";
 import {
   ActivityLog, DashboardMock, FloatInvite, FloatPdf, FloatWeek, LinkedRows, PdfStack, PermissionsMock, TeamRoles, VisitsBars,
 } from "./Visuals";
+import { AgenciesHeader, APPLY } from "./Header";
+import { BrandLogo } from "@/components/BrandLogo";
 
 type Item = { t: string; b: string };
 type Plan = { name: string; creators: string; price: string; per: string; popular?: string };
@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: PageProps<"/[locale]/agencies
   return { title: t("metaTitle"), description: t("metaDesc") };
 }
 
-const TRIAL = "/contact?topic=partnership";
+const TRIAL = APPLY;
 const STRIP: Platform[] = ["instagram", "tiktok", "youtube", "snapchat", "x", "threads", "facebook", "telegram"];
 const STRIP_NAMES: Record<string, string> = { instagram: "Instagram", tiktok: "TikTok", youtube: "YouTube", snapchat: "Snapchat", x: "X", threads: "Threads", facebook: "Facebook", telegram: "Telegram", twitch: "Twitch" };
 
@@ -62,27 +62,7 @@ export default async function AgenciesPage({ params }: PageProps<"/[locale]/agen
 
   return (
     <div className="ag-grid flex flex-1 flex-col bg-bg-marketing">
-      {/* Header */}
-      <header className="sticky top-0 z-30 border-b border-line/70 bg-bg-marketing/80 backdrop-blur-md">
-        <div className="mx-auto flex max-w-[1180px] items-center justify-between gap-3 px-4 py-3.5">
-          <Link href="/" className="flex min-h-11 items-center" aria-label={t("nav.home")}>
-            <BrandLogo lang={lang} alt={en ? "Wsool" : "وصول"} priority />
-          </Link>
-          <nav aria-label={t("nav.menu")} className="hidden items-center gap-1 rounded-full border border-line bg-card/70 p-1.5 lg:flex">
-            {(["features", "how", "pricing", "faq"] as const).map((k) => (
-              <a key={k} href={`#${k}`} className="rounded-full px-4 py-2 text-sm font-medium hover:bg-hover">{t(`nav.${k}`)}</a>
-            ))}
-          </nav>
-          <div className="flex items-center gap-2">
-            <Link href="/" className="hidden px-2 text-sm font-medium hover:text-blue md:inline">{t("nav.creators")}</Link>
-            <ThemeToggle />
-            <Link href={TRIAL} className="inline-flex min-h-11 items-center rounded-full bg-[#021941] px-5 text-sm font-bold text-white dark:bg-[#7DD3FC] dark:text-[#021941]">
-              <span className="sm:hidden">{t("ctaShort")}</span>
-              <span className="hidden sm:inline">{t("ctaTrial")}</span>
-            </Link>
-          </div>
-        </div>
-      </header>
+      <AgenciesHeader lang={lang} />
 
       <main className="flex-1 overflow-x-clip">
         {/* Hero */}

@@ -635,7 +635,13 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   `marketing.css` (check each against `generated/home.css` before and after).
 - **For agencies page** `/agencies` (owner, Nov 2026, draft): landing page for marketing agencies (hand-built, texts `Agencies`;
   hero with a dashboard mock, why, how it works, features + coming soon, "the page belongs to the creator", draft plan prices,
-  FAQ; the platform strip scrolls endlessly, `.ag-marq` in `globals.css`). CTAs go to `/contact?topic=partnership` (the contact form preselects `?topic=`). Linked as «للوكالات» / "For agencies" in
+  FAQ; the platform strip scrolls endlessly, `.ag-marq` in `globals.css`). Header `AgenciesHeader` (`agencies/Header.tsx`): section links, theme, language
+  (`LangPill compact`), log in, apply. CTAs go to **`/agencies/apply`** (owner, Nov 2026): form name / agency / email to open the account with /
+  phone / note (`agencyRequestSchema`, honeypot, 5/h per IP + 3/day per email) → table `agency_requests` + email to support@; the owner opens
+  it from `admin/agencies` "Join requests" (as agency or brand = `createAgency` + invitation email; decline audited `agency.decline_request`).
+  Agency members without a creator page land on `/agency` after sign-in (`requireCreator`); creators on a team get an "Open agency
+  dashboard" bar in the dashboard. Marketing/agencies pages scroll smoothly to `#sections` below the sticky header (`globals.css`); the
+  generated marketing root's `overflow-x: hidden` is overridden to `clip` in `marketing.css` so the header stays sticky. Linked as «للوكالات» / "For agencies" in
   the marketing header nav (desktop) and the footer Product column (`LINKS`). Agency accounts: see "Marketing agencies" below.
 - Home "claim your link": live check (`checkLink`), then cookie `wsool_claim` → `/login`;
   onboarding pre-fills that name.

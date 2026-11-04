@@ -5,6 +5,7 @@ import { deactivateAgency } from "@/lib/agency";
 import { audit, requireAdmin } from "@/lib/admin";
 import { db } from "@/lib/db";
 import { sendAgencyTeamInvite } from "@/lib/notify";
+import { AGENCY_PLANS } from "@/config/agency-plans";
 
 const input = z.object({
   name: z.string().trim().min(2).max(80),
@@ -58,6 +59,44 @@ export async function declineRequest(id: string): Promise<{ ok?: true; error?: "
   await db.$transaction(async (tx) => {
     await tx.agencyRequest.update({ where: { id }, data: { status: "declined", decidedAt: new Date() } });
     await audit(admin, "agency.decline_request", { type: "agency_request", id }, { name: req.agencyName, email: req.email }, tx);
+  });
+  return { ok: true };
+}
+
+const planInput = z.object({
+  plan: z.enum(AGENCY_PLANS),
+  cycle: z.enum(["monthly", "yearly"]).nullable(),
+  /** yyyy-mm-dd (end of that day, Saudi time) or empty = no end date. */
+  until: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).or(z.literal("")),
+});
+
+/** Owner only: sets the agency's plan after it pays (no online payment for agencies yet). */
+export async function setAgencyPlan(id: string, plan: string, cycle: string | null, until: string): Promise<{ ok?: true; error?: "invalid" }> {
+  const admin = await requireAdmin("owner");
+  const parsed = planInput.safeParse({ plan, cycle: plan === "trial" ? null : cycle, until });
+  if (!z.uuid().safeParse(id).success || !parsed.success) return { error: "invalid" };
+  const agency = await db.agency.findUnique({ where: { id }, select: { name: true } });
+  if (!agency) return { error: "invalid" };
+  const planUntil = parsed.data.until ? new Date(`${parsed.data.until}T23:59:59+03:00`) : null;
+  await db.$transaction(async (tx) => {
+    await tx.agency.update({ where: { id }, data: { plan: parsed.data.plan, planCycle: parsed.data.cycle, planUntil } });
+    await audit(admin, "agency.plan", { type: "agency", id }, { name: agency.name, plan: parsed.data.plan, cycle: parsed.data.cycle ?? "", until: parsed.data.until }, tx);
+  });
+  return { ok: true };
+}
+
+/**
+ * Owner only: permanently deletes a STOPPED agency (team, links, activity go with it), so its emails can be used again.
+ * Creators' pages are never touched: their links already ended when the agency was stopped.
+ */
+export async function deleteAgency(id: string): Promise<{ ok?: true; error?: "invalid" }> {
+  const admin = await requireAdmin("owner");
+  if (!z.uuid().safeParse(id).success) return { error: "invalid" };
+  const agency = await db.agency.findFirst({ where: { id, status: "inactive" } });
+  if (!agency) return { error: "invalid" };
+  await db.$transaction(async (tx) => {
+    await tx.agency.delete({ where: { id } });
+    await audit(admin, "agency.delete", { type: "agency", id }, { name: agency.name }, tx);
   });
   return { ok: true };
 }

@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import { View } from "react-native";
+import { Linking, View } from "react-native";
 import { Redirect, router } from "expo-router";
 import { Logo } from "../components/Logo";
 import { Button, Card, Field, Screen, T } from "../components/ui";
 import { useI18n } from "../i18n";
 import { api, ApiError } from "../lib/api";
 import { useAuth } from "../lib/app";
+import { SITE_URL } from "../lib/config";
 import { align } from "../lib/theme";
 
 const ERRORS = ["length", "characters", "dots", "reserved", "extension", "taken"];
@@ -15,11 +16,13 @@ const normalize = (v: string) => v.trim().toLowerCase().replace(/^@/, "").slice(
 /** Claim your username (= wsool.link/<username>), checked live with the server. */
 export default function Onboarding() {
   const { t } = useI18n();
-  const { status, me, refreshMe } = useAuth();
+  const { status, me, refreshMe, signOut } = useAuth();
   const [name, setName] = useState("");
   const [check, setCheck] = useState<{ name: string; error: string | null } | null>(null);
   const [busy, setBusy] = useState(false);
   const [failed, setFailed] = useState<string | null>(null);
+  // Agency / brand team members land here without a page: explain first, personal page only if they ask for one.
+  const [personal, setPersonal] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   useEffect(() => {
@@ -46,6 +49,22 @@ export default function Onboarding() {
       setFailed(errorText(err instanceof ApiError ? err.code : "failed"));
     } finally { setBusy(false); }
   };
+
+  if (me?.agency && !personal) {
+    return (
+      <Screen contentStyle={{ flexGrow: 1, justifyContent: "center", maxWidth: 480, width: "100%", alignSelf: "center" }}>
+        <View style={{ alignItems: "center", marginBottom: 8 }}><Logo height={40} /></View>
+        <Card style={{ gap: 14, padding: 20 }}>
+          <T weight="bold" size={20}>{t("onboarding.team.title", { agency: me.agency.name })}</T>
+          <T tone="muted">{t("onboarding.team.body")}</T>
+          <Button title={t("onboarding.team.open")} onPress={() => Linking.openURL(`${SITE_URL}/agency`)} />
+          <Button title={t("onboarding.team.personal")} variant="secondary" onPress={() => setPersonal(true)} />
+          <T size={12.5} tone="faint">{t("onboarding.team.note")}</T>
+          <Button title={t("onboarding.team.signOut")} variant="ghost" onPress={() => signOut()} />
+        </Card>
+      </Screen>
+    );
+  }
 
   return (
     <Screen contentStyle={{ flexGrow: 1, justifyContent: "center", maxWidth: 480, width: "100%", alignSelf: "center" }}>

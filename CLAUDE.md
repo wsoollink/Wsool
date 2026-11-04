@@ -968,6 +968,18 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   blue "demo" bar linking `/agencies/apply`, every card opens `/demo`), linked from the agencies hero ("شاهد صفحة وكالة تجريبية"). Portraits in
   `public/demo/agency/` are small AI images (Canva previews, upscaled): replace with sharper ones when the owner has them.
 
+### Agency plans & accounts (owner, Nov 2026)
+- Plans: `agencies.plan` (`trial` default = free beta, `starter` ≤ 10 creators, `growth` ≤ 30, `custom`), `plan_cycle`, `plan_until`; rules in
+  `src/config/agency-plans.ts` (`AGENCY_CREATOR_LIMIT`, counted on linked + invited creators in `inviteCreator`, error `limit`). Names and
+  prices come from the `Agencies.plans` messages (same as the landing page). No online payment for agencies yet: the "الاشتراك" tab
+  (`/agency?tab=billing`, managers + owner; `BillingTab` + `Billing.tsx`) shows the plan, usage and plan cards whose button opens WhatsApp
+  with a prefilled request; the owner sets the plan in `admin/agencies` (`setAgencyPlan`, audited `agency.plan`). Stopped agencies can be
+  deleted for good (`deleteAgency`, audited `agency.delete`; team/links/activity cascade, creators' pages untouched) so their emails can
+  open a new account.
+- A team member has no creator page unless they claim one: web `/onboarding` shows "you're on the X team" + "Open the agency dashboard"
+  (`getMembership`), and the app's onboarding (`/api/mobile/v1/me` returns `agency` for members without a page) shows that note first
+  with "Open the agency dashboard" (website), "I want a personal creator page" and sign out. Their personal page is separate from the agency.
+
 ### Platform connections (owner, Oct 2026)
 - Creators link an account through the platform's own sign-in (OAuth); followers + audience then update daily and the account
   counts as verified while linked. Plan, platform order and the owner's Google setup: **`docs/platform-connections.md`**.

@@ -8,16 +8,34 @@ import { normalizeUsername, usernameFormatError } from "@/config/usernames";
 import { isLocale, toIntlLocale } from "@/i18n/config";
 import { requireUser } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { getMembership } from "@/lib/agency";
+import Link from "next/link";
 import { UsernameForm } from "./UsernameForm";
 
 // Creators who already have a page skip this step.
 async function RedirectIfClaimed() {
   const user = await requireUser();
-  const page = await db.page.findUnique({ where: { userId: user.id }, select: { id: true } });
+  const [page, team] = await Promise.all([
+    db.page.findUnique({ where: { userId: user.id }, select: { id: true } }),
+    getMembership(user).catch(() => null),
+  ]);
   if (page) redirect("/dashboard");
+  const t = await getTranslations("Onboarding");
   // The name a visitor picked on the home page before signing in.
   const claimed = normalizeUsername((await cookies()).get(CLAIM_COOKIE)?.value ?? "");
-  return <UsernameForm initial={claimed && !usernameFormatError(claimed) ? claimed : undefined} />;
+  return (
+    <>
+      {/* Agency / brand team members: this page is personal, their work lives in the agency dashboard. */}
+      {team && (
+        <div className="flex flex-col gap-2 rounded-xl border border-blue/25 bg-blue/5 p-4">
+          <p className="font-bold">{t("teamTitle", { agency: team.agency.name })}</p>
+          <p className="text-sm leading-6 text-muted">{t("teamBody")}</p>
+          <Link href="/agency" className="inline-flex min-h-11 w-fit items-center gap-1.5 rounded-full bg-blue px-5 text-sm font-bold text-on-blue">{t("teamOpen")}</Link>
+        </div>
+      )}
+      <UsernameForm initial={claimed && !usernameFormatError(claimed) ? claimed : undefined} />
+    </>
+  );
 }
 
 export default async function OnboardingPage({ params }: PageProps<"/[locale]/onboarding">) {

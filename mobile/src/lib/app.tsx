@@ -14,6 +14,8 @@ export type Me = {
   page: { username: string; published: boolean; photoUrl: string | null; name: string | null; primaryLang: string; enEnabled: boolean } | null;
   plan: { label: "pro" | "trial" | "free"; pro: boolean; status: string; trialDaysLeft: number; periodEnd: string | null; cancelAtPeriodEnd: boolean };
   unread: number;
+  /** Set when the account is on an agency / brand team and has no page of its own (older servers: missing). */
+  agency?: { name: string; kind: "agency" | "brand" } | null;
 };
 
 type AuthState = {

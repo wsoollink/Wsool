@@ -8,7 +8,7 @@ import { isLocale, toIntlLocale, type Locale } from "@/i18n/config";
 import { requireAdmin } from "@/lib/admin";
 import { db } from "@/lib/db";
 import { formatNumber } from "@/lib/format";
-import { CreateAgency, RequestActions, StopAgency } from "./AgencyAdmin";
+import { AgencyPlanEditor, CreateAgency, DeleteAgency, RequestActions, StopAgency } from "./AgencyAdmin";
 
 /** Agencies (owner only, free beta): open one with its owner's email, see its size, stop it. */
 async function Agencies({ lang }: { lang: Locale }) {
@@ -61,7 +61,12 @@ async function Agencies({ lang }: { lang: Locale }) {
                   </div>
                   <span className="text-sm text-muted">{t("counts", { creators: formatNumber(a._count.links, lang), team: formatNumber(a.members.length, lang) })}</span>
                   <Pill tone={a.status === "active" ? "good" : "grey"}>{t(`status.${a.status}`)}</Pill>
-                  {a.status === "active" && <StopAgency id={a.id} name={a.name} />}
+                  {a.status === "active" ? <StopAgency id={a.id} name={a.name} /> : <DeleteAgency id={a.id} name={a.name} />}
+                  {a.status === "active" && (
+                    <div className="w-full">
+                      <AgencyPlanEditor id={a.id} plan={a.plan} cycle={a.planCycle} until={a.planUntil ? new Date(a.planUntil.getTime() + 3 * 3_600_000).toISOString().slice(0, 10) : ""} />
+                    </div>
+                  )}
                 </li>
               );
             })}

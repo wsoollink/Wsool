@@ -23,6 +23,11 @@ export const en: typeof ar = {
     title: "Choose your page name", subtitle: "This is the link you'll share with brands.", label: "Username",
     rules: "3 to 20: lowercase English letters, numbers, dot or _", checking: "Checking…", available: "✓ Available",
     submit: "Claim name", saving: "Claiming…",
+    team: {
+      title: "You're on the {agency} team", body: "The agency dashboard (creators, agency page, team) opens on the website.",
+      open: "Open the agency dashboard", personal: "I want a personal creator page",
+      note: "A personal page is yours, separate from the agency. You don't need one if you only work for the agency.", signOut: "Sign out",
+    },
     errors: {
       length: "It must be 3 to 20 characters.", characters: "Use English letters, numbers, dot and _ only.",
       dots: "No dot at the start or end, and no two dots in a row.", reserved: "This name is reserved.", extension: "It can't end with a file extension like .png",

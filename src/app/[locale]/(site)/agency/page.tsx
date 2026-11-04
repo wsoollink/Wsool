@@ -23,7 +23,61 @@ import { signOut } from "../login/actions";
 import { Directory } from "./Directory";
 import { AddMember, ConfirmAction, InviteCreator, ManageButton } from "./Controls";
 import { PageEditor, type EditorInitial } from "./PageEditor";
+import { BillingPlans, type BillingPlanCard } from "./Billing";
+import { AGENCY_CREATOR_LIMIT } from "@/config/agency-plans";
+import { SUPPORT_EMAIL } from "@/config/site";
 import { siteOrigin } from "@/lib/site-url";
+
+/** "الاشتراك" tab: current plan + usage, and the plans to ask for (managers and the owner; no online payment yet). */
+async function BillingTab({ agencyId, lang }: { agencyId: string; lang: Locale }) {
+  const [t, ta, a, used] = await Promise.all([
+    getTranslations("AgencyBilling"),
+    getTranslations("Agencies"),
+    db.agency.findUniqueOrThrow({ where: { id: agencyId }, select: { name: true, kind: true, plan: true, planCycle: true, planUntil: true } }),
+    db.agencyLink.count({ where: { agencyId, status: { in: ["active", "pending"] } } }),
+  ]);
+  const limit = AGENCY_CREATOR_LIMIT[a.plan];
+  const date = new Intl.DateTimeFormat(toIntlLocale(lang), { dateStyle: "long" });
+  const cards = (ta.raw("plans") as Omit<BillingPlanCard, "key">[]).map((p, i) => ({ ...p, key: (["starter", "growth", "custom"] as const)[i] })).filter((p) => p.key);
+  return (
+    <div className="flex flex-col gap-5">
+      <Panel title={t("current")}>
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div>
+            <p className="flex flex-wrap items-center gap-2 text-xl font-black">
+              {t(`plan.${a.plan}`)}
+              {a.planCycle && a.plan !== "trial" && <Pill tone="blue" dot={false}>{t(`cycle.${a.planCycle}`)}</Pill>}
+            </p>
+            <p className="mt-1 text-sm text-muted">
+              {a.plan === "trial" ? t("trialNote") : a.planUntil ? t("until", { date: date.format(a.planUntil) }) : t("openEnded")}
+            </p>
+          </div>
+          <div className="rounded-xl border border-line px-4 py-3 md:min-w-56">
+            <p className="text-xs text-muted">{t("usage")}</p>
+            <p className="font-numbers text-lg font-black">{limit === null ? t("unlimited", { n: formatNumber(used, lang) }) : t("usageOf", { n: formatNumber(used, lang), limit: formatNumber(limit, lang) })}</p>
+            {limit !== null && (
+              <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-line" aria-hidden="true">
+                <div className={`h-full rounded-full ${used >= limit ? "bg-bad" : "bg-blue"}`} style={{ width: `${Math.min(100, (used / limit) * 100)}%` }} />
+              </div>
+            )}
+          </div>
+        </div>
+      </Panel>
+      {a.kind === "agency" ? (
+        <Panel title={t("plansTitle")}>
+          <BillingPlans plans={cards} current={a.plan} agency={a.name} features={ta.raw("planFeatures") as string[]} />
+          <p className="mt-4 text-sm text-muted">{t("payNote")}</p>
+          <p className="mt-1 text-sm text-muted">{t("email", { email: SUPPORT_EMAIL })}</p>
+        </Panel>
+      ) : (
+        <Panel title={t("plansTitle")}>
+          <p className="text-sm text-muted">{t("brandNote")}</p>
+          <p className="mt-1 text-sm text-muted">{t("email", { email: SUPPORT_EMAIL })}</p>
+        </Panel>
+      )}
+    </div>
+  );
+}
 
 /** "صفحة الوكالة" tab: the public page editor (managers and the owner). */
 async function PageTab({ agencyId }: { agencyId: string }) {
@@ -63,7 +117,7 @@ async function AgencyDashboard({ lang, searchParams }: { lang: Locale; searchPar
   const sp = await searchParams;
   const brand = m.agency.kind === "brand";
   // Brand accounts only search the directory; agencies also manage creators.
-  const tabs = brand ? (["directory", "team"] as const) : (["creators", "page", "directory", "team"] as const);
+  const tabs = brand ? (["directory", "team", "billing"] as const) : (["creators", "page", "directory", "team", "billing"] as const);
   const tab = (tabs as readonly string[]).includes(sp.tab as string) ? (sp.tab as (typeof tabs)[number]) : tabs[0];
   const canInvite = roleAtLeast(m.member.role, "manager");
   const canEdit = roleAtLeast(m.member.role, "editor");
@@ -114,7 +168,9 @@ async function AgencyDashboard({ lang, searchParams }: { lang: Locale; searchPar
         </nav>
       </div>
 
-      {tab === "page" ? (
+      {tab === "billing" ? (
+        canInvite ? <BillingTab agencyId={m.agency.id} lang={lang} /> : <p className="text-sm text-muted">{t("viewerNote")}</p>
+      ) : tab === "page" ? (
         canInvite ? <PageTab agencyId={m.agency.id} /> : <p className="text-sm text-muted">{(await getTranslations("AgencyPageEditor"))("viewerNote")}</p>
       ) : tab === "directory" ? (
         <Directory lang={lang} sp={sp} userId={me.id} canInvite={!brand && canInvite} />

@@ -171,7 +171,10 @@
       "extension": "Can't end with a file extension like .png",
       "taken": "That name is taken. Try another.",
       "failed": "Something went wrong. Please try again."
-    }
+    },
+    "teamTitle": "You're on the {agency} team",
+    "teamBody": "This creates a personal creator page for you, separate from the agency. You don't need it if you only work for the agency.",
+    "teamOpen": "Open the agency dashboard"
   },
   "UsernameCard": {
     "title": "Your page link",
@@ -1428,7 +1431,9 @@
       "agency": {
         "create": "Opened the agency {name} ({email})",
         "deactivate": "Stopped the agency {name}",
-        "decline_request": "Declined the agency request from {name} ({email})"
+        "decline_request": "Declined the agency request from {name} ({email})",
+        "plan": "Set the agency {name} plan to {plan}",
+        "delete": "Deleted the agency {name} permanently"
       }
     },
     "newsletter": {
@@ -1751,7 +1756,14 @@
       "openAgency": "Open as agency",
       "openBrand": "Open as brand",
       "decline": "Decline",
-      "confirmDecline": "Decline the request from {name}?"
+      "confirmDecline": "Decline the request from {name}?",
+      "plan": "Plan",
+      "cycle": "Cycle",
+      "until": "Active until",
+      "savePlan": "Save plan",
+      "planSaved": "✓ Plan saved",
+      "delete": "Delete permanently",
+      "confirmDelete": "Delete the agency {name} permanently? Its team and history are deleted; creators' pages aren't affected. This can't be undone."
     }
   },
   "Billing": {
@@ -2815,7 +2827,8 @@
       "creators": "Creators",
       "team": "Team",
       "directory": "Directory",
-      "page": "Agency page"
+      "page": "Agency page",
+      "billing": "Subscription"
     },
     "kpi": {
       "creators": "Creators",
@@ -2861,7 +2874,8 @@
       "linked_elsewhere": "This creator is linked to another agency.",
       "invalid": "Check the details.",
       "rate": "Too many tries, wait a bit.",
-      "exists": "This email is already on an agency team."
+      "exists": "This email is already on an agency team.",
+      "limit": "You've reached your plan's limit. Upgrade in the Subscription tab to invite more creators."
     },
     "teamTitle": "Agency team",
     "teamHint": "Each member signs in with their email and lands on the agency dashboard.",
@@ -3196,5 +3210,37 @@
       "upload": "Couldn't upload the file."
     },
     "viewerNote": "Only the owner and managers edit the agency page."
+  },
+  "AgencyBilling": {
+    "title": "Subscription",
+    "current": "Your plan",
+    "plan": {
+      "trial": "Free trial",
+      "starter": "Small",
+      "growth": "Medium",
+      "custom": "Custom plan"
+    },
+    "trialNote": "Your agency is in the free trial for our first agencies: every feature is open, with no creator limit.",
+    "until": "Active until {date}",
+    "openEnded": "No end date",
+    "cycle": {
+      "monthly": "Monthly",
+      "yearly": "Yearly"
+    },
+    "usage": "Linked and invited creators",
+    "usageOf": "{n} of {limit}",
+    "unlimited": "{n} (no limit)",
+    "plansTitle": "Plans",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "yearlyBadge": "2 months free",
+    "currentBadge": "Your plan",
+    "choose": "Request this plan",
+    "talk": "Contact us",
+    "payNote": "Online payment for agencies is coming soon. For now we send you an invoice and activate the plan once it's paid. All prices include VAT.",
+    "whatsappMessage": "Hello, agency “{agency}” would like the {plan} plan ({cycle}).",
+    "talkMessage": "Hello, agency “{agency}” would like a custom plan for more than 30 creators.",
+    "email": "Or email us at {email}",
+    "brandNote": "Brand accounts search the creator directory. To subscribe or extend the account, contact us."
   }
 }

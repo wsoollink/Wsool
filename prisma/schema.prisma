@@ -1152,6 +1152,11 @@ model Agency {
   website     String?        @db.VarChar(200)
   template    AgencyTemplate @default(executive)
   accent      String?        @db.VarChar(7)
+  /// Agency plan (owner, Nov 2026): trial (free beta) until the owner sets a paid one in admin/agencies.
+  plan        AgencyPlan     @default(trial)
+  planCycle   BillingCycle?  @map("plan_cycle")
+  /// Paid until (null = open-ended, e.g. the free beta).
+  planUntil   DateTime?      @map("plan_until") @db.Timestamptz
   createdBy   String         @map("created_by") @db.Uuid
   createdAt   DateTime       @default(now()) @map("created_at") @db.Timestamptz
   members     AgencyMember[]
@@ -1169,6 +1174,14 @@ enum AgencyStatus {
 enum AgencyKind {
   agency
   brand
+}
+
+/// Agency plans (src/config/agency-plans.ts): starter = up to 10 creators, growth = up to 30, custom = by agreement.
+enum AgencyPlan {
+  trial
+  starter
+  growth
+  custom
 }
 
 /// Designs of the public agency page (src/components/agency-page/theme.ts).

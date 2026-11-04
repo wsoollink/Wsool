@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Plus } from "lucide-react";
 import { buttonClasses } from "@/components/ui/Button";
-import { createAgency, declineRequest, openFromRequest, stopAgency } from "./actions";
+import { createAgency, declineRequest, openFromRequest, stopAgency, deleteAgency, setAgencyPlan } from "./actions";
 
 const field = "h-11 w-full min-w-0 rounded-[10px] border border-navy/15 bg-card px-3 text-[15px] outline-none shadow-card focus:border-blue focus:ring-3 focus:ring-blue/15";
 
@@ -92,5 +92,57 @@ export function RequestActions({ id, agency }: { id: string; agency: string }) {
       </button>
       {error && <p role="alert" className="w-full text-sm text-bad">{error}</p>}
     </div>
+  );
+}
+
+/** The agency's plan (set by the owner after the agency pays): plan, cycle and end date. */
+export function AgencyPlanEditor({ id, plan, cycle, until }: { id: string; plan: string; cycle: string | null; until: string }) {
+  const t = useTranslations("Admin.agencies");
+  const tb = useTranslations("AgencyBilling");
+  const router = useRouter();
+  const [v, setV] = useState({ plan, cycle: cycle ?? "monthly", until });
+  const [msg, setMsg] = useState("");
+  const [pending, start] = useTransition();
+  const field = "h-10 rounded-[10px] border border-navy/15 bg-card px-2.5 text-[15px]";
+  return (
+    <div className="flex flex-wrap items-end gap-2">
+      <label className="flex flex-col gap-1 text-xs text-muted">{t("plan")}
+        <select className={field} value={v.plan} onChange={(e) => setV({ ...v, plan: e.target.value })}>
+          {(["trial", "starter", "growth", "custom"] as const).map((p) => <option key={p} value={p}>{tb(`plan.${p}`)}</option>)}
+        </select>
+      </label>
+      {v.plan !== "trial" && (
+        <>
+          <label className="flex flex-col gap-1 text-xs text-muted">{t("cycle")}
+            <select className={field} value={v.cycle} onChange={(e) => setV({ ...v, cycle: e.target.value })}>
+              {(["monthly", "yearly"] as const).map((c) => <option key={c} value={c}>{tb(`cycle.${c}`)}</option>)}
+            </select>
+          </label>
+          <label className="flex flex-col gap-1 text-xs text-muted">{t("until")}
+            <input type="date" className={field} value={v.until} onChange={(e) => setV({ ...v, until: e.target.value })} />
+          </label>
+        </>
+      )}
+      <button type="button" disabled={pending}
+        onClick={() => start(async () => { setMsg(""); const r = await setAgencyPlan(id, v.plan, v.plan === "trial" ? null : v.cycle, v.plan === "trial" ? "" : v.until); setMsg(r.ok ? t("planSaved") : t("errors.invalid")); router.refresh(); })}
+        className="inline-flex h-10 items-center rounded-full bg-navy px-4 text-[13px] font-bold text-on-navy disabled:opacity-60">{t("savePlan")}</button>
+      {msg && <span role="status" className="text-xs text-muted">{msg}</span>}
+    </div>
+  );
+}
+
+/** Permanently delete a stopped agency (its emails can then open a new account). */
+export function DeleteAgency({ id, name }: { id: string; name: string }) {
+  const t = useTranslations("Admin.agencies");
+  const router = useRouter();
+  const [pending, start] = useTransition();
+  return (
+    <button
+      type="button" disabled={pending}
+      onClick={() => { if (window.confirm(t("confirmDelete", { name }))) start(async () => { await deleteAgency(id); router.refresh(); }); }}
+      className="inline-flex min-h-10 items-center rounded-full px-3 text-[13px] font-bold text-bad hover:bg-bad/5"
+    >
+      {t("delete")}
+    </button>
   );
 }

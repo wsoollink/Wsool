@@ -11,7 +11,11 @@ import { TextAreaField, TextField } from "@/components/ui/Field";
 import { Pill } from "@/components/ui/Pill";
 import { Switch } from "@/components/ui/Switch";
 import { normalizeUsername } from "@/config/usernames";
-import type { AgencyTemplate } from "@/generated/prisma/enums";
+import type { AgencyTemplate, Platform } from "@/generated/prisma/enums";
+import { LINK_PLATFORMS, PLATFORM_NAMES, PLATFORMS } from "@/config/platforms";
+import { PlatformIcon } from "@/components/creator/PlatformIcon";
+import { digitsOnly } from "@/lib/format";
+import { MAX_AGENCY_ACCOUNTS } from "@/lib/validation/agency-page";
 import { initials } from "@/lib/initials";
 import { shrinkImage, uploadFile } from "@/lib/upload-client";
 import { checkAgencySlug, requestAgencyUpload, saveAgencyPage } from "./page-actions";
@@ -22,6 +26,7 @@ export type EditorInitial = {
   slug: string; published: boolean; name: string; nameEn: string; tagline: string; taglineEn: string; bio: string; bioEn: string;
   city: string; cityEn: string; logoUrl: string | null; whatsapp: string; email: string; website: string;
   template: AgencyTemplate; accent: string | null; creators: EditorCreator[];
+  accounts: { platform: Platform; handle: string; followers: number }[];
 };
 
 const pill = "inline-flex min-h-10 items-center gap-1.5 rounded-full border border-line bg-card px-4 text-[13px] font-bold hover:border-blue/40 disabled:opacity-50";
@@ -79,6 +84,7 @@ export function PageEditor({ initial, origin }: { initial: EditorInitial; origin
     const r = await saveAgencyPage({
       ...v, slug: v.slug, logo: logo.path ? { path: logo.path, url: null } : { path: null, url: logo.url },
       creators: v.creators.map((c) => ({ linkId: c.linkId, hidden: c.hidden })),
+      accounts: v.accounts.filter((a) => a.handle.trim()),
       accent: v.accent as (typeof AGENCY_ACCENTS)[number] | null,
     });
     if ("ok" in r) {
@@ -87,7 +93,7 @@ export function PageEditor({ initial, origin }: { initial: EditorInitial; origin
       router.refresh();
     } else {
       if (r.slugError) setSlugState(r.slugError);
-      setStatus({ tone: "bad", text: t(`errors.${r.error}`) });
+      setStatus({ tone: "bad", text: r.error === "account" && r.account !== undefined ? t("errors.account", { n: r.account + 1 }) : t(`errors.${r.error}`) });
     }
   });
 
@@ -173,6 +179,40 @@ export function PageEditor({ initial, origin }: { initial: EditorInitial; origin
           <TextField id="ag-city-en" label={t("cityEn")} value={v.cityEn} maxLength={60} dir="ltr" lang="en" onChange={(e) => set("cityEn", e.target.value)} />
           <p className="text-xs text-muted md:col-span-2">{t("enHint")}</p>
         </div>
+      </Panel>
+
+      <Panel title={t("accountsTitle")}>
+        <p className="text-sm text-muted">{t("accountsHint")}</p>
+        <ul className="mt-4 flex flex-col gap-3">
+          {v.accounts.map((a, i) => {
+            const isLink = LINK_PLATFORMS.includes(a.platform);
+            const setAcc = (patch: Partial<EditorInitial["accounts"][number]>) => set("accounts", v.accounts.map((x, j) => (j === i ? { ...x, ...patch } : x)));
+            return (
+              <li key={i} className="grid grid-cols-1 gap-2 rounded-xl border border-line p-3 sm:grid-cols-[180px_minmax(0,1fr)_150px_auto] sm:items-end">
+                <label className="flex flex-col gap-1 text-sm font-medium">{t("accPlatform")}
+                  <span className="relative flex items-center">
+                    <span className="pointer-events-none absolute start-3 text-muted"><PlatformIcon platform={a.platform} size={16} /></span>
+                    <select value={a.platform} onChange={(e) => setAcc({ platform: e.target.value as Platform, handle: "" })}
+                      className="h-11 w-full rounded-[10px] border border-navy/15 bg-card ps-9 pe-2 text-[15px] shadow-card">
+                      {PLATFORMS.map((p) => <option key={p} value={p}>{PLATFORM_NAMES[p]}</option>)}
+                    </select>
+                  </span>
+                </label>
+                <TextField id={`acc-h-${i}`} label={isLink ? t("accLink") : t("accHandle")} value={a.handle} dir="ltr" maxLength={300}
+                  placeholder={isLink ? "https://" : "@username"} onChange={(e) => setAcc({ handle: e.target.value })} />
+                <TextField id={`acc-f-${i}`} label={t("accFollowers")} value={a.followers ? String(a.followers) : ""} inputMode="numeric" dir="ltr"
+                  onChange={(e) => setAcc({ followers: Number(digitsOnly(e.target.value, 10)) || 0 })} />
+                <button type="button" onClick={() => set("accounts", v.accounts.filter((_, j) => j !== i))}
+                  className="inline-flex min-h-11 items-center justify-center rounded-full px-3 text-[13px] font-bold text-bad hover:bg-bad/5">{t("accRemove")}</button>
+              </li>
+            );
+          })}
+        </ul>
+        {v.accounts.length < MAX_AGENCY_ACCOUNTS && (
+          <button type="button" className={`${pill} mt-3`} onClick={() => set("accounts", [...v.accounts, { platform: "instagram", handle: "", followers: 0 }])}>
+            + {t("accAdd")}
+          </button>
+        )}
       </Panel>
 
       <Panel title={t("contactTitle")}>

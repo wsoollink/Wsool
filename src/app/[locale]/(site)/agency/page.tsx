@@ -24,8 +24,9 @@ import { Directory } from "./Directory";
 import { AddMember, ConfirmAction, InviteCreator, ManageButton } from "./Controls";
 import { PageEditor, type EditorInitial } from "./PageEditor";
 import { BillingPlans, type BillingPlanCard } from "./Billing";
-import { AGENCY_CREATOR_LIMIT } from "@/config/agency-plans";
+import { AGENCY_CREATOR_LIMIT, agencyDaysLeft } from "@/config/agency-plans";
 import { SUPPORT_EMAIL } from "@/config/site";
+import { LINK_PLATFORMS } from "@/config/platforms";
 import { siteOrigin } from "@/lib/site-url";
 
 /** "الاشتراك" tab: current plan + usage, and the plans to ask for (managers and the owner; no online payment yet). */
@@ -37,6 +38,7 @@ async function BillingTab({ agencyId, lang }: { agencyId: string; lang: Locale }
     db.agencyLink.count({ where: { agencyId, status: { in: ["active", "pending"] } } }),
   ]);
   const limit = AGENCY_CREATOR_LIMIT[a.plan];
+  const left = agencyDaysLeft(a.planUntil);
   const date = new Intl.DateTimeFormat(toIntlLocale(lang), { dateStyle: "long" });
   const cards = (ta.raw("plans") as Omit<BillingPlanCard, "key">[]).map((p, i) => ({ ...p, key: (["starter", "growth", "custom"] as const)[i] })).filter((p) => p.key);
   return (
@@ -48,8 +50,10 @@ async function BillingTab({ agencyId, lang }: { agencyId: string; lang: Locale }
               {t(`plan.${a.plan}`)}
               {a.planCycle && a.plan !== "trial" && <Pill tone="blue" dot={false}>{t(`cycle.${a.planCycle}`)}</Pill>}
             </p>
-            <p className="mt-1 text-sm text-muted">
-              {a.plan === "trial" ? t("trialNote") : a.planUntil ? t("until", { date: date.format(a.planUntil) }) : t("openEnded")}
+            {a.plan === "trial" && <p className="mt-1 text-sm text-muted">{t("trialNote")}</p>}
+            <p className="mt-2 flex flex-wrap items-center gap-2 text-sm text-muted">
+              {left === null ? t("openEnded") : left < 0 ? t("ended", { date: date.format(a.planUntil!) }) : t("endsOn", { date: date.format(a.planUntil!) })}
+              {left !== null && <Pill tone={left < 0 ? "bad" : left <= 7 ? "warn" : "good"}>{left < 0 ? t("expired") : t("daysLeft", { n: left })}</Pill>}
             </p>
           </div>
           <div className="rounded-xl border border-line px-4 py-3 md:min-w-56">
@@ -84,6 +88,7 @@ async function PageTab({ agencyId }: { agencyId: string }) {
   const a = await db.agency.findUniqueOrThrow({
     where: { id: agencyId },
     include: {
+      accounts: { orderBy: { sort: "asc" } },
       links: {
         where: { status: "active" },
         orderBy: [{ sort: "asc" }, { decidedAt: "asc" }],
@@ -95,6 +100,8 @@ async function PageTab({ agencyId }: { agencyId: string }) {
     slug: a.slug ?? "", published: a.pagePublished, name: a.name, nameEn: a.nameEn ?? "", tagline: a.tagline ?? "", taglineEn: a.taglineEn ?? "",
     bio: a.bio ?? "", bioEn: a.bioEn ?? "", city: a.city ?? "", cityEn: a.cityEn ?? "", logoUrl: a.logoUrl, whatsapp: a.whatsapp ?? "",
     email: a.email ?? "", website: a.website ?? "", template: a.template, accent: a.accent,
+    // Link platforms are edited as the full link; the others as the username.
+    accounts: a.accounts.map((x) => ({ platform: x.platform, handle: LINK_PLATFORMS.includes(x.platform) ? x.url : x.handle, followers: x.followers })),
     creators: a.links.map((l) => ({
       linkId: l.id, username: l.page.username, photoUrl: l.page.photoUrl, hidden: l.agencyHidden, creatorHidden: !l.showOnPage,
       name: l.page.translations.find((x) => x.lang === l.page.primaryLang)?.fullName || l.page.translations[0]?.fullName || l.page.username,
@@ -121,6 +128,8 @@ async function AgencyDashboard({ lang, searchParams }: { lang: Locale; searchPar
   const tab = (tabs as readonly string[]).includes(sp.tab as string) ? (sp.tab as (typeof tabs)[number]) : tabs[0];
   const canInvite = roleAtLeast(m.member.role, "manager");
   const canEdit = roleAtLeast(m.member.role, "editor");
+  const tb = await getTranslations("AgencyBilling");
+  const daysLeft = agencyDaysLeft(m.agency.planUntil);
   const date = new Intl.DateTimeFormat(toIntlLocale(lang), { dateStyle: "medium" });
 
   const [links, members, ownPage, updates] = await Promise.all([
@@ -154,7 +163,17 @@ async function AgencyDashboard({ lang, searchParams }: { lang: Locale; searchPar
     <div className="flex flex-col gap-5">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <p className="text-sm font-semibold text-blue">{m.agency.name}</p>
+          <p className="flex flex-wrap items-center gap-2 text-sm font-semibold text-blue">
+            {m.agency.name}
+            {/* Plan + days left, on every tab (the Subscription tab has the details). */}
+            {daysLeft !== null && (
+              <Link href="/agency?tab=billing" className="inline-flex">
+                <Pill tone={daysLeft < 0 ? "bad" : daysLeft <= 7 ? "warn" : "grey"}>
+                  {tb(`plan.${m.agency.plan}`)} · {daysLeft < 0 ? tb("expired") : tb("daysLeft", { n: daysLeft })}
+                </Pill>
+              </Link>
+            )}
+          </p>
           <h1 className="text-2xl font-black md:text-3xl">{tab === "directory" ? t("directoryTitle") : t("title")}</h1>
           <p className="text-sm text-muted">{tab === "directory" ? t("directorySub") : t("sub")}</p>
         </div>
@@ -167,6 +186,13 @@ async function AgencyDashboard({ lang, searchParams }: { lang: Locale; searchPar
           ))}
         </nav>
       </div>
+
+      {daysLeft !== null && daysLeft < 0 && tab !== "billing" && (
+        <div className="flex flex-col gap-2 rounded-card border border-bad/25 bg-bad/5 p-4 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm">{tb("expiredBanner", { plan: tb(`plan.${m.agency.plan}`) })}</p>
+          <Link href="/agency?tab=billing" className="inline-flex min-h-10 shrink-0 items-center justify-center rounded-full bg-bad px-4 text-sm font-bold text-white">{tb("renew")}</Link>
+        </div>
+      )}
 
       {tab === "billing" ? (
         canInvite ? <BillingTab agencyId={m.agency.id} lang={lang} /> : <p className="text-sm text-muted">{t("viewerNote")}</p>

@@ -983,6 +983,14 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   with a prefilled request; the owner sets the plan in `admin/agencies` (`setAgencyPlan`, audited `agency.plan`). Stopped agencies can be
   deleted for good (`deleteAgency`, audited `agency.delete`; team/links/activity cascade, creators' pages untouched) so their emails can
   open a new account.
+- Trial / plan end (owner, Nov 2026): a new agency gets `plan_until` = now + `AGENCY_TRIAL_DAYS` (30); the owner changes the end date (also for the
+  trial) in admin/agencies. `agencyDaysLeft()` drives the "plan · N days left" pill in the agency header (links to the Subscription tab), the
+  Subscription tab and the admin list; after the end (`agencyPlanExpired`) linked creators stay but `inviteCreator` refuses (`expired`) and the
+  agency sees a red "renew" banner. New join requests show on the admin overview (card) and as a badge on "Agencies" in the admin menu.
+- Agency accounts (owner, Nov 2026, typed by the agency): table `agency_accounts` (platform, handle, url built on the server like creators'
+  (`profileUrl` / `linkProfileUrl`; LinkedIn = `/company/` unless a `/in/` link is pasted), followers, sort), up to `MAX_AGENCY_ACCOUNTS` 12, saved
+  with the page form (`saveAgencyPage`, whole list). Shown as icon + followers chips in the agency page hero, on the PDF cover and as @handles on
+  its contact page; the demo agency has samples. Official linking (OAuth) for agencies is not built.
 - A team member has no creator page unless they claim one: web `/onboarding` shows "you're on the X team" + "Open the agency dashboard"
   (`getMembership`), and the app's onboarding (`/api/mobile/v1/me` returns `agency` for members without a page) shows that note first
   with "Open the agency dashboard" (website), "I want a personal creator page" and sign out. Their personal page is separate from the agency.

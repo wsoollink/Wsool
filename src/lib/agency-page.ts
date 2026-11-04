@@ -66,6 +66,8 @@ export type PublicAgency = {
   accent: string | null;
   /** English shown to English visitors only when the agency wrote an English name or bio. */
   hasEnglish: boolean;
+  /** The agency's own social accounts. */
+  accounts: { platform: Platform; handle: string; url: string; followers: number }[];
   creators: AgencyCreator[];
   stats: { creators: number; followers: number; verified: number; platforms: Platform[] };
 };
@@ -94,6 +96,7 @@ async function loadAgency(slug: string, lang: Locale, preview: boolean): Promise
   const a = await db.agency.findUnique({
     where: { slug },
     include: {
+      accounts: { orderBy: { sort: "asc" }, select: { platform: true, handle: true, url: true, followers: true } },
       links: {
         where: { status: "active", showOnPage: true, agencyHidden: false },
         orderBy: [{ sort: "asc" }, { decidedAt: "asc" }],
@@ -132,6 +135,7 @@ async function loadAgency(slug: string, lang: Locale, preview: boolean): Promise
     template: a.template,
     accent: a.accent,
     hasEnglish: !!(a.nameEn || a.bioEn || a.taglineEn),
+    accounts: a.accounts,
     creators,
     stats: {
       creators: creators.length,

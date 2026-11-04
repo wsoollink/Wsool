@@ -112,19 +112,17 @@ export function AgencyPlanEditor({ id, plan, cycle, until }: { id: string; plan:
         </select>
       </label>
       {v.plan !== "trial" && (
-        <>
-          <label className="flex flex-col gap-1 text-xs text-muted">{t("cycle")}
-            <select className={field} value={v.cycle} onChange={(e) => setV({ ...v, cycle: e.target.value })}>
-              {(["monthly", "yearly"] as const).map((c) => <option key={c} value={c}>{tb(`cycle.${c}`)}</option>)}
-            </select>
-          </label>
-          <label className="flex flex-col gap-1 text-xs text-muted">{t("until")}
-            <input type="date" className={field} value={v.until} onChange={(e) => setV({ ...v, until: e.target.value })} />
-          </label>
-        </>
+        <label className="flex flex-col gap-1 text-xs text-muted">{t("cycle")}
+          <select className={field} value={v.cycle} onChange={(e) => setV({ ...v, cycle: e.target.value })}>
+            {(["monthly", "yearly"] as const).map((c) => <option key={c} value={c}>{tb(`cycle.${c}`)}</option>)}
+          </select>
+        </label>
       )}
+      <label className="flex flex-col gap-1 text-xs text-muted">{t("until")}
+        <input type="date" className={field} value={v.until} onChange={(e) => setV({ ...v, until: e.target.value })} />
+      </label>
       <button type="button" disabled={pending}
-        onClick={() => start(async () => { setMsg(""); const r = await setAgencyPlan(id, v.plan, v.plan === "trial" ? null : v.cycle, v.plan === "trial" ? "" : v.until); setMsg(r.ok ? t("planSaved") : t("errors.invalid")); router.refresh(); })}
+        onClick={() => start(async () => { setMsg(""); const r = await setAgencyPlan(id, v.plan, v.plan === "trial" ? null : v.cycle, v.until); setMsg(r.ok ? t("planSaved") : t("errors.invalid")); router.refresh(); })}
         className="inline-flex h-10 items-center rounded-full bg-navy px-4 text-[13px] font-bold text-on-navy disabled:opacity-60">{t("savePlan")}</button>
       {msg && <span role="status" className="text-xs text-muted">{msg}</span>}
     </div>

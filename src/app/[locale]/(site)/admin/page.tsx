@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { DemoCard } from "./demo/DemoCard";
-import { ArrowLeft, ArrowRight, BadgeCheck, Banknote, Clock, Download, Hourglass, Mail, Sparkles, TrendingUp, Users } from "lucide-react";
+import { ArrowLeft, ArrowRight, BadgeCheck, Banknote, Clock, Download, Hourglass, Mail, Sparkles, TrendingUp, Users, Building2 } from "lucide-react";
 import { AreaChart } from "@/components/charts/AreaChart";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { buttonClasses } from "@/components/ui/Button";
@@ -72,7 +72,13 @@ async function Overview({ lang }: { lang: Locale }) {
   ];
 
   const isOwner = can(admin, "owner");
-  const activity = isOwner ? await db.auditLog.findMany({ orderBy: { createdAt: "desc" }, take: 6 }) : [];
+  const [activity, agencyRequests] = isOwner
+    ? await Promise.all([
+        db.auditLog.findMany({ orderBy: { createdAt: "desc" }, take: 6 }),
+        db.agencyRequest.findMany({ where: { status: "new" }, orderBy: { createdAt: "desc" }, take: 3, select: { id: true, agencyName: true, name: true, createdAt: true } }),
+      ])
+    : [[], []];
+  const agencyRequestCount = isOwner && agencyRequests.length ? await db.agencyRequest.count({ where: { status: "new" } }) : 0;
   const sentences = await auditSentences(activity);
   const ago = new Intl.RelativeTimeFormat(toIntlLocale(lang), { numeric: "auto" });
   const since = (d: Date) => {
@@ -99,6 +105,18 @@ async function Overview({ lang }: { lang: Locale }) {
 
   return (
     <div className="flex flex-col gap-5 md:gap-6">
+      {/* New "join as an agency" requests (owner): they wait in admin/agencies. */}
+      {agencyRequestCount > 0 && (
+        <div className="flex flex-col gap-3 rounded-card border border-blue/25 bg-blue/5 p-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="min-w-0">
+            <p className="flex items-center gap-2 font-bold"><Building2 aria-hidden="true" size={17} className="text-blue" />{t("agencyRequests", { n: agencyRequestCount })}</p>
+            <p className="mt-1 truncate text-sm text-muted">{agencyRequests.map((r) => r.agencyName).join(" · ")}</p>
+          </div>
+          <Link href="/admin/agencies" className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-full bg-blue px-5 text-sm font-bold text-on-blue">
+            {t("agencyRequestsOpen")} <Arrow aria-hidden="true" size={16} />
+          </Link>
+        </div>
+      )}
       <KpiStrip items={kpis} />
 
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1fr)_340px]">

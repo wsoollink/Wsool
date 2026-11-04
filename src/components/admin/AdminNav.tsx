@@ -28,7 +28,7 @@ function isActive(pathname: string, href: string) {
 }
 
 /** Admin sections the signed-in staff member may open (sidebar and phone menu); owner-only ones under an "Owner" label. */
-export function AdminNav({ allowed, pending }: { allowed: AdminSectionKey[]; pending: number }) {
+export function AdminNav({ allowed, pending, agencyRequests = 0 }: { allowed: AdminSectionKey[]; pending: number; /** New "join as an agency" requests (owner). */ agencyRequests?: number }) {
   const t = useTranslations("Admin.nav");
   const pathname = usePathname().replace(/^\/(?:ar|en)(?=\/|$)/, "") || "/";
   const sections = ADMIN_SECTIONS.filter((s) => allowed.includes(s.key));
@@ -40,6 +40,11 @@ export function AdminNav({ allowed, pending }: { allowed: AdminSectionKey[]; pen
         <Link href={s.href} aria-current={active ? "page" : undefined} className={`${navRow} ${active ? navRowActive : ""}`}>
           <Icon aria-hidden="true" size={17} />
           <span className="flex-1">{t(s.key)}</span>
+          {s.key === "agencies" && agencyRequests > 0 && (
+            <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-blue/10 px-1.5 text-[11px] font-bold text-blue">
+              {agencyRequests}<span className="sr-only"> {t("pendingBadge")}</span>
+            </span>
+          )}
           {s.key === "verifications" && pending > 0 && (
             <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-blue/10 px-1.5 text-[11px] font-bold text-blue">
               {pending}<span className="sr-only"> {t("pendingBadge")}</span>

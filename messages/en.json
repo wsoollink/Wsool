@@ -977,7 +977,9 @@
       "signupsCount": "{n, plural, one {1 signup} other {# signups}}",
       "waiting": "Waiting for you",
       "weekNote": "this week",
-      "endingNote": "ending this week"
+      "endingNote": "ending this week",
+      "agencyRequests": "{n, plural, one {1 new agency join request} other {# new agency join requests}}",
+      "agencyRequestsOpen": "Review requests"
     },
     "verifications": {
       "tabPending": "Waiting",
@@ -2875,7 +2877,8 @@
       "invalid": "Check the details.",
       "rate": "Too many tries, wait a bit.",
       "exists": "This email is already on an agency team.",
-      "limit": "You've reached your plan's limit. Upgrade in the Subscription tab to invite more creators."
+      "limit": "You've reached your plan's limit. Upgrade in the Subscription tab to invite more creators.",
+      "expired": "Your agency's plan has ended. Renew it in the Subscription tab to invite new creators."
     },
     "teamTitle": "Agency team",
     "teamHint": "Each member signs in with their email and lands on the agency dashboard.",
@@ -3140,7 +3143,8 @@
       "ivory": "Ivory"
     },
     "demoBar": "Demo agency page for preview only: the agency, creators and numbers aren't real.",
-    "demoCta": "Get your agency page"
+    "demoCta": "Get your agency page",
+    "accountsLabel": "Agency accounts"
   },
   "AgencyPageEditor": {
     "tab": "Agency page",
@@ -3207,9 +3211,18 @@
       "slug": "This link name isn't available.",
       "needSlug": "Choose a link name before publishing.",
       "logo": "Couldn't save the logo, upload it again.",
-      "upload": "Couldn't upload the file."
+      "upload": "Couldn't upload the file.",
+      "account": "Check account {n}: the username or link isn't valid."
     },
-    "viewerNote": "Only the owner and managers edit the agency page."
+    "viewerNote": "Only the owner and managers edit the agency page.",
+    "accountsTitle": "Agency accounts",
+    "accountsHint": "Your agency's social accounts. Shown on the agency page and PDF with their followers.",
+    "accPlatform": "Platform",
+    "accHandle": "Username",
+    "accLink": "Profile link",
+    "accFollowers": "Followers",
+    "accRemove": "Remove",
+    "accAdd": "Add an account"
   },
   "AgencyBilling": {
     "title": "Subscription",
@@ -3220,7 +3233,7 @@
       "growth": "Medium",
       "custom": "Custom plan"
     },
-    "trialNote": "Your agency is in the free trial for our first agencies: every feature is open, with no creator limit.",
+    "trialNote": "Your agency is on the free trial: every feature is open, with no creator limit.",
     "until": "Active until {date}",
     "openEnded": "No end date",
     "cycle": {
@@ -3241,6 +3254,12 @@
     "whatsappMessage": "Hello, agency “{agency}” would like the {plan} plan ({cycle}).",
     "talkMessage": "Hello, agency “{agency}” would like a custom plan for more than 30 creators.",
     "email": "Or email us at {email}",
-    "brandNote": "Brand accounts search the creator directory. To subscribe or extend the account, contact us."
+    "brandNote": "Brand accounts search the creator directory. To subscribe or extend the account, contact us.",
+    "daysLeft": "{n, plural, =0 {Last day} one {1 day left} other {# days left}}",
+    "ended": "Ended on {date}",
+    "endsOn": "Ends on {date}",
+    "expiredBanner": "Your {plan} has ended. Linked creators stay, but you can't invite new ones until the plan is renewed.",
+    "renew": "Renew the plan",
+    "expired": "Ended"
   }
 }

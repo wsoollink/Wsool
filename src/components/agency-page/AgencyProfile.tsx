@@ -80,6 +80,20 @@ export async function AgencyProfile({ agency, lang, preview, demo }: { agency: P
             </span>
             <h1 className="text-[2.6rem] leading-[1.15] font-black tracking-tight text-balance sm:text-5xl lg:text-6xl">{agency.name}</h1>
             {agency.tagline && <p className="max-w-xl text-lg leading-relaxed text-pretty text-[var(--ag-hero-muted)] md:text-xl">{agency.tagline}</p>}
+            {/* The agency's own accounts: icon + followers, each opening the profile. */}
+            {agency.accounts.length > 0 && (
+              <ul className="flex flex-wrap gap-2" aria-label={t("accountsLabel")}>
+                {agency.accounts.map((a) => (
+                  <li key={a.url}>
+                    <a href={a.url} target="_blank" rel="noopener noreferrer" aria-label={`${PLATFORM_NAMES[a.platform]} @${a.handle}`}
+                      className="inline-flex min-h-10 items-center gap-2 rounded-full border border-[var(--ag-hero-line)] px-3.5 text-sm font-semibold hover:bg-[var(--ag-hero-line)]">
+                      <PlatformIcon platform={a.platform} size={16} />
+                      {a.followers > 0 && <span className="font-numbers">{formatCompact(a.followers, lang)}</span>}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
             <div className="mt-2 flex flex-wrap gap-3">
               <a href="#creators" className="inline-flex min-h-12 items-center gap-2 rounded-full bg-[var(--ag-hero-accent)] px-6 font-bold text-[var(--ag-hero-on-accent)]">
                 {t("seeCreators")} <ArrowDown aria-hidden="true" size={17} />

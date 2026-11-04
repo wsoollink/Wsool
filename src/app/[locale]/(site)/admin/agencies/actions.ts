@@ -5,7 +5,7 @@ import { deactivateAgency } from "@/lib/agency";
 import { audit, requireAdmin } from "@/lib/admin";
 import { db } from "@/lib/db";
 import { sendAgencyTeamInvite } from "@/lib/notify";
-import { AGENCY_PLANS } from "@/config/agency-plans";
+import { AGENCY_PLANS, AGENCY_TRIAL_DAYS } from "@/config/agency-plans";
 
 const input = z.object({
   name: z.string().trim().min(2).max(80),
@@ -20,7 +20,7 @@ export async function createAgency(name: string, email: string, kind: "agency" |
   if (!parsed.success) return { error: "invalid" };
   if (await db.agencyMember.count({ where: { email: parsed.data.email } })) return { error: "exists" };
   await db.$transaction(async (tx) => {
-    const agency = await tx.agency.create({ data: { name: parsed.data.name, kind: parsed.data.kind, createdBy: admin.userId } });
+    const agency = await tx.agency.create({ data: { name: parsed.data.name, kind: parsed.data.kind, createdBy: admin.userId, planUntil: new Date(Date.now() + AGENCY_TRIAL_DAYS * 86_400_000) } });
     await tx.agencyMember.create({ data: { agencyId: agency.id, email: parsed.data.email, role: "owner" } });
     await audit(admin, "agency.create", { type: "agency", id: agency.id }, { name: parsed.data.name, email: parsed.data.email, kind: parsed.data.kind }, tx);
   });

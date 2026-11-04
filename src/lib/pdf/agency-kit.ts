@@ -7,7 +7,7 @@ import QRCode from "qrcode";
 import { createTranslator } from "use-intl/core";
 import { agencyTheme } from "@/components/agency-page/theme";
 import { PLATFORM_ICON_PATHS } from "@/components/creator/PlatformIcon";
-import { PLATFORM_NAMES } from "@/config/platforms";
+import { LINK_PLATFORMS, PLATFORM_NAMES } from "@/config/platforms";
 import type { Platform } from "@/generated/prisma/enums";
 import { toIntlLocale, type Locale } from "@/i18n/config";
 import type { PublicAgency } from "@/lib/agency-page";
@@ -198,6 +198,24 @@ export async function buildAgencyKit(agency: PublicAgency, lang: Locale): Promis
   y += LOGO + 150;
   y += text(agency.name, PAD, y, { size: 64, weight: 700, color: th.heroInk, width: CONTENT, maxLines: 2, lineHeight: 1.2 }) + 20;
   if (agency.tagline) y += text(agency.tagline, PAD, y, { size: 22, color: th.heroMuted, width: CONTENT * 0.85, maxLines: 3, lineHeight: 1.6 }) + 10;
+  // The agency's own accounts: chips with the icon + followers, each linking to the profile.
+  if (agency.accounts.length) {
+    y += 16;
+    let cx = 0;
+    for (const a of agency.accounts.slice(0, 8)) {
+      const label = a.followers > 0 ? formatCompact(a.followers, lang) : "";
+      const lw = label ? measure(label, { size: 14, weight: 700, width: 200 }) : 0;
+      const w = 16 + 18 + (label ? 8 + lw : 0) + 16;
+      if (cx + w > CONTENT) break;
+      const x = startX(PAD, CONTENT, w, cx);
+      box(x, y, w, 38, { stroke: mix(th.heroInk, th.heroBg, 0.75), r: 19 });
+      platformIcon(a.platform, x + 16, y + 10, 18, th.heroInk);
+      if (label) text(label, x + 16 + 18 + 8, y + 9, { size: 14, weight: 700, color: th.heroInk, width: lw + 2, align: rtl ? "end" : "start" });
+      link(x, y, w, 38, a.url);
+      cx += w + 10;
+    }
+    y += 38;
+  }
 
   // Creator photo strip
   const faces = agency.creators.map((c, i) => ({ c, img: photos[i] })).filter((f) => f.img).slice(0, 5);
@@ -353,6 +371,16 @@ export async function buildAgencyKit(agency: PublicAgency, lang: Locale): Promis
     else stroke(c.icon, lx0, ly, 20, th.bandInk);
     text(c.value, lx0 + 30, ly - 1, { size: 16, weight: 700, color: th.bandInk, width: vw + 2, align: "end" });
     link(lx0 - 6, ly - 6, vw + 42, 32, c.url);
+  });
+  // Accounts under the contact lines: icon + @handle, centred.
+  agency.accounts.slice(0, 6).forEach((a, i) => {
+    const ly = y + contacts.length * 40 + 16 + i * 36;
+    const v = LINK_PLATFORMS.includes(a.platform) ? a.handle : `@${a.handle}`;
+    const vw = measure(v, { size: 15, weight: 700, width: CONTENT - 60 });
+    const lx0 = (PW - (vw + 28)) / 2;
+    platformIcon(a.platform, lx0, ly, 18, th.bandInk);
+    text(v, lx0 + 28, ly - 1, { size: 15, weight: 700, color: th.bandInk, width: vw + 2, align: "end" });
+    link(lx0 - 6, ly - 6, vw + 40, 30, a.url);
   });
   text(t("madeWith"), PAD, PH - 56, { size: 11, color: mix(th.bandInk, th.bandBg, 0.45), width: CONTENT, align: "center" });
 

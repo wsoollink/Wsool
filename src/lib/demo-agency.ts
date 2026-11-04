@@ -60,6 +60,13 @@ export function buildDemoAgency(lang: Locale): PublicAgency {
     template: "executive",
     accent: null,
     hasEnglish: true,
+    // Fictional handles; links go to the platforms' home pages (never real accounts).
+    accounts: [
+      { platform: "instagram", handle: "nojoom.agency", url: "https://www.instagram.com/", followers: 48_200 },
+      { platform: "x", handle: "nojoomagency", url: "https://x.com/", followers: 21_500 },
+      { platform: "linkedin", handle: "nojoom-agency", url: "https://www.linkedin.com/", followers: 9_800 },
+      { platform: "tiktok", handle: "nojoom.agency", url: "https://www.tiktok.com/", followers: 35_600 },
+    ],
     creators,
     stats: {
       creators: creators.length,

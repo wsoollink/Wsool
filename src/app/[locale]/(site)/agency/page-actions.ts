@@ -8,6 +8,8 @@ import { rateLimit } from "@/lib/rate-limit";
 import { createUploadTicket } from "@/lib/storage";
 import { agencyPageSchema, type AgencyPageInput } from "@/lib/validation/agency-page";
 import { normalizeUsername } from "@/config/usernames";
+import { HANDLE_PATTERN, LINK_PLATFORMS, linkProfileUrl, normalizeHandle, profileUrl } from "@/config/platforms";
+import type { Platform } from "@/generated/prisma/enums";
 
 /** The agency page is for agencies (not brand accounts), edited by managers and the owner. */
 async function requirePageEditor() {
@@ -32,7 +34,21 @@ export async function checkAgencySlug(slug: string): Promise<{ error: SlugError 
   return { error: await slugError(slug, m.agency.id) };
 }
 
-export type SaveAgencyPageResult = { ok: true; slug: string | null } | { error: "invalid" | "slug" | "needSlug" | "logo"; slugError?: SlugError };
+export type SaveAgencyPageResult = { ok: true; slug: string | null } | { error: "invalid" | "slug" | "needSlug" | "logo" | "account"; slugError?: SlugError; account?: number };
+
+/** Profile link built on the server (never a free-form URL): username for most platforms, a cleaned pasted link for Spotify/Discord/Jaco. */
+function accountUrl(platform: Platform, input: string): { handle: string; url: string } | null {
+  if (LINK_PLATFORMS.includes(platform)) {
+    const url = linkProfileUrl(platform, input);
+    return url ? { handle: url.replace(/^https:\/\/(www\.)?/, "").slice(0, 100), url } : null;
+  }
+  const handle = normalizeHandle(input);
+  if (!HANDLE_PATTERN.test(handle)) return null;
+  // Agencies are companies on LinkedIn (/company/), unless they pasted a personal /in/ link.
+  if (platform === "linkedin" && !/linkedin\.com\/in\//i.test(input)) return { handle, url: `https://www.linkedin.com/company/${encodeURIComponent(handle)}` };
+  const url = profileUrl(platform, handle);
+  return url ? { handle, url } : null;
+}
 
 export async function saveAgencyPage(input: AgencyPageInput): Promise<SaveAgencyPageResult> {
   const m = await requirePageEditor();
@@ -54,6 +70,12 @@ export async function saveAgencyPage(input: AgencyPageInput): Promise<SaveAgency
   if (logoUrl === undefined) return { error: "logo" };
 
   const nul = (v: string) => v || null;
+  const accounts: { platform: Platform; handle: string; url: string; followers: number }[] = [];
+  for (const [i, a] of d.accounts.entries()) {
+    const built = accountUrl(a.platform, a.handle);
+    if (!built) return { error: "account", account: i };
+    accounts.push({ platform: a.platform, ...built, followers: a.followers });
+  }
   // Only this agency's active links can be ordered or hidden.
   const links = await db.agencyLink.findMany({ where: { agencyId: agency.id, status: "active" }, select: { id: true } });
   const own = new Set(links.map((l) => l.id));
@@ -70,6 +92,8 @@ export async function saveAgencyPage(input: AgencyPageInput): Promise<SaveAgency
         },
       }),
       ...order.map((c, i) => db.agencyLink.update({ where: { id: c.linkId }, data: { sort: i, agencyHidden: c.hidden } })),
+      db.agencyAccount.deleteMany({ where: { agencyId: agency.id } }),
+      db.agencyAccount.createMany({ data: accounts.map((a, i) => ({ ...a, agencyId: agency.id, sort: i })) }),
     ]);
   } catch {
     // Unique slug taken in between.

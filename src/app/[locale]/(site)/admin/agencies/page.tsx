@@ -8,12 +8,14 @@ import { isLocale, toIntlLocale, type Locale } from "@/i18n/config";
 import { requireAdmin } from "@/lib/admin";
 import { db } from "@/lib/db";
 import { formatNumber } from "@/lib/format";
+import { agencyDaysLeft } from "@/config/agency-plans";
 import { AgencyPlanEditor, CreateAgency, DeleteAgency, RequestActions, StopAgency } from "./AgencyAdmin";
 
 /** Agencies (owner only, free beta): open one with its owner's email, see its size, stop it. */
 async function Agencies({ lang }: { lang: Locale }) {
   await requireAdmin("owner");
   const t = await getTranslations("Admin.agencies");
+  const tb = await getTranslations("AgencyBilling");
   const date = new Intl.DateTimeFormat(toIntlLocale(lang), { dateStyle: "medium" });
   const [requests, rows] = await Promise.all([
     db.agencyRequest.findMany({ where: { status: "new" }, orderBy: { createdAt: "desc" }, take: 50 }),
@@ -60,6 +62,10 @@ async function Agencies({ lang }: { lang: Locale }) {
                     <p className="text-xs text-muted"><bdi dir="ltr">{owner?.email ?? "—"}</bdi> · {date.format(a.createdAt)}</p>
                   </div>
                   <span className="text-sm text-muted">{t("counts", { creators: formatNumber(a._count.links, lang), team: formatNumber(a.members.length, lang) })}</span>
+                  {a.status === "active" && (() => {
+                    const left = agencyDaysLeft(a.planUntil);
+                    return <Pill tone={left !== null && left < 0 ? "bad" : left !== null && left <= 7 ? "warn" : "blue"} dot={false}>{tb(`plan.${a.plan}`)}{left !== null && ` · ${left < 0 ? tb("expired") : tb("daysLeft", { n: left })}`}</Pill>;
+                  })()}
                   <Pill tone={a.status === "active" ? "good" : "grey"}>{t(`status.${a.status}`)}</Pill>
                   {a.status === "active" ? <StopAgency id={a.id} name={a.name} /> : <DeleteAgency id={a.id} name={a.name} />}
                   {a.status === "active" && (

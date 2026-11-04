@@ -2,6 +2,10 @@ import { z } from "zod";
 import { AGENCY_ACCENTS, AGENCY_TEMPLATES } from "@/components/agency-page/theme";
 import { normalizeWhatsapp, WHATSAPP_PATTERN } from "@/lib/validation/contact";
 import { normalizeLinkUrl } from "@/lib/validation/links";
+import { PLATFORMS } from "@/config/platforms";
+import type { Platform } from "@/generated/prisma/enums";
+
+export const MAX_AGENCY_ACCOUNTS = 12;
 
 const text = (max: number) => z.string().trim().max(max).default("");
 
@@ -23,6 +27,12 @@ export const agencyPageSchema = z.object({
   website: z.string().max(200).transform(normalizeLinkUrl).pipe(z.union([z.literal(""), z.url({ protocol: /^https$/, hostname: /\./ })])),
   template: z.enum(AGENCY_TEMPLATES),
   accent: z.enum(AGENCY_ACCENTS).nullable(),
+  /** The agency's own social accounts, in order (typed by the agency, like a creator's). */
+  accounts: z.array(z.object({
+    platform: z.enum(PLATFORMS as [Platform, ...Platform[]]),
+    handle: z.string().trim().min(1).max(300),
+    followers: z.number().int().min(0).max(2_000_000_000),
+  })).max(MAX_AGENCY_ACCOUNTS).default([]),
   /** Linked creators in page order; hidden = left off the page by the agency. */
   creators: z.array(z.object({ linkId: z.uuid(), hidden: z.boolean() })).max(500),
 });

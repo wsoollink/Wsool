@@ -3,7 +3,7 @@ import { cache } from "react";
 import { cookies, headers } from "next/headers";
 import { notFound } from "next/navigation";
 import type { AgencyPlan, AgencyRole } from "@/generated/prisma/enums";
-import { AGENCY_CREATOR_LIMIT } from "@/config/agency-plans";
+import { AGENCY_CREATOR_LIMIT, agencyPlanExpired } from "@/config/agency-plans";
 import { getCurrentUser, type CurrentUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { notify } from "@/lib/notify";
@@ -96,10 +96,12 @@ export function agencyCovered(sub: { provider: string | null; currentPeriodEnd: 
   return !!sub && sub.provider === "agency" && !!sub.currentPeriodEnd && sub.currentPeriodEnd.getTime() >= AGENCY_PRO_END.getTime();
 }
 
-export type InviteError = "not_found" | "self" | "already" | "linked_elsewhere" | "limit";
+export type InviteError = "not_found" | "self" | "already" | "linked_elsewhere" | "limit" | "expired";
 
 /** Agency invites an existing creator (by username or account email) with the permissions it asks for. */
-export async function inviteCreator(m: { agency: { id: string; name: string; plan: AgencyPlan }; user: CurrentUser }, query: string, perms: Perms): Promise<{ ok: true } | { error: InviteError }> {
+export async function inviteCreator(m: { agency: { id: string; name: string; plan: AgencyPlan; planUntil: Date | null }; user: CurrentUser }, query: string, perms: Perms): Promise<{ ok: true } | { error: InviteError }> {
+  // Trial or paid period over: linked creators stay, but no new invites until the owner renews the plan.
+  if (agencyPlanExpired(m.agency.planUntil)) return { error: "expired" };
   // The plan's creator limit counts linked and invited creators.
   const limit = AGENCY_CREATOR_LIMIT[m.agency.plan];
   if (limit !== null && (await db.agencyLink.count({ where: { agencyId: m.agency.id, status: { in: ["active", "pending"] } } })) >= limit) return { error: "limit" };

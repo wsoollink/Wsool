@@ -27,7 +27,8 @@ async function Nav() {
   const pending = can(admin, "verifications.view")
     ? (await Promise.all([db.verificationRequest.count({ where: { status: "pending" } }), db.license.count({ where: { verificationStatus: "in_review" } })])).reduce((a, b) => a + b, 0)
     : 0;
-  return <AdminNav allowed={allowed} pending={pending} />;
+  const agencyRequests = can(admin, "owner") ? await db.agencyRequest.count({ where: { status: "new" } }) : 0;
+  return <AdminNav allowed={allowed} pending={pending} agencyRequests={agencyRequests} />;
 }
 
 /** Who is signed in (bottom of the sidebar). */

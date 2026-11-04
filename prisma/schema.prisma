@@ -1161,6 +1161,7 @@ model Agency {
   createdAt   DateTime       @default(now()) @map("created_at") @db.Timestamptz
   members     AgencyMember[]
   links       AgencyLink[]
+  accounts    AgencyAccount[]
   activity    AgencyActivity[]
 
   @@map("agencies")
@@ -1326,4 +1327,21 @@ enum AgencyRequestStatus {
   new
   opened
   declined
+}
+
+/// The agency's own social accounts (owner, Nov 2026), typed by the agency: shown on its public page and PDF.
+model AgencyAccount {
+  id        String   @id @default(uuid()) @db.Uuid
+  agencyId  String   @map("agency_id") @db.Uuid
+  agency    Agency   @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  platform  Platform
+  /// Username (or, for link platforms, the pasted link's path).
+  handle    String   @db.VarChar(100)
+  /// Built on the server from platform + handle (or the cleaned pasted link).
+  url       String   @db.VarChar(300)
+  followers Int      @default(0)
+  sort      Int      @default(0)
+
+  @@index([agencyId, sort])
+  @@map("agency_accounts")
 }

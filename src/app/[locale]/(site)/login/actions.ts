@@ -4,6 +4,7 @@ import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { ACT_COOKIE, ACT_NAV_COOKIE } from "@/lib/agency";
 import { NEXT_COOKIE, NEXT_PARAM, safeNextPath } from "@/lib/next-path";
+import { googleDirectConfigured } from "@/lib/google-oauth";
 import { z } from "zod";
 import { ensureAccount } from "@/lib/account";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
@@ -81,6 +82,8 @@ export async function signInWithGoogle(formData?: FormData) {
   // Google goes through Supabase and back to /api/auth/callback: remember where to land in a short cookie.
   const next = safeNextPath(formData?.get(NEXT_PARAM));
   if (next) (await cookies()).set(NEXT_COOKIE, next, { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/", maxAge: 600 });
+  // Our own Google flow (Google says "continue to wsool.link"); the Supabase flow below until its keys are set.
+  if (googleDirectConfigured()) redirect("/api/auth/google/start");
   const h = await headers();
   const host = h.get("x-forwarded-host") ?? h.get("host");
   const proto = h.get("x-forwarded-proto") ?? (host?.startsWith("localhost") ? "http" : "https");

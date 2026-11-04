@@ -350,6 +350,13 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   turn it on. Owner setup: Google Cloud OAuth client (redirect URI = the Supabase callback
   `https://<project>.supabase.co/auth/v1/callback`), then Supabase → Providers → Google, and every site
   origin's `/api/auth/callback` in Supabase's Redirect URLs. Same-email accounts are linked by Supabase.
+- **Google sign-in through wsool.link** (owner, Nov 2026: Google showed "continue to <project>.supabase.co"): with `GOOGLE_CLIENT_ID` +
+  `GOOGLE_CLIENT_SECRET` set in Netlify (the same OAuth client as Supabase's Google provider), `signInWithGoogle` goes to
+  `/api/auth/google/start` (state + nonce in the httpOnly `wsool_g` cookie, Google gets the SHA-256 of the nonce) → Google →
+  `/api/auth/google/callback` (state check, code → ID token with the client secret, `signInWithIdToken({provider: "google", token, nonce})`,
+  `ensureAccount`, `wsool_next`). Code: `src/lib/google-oauth.ts`. Without the two vars the Supabase flow above stays. Owner setup: add
+  `https://wsool.link/api/auth/google/callback` (+ test origins) to the client's Authorized redirect URIs. Then Google's Branding page
+  (app name وصول, logo, wsool.link links) can be verified so the picker shows the app name.
 - Supabase project: `wsool-eu` in Frankfurt (eu-central-1).
 - Sandbox only: run the app with `NODE_USE_ENV_PROXY=1` (Node's fetch ignores HTTPS_PROXY
   otherwise) and the overrides in `.env.local`.

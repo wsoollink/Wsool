@@ -9,10 +9,12 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ plat
   const cookieNonce = req.cookies.get(NONCE_COOKIE)?.value;
   const origin = requestOrigin(req);
 
-  const finish = (result: { ok: true } | { error: ConnectError | "expired" }) => {
+  const finish = (result: { ok: true; partial?: boolean } | { error: ConnectError | "expired" }) => {
     const ok = "ok" in result;
-    const web = `${origin}/dashboard/accounts?${ok ? `connected=${platform}` : `connect_error=${"error" in result ? result.error : "failed"}`}`;
-    const app = `wsool://connect?${ok ? `status=ok&platform=${platform}` : `status=error&code=${"error" in result ? result.error : "failed"}`}`;
+    // partial = linked, but the creator left the stats box unticked (no audience / monthly views).
+    const partial = ok && result.partial ? "&partial=1" : "";
+    const web = `${origin}/dashboard/accounts?${ok ? `connected=${platform}${partial}` : `connect_error=${"error" in result ? result.error : "failed"}`}`;
+    const app = `wsool://connect?${ok ? `status=ok&platform=${platform}${partial}` : `status=error&code=${"error" in result ? result.error : "failed"}`}`;
     const res = NextResponse.redirect(flow?.source === "app" ? app : web);
     res.cookies.delete({ name: NONCE_COOKIE, path: "/api/connect" });
     return res;

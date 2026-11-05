@@ -17,7 +17,9 @@ const URLS = {
   data: fake ? `${fake}/youtube/v3` : "https://www.googleapis.com/youtube/v3",
   analytics: fake ? `${fake}/v2` : "https://youtubeanalytics.googleapis.com/v2",
 };
-const SCOPES = ["https://www.googleapis.com/auth/youtube.readonly", "https://www.googleapis.com/auth/yt-analytics.readonly"];
+const DATA_SCOPE = "https://www.googleapis.com/auth/youtube.readonly";
+const ANALYTICS_SCOPE = "https://www.googleapis.com/auth/yt-analytics.readonly";
+const SCOPES = [DATA_SCOPE, ANALYTICS_SCOPE];
 const TIMEOUT = 10_000;
 
 const client = () => {
@@ -143,6 +145,9 @@ export const youtube: Provider = {
       followers: hidden ? null : Number(ch.statistics?.subscriberCount ?? 0),
     };
   },
+
+  // Google's screen has a box per scope, both unticked: without the channel one there's nothing to link.
+  scopes: { required: [DATA_SCOPE], optional: [ANALYTICS_SCOPE] },
 
   audience,
 

@@ -40,6 +40,11 @@ export type Provider = {
   /** Linked through a bot instead of OAuth (Telegram): "Connect" opens `botLink()`, a webhook finishes the link. */
   bot?: boolean;
   botLink?: () => Promise<string | null>;
+  /**
+   * Scopes the creator can untick on the platform's consent screen (Google shows a box per scope). Missing
+   * `required` = link refused (error "scopes"); missing `optional` = linked without what it reads (`partial`).
+   */
+  scopes?: { required: string[]; optional?: string[] };
   /** Error shown when profile() finds nothing (default no_channel). */
   notFound?: "no_channel" | "no_server" | "no_page";
   audience?: (accessToken: string) => Promise<Audience | null>;

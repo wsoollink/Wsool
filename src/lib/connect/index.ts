@@ -91,7 +91,7 @@ export async function ownAccount(userId: string, accountId: string) {
 
 // ---- saving and updating ----
 
-export type ConnectError = "denied" | "failed" | "no_channel" | "no_server" | "no_page" | "taken" | "gone" | "pro";
+export type ConnectError = "denied" | "failed" | "no_channel" | "no_server" | "no_page" | "taken" | "gone" | "pro" | "scopes";
 
 /**
  * Linking and the daily update are Pro (the trial counts), owner Oct 2026: a page on Free keeps its links and last
@@ -109,7 +109,7 @@ export async function canConnect(userId: string) {
 const verifiedUntil = () => new Date(Date.now() + VERIFICATION_DAYS * 86_400_000);
 
 /** Code from the platform → tokens → profile → link saved, account updated and verified. */
-export async function completeConnection(flow: Flow, code: string, redirectUri: string, state?: string): Promise<{ ok: true } | { error: ConnectError }> {
+export async function completeConnection(flow: Flow, code: string, redirectUri: string, state?: string): Promise<{ ok: true; partial?: boolean } | { error: ConnectError }> {
   const provider = providerFor(flow.platform);
   const account = provider && (await ownAccount(flow.userId, flow.accountId));
   if (!provider || !account || account.platform !== flow.platform) return { error: "gone" };
@@ -117,6 +117,14 @@ export async function completeConnection(flow: Flow, code: string, redirectUri: 
 
   const tokens = await provider.exchange(code, redirectUri, state).catch((err) => { console.warn(`[connect] ${flow.platform} exchange`, (err as Error).message); return null; });
   if (!tokens) return { error: "failed" };
+  // Boxes left unticked on the consent screen (an empty answer = the platform doesn't report scopes: all granted).
+  const granted = new Set(tokens.scopes.split(/[\s,]+/).filter(Boolean));
+  const lacks = (list: string[] = []) => granted.size > 0 && list.some((s) => !granted.has(s));
+  if (lacks(provider.scopes?.required)) {
+    await provider.revoke(tokens.refreshToken);
+    return { error: "scopes" };
+  }
+  const partial = lacks(provider.scopes?.optional);
   const profile = await provider.profile(tokens.accessToken, { url: account.url, externalId: null }).catch((err) => { console.warn(`[connect] ${flow.platform} profile`, (err as Error).message); return null; });
   if (!profile) {
     await provider.revoke(tokens.refreshToken);
@@ -136,7 +144,7 @@ export async function completeConnection(flow: Flow, code: string, redirectUri: 
   ]);
 
   await saveLink(account, flow.platform, profile, { ...tokens, refreshToken: profile.refreshToken ?? tokens.refreshToken }, audience ?? null, views ?? null);
-  return { ok: true };
+  return partial ? { ok: true, partial } : { ok: true };
 }
 
 /** Stores a link (connection + account numbers + verification + audience/views) and refreshes the public page. */

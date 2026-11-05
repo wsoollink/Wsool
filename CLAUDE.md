@@ -1066,6 +1066,9 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   `/api/connect/<platform>/start|callback` (redirects use the request's own origin (`requestOrigin`), so branch deploys work; web: session + nonce cookie; app: 2-minute one-time ticket from
   `POST /api/mobile/v1/connect/<platform>`, returns to `wsool://connect`). Daily `syncConnections()` in the billing cron; revoked
   = status `error` + `connection_lost`. Linked accounts keep platform/handle/followers in `saveAccounts`; `disconnectAccount`.
+  Unticked consent boxes (Google shows one per scope, unticked): `Provider.scopes` = `required` (missing → link refused, error `scopes`)
+  + `optional` (missing → linked with `partial=1`: followers only, warning note); YouTube: channel scope required, Analytics optional.
+  Google approved `youtube.readonly` + branding (Nov 2026); `yt-analytics.readonly` is non-sensitive (no review).
   The Connect button shows only when the platform's keys are set. Privacy policy cites YouTube ToS / Google privacy (Google rule).
 - Owner polish (Oct 2026): Connect buttons in the platform's colour with its logo (`BRAND_COLORS`, web + app). `autoFilled(kind, platform,
   connection)` (`src/config/platforms.ts`, app copy in `mobile/src/lib/platforms.ts`): an active link on a `CONNECT_AUDIENCE` platform

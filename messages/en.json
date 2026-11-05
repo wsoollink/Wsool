@@ -592,10 +592,13 @@
         "unavailable": "Connecting this platform isn't available right now.",
         "pro": "Linking accounts is available on Pro only.",
         "failed": "Something went wrong while connecting. Please try again.",
-        "no_page": "We couldn't find a Facebook Page matching this account. Make sure you picked your Page on Facebook's screen and the username here is the Page's."
+        "no_page": "We couldn't find a Facebook Page matching this account. Make sure you picked your Page on Facebook's screen and the username here is the Page's.",
+        "scopes": "Not linked: tick the YouTube boxes on Google's screen so we can read your channel. Try again with both boxes ticked."
       },
       "igProfessional": "Needs an Instagram professional account (creator or business). If yours is personal, switch for free in Instagram: Settings → Account type and tools → Switch to professional account.",
-      "fbPage": "Links a Facebook Page, not a personal profile. On Facebook's screen pick your Page and keep the permissions on. Facebook doesn't share audience data, so fill it from a stats screenshot."
+      "fbPage": "Links a Facebook Page, not a personal profile. On Facebook's screen pick your Page and keep the permissions on. Facebook doesn't share audience data, so fill it from a stats screenshot.",
+      "partial": "{platform} is linked with followers only: the “YouTube Analytics” box on Google's screen was left unticked, so audience and monthly views won't come in. To add them, unlink and link again with both boxes ticked.",
+      "ytBoxes": "On Google's screen tick both boxes (your account + Analytics) before “Continue”."
     },
     "audienceNotFromPlatform": "{platform} doesn't share audience data when linked, so you still fill it in: tap “Fill from a stats screenshot” and upload a screenshot of your account's stats."
   },

@@ -125,7 +125,7 @@ export default function Accounts() {
       const res = await WebBrowser.openAuthSessionAsync(url, "wsool://connect");
       if (res.type !== "success") return mark(`conn:${id}`, "");
       const q = new URL(res.url.replace(/^wsool:\/\//, "https://app/")).searchParams;
-      mark(`conn:${id}`, q.get("status") === "ok" ? "done" : `error:${q.get("code") ?? "failed"}`);
+      mark(`conn:${id}`, q.get("status") === "ok" ? (q.get("partial") === "1" ? "partial" : "done") : `error:${q.get("code") ?? "failed"}`);
       reload();
     } catch { mark(`conn:${id}`, "error:failed"); }
   };
@@ -161,6 +161,7 @@ export default function Accounts() {
     const name = PLATFORM_NAMES[a.platform];
     const s = a.id ? state[`conn:${a.id}`] : undefined;
     const note = s === "done" ? <T size={13} tone="good" accessibilityLiveRegion="polite">{t("accounts.connect.done", { platform: name })}</T>
+      : s === "partial" ? <T size={13} tone="warn" accessibilityLiveRegion="polite">{t("accounts.connect.partial", { platform: name })}</T>
       : s?.startsWith("error:") ? <T size={13} tone="bad" accessibilityLiveRegion="polite">{t(`accounts.connect.errors.${s.slice(6)}`)}</T> : null;
     const pro = data?.connectPro !== false;
     if (conn && saved?.platform === a.platform) {
@@ -185,6 +186,7 @@ export default function Accounts() {
         {!pro ? <T size={12.5} tone="blue">{t("accounts.connect.proOnly")}</T> : <>
         {a.platform === "instagram" && a.id && saved?.platform === a.platform ? <T size={12.5} tone="muted">{t("accounts.connect.igProfessional")}</T> : null}
         {a.platform === "facebook" && a.id && saved?.platform === a.platform ? <T size={12.5} tone="muted">{t("accounts.connect.fbPage")}</T> : null}
+        {a.platform === "youtube" && a.id && saved?.platform === a.platform ? <T size={12.5} weight="bold">{t("accounts.connect.ytBoxes")}</T> : null}
         <T size={12.5} tone="muted">{a.id && saved?.platform === a.platform ? t(CONNECT_AUDIENCE.includes(a.platform) ? "accounts.connect.why" : "accounts.connect.whyFollowers") : t("accounts.connect.saveFirst")}</T>
         {a.id && saved?.platform === a.platform
           ? brandButton(a, t("accounts.connect.button", { platform: name }), s === "busy")

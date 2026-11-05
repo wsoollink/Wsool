@@ -12,7 +12,7 @@ import { normalizeUsername } from "@/config/usernames";
 import { nextUsernameChange, USERNAME_REDIRECT_DAYS, usernameError, type UsernameError } from "@/lib/username";
 import { licensesSchema, profileSchema, tagsSchema, TRANSLATION_FIELDS } from "@/lib/validation/profile";
 
-export type SaveState = { ok?: boolean; errors?: Record<string, string>; error?: "failed" | "needs_name" };
+export type SaveState = { ok?: boolean; errors?: Record<string, string>; error?: "failed" | "needs_name" | "draft" };
 
 /** Saves languages and the texts for each language of the signed-in creator's page. */
 export async function saveProfile(_prev: SaveState, formData: FormData): Promise<SaveState> {
@@ -57,6 +57,8 @@ export async function saveProfile(_prev: SaveState, formData: FormData): Promise
 export async function setPublished(publish: boolean): Promise<SaveState> {
   const { page } = await requireCreator("content");
   if (publish) {
+    // A page an agency prepared stays hidden until the creator claims it (they publish it themselves).
+    if ((await db.user.findUnique({ where: { id: page.userId }, select: { placeholder: true } }))?.placeholder) return { error: "draft" };
     const tr = await db.pageTranslation.findUnique({
       where: { pageId_lang: { pageId: page.id, lang: page.primaryLang } },
       select: { fullName: true },

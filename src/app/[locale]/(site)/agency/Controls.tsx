@@ -7,6 +7,7 @@ import { Send, Settings2, UserPlus, X } from "lucide-react";
 import { buttonClasses } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Switch } from "@/components/ui/Switch";
+import { createDraftPage, deleteDraftPage, resendDraftEmail } from "./draft-actions";
 import { cancelInvite, inviteCreatorAction, inviteMember, manageCreator, removeCreator, removeMember, setAgencyNewsletter } from "./actions";
 
 const field = "h-11 w-full min-w-0 rounded-[10px] border border-navy/15 bg-card px-3 text-[15px] outline-none shadow-card focus:border-blue focus:ring-3 focus:ring-blue/15";
@@ -160,5 +161,69 @@ export function AgencyNewsletter({ initial }: { initial: boolean }) {
       />
       <p role="status" className="text-sm text-good">{saved ? t("saved") : ""}</p>
     </Card>
+  );
+}
+
+/** "Prepare a page for a new creator": username, name, the creator's email and the page language. */
+export function NewCreatorPage() {
+  const t = useTranslations("AgencyDrafts");
+  const router = useRouter();
+  const [f, setF] = useState({ username: "", name: "", email: "", lang: "ar" as "ar" | "en" });
+  const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
+  const [pending, start] = useTransition();
+  const set = (k: keyof typeof f) => (e: { target: { value: string } }) => { setF({ ...f, [k]: e.target.value }); setMsg(null); };
+  const submit = (e: React.FormEvent) => {
+    e.preventDefault();
+    start(async () => {
+      const r = await createDraftPage(f);
+      if (r.ok) { setMsg({ ok: true, text: t("created", { email: f.email }) }); setF({ username: "", name: "", email: "", lang: f.lang }); router.refresh(); }
+      else setMsg({ ok: false, text: t(`errors.${r.error ?? "invalid"}`) });
+    });
+  };
+  return (
+    <form onSubmit={submit} className="flex flex-col gap-3">
+      <p className="text-sm text-muted">{t("hint")}</p>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <label className="flex flex-col gap-1.5 text-[13px] font-medium">{t("name")}
+          <input value={f.name} onChange={set("name")} className={field} maxLength={80} required />
+        </label>
+        <label className="flex flex-col gap-1.5 text-[13px] font-medium">{t("username")}
+          <span className="flex items-center gap-1" dir="ltr">
+            <span className="text-sm text-muted">wsool.link/</span>
+            <input value={f.username} onChange={(e) => setF({ ...f, username: e.target.value.toLowerCase() })} className={field} maxLength={20} autoCapitalize="none" autoCorrect="off" spellCheck={false} required />
+          </span>
+        </label>
+        <label className="flex flex-col gap-1.5 text-[13px] font-medium">{t("email")}
+          <input type="email" dir="ltr" value={f.email} onChange={set("email")} className={`${field} rtl:text-end`} maxLength={254} required />
+        </label>
+        <label className="flex flex-col gap-1.5 text-[13px] font-medium">{t("lang")}
+          <select value={f.lang} onChange={set("lang")} className={field}>
+            <option value="ar">العربية</option>
+            <option value="en">English</option>
+          </select>
+        </label>
+      </div>
+      <button type="submit" disabled={pending} className={buttonClasses("primary", "self-start")}>
+        <UserPlus aria-hidden="true" size={15} /> {pending ? t("creating") : t("create")}
+      </button>
+      {msg && <p role="status" className={`text-sm ${msg.ok ? "text-good" : "text-bad"}`}>{msg.text}</p>}
+    </form>
+  );
+}
+
+/** Resend / delete buttons on a waiting draft page. */
+export function DraftActions({ linkId, name }: { linkId: string; name: string }) {
+  const t = useTranslations("AgencyDrafts");
+  const router = useRouter();
+  const [msg, setMsg] = useState("");
+  const [pending, start] = useTransition();
+  return (
+    <span className="flex flex-wrap items-center gap-1">
+      <button type="button" disabled={pending} onClick={() => start(async () => setMsg((await resendDraftEmail(linkId)).ok ? t("resent") : t("resendFailed")))}
+        className="inline-flex min-h-10 items-center gap-1 rounded-full px-3 text-[13px] font-bold hover:bg-hover"><Send aria-hidden="true" size={14} />{t("resend")}</button>
+      <button type="button" disabled={pending} onClick={() => { if (window.confirm(t("confirmDelete", { name }))) start(async () => { await deleteDraftPage(linkId); router.refresh(); }); }}
+        className="inline-flex min-h-10 items-center gap-1 rounded-full px-3 text-[13px] font-bold text-bad hover:bg-bad/5"><X aria-hidden="true" size={14} />{t("delete")}</button>
+      {msg && <span role="status" className="text-xs text-muted">{msg}</span>}
+    </span>
   );
 }

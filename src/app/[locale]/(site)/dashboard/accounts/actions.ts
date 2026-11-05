@@ -23,7 +23,7 @@ export type AccountsResult = { ok?: boolean; error?: "failed"; accounts?: { id: 
  * proves the new numbers.
  */
 export async function saveAccounts(items: AccountInput[]): Promise<AccountsResult> {
-  const { page } = await requireCreator();
+  const { page } = await requireCreator("accounts");
   const parsed = accountsSchema.safeParse(items);
   if (!parsed.success) return { error: "failed" };
 
@@ -108,7 +108,7 @@ function currentMonth() {
  * shows) and the per-account numbers. All empty = the box is hidden.
  */
 export async function saveMonthlyViews(input: MonthlyViewsInput): Promise<{ ok?: boolean; error?: "failed" }> {
-  const { page } = await requireCreator();
+  const { page } = await requireCreator("accounts");
   const parsed = monthlyViewsSchema.safeParse(input);
   if (!parsed.success) return { error: "failed" };
   // Ownership check: only the creator's own accounts count.
@@ -139,7 +139,7 @@ export async function saveMonthlyViews(input: MonthlyViewsInput): Promise<{ ok?:
 
 /** Saves the audience breakdown of one of the creator's own accounts. */
 export async function saveAudience(accountId: string, input: AudienceInput): Promise<{ ok?: boolean; error?: "failed" | "over_100" }> {
-  const { page } = await requireCreator();
+  const { page } = await requireCreator("accounts");
   const parsed = audienceSchema.safeParse(input);
   if (!parsed.success) {
     return { error: parsed.error.issues.some((i) => i.message === "over_100") ? "over_100" : "failed" };
@@ -168,7 +168,7 @@ export type AudienceReadResult = { ok: true; audience: AudienceFill } | { ok?: f
  * deleted right after reading.
  */
 export async function readAudienceShot(accountId: string, path: string): Promise<AudienceReadResult> {
-  const { user, page } = await requireCreator();
+  const { user, page } = await requireCreator("accounts");
   const owned = typeof path === "string" && (await isOwnUploadedFile(user.id, "audienceShot", path));
   try {
     if (!owned) return { error: "failed" };

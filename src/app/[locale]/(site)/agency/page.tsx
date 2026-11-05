@@ -21,7 +21,7 @@ import { notificationText } from "@/lib/notify";
 import { initials } from "@/lib/initials";
 import { signOut } from "../login/actions";
 import { Directory } from "./Directory";
-import { AddMember, AgencyNewsletter, ConfirmAction, InviteCreator, ManageButton } from "./Controls";
+import { AddMember, AgencyNewsletter, ConfirmAction, DraftActions, InviteCreator, ManageButton, NewCreatorPage } from "./Controls";
 import { onList } from "@/lib/newsletter";
 import { PageEditor, type EditorInitial } from "./PageEditor";
 import { AgencyAutoRenew, BillingPlans, type BillingPlanCard } from "./Billing";
@@ -44,7 +44,7 @@ async function BillingTab({ agencyId, lang, payment }: { agencyId: string; lang:
       where: { id: agencyId },
       select: { name: true, kind: true, plan: true, planCycle: true, planUntil: true, planCurrency: true, planAutoRenew: true, paymentToken: true, paymentMethodLabel: true, planRetryAt: true },
     }),
-    db.agencyLink.count({ where: { agencyId, status: { in: ["active", "pending"] } } }),
+    db.agencyLink.count({ where: { agencyId, status: { in: ["active", "pending", "draft"] } } }),
     db.invoice.findMany({ where: { agencyId, status: { in: ["paid", "refunded", "failed"] } }, orderBy: { createdAt: "desc" }, take: 24 }),
     getAdmin(),
   ]);
@@ -173,6 +173,7 @@ async function AgencyDashboard({ lang, searchParams }: { lang: Locale; searchPar
   const m = await getMembership(me);
   if (!m) notFound();
   const t = await getTranslations("AgencyApp");
+  const td = await getTranslations("AgencyDrafts");
   const sp = await searchParams;
   const brand = m.agency.kind === "brand";
   // Brand accounts only search the directory; agencies also manage creators.
@@ -186,7 +187,7 @@ async function AgencyDashboard({ lang, searchParams }: { lang: Locale; searchPar
 
   const [links, members, newsletterOn, ownPage, updates] = await Promise.all([
     tab !== "creators" ? Promise.resolve([]) : db.agencyLink.findMany({
-      where: { agencyId: m.agency.id, status: { in: ["active", "pending"] } },
+      where: { agencyId: m.agency.id, status: { in: ["active", "pending", "draft"] } },
       orderBy: { invitedAt: "desc" },
       include: {
         page: {
@@ -202,10 +203,12 @@ async function AgencyDashboard({ lang, searchParams }: { lang: Locale; searchPar
     tab === "team" ? onList(m.member.email, "agencies") : Promise.resolve(true),
     db.page.findUnique({ where: { userId: me.id }, select: { username: true } }),
     // Agency notifications (a creator accepted / unlinked): members without a creator page have no bell, so they show here.
-    tab === "creators" ? db.notification.findMany({ where: { userId: me.id, type: { in: ["agency_accepted", "agency_ended"] } }, orderBy: { createdAt: "desc" }, take: 5 }) : Promise.resolve([]),
+    tab === "creators" ? db.notification.findMany({ where: { userId: me.id, type: { in: ["agency_accepted", "agency_ended", "agency_draft_claimed", "agency_draft_declined", "agency_draft_expired"] } }, orderBy: { createdAt: "desc" }, take: 5 }) : Promise.resolve([]),
   ]);
   const active = links.filter((l) => l.status === "active");
   const pending = links.filter((l) => l.status === "pending");
+  // Pages prepared for new creators, waiting to be claimed (src/lib/agency-drafts.ts).
+  const drafts = links.filter((l) => l.status === "draft");
   const nameOf = (p: (typeof links)[number]["page"]) => p.translations.find((x) => x.lang === p.primaryLang)?.fullName || p.translations[0]?.fullName || p.username;
   const followersOf = (p: (typeof links)[number]["page"]) => p.socialAccounts.reduce((s, a) => s + Number(a.followers ?? 0), 0);
   const total = active.reduce((s, l) => s + followersOf(l.page), 0);
@@ -331,7 +334,30 @@ async function AgencyDashboard({ lang, searchParams }: { lang: Locale; searchPar
             </Panel>
           )}
 
+          {drafts.length > 0 && (
+            <Panel title={td("waitingTitle")} flush>
+              <p className="px-5 pt-4 text-sm text-muted">{td("waitingHint")}</p>
+              <ul className="divide-y divide-line-soft">
+                {drafts.map((l) => {
+                  const days = Math.max(0, agencyDaysLeft(l.draftExpiresAt) ?? 0);
+                  return (
+                    <li key={l.id} className="flex flex-wrap items-center gap-3 px-5 py-3">
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate font-bold">{nameOf(l.page)}</p>
+                        <p className="text-xs text-muted" dir="ltr"><span className="rtl:float-right">wsool.link/{l.page.username} · {l.draftEmail}</span></p>
+                      </div>
+                      <Pill tone={days <= 7 ? "warn" : "blue"}>{td("daysLeft", { n: days })}</Pill>
+                      {canEdit && <ManageButton linkId={l.id} />}
+                      {canInvite && <DraftActions linkId={l.id} name={nameOf(l.page)} />}
+                    </li>
+                  );
+                })}
+              </ul>
+            </Panel>
+          )}
+
           {canInvite ? <Panel title={t("inviteTitle")}><InviteCreator /></Panel> : <p className="text-sm text-muted">{t("viewerNote")}</p>}
+          {canInvite && !brand && <Panel title={td("newTitle")}><NewCreatorPage /></Panel>}
 
           {updates.length > 0 && (
             <Panel title={t("updatesTitle")} flush>

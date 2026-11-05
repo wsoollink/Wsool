@@ -53,6 +53,10 @@ export const NOTIFICATIONS = {
   agency_refund_issued: { href: "/agency?tab=billing", reminder: false, billing: true },
   agency_plan_expired: { href: "/agency?tab=billing", reminder: false, billing: true },
   agency_links_ended: { href: "/agency?tab=billing", reminder: false },
+  // Pages prepared by an agency for new creators (src/lib/agency-drafts.ts).
+  agency_draft_claimed: { href: "/agency", reminder: false },
+  agency_draft_declined: { href: "/agency", reminder: false },
+  agency_draft_expired: { href: "/agency", reminder: false },
 } as const;
 export type NotificationType = keyof typeof NOTIFICATIONS;
 
@@ -123,6 +127,8 @@ export async function notify(userId: string, type: NotificationType, data: Data 
       throw err;
     }
     if (NOTIFICATIONS[type].reminder && user.notificationSettings?.emailReminders === false) return;
+    // Placeholder accounts (pages prepared by an agency) have no real inbox.
+    if (user.email.endsWith("@wsool.invalid")) return;
     const lang = (user.page?.primaryLang ?? "ar") as Locale;
     // Mobile app: the same notification as a phone push (no-op without registered devices).
     const text = notificationText(type, data, lang);
@@ -160,6 +166,17 @@ export async function sendAgencyTeamInvite(email: string, agency: string, lang: 
   const content = renderEmail({
     lang, preheader: t("body", values), title: t("title", values), paragraphs: t("body", values).split("\n"),
     cta: { label: t("cta"), url: `${siteOrigin()}/login` }, footer: t("footer"),
+  });
+  await sendEmail({ to: email, subject: t("subject", values), ...content });
+}
+
+/** "An agency prepared your Wsool page": sent to the creator's email; signing in with it shows the page to claim. */
+export async function sendAgencyDraftInvite(email: string, v: { agency: string; username: string; name: string; days: number }, lang: Locale = "ar") {
+  const t = createTranslator({ locale: toIntlLocale(lang), messages: MESSAGES[lang], namespace: "Notify.agency_draft_invite" });
+  const values = { ...v, email, link: `wsool.link/${v.username}` };
+  const content = renderEmail({
+    lang, preheader: t("title", values), title: t("title", values), paragraphs: t("body", values).split("\n"),
+    cta: { label: t("cta"), url: `${siteOrigin()}/login?next=${encodeURIComponent("/onboarding")}` }, footer: t("footer", values),
   });
   await sendEmail({ to: email, subject: t("subject", values), ...content });
 }

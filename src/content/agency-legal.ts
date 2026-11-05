@@ -29,6 +29,7 @@ export const AGENCY_LEGAL_TEXT: Record<"ar" | "en", Record<LegalKind, LegalDoc>>
         { h: "3. إدارة صفحات الصناع (للوكالات)" },
         { ul: [
           "لا ترتبط الوكالة بصفحة صانع إلا بدعوة يقبلها الصانع بنفسه، وبالصلاحيات التي يختارها (المحتوى، أسعار الإعلانات، بيانات التواصل).",
+          "يمكن للوكالة تجهيز صفحة لصانع ليس لديه حساب، ببريده الإلكتروني وبموافقته المسبقة. تبقى الصفحة مخفية حتى يستلمها الصانع بنفسه بتسجيل الدخول بذلك البريد، فتصبح ملكه ويختار صلاحيات الوكالة، وتُحذف تلقائياً إن لم يستلمها خلال 30 يوماً.",
           "تبقى الصفحة وبياناتها ملكاً للصانع. لا تستطيع الوكالة تغيير اسم المستخدم أو الاشتراك أو التوثيق أو حذف الحساب.",
           "يرى الصانع سجلاً بكل تعديل تقوم به الوكالة، ويستطيع تغيير الصلاحيات أو فك الارتباط في أي وقت.",
           "الوكالة مسؤولة عن صحة ما تنشره في صفحات الصناع، ويُمنع نشر معلومات مضللة أو أرقام غير صحيحة أو أي محتوى دون موافقة الصانع.",
@@ -74,6 +75,7 @@ export const AGENCY_LEGAL_TEXT: Record<"ar" | "en", Record<LegalKind, LegalDoc>>
           ["النوع", "الأمثلة", "المصدر"],
           ["طلب الانضمام", "اسمك، اسم الوكالة أو الشركة، الإيميل، رقم الجوال، الملاحظات", "نموذج طلب الانضمام"],
           ["الحساب والفريق", "إيميل كل عضو ودوره، تاريخ الانضمام", "صاحب الحساب"],
+          ["صفحات مجهّزة لصناع جدد", "اسم الصانع وإيميله وما تضيفه الوكالة في صفحته قبل أن يستلمها", "الوكالة (تُحذف إن لم يستلمها خلال 30 يوماً)"],
           ["سجل النشاط", "أي عضو عدّل أي قسم في صفحة أي صانع ومتى", "تلقائياً"],
           ["استخدام الدليل", "عدد عمليات البحث اليومية لكل عضو (لتطبيق الحد اليومي)", "تلقائياً"],
           ["بيانات تقنية", "ملفات ضرورية لتسجيل الدخول واللغة ووضع إدارة صفحة الصانع", "تلقائياً"],
@@ -154,6 +156,7 @@ export const AGENCY_LEGAL_TEXT: Record<"ar" | "en", Record<LegalKind, LegalDoc>>
         { h: "3. Managing creators' pages (agencies)" },
         { ul: [
           "An agency is linked to a creator's page only through an invitation the creator accepts, with the permissions the creator chooses (content, ad rates, contact details).",
+          "An agency may prepare a page for a creator who has no account, with their email and prior consent. The page stays hidden until the creator claims it by signing in with that email; it then becomes theirs and they choose the agency's permissions. Unclaimed pages are deleted automatically after 30 days.",
           "The page and its data stay the creator's. An agency can't change the username, subscription or verification, or delete the account.",
           "The creator sees a log of every change the agency makes and can change permissions or unlink at any time.",
           "The agency is responsible for what it publishes on creators' pages; misleading information, false numbers or anything the creator didn't agree to is not allowed.",
@@ -199,6 +202,7 @@ export const AGENCY_LEGAL_TEXT: Record<"ar" | "en", Record<LegalKind, LegalDoc>>
           ["Type", "Examples", "Source"],
           ["Join request", "Your name, agency or brand name, email, phone number, notes", "The join form"],
           ["Account and team", "Each member's email and role, join date", "The account owner"],
+          ["Pages prepared for new creators", "The creator's name and email and what the agency adds to the page before it's claimed", "The agency (deleted if not claimed within 30 days)"],
           ["Activity log", "Which member changed which section of which creator's page, and when", "Automatic"],
           ["Directory use", "Daily number of searches per member (for the daily limit)", "Automatic"],
           ["Technical data", "Essential cookies for login, language and managing a creator's page", "Automatic"],

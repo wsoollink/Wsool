@@ -175,7 +175,8 @@
     },
     "teamTitle": "You're on the {agency} team",
     "teamBody": "This creates a personal creator page for you, separate from the agency. You don't need it if you only work for the agency.",
-    "teamOpen": "Open the agency dashboard"
+    "teamOpen": "Open the agency dashboard",
+    "orOwn": "Or pick a new name for a new page:"
   },
   "UsernameCard": {
     "title": "Your page link",
@@ -409,7 +410,8 @@
       "required": "This field is required.",
       "invalid": "This value isn't valid.",
       "failed": "Something went wrong. Please try again.",
-      "needs_name": "Add your name and save before publishing."
+      "needs_name": "Add your name and save before publishing.",
+      "draft": "This page was prepared by the agency; the creator publishes it after claiming it."
     },
     "specialtyHintEn": "e.g. Fashion & beauty creator",
     "photo": "Main photo",
@@ -2226,6 +2228,31 @@
       "title": "Creators unlinked",
       "body": "Your agency plan ended {days} days ago without renewal, so {count} creators were unlinked. You can invite them again after you renew.",
       "cta": "Open subscription"
+    },
+    "agency_draft_invite": {
+      "subject": "{agency} set up your Wsool page",
+      "title": "Your page is ready to claim",
+      "body": "Your agency “{agency}” set up your Wsool media kit at {link}.\nSign in with this email ({email}) to claim it: it becomes yours, you choose what the agency can edit, and you publish it when you're ready.\nIt's kept for you for {days} days.",
+      "cta": "Claim my page",
+      "footer": "If you don't know this agency, ignore this email and the page is deleted automatically."
+    },
+    "agency_draft_claimed": {
+      "subject": "{creator} claimed their page",
+      "title": "Page claimed",
+      "body": "{creator} claimed the page you prepared and is now linked to your agency.",
+      "cta": "Open agency dashboard"
+    },
+    "agency_draft_declined": {
+      "subject": "{creator} declined the page",
+      "title": "Page declined",
+      "body": "{creator} declined the page you prepared, so it was deleted.",
+      "cta": "Open agency dashboard"
+    },
+    "agency_draft_expired": {
+      "subject": "{creator}'s page was deleted",
+      "title": "Claim period ended",
+      "body": "{creator}'s page wasn't claimed within {days} days, so it was deleted. You can prepare a new one.",
+      "cta": "Open agency dashboard"
     }
   },
   "Notifications": {
@@ -3376,5 +3403,53 @@
     "view": "View",
     "invoiceLine": "Wsool agency plan {plan} ({cycle})",
     "backToBilling": "← Subscription"
+  },
+  "AgencyDrafts": {
+    "newTitle": "Prepare a page for a new creator",
+    "hint": "For a creator who isn't on Wsool yet: set up and fill their page (photo, bio, accounts, rates, work). It stays hidden until they claim it with their email; they get an email and have 30 days.",
+    "name": "Creator's name",
+    "username": "Username (link)",
+    "email": "Creator's email",
+    "lang": "Page language",
+    "create": "Prepare the page",
+    "creating": "Preparing…",
+    "created": "✓ Page prepared and an email sent to {email}. Press “Manage” on it below to fill it in.",
+    "errors": {
+      "expired": "Your agency plan ended. Renew it to prepare new pages.",
+      "limit": "You've reached your plan's creator limit.",
+      "has_page": "This email already has a Wsool page: invite it by username instead.",
+      "already": "You already prepared a page for this email; it's waiting to be claimed.",
+      "invalid": "Check the name, email and username.",
+      "failed": "Something went wrong. Try again.",
+      "taken": "That username is taken.",
+      "reserved": "That username is reserved.",
+      "length": "Usernames are 3 to 20 characters.",
+      "characters": "Usernames use English letters, digits, dot and _ only.",
+      "dots": "A username can't start or end with a dot or have two dots in a row.",
+      "extension": "A username can't end like a file extension.",
+      "rate": "You prepared many pages today. Try tomorrow."
+    },
+    "waitingTitle": "Pages waiting to be claimed",
+    "waitingHint": "Pages you prepared for new creators. Hidden until their owner claims them with their email; deleted if not claimed in time.",
+    "daysLeft": "{n} days left",
+    "resend": "Resend",
+    "resent": "✓ Email sent again",
+    "resendFailed": "Not sent (3 a day at most)",
+    "delete": "Delete",
+    "confirmDelete": "Delete {name}'s page? This can't be undone.",
+    "claim": {
+      "title": "“{agency}” prepared a page for you",
+      "body": "Your agency prepared a page for {name}. Claim it and it's fully yours; publish it whenever you're ready. It's deleted in {days} days if not claimed.",
+      "perms": "What can the agency edit after you claim it?",
+      "note": "The page is yours. You can change permissions or unlink any time from the Agency section.",
+      "claim": "Claim my page",
+      "claiming": "Claiming…",
+      "decline": "No thanks",
+      "confirmDecline": "Decline the page “{agency}” prepared? It will be deleted.",
+      "errors": {
+        "invalid": "This page expired or was deleted.",
+        "has_page": "You already have a Wsool page."
+      }
+    }
   }
 }

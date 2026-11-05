@@ -129,7 +129,7 @@ export async function syncLists() {
     FROM users u
     JOIN pages p ON p.user_id = u.id
     LEFT JOIN notification_settings ns ON ns.user_id = u.id
-    WHERE p.deleted_at IS NULL AND u.suspended_at IS NULL
+    WHERE p.deleted_at IS NULL AND u.suspended_at IS NULL AND NOT u.placeholder
     ON CONFLICT (email) DO UPDATE SET
       creators = EXCLUDED.creators,
       status = CASE WHEN EXCLUDED.creators THEN 'confirmed'::"NewsletterStatus" ELSE newsletter_subscribers.status END,

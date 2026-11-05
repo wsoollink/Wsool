@@ -951,7 +951,7 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
 
 ### Marketing agencies (owner, Nov 2026 — phase 1 built)
 - Owner decisions: the agency plan covers Pro for linked creators; unlinking leaves 14 days of Pro (`UNLINK_GRACE_DAYS`); pages an
-  agency creates for new creators stay hidden until claimed (phase 2, not built); the agency may change the contact details only
+  agency creates for new creators stay hidden until claimed (phase 2, built: see "Pages prepared for new creators"); the agency may change the contact details only
   with the creator's "contact" permission. The page always belongs to the creator. Landing page: `/agencies` (see Launch pieces).
 - Tables (migration `*_agencies`, RLS on, no policies = server only): `agencies` (name, status active|inactive), `agency_members`
   (email lowercase, user linked on first sign-in like admin members, role owner|manager|editor|viewer; one agency per email),
@@ -979,6 +979,20 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   in `src/lib/mobile/sections.ts`, the same server actions through the rpc route; agency pushes open it) and «إعدادات الإيميل»
   (`account/emails.tsx`, loader `emails`, `saveEmailSettings` = reminders + the creators newsletter list). Terms section 2 + privacy
   "who we share it with" describe agencies.
+
+### Pages prepared for new creators (owner, Nov 2026, agencies phase 2)
+- Agency owners/managers prepare a hidden page for a creator who isn't on Wsool (`/agency` Creators tab, `NewCreatorPage` → `createDraftPage`
+  in `agency/draft-actions.ts`, 30/day per agency): username (same rules as a claim), name, the creator's email, page language. Logic
+  `src/lib/agency-drafts.ts`: the page sits on a **placeholder account** (`users.placeholder`, email `draft-<id>@wsool.invalid`: `notify` never
+  emails it, `syncLists` skips it, admin/finance user counts exclude it) with agency-covered Pro, and an `agency_links` row with status
+  **`draft`** (all permissions, `draft_email`, `draft_expires_at` = now + `DRAFT_DAYS` 30). Counts toward the plan limit. "Manage" works on
+  drafts like active links, plus scope `accounts` (Accounts & numbers) which `actingFor` allows only for drafts; platform linking (OAuth) is
+  hidden while acting; `setPublished` refuses placeholder pages (`draft`: the creator publishes). The creator gets `sendAgencyDraftInvite`
+  (login link → `/onboarding`); signing in with that email shows `PreparedPage` cards (`draftsFor`) to claim with chosen permissions
+  (`claimDraft`: page moves to their account, link → active, placeholder deleted, agency Pro applied) or decline (deleted). Unclaimed
+  drafts are deleted by the hourly job (`expireDrafts`). Agency side: "Pages waiting to be claimed" list (days left, Manage, resend 3/day,
+  delete). Notifications `agency_draft_claimed` / `_declined` / `_expired` to owners + managers. Agency terms §3 + privacy table describe it.
+  Claiming is web-only (the app's onboarding sends people to pick a name).
 
 ### Agency public page (owner, Nov 2026)
 - `wsool.link/<slug>` for agencies (kind `agency`; brand accounts have none): the slug shares the username namespace (`slugError()` in

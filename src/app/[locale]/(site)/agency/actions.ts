@@ -37,15 +37,16 @@ export async function removeCreator(linkId: string) {
 }
 
 /** Sections an agency member may open for a creator: drives the dashboard menu (the server checks every call anyway). */
-function navFor(p: { canContent: boolean; canRates: boolean; canContact: boolean }) {
-  return ["home", ...(p.canContent ? ["edit", "work", "links", "coupons"] : []), ...(p.canRates ? ["rates"] : []), ...(p.canContact ? ["contact"] : []), ...(p.canContent ? ["appearance"] : []), "analytics"].join(",");
+function navFor(p: { canContent: boolean; canRates: boolean; canContact: boolean; status?: string }) {
+  // A draft page (prepared for a new creator) also opens Accounts & numbers.
+  return ["home", ...(p.canContent ? ["edit"] : []), ...(p.status === "draft" ? ["accounts"] : []), ...(p.canContent ? ["work", "links", "coupons"] : []), ...(p.canRates ? ["rates"] : []), ...(p.canContact ? ["contact"] : []), ...(p.canContent ? ["appearance"] : []), "analytics"].join(",");
 }
 
 /** "Manage": open the creator's dashboard in acting mode (editors and up). */
 export async function manageCreator(linkId: string): Promise<{ url?: string; error?: string }> {
   const m = await requireAgency("editor");
   if (!z.uuid().safeParse(linkId).success) return { error: "invalid" };
-  const link = await db.agencyLink.findFirst({ where: { id: linkId, agencyId: m.agency.id, status: "active" } });
+  const link = await db.agencyLink.findFirst({ where: { id: linkId, agencyId: m.agency.id, status: { in: ["active", "draft"] } } });
   if (!link) return { error: "invalid" };
   const jar = await cookies();
   const opts = { path: "/", sameSite: "lax" as const, secure: process.env.NODE_ENV === "production", maxAge: 60 * 60 * 12 };

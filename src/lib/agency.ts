@@ -26,7 +26,8 @@ export const UNLINK_GRACE_DAYS = 14;
 /** An agency-covered Pro plan "ends" here (it never renews; unlinking moves the end to now + 14 days). */
 const AGENCY_PRO_END = new Date("2099-12-31T00:00:00Z");
 
-export type ActScope = "content" | "rates" | "contact" | "view";
+/** `accounts` = Accounts & numbers: only while the page is a draft the agency is preparing (afterwards it's the creator's alone). */
+export type ActScope = "content" | "rates" | "contact" | "view" | "accounts";
 export type Perms = { content: boolean; rates: boolean; contact: boolean };
 
 const RANK: Record<AgencyRole, number> = { viewer: 0, editor: 1, manager: 2, owner: 3 };
@@ -104,7 +105,7 @@ export async function inviteCreator(m: { agency: { id: string; name: string; pla
   if (agencyPlanExpired(m.agency.planUntil)) return { error: "expired" };
   // The plan's creator limit counts linked and invited creators.
   const limit = AGENCY_CREATOR_LIMIT[m.agency.plan];
-  if (limit !== null && (await db.agencyLink.count({ where: { agencyId: m.agency.id, status: { in: ["active", "pending"] } } })) >= limit) return { error: "limit" };
+  if (limit !== null && (await db.agencyLink.count({ where: { agencyId: m.agency.id, status: { in: ["active", "pending", "draft"] } } })) >= limit) return { error: "limit" };
   const q = query.trim().toLowerCase().replace(/^@/, "").replace(/^(https?:\/\/)?(www\.)?wsool\.link\//, "");
   const page = await db.page.findFirst({
     where: { deletedAt: null, ...(q.includes("@") ? { user: { email: q } } : { username: q }) },
@@ -183,7 +184,7 @@ export async function deactivateAgency(agencyId: string) {
 }
 
 /** Path segment → section name stored in the activity log. */
-const SECTIONS = ["edit", "work", "links", "coupons", "appearance", "rates", "contact"] as const;
+const SECTIONS = ["edit", "accounts", "work", "links", "coupons", "appearance", "rates", "contact"] as const;
 
 /**
  * Acting mode check used by requireCreator(). Returns the creator's page when the signed-in agency member may act
@@ -193,7 +194,8 @@ export async function actingFor(user: CurrentUser, scope?: ActScope) {
   const linkId = (await cookies()).get(ACT_COOKIE)?.value;
   if (!linkId || !/^[0-9a-f-]{36}$/.test(linkId)) return null;
   const link = await db.agencyLink.findFirst({
-    where: { id: linkId, status: "active", agency: { status: "active", members: { some: { userId: user.id, user: { suspendedAt: null } } } } },
+    // A draft = a page the agency prepared for a new creator (src/lib/agency-drafts.ts): editable until it's claimed.
+    where: { id: linkId, status: { in: ["active", "draft"] }, agency: { status: "active", members: { some: { userId: user.id, user: { suspendedAt: null } } } } },
     include: {
       agency: { select: { id: true, name: true, members: { where: { userId: user.id }, select: { role: true } } } },
       page: { include: { user: { select: { email: true, suspendedAt: true } } } },
@@ -202,13 +204,14 @@ export async function actingFor(user: CurrentUser, scope?: ActScope) {
   if (!link || link.page.user.suspendedAt || link.page.deletedAt) return "ended" as const;
   const role = link.agency.members[0]?.role ?? "viewer";
   const perms: Perms = { content: link.canContent, rates: link.canRates, contact: link.canContact };
-  const allowed = scope === "view" || (!!scope && perms[scope] && roleAtLeast(role, "editor"));
+  const allowed = scope === "view"
+    || (scope === "accounts" ? link.status === "draft" && roleAtLeast(role, "editor") : !!scope && perms[scope] && roleAtLeast(role, "editor"));
   if (!allowed) return "denied" as const;
   // A server action (not a page render) = a change: log which section it came from.
   const h = await headers();
   if (scope !== "view" && h.get("next-action")) {
     const path = new URL(h.get("referer") ?? "http://x/").pathname.replace(/^\/(ar|en)(?=\/)/, "");
-    const section = SECTIONS.find((s) => path.startsWith(`/dashboard/${s}`)) ?? scope;
+    const section = SECTIONS.find((s) => path.startsWith(`/dashboard/${s}`)) ?? scope ?? "content";
     // The page re-render after an action carries the same header: one row per member + section per minute.
     const recent = await db.agencyActivity.count({ where: { pageId: link.pageId, userId: user.id, section, createdAt: { gte: new Date(Date.now() - 60_000) } } });
     if (!recent) await db.agencyActivity.create({ data: { agencyId: link.agencyId, pageId: link.pageId, userId: user.id, section } }).catch(() => {});

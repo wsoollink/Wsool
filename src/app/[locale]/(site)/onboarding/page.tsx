@@ -11,13 +11,17 @@ import { db } from "@/lib/db";
 import { getMembership } from "@/lib/agency";
 import Link from "next/link";
 import { UsernameForm } from "./UsernameForm";
+import { PreparedPage } from "./PreparedPage";
+import { draftsFor } from "@/lib/agency-drafts";
+import { agencyDaysLeft } from "@/config/agency-plans";
 
 // Creators who already have a page skip this step.
 async function RedirectIfClaimed() {
   const user = await requireUser();
-  const [page, team] = await Promise.all([
+  const [page, team, drafts] = await Promise.all([
     db.page.findUnique({ where: { userId: user.id }, select: { id: true } }),
     getMembership(user).catch(() => null),
+    user.email ? draftsFor(user.email) : Promise.resolve([]),
   ]);
   if (page) redirect("/dashboard");
   const t = await getTranslations("Onboarding");
@@ -25,6 +29,15 @@ async function RedirectIfClaimed() {
   const claimed = normalizeUsername((await cookies()).get(CLAIM_COOKIE)?.value ?? "");
   return (
     <>
+      {/* Pages an agency prepared for this email (claim instead of picking a new name). */}
+      {drafts.map((d) => (
+        <PreparedPage
+          key={d.id} linkId={d.id} agency={d.agency.name} username={d.page.username}
+          name={d.page.translations[0]?.fullName ?? d.page.username}
+          days={Math.max(1, agencyDaysLeft(d.draftExpiresAt) ?? 1)}
+        />
+      ))}
+      {drafts.length > 0 && <p className="text-center text-xs text-muted">{t("orOwn")}</p>}
       {/* Agency / brand team members: this page is personal, their work lives in the agency dashboard. */}
       {team && (
         <div className="flex flex-col gap-2 rounded-xl border border-blue/25 bg-blue/5 p-4">

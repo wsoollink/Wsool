@@ -30,8 +30,9 @@ async function Overview({ lang }: { lang: Locale }) {
   const now = new Date();
   const weekAgo = new Date(now.getTime() - 7 * DAY), monthAgo = new Date(now.getTime() - 30 * DAY), weekAhead = new Date(now.getTime() + 7 * DAY);
   const [users, newThisWeek, paid, trialing, trialsEnding, pending, oldest, licensesPending, trialsEnded, converted, signups, claimed, published, verified, subscribers] = await Promise.all([
-    db.user.count(),
-    db.user.count({ where: { createdAt: { gte: weekAgo } } }),
+    // Placeholder accounts (pages agencies prepared, not yet claimed) aren't sign-ups.
+    db.user.count({ where: { placeholder: false } }),
+    db.user.count({ where: { placeholder: false, createdAt: { gte: weekAgo } } }),
     db.subscription.count({ where: { status: { in: [...PAID] } } }),
     db.subscription.count({ where: { status: "trialing", trialEndsAt: { gt: now } } }),
     db.subscription.count({ where: { status: "trialing", trialEndsAt: { gt: now, lte: weekAhead } } }),
@@ -41,7 +42,7 @@ async function Overview({ lang }: { lang: Locale }) {
     db.subscription.count({ where: { trialEndsAt: { gte: monthAgo, lte: now } } }),
     db.subscription.count({ where: { trialEndsAt: { gte: monthAgo, lte: now }, status: { in: [...PAID] } } }),
     db.user.findMany({ where: { createdAt: { gte: new Date(now.getTime() - 59 * DAY - (now.getTime() % DAY)) } }, select: { createdAt: true } }),
-    db.page.count({ where: { deletedAt: null } }),
+    db.page.count({ where: { deletedAt: null, user: { placeholder: false } } }),
     db.page.count({ where: { isPublished: true, deletedAt: null } }),
     db.page.count({ where: { deletedAt: null, socialAccounts: { some: { verificationStatus: "verified", verifiedUntil: { gt: now } } } } }),
     db.newsletterSubscriber.count({ where: { status: "confirmed" } }),

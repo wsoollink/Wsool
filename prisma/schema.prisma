@@ -85,6 +85,9 @@ model User {
 
   /// Set by staff to suspend the account (page hidden, dashboard read-only).
   suspendedAt DateTime? @map("suspended_at") @db.Timestamptz
+  /// Holds a page an agency prepared for a new creator until they claim it (owner, Nov 2026). Its email is
+  /// draft-<id>@wsool.invalid: never emailed, never on a newsletter list; deleted when the page is claimed or expires.
+  placeholder Boolean   @default(false)
 
   page                 Page?
   subscription         Subscription?
@@ -1250,34 +1253,41 @@ enum AgencyRole {
 
 /// An agency managing a creator's page, with the permissions the creator chose. The page always stays the creator's.
 model AgencyLink {
-  id           String     @id @default(uuid()) @db.Uuid
-  agencyId     String     @map("agency_id") @db.Uuid
-  agency       Agency     @relation(fields: [agencyId], references: [id], onDelete: Cascade)
-  pageId       String     @map("page_id") @db.Uuid
-  page         Page       @relation(fields: [pageId], references: [id], onDelete: Cascade)
-  status       LinkStatus @default(pending)
-  canContent   Boolean    @default(true) @map("can_content")
-  canRates     Boolean    @default(true) @map("can_rates")
-  canContact   Boolean    @default(false) @map("can_contact")
-  invitedBy    String     @map("invited_by") @db.Uuid
-  invitedAt    DateTime   @default(now()) @map("invited_at") @db.Timestamptz
-  decidedAt    DateTime?  @map("decided_at") @db.Timestamptz
-  endedAt      DateTime?  @map("ended_at") @db.Timestamptz
+  id             String     @id @default(uuid()) @db.Uuid
+  agencyId       String     @map("agency_id") @db.Uuid
+  agency         Agency     @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  pageId         String     @map("page_id") @db.Uuid
+  page           Page       @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  status         LinkStatus @default(pending)
+  canContent     Boolean    @default(true) @map("can_content")
+  canRates       Boolean    @default(true) @map("can_rates")
+  canContact     Boolean    @default(false) @map("can_contact")
+  invitedBy      String     @map("invited_by") @db.Uuid
+  invitedAt      DateTime   @default(now()) @map("invited_at") @db.Timestamptz
+  decidedAt      DateTime?  @map("decided_at") @db.Timestamptz
+  endedAt        DateTime?  @map("ended_at") @db.Timestamptz
   /// "creator" (unlinked) or "agency" (removed the creator, or the agency was stopped).
-  endedBy      String?    @map("ended_by") @db.VarChar(10)
+  endedBy        String?    @map("ended_by") @db.VarChar(10)
   /// Listed on the agency's public page (on by default; the creator can turn it off, the agency can hide them too).
-  showOnPage   Boolean    @default(true) @map("show_on_page")
+  showOnPage     Boolean    @default(true) @map("show_on_page")
   /// Hidden by the agency from its public page (the creator's own switch is showOnPage).
-  agencyHidden Boolean    @default(false) @map("agency_hidden")
+  agencyHidden   Boolean    @default(false) @map("agency_hidden")
   /// Order on the agency page (smaller first).
-  sort         Int        @default(0)
+  sort           Int        @default(0)
+  /// status = draft (owner, Nov 2026): a page the agency prepared for a new creator. The creator who signs in with this
+  /// email can claim it until draft_expires_at (30 days); then the page and its placeholder account are deleted.
+  draftEmail     String?    @map("draft_email") @db.VarChar(254)
+  draftExpiresAt DateTime?  @map("draft_expires_at") @db.Timestamptz
 
   @@index([pageId, status])
+  @@index([draftEmail])
   @@index([agencyId, status])
   @@map("agency_links")
 }
 
 enum LinkStatus {
+  /// A page the agency prepared for a new creator, waiting to be claimed.
+  draft
   pending
   active
   declined

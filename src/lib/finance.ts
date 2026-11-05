@@ -143,7 +143,7 @@ export type FinanceReport = Awaited<ReturnType<typeof financeReport>>;
 /** Platform growth for investor links: totals only, no personal data. */
 export async function growthCounts() {
   const [users, published, verified] = await Promise.all([
-    db.user.count(),
+    db.user.count({ where: { placeholder: false } }),
     db.page.count({ where: { isPublished: true, deletedAt: null } }),
     db.socialAccount.count({ where: { verificationStatus: "verified", verifiedUntil: { gt: new Date() } } }),
   ]);

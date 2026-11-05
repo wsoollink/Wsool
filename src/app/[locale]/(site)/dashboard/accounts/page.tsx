@@ -21,7 +21,7 @@ function monthsBetween(month: Date) {
 }
 
 async function Editor({ lang }: { lang: Locale }) {
-  const { user, page } = await requireCreator();
+  const { user, page, acting } = await requireCreator("accounts");
   const t = await getTranslations("AccountsPage");
   // Scoped to the creator's own page from the verified session.
   const [accounts, views, sub] = await Promise.all([
@@ -45,7 +45,8 @@ async function Editor({ lang }: { lang: Locale }) {
     <div className="flex flex-col gap-4">
       <AccountsCard
         initial={accounts.map((a) => ({ id: a.id, platform: a.platform, handle: a.handle, followers: a.followers, verificationStatus: a.verificationStatus, link: a.url, connection: connectionInfo(a.connection) }))}
-        connectable={connectablePlatforms()}
+        // Linking signs in to the platform as the creator: never while an agency is preparing a draft page.
+        connectable={acting ? [] : connectablePlatforms()}
         pro={FREE_LIMITS.connections || hasPro(sub)}
       />
       <ViewsCard

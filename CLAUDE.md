@@ -412,7 +412,7 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   feature must get a sample there**. Past-work covers + 5 s clips (`public/demo/work-N.jpg/.mp4`, Noto Kufi text) come from
   `python3 scripts/demo-works.py`. Live site: owner clicks "Refresh demo page" (resets it, asks first) on the admin overview (`DemoCard`,
   `refreshDemoPage`, audited `demo.refresh`); local: `DATABASE_URL=<local> npx tsx scripts/seed-demo.ts`. Images in
-  `public/demo/` are PNG/JPEG (the PDF can't embed SVG); fictional brands; links go to example.com / platform home pages,
+  `public/demo/` are PNG/JPEG (the PDF can't embed SVG); brand logos = real wordmarks the owner chose (Nov 2026: Ulanzi, OPPO, Anker, Xiaomi, HONOR, ½M; `logo-*.png`, white made transparent, shown on white tiles), shared with the demo agency; links go to example.com / platform home pages,
   never real accounts. The page shows a navy "Demo page · Make yours free" bar; the home hero links to it
   ("شاهد صفحة تجريبية ←", design files + `LINKS`) and the footer's Product column has "صفحة تجريبية" / "Demo page".
 - Templates: `src/components/creator/theme.ts` turns template + accent + custom colors into CSS

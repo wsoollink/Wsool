@@ -67,7 +67,8 @@ export function buildDemoAgency(lang: Locale): PublicAgency {
       { platform: "linkedin", handle: "nojoom-agency", url: "https://www.linkedin.com/", followers: 9_800 },
       { platform: "tiktok", handle: "nojoom.agency", url: "https://www.tiktok.com/", followers: 35_600 },
     ],
-    brands: ["najd-coffee", "reem-perfumes", "safarat", "jawal-plus", "alwaha-dates", "active-sport"].map((b) => ({ logoUrl: `/demo/logo-${b}.png`, name: null })),
+    // Real brand logos chosen by the owner (Nov 2026), same as the demo creator page.
+    brands: [["ulanzi", "Ulanzi"], ["oppo", "OPPO"], ["anker", "Anker"], ["xiaomi", "Xiaomi"], ["honor", "HONOR"], ["half-million", "½M"]].map(([b, name]) => ({ logoUrl: `/demo/logo-${b}.png`, name })),
     creators,
     stats: {
       creators: creators.length,

@@ -64,12 +64,13 @@ const RATES: Partial<Record<Platform, [string, string, number][]>> = {
 };
 
 const BRANDS = [
-  ["najd-coffee", "قهوة نجد", "Najd Coffee"],
-  ["safarat", "سفرات", "Safarat"],
-  ["jawal-plus", "جوال بلس", "Jawal Plus"],
-  ["reem-perfumes", "عطور ريم", "Reem Perfumes"],
-  ["active-sport", "أكتف سبورت", "Active Sport"],
-  ["alwaha-dates", "تمور الواحة", "Alwaha Dates"],
+  // Real brand logos chosen by the owner (Nov 2026) for the demo pages.
+  ["ulanzi", "Ulanzi", "Ulanzi"],
+  ["oppo", "OPPO", "OPPO"],
+  ["anker", "Anker", "Anker"],
+  ["xiaomi", "Xiaomi", "Xiaomi"],
+  ["honor", "HONOR", "HONOR"],
+  ["half-million", "½M", "½M"],
 ] as const;
 
 // Past work: one per brand above (cover public/demo/work-N.jpg + clip work-N.mp4, drawn by scripts/demo-works.py).

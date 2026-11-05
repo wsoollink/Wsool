@@ -15,7 +15,7 @@ import type { AgencyTemplate, Platform } from "@/generated/prisma/enums";
 import { LINK_PLATFORMS, PLATFORM_NAMES, PLATFORMS } from "@/config/platforms";
 import { PlatformIcon } from "@/components/creator/PlatformIcon";
 import { digitsOnly } from "@/lib/format";
-import { MAX_AGENCY_ACCOUNTS } from "@/lib/validation/agency-page";
+import { MAX_AGENCY_ACCOUNTS, MAX_AGENCY_BRANDS } from "@/lib/validation/agency-page";
 import { initials } from "@/lib/initials";
 import { shrinkImage, uploadFile } from "@/lib/upload-client";
 import { checkAgencySlug, requestAgencyUpload, saveAgencyPage } from "./page-actions";
@@ -27,6 +27,7 @@ export type EditorInitial = {
   city: string; cityEn: string; logoUrl: string | null; whatsapp: string; email: string; website: string;
   template: AgencyTemplate; accent: string | null; creators: EditorCreator[];
   accounts: { platform: Platform; handle: string; followers: number }[];
+  brands: string[];
 };
 
 const pill = "inline-flex min-h-10 items-center gap-1.5 rounded-full border border-line bg-card px-4 text-[13px] font-bold hover:border-blue/40 disabled:opacity-50";
@@ -40,6 +41,9 @@ export function PageEditor({ initial, origin }: { initial: EditorInitial; origin
   const [savedSlug, setSavedSlug] = useState(initial.slug);
   const [logo, setLogo] = useState<{ path: string | null; url: string | null }>({ path: null, url: initial.logoUrl });
   const [uploading, setUploading] = useState(false);
+  // Brand logos: url = shown (storage URL or local preview), path = fresh upload.
+  const [brands, setBrands] = useState<{ path: string | null; url: string }[]>(initial.brands.map((url) => ({ path: null, url })));
+  const brandRef = useRef<HTMLInputElement>(null);
   const [slugState, setSlugState] = useState<"idle" | "checking" | "ok" | string>("idle");
   const [status, setStatus] = useState<{ tone: "good" | "bad"; text: string } | null>(null);
   const [copied, setCopied] = useState(false);
@@ -72,6 +76,20 @@ export function PageEditor({ initial, origin }: { initial: EditorInitial; origin
     setStatus(null);
   };
 
+  const addBrands = async (files: FileList | null) => {
+    if (!files?.length) return;
+    setUploading(true);
+    for (const file of Array.from(files).slice(0, MAX_AGENCY_BRANDS - brands.length)) {
+      // PNG keeps transparency and embeds in the PDF.
+      const small = await shrinkImage(file, 600, 0.9, "image/png").catch(() => file);
+      const r = await uploadFile("agencyBrand", small, requestAgencyUpload);
+      if ("error" in r) { setStatus({ tone: "bad", text: t("errors.upload") }); continue; }
+      setBrands((b) => [...b, { path: r.path, url: URL.createObjectURL(small) }]);
+    }
+    setUploading(false);
+    setStatus(null);
+  };
+
   const move = (i: number, d: -1 | 1) => {
     const list = [...v.creators];
     const j = i + d;
@@ -85,6 +103,7 @@ export function PageEditor({ initial, origin }: { initial: EditorInitial; origin
       ...v, slug: v.slug, logo: logo.path ? { path: logo.path, url: null } : { path: null, url: logo.url },
       creators: v.creators.map((c) => ({ linkId: c.linkId, hidden: c.hidden })),
       accounts: v.accounts.filter((a) => a.handle.trim()),
+      brands: brands.map((b) => (b.path ? { path: b.path, url: null } : { path: null, url: b.url })),
       accent: v.accent as (typeof AGENCY_ACCENTS)[number] | null,
     });
     if ("ok" in r) {
@@ -211,6 +230,26 @@ export function PageEditor({ initial, origin }: { initial: EditorInitial; origin
         {v.accounts.length < MAX_AGENCY_ACCOUNTS && (
           <button type="button" className={`${pill} mt-3`} onClick={() => set("accounts", [...v.accounts, { platform: "instagram", handle: "", followers: 0 }])}>
             + {t("accAdd")}
+          </button>
+        )}
+      </Panel>
+
+      <Panel title={t("brandsTitle")}>
+        <p className="text-sm text-muted">{t("brandsHint")}</p>
+        <ul className="mt-4 grid grid-cols-3 gap-3 sm:grid-cols-5">
+          {brands.map((b, i) => (
+            <li key={b.url} className="relative flex aspect-[3/2] items-center justify-center rounded-xl border border-line bg-white p-3">
+              {/* eslint-disable-next-line @next/next/no-img-element -- local preview or storage URL */}
+              <img src={b.url} alt="" className="max-h-full max-w-full object-contain" />
+              <button type="button" aria-label={t("brandRemove")} onClick={() => setBrands((x) => x.filter((_, j) => j !== i))}
+                className="absolute -end-2 -top-2 flex size-7 items-center justify-center rounded-full bg-bad text-sm font-bold text-white">×</button>
+            </li>
+          ))}
+        </ul>
+        <input ref={brandRef} type="file" accept="image/png,image/jpeg,image/webp" multiple hidden onChange={(e) => { addBrands(e.target.files); e.target.value = ""; }} />
+        {brands.length < MAX_AGENCY_BRANDS && (
+          <button type="button" className={`${pill} mt-3`} disabled={uploading} onClick={() => brandRef.current?.click()}>
+            <ImagePlus aria-hidden="true" size={15} />{uploading ? t("uploading") : t("brandAdd")}
           </button>
         )}
       </Panel>

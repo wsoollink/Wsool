@@ -6,6 +6,7 @@ import { PLATFORMS } from "@/config/platforms";
 import type { Platform } from "@/generated/prisma/enums";
 
 export const MAX_AGENCY_ACCOUNTS = 12;
+export const MAX_AGENCY_BRANDS = 30;
 
 const text = (max: number) => z.string().trim().max(max).default("");
 
@@ -33,6 +34,8 @@ export const agencyPageSchema = z.object({
     handle: z.string().trim().min(1).max(300),
     followers: z.number().int().min(0).max(2_000_000_000),
   })).max(MAX_AGENCY_ACCOUNTS).default([]),
+  /** Brand logos in order: { path } = fresh upload, { url } = a logo the agency already had. */
+  brands: z.array(z.object({ path: z.string().max(200).nullable().default(null), url: z.string().max(500).nullable().default(null) })).max(MAX_AGENCY_BRANDS).default([]),
   /** Linked creators in page order; hidden = left off the page by the agency. */
   creators: z.array(z.object({ linkId: z.uuid(), hidden: z.boolean() })).max(500),
 });

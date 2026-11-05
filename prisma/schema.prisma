@@ -1162,6 +1162,7 @@ model Agency {
   members     AgencyMember[]
   links       AgencyLink[]
   accounts    AgencyAccount[]
+  brands      AgencyBrand[]
   activity    AgencyActivity[]
 
   @@map("agencies")
@@ -1344,4 +1345,17 @@ model AgencyAccount {
 
   @@index([agencyId, sort])
   @@map("agency_accounts")
+}
+
+/// Brands the agency worked with (owner, Nov 2026): logos on its public page (scrolling strip) and PDF.
+model AgencyBrand {
+  id       String  @id @default(uuid()) @db.Uuid
+  agencyId String  @map("agency_id") @db.Uuid
+  agency   Agency  @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  logoUrl  String  @map("logo_url")
+  name     String? @db.VarChar(60)
+  sort     Int     @default(0)
+
+  @@index([agencyId, sort])
+  @@map("agency_brands")
 }

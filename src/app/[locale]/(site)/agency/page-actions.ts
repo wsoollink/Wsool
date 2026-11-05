@@ -19,11 +19,11 @@ async function requirePageEditor() {
 }
 
 /** Signed upload URL for the agency logo, in the member's own folder. */
-export async function requestAgencyUpload(_kind: string, contentType: string, size: number) {
+export async function requestAgencyUpload(kind: string, contentType: string, size: number) {
   const m = await requirePageEditor();
   if (!m || typeof contentType !== "string" || typeof size !== "number") return { error: "type" as const };
   if (!(await rateLimit(`upload:${m.user.id}`, 150, 3600))) return { error: "type" as const };
-  return createUploadTicket(m.user.id, "agencyLogo", contentType, size);
+  return createUploadTicket(m.user.id, kind === "agencyBrand" ? "agencyBrand" : "agencyLogo", contentType, size);
 }
 
 /** Live availability check while typing the page link. */
@@ -56,7 +56,7 @@ export async function saveAgencyPage(input: AgencyPageInput): Promise<SaveAgency
   const parsed = agencyPageSchema.safeParse(input);
   if (!parsed.success) return { error: "invalid" };
   const d = parsed.data;
-  const agency = await db.agency.findUniqueOrThrow({ where: { id: m.agency.id } });
+  const agency = await db.agency.findUniqueOrThrow({ where: { id: m.agency.id }, include: { brands: { select: { logoUrl: true } } } });
 
   const slug = d.slug ? normalizeUsername(d.slug) : null;
   if (slug && slug !== agency.slug) {
@@ -68,6 +68,14 @@ export async function saveAgencyPage(input: AgencyPageInput): Promise<SaveAgency
   const current = new Set([agency.logoUrl].filter((u): u is string => !!u));
   const logoUrl = await resolveFile(m.user.id, "agencyLogo", d.logo, current);
   if (logoUrl === undefined) return { error: "logo" };
+  // Brand logos: fresh uploads in the member's folder, or logos the agency already had.
+  const currentBrands = new Set(agency.brands.map((b) => b.logoUrl));
+  const brandUrls: string[] = [];
+  for (const ref of d.brands) {
+    const url = await resolveFile(m.user.id, "agencyBrand", ref, currentBrands);
+    if (!url) return { error: "logo" };
+    brandUrls.push(url);
+  }
 
   const nul = (v: string) => v || null;
   const accounts: { platform: Platform; handle: string; url: string; followers: number }[] = [];
@@ -92,6 +100,8 @@ export async function saveAgencyPage(input: AgencyPageInput): Promise<SaveAgency
         },
       }),
       ...order.map((c, i) => db.agencyLink.update({ where: { id: c.linkId }, data: { sort: i, agencyHidden: c.hidden } })),
+      db.agencyBrand.deleteMany({ where: { agencyId: agency.id } }),
+      db.agencyBrand.createMany({ data: brandUrls.map((logoUrl, i) => ({ agencyId: agency.id, logoUrl, sort: i })) }),
       db.agencyAccount.deleteMany({ where: { agencyId: agency.id } }),
       db.agencyAccount.createMany({ data: accounts.map((a, i) => ({ ...a, agencyId: agency.id, sort: i })) }),
     ]);
@@ -100,6 +110,7 @@ export async function saveAgencyPage(input: AgencyPageInput): Promise<SaveAgency
     return { error: "slug", slugError: "taken" };
   }
   await removeUnused(current, new Set([logoUrl]));
+  await removeUnused(currentBrands, new Set(brandUrls));
   refreshAgencyPage(agency.slug);
   if (slug !== agency.slug) refreshAgencyPage(slug);
   return { ok: true, slug };

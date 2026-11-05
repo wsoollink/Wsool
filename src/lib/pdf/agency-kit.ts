@@ -7,7 +7,7 @@ import QRCode from "qrcode";
 import { createTranslator } from "use-intl/core";
 import { agencyTheme } from "@/components/agency-page/theme";
 import { PLATFORM_ICON_PATHS } from "@/components/creator/PlatformIcon";
-import { LINK_PLATFORMS, PLATFORM_NAMES } from "@/config/platforms";
+import { PLATFORM_NAMES } from "@/config/platforms";
 import type { Platform } from "@/generated/prisma/enums";
 import { toIntlLocale, type Locale } from "@/i18n/config";
 import type { PublicAgency } from "@/lib/agency-page";
@@ -37,6 +37,7 @@ const ICON = {
   mail: "M6 5h12a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V8a3 3 0 0 1 3-3z M4 7l8 6 8-6",
   globe: "M21 12a9 9 0 1 1-18 0a9 9 0 1 1 18 0 M3 12h18 M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9s1.3-6.3 3.8-9z",
   pin: "M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z M14.5 10a2.5 2.5 0 1 1-5 0a2.5 2.5 0 1 1 5 0",
+  external: "M14 4h6v6 M20 4l-9 9 M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5",
 };
 
 type Paint = { color: RGB; opacity: number };
@@ -173,7 +174,11 @@ export async function buildAgencyKit(agency: PublicAgency, lang: Locale): Promis
   };
 
   // ---------- data ----------
-  const [logo, ...photos] = await Promise.all([loadImage(doc, agency.logoUrl), ...agency.creators.map((c) => loadImage(doc, c.photoUrl || null))]);
+  const [logo, brandImgs, ...photos] = await Promise.all([
+    loadImage(doc, agency.logoUrl),
+    Promise.all(agency.brands.slice(0, 30).map((b) => loadImage(doc, b.logoUrl))),
+    ...agency.creators.map((c) => loadImage(doc, c.photoUrl || null)),
+  ]) as [PDFImage | null, (PDFImage | null)[], ...(PDFImage | null)[]];
   const big = (v: string) => !hasArabic(v);
 
   // ================= 1) Cover =================
@@ -198,24 +203,6 @@ export async function buildAgencyKit(agency: PublicAgency, lang: Locale): Promis
   y += LOGO + 150;
   y += text(agency.name, PAD, y, { size: 64, weight: 700, color: th.heroInk, width: CONTENT, maxLines: 2, lineHeight: 1.2 }) + 20;
   if (agency.tagline) y += text(agency.tagline, PAD, y, { size: 22, color: th.heroMuted, width: CONTENT * 0.85, maxLines: 3, lineHeight: 1.6 }) + 10;
-  // The agency's own accounts: chips with the icon + followers, each linking to the profile.
-  if (agency.accounts.length) {
-    y += 16;
-    let cx = 0;
-    for (const a of agency.accounts.slice(0, 8)) {
-      const label = a.followers > 0 ? formatCompact(a.followers, lang) : "";
-      const lw = label ? measure(label, { size: 14, weight: 700, width: 200 }) : 0;
-      const w = 16 + 18 + (label ? 8 + lw : 0) + 16;
-      if (cx + w > CONTENT) break;
-      const x = startX(PAD, CONTENT, w, cx);
-      box(x, y, w, 38, { stroke: mix(th.heroInk, th.heroBg, 0.75), r: 19 });
-      platformIcon(a.platform, x + 16, y + 10, 18, th.heroInk);
-      if (label) text(label, x + 16 + 18 + 8, y + 9, { size: 14, weight: 700, color: th.heroInk, width: lw + 2, align: rtl ? "end" : "start" });
-      link(x, y, w, 38, a.url);
-      cx += w + 10;
-    }
-    y += 38;
-  }
 
   // Creator photo strip
   const faces = agency.creators.map((c, i) => ({ c, img: photos[i] })).filter((f) => f.img).slice(0, 5);
@@ -226,22 +213,42 @@ export async function buildAgencyKit(agency: PublicAgency, lang: Locale): Promis
       image(f.img!, fx, fy + (i % 2) * 18, fw, fh, "cover", 18);
     });
   }
-  // Numbers
+  // Numbers: the same four boxes as the page (creators, followers, verified, platforms).
   const stats = [
     { v: formatNumber(agency.stats.creators, lang), l: t("stat.creators") },
     { v: formatCompact(agency.stats.followers, lang), l: t("stat.followers") },
     { v: formatNumber(agency.stats.verified, lang), l: t("stat.verified") },
   ];
-  const sy = 905, sw = (CONTENT - 32) / 3;
+  const sy = 890, sw = (CONTENT - 36) / 4, sh = 104;
+  const statBox = (i: number) => {
+    const sx = startX(PAD, CONTENT, sw, i * (sw + 12));
+    box(sx, sy, sw, sh, { fill: mix(th.heroInk, th.heroBg, 0.92), stroke: mix(th.heroInk, th.heroBg, 0.8), r: 18 });
+    return sx;
+  };
   stats.forEach((s, i) => {
-    const sx = startX(PAD, CONTENT, sw, i * (sw + 16));
-    box(sx, sy, sw, 110, { fill: mix(th.heroInk, th.heroBg, 0.92), stroke: mix(th.heroInk, th.heroBg, 0.8), r: 18 });
+    const sx = statBox(i);
     // Centred, number first then "مليون"; label close in size to the number.
-    text(s.v, sx + 20, sy + 20, { size: 26, weight: 700, color: th.heroInk, width: sw - 40, align: "center" });
-    text(s.l, sx + 20, sy + 66, { size: 16, color: th.heroMuted, width: sw - 40, align: "center" });
+    text(s.v, sx + 12, sy + 20, { size: 24, weight: 700, color: th.heroInk, width: sw - 24, align: "center" });
+    text(s.l, sx + 12, sy + 62, { size: 14, color: th.heroMuted, width: sw - 24, align: "center" });
   });
-  text(shortLink, PAD, PH - 58, { size: 15, weight: 700, color: th.heroInk, width: CONTENT, align: "start" });
-  link(PAD, PH - 64, CONTENT, 30, pageUrl);
+  {
+    const sx = statBox(3);
+    const icons = agency.stats.platforms.slice(0, 6);
+    const iw = icons.length * 18 + Math.max(0, icons.length - 1) * 7;
+    icons.forEach((p, k) => platformIcon(p, sx + (sw - iw) / 2 + k * 25, sy + 26, 18, th.heroInk));
+    text(t("stat.platforms"), sx + 12, sy + 62, { size: 14, color: th.heroMuted, width: sw - 24, align: "center" });
+  }
+  // Link button to the page (clickable).
+  {
+    const lw = measure(shortLink, { size: 15, weight: 700, width: CONTENT });
+    const bw = lw + 18 + 18 + 48, by = PH - 76;
+    const bx = startX(PAD, CONTENT, bw);
+    box(bx, by, bw, 42, { fill: th.heroAccent, r: 21 });
+    stroke(ICON.globe, startX(bx, bw, 18, 18), by + 12, 18, th.heroOnAccent);
+    text(shortLink, startX(bx, bw, lw + 2, 42), by + 11, { size: 15, weight: 700, color: th.heroOnAccent, width: lw + 2 });
+    stroke(ICON.external, startX(bx, bw, 14, bw - 30), by + 14, 14, th.heroOnAccent);
+    link(bx, by, bw, 42, pageUrl);
+  }
 
   // ================= 2) About + contact =================
   const contacts = [
@@ -263,8 +270,20 @@ export async function buildAgencyKit(agency: PublicAgency, lang: Locale): Promis
       for (const para of agency.bio.split(/\n+/)) {
         y += text(para, PAD, y, { size: 17, color: th.muted, width: CONTENT, maxLines: 12, lineHeight: 1.9 }) + 12;
       }
-      y += 20;
+      y += 8;
     }
+    // The agency's own accounts: icon buttons, each linking to the profile.
+    if (agency.accounts.length) {
+      agency.accounts.slice(0, 12).forEach((a, k) => {
+        const bx = startX(PAD, CONTENT, 40, k * 50);
+        circle(bx + 20, y + 20, 20, th.surface);
+        pg.drawSvgPath(roundRect(bx, y, 40, 40, 20), { x: 0, y: H, scale: PX, borderColor: paint(th.line).color, borderWidth: 1 });
+        platformIcon(a.platform, bx + 11, y + 11, 18, th.ink);
+        link(bx, y, 40, 40, a.url);
+      });
+      y += 60;
+    }
+    y += 12;
     // Facts
     const facts = [
       agency.city && [t("facts.city"), agency.city],
@@ -292,9 +311,28 @@ export async function buildAgencyKit(agency: PublicAgency, lang: Locale): Promis
         else stroke(c.icon, ix, y + 20, 22, th.accent);
         text(c.label, cx + 20, y + 50, { size: 12, color: th.muted, width: cw - 40 });
         text(c.value, cx + 20, y + 66, { size: 14, weight: 700, color: th.ink, width: cw - 40 });
+        stroke(ICON.external, startX(cx, cw, 14, cw - 34), y + 22, 14, th.muted);
         link(cx, y, cw, 96, c.url);
       });
+      y += 96 + 30;
     }
+    footer(th.muted);
+  }
+
+  // ================= Brands the agency worked with (logo grid) =================
+  const logos = brandImgs.filter((b): b is PDFImage => !!b);
+  if (logos.length) {
+    pg = doc.addPage([W, H]);
+    background();
+    const top = sectionHead(t("brandsEyebrow"), t("brandsTitle")) + 30;
+    const BC = 4, BG = 16, bw = (CONTENT - BG * (BC - 1)) / BC, bh = bw * 0.62;
+    logos.forEach((img, k) => {
+      const col = k % BC, row = Math.floor(k / BC);
+      const bx = startX(PAD, CONTENT, bw, col * (bw + BG)), by = top + row * (bh + BG);
+      if (by + bh > PH - 80) return;
+      box(bx, by, bw, bh, { fill: "#FFFFFF", stroke: th.line, r: 16 });
+      image(img, bx + 18, by + 14, bw - 36, bh - 28, "contain");
+    });
     footer(th.muted);
   }
 
@@ -334,6 +372,10 @@ export async function buildAgencyKit(agency: PublicAgency, lang: Locale): Promis
       const iconsW = Math.min(4, c.platforms.length) * 20 + 6;
       text(num, rtl ? x + 16 + iconsW : x + 16, fy - 3, { size: c.followers !== null ? 13 : 12, weight: 700, color: th.ink, width: cw - 32 - iconsW });
       c.platforms.slice(0, 4).forEach((p, i) => platformIcon(p, rtl ? x + 16 + i * 20 : x + cw - 16 - 14 - i * 20, fy, 14, th.muted));
+      // Badge on the photo corner: the card opens the creator's page.
+      const bxx = rtl ? x + 16 : x + cw - 16 - 26;
+      circle(bxx + 13, yy + 16 + 13, 13, "#FFFFFF");
+      stroke(ICON.external, bxx + 6, yy + 16 + 6, 14, "#0F0F0F", 2);
       link(x, yy, cw, cardH, `${origin}/${c.username}`);
     }
     footer(th.muted);
@@ -372,16 +414,18 @@ export async function buildAgencyKit(agency: PublicAgency, lang: Locale): Promis
     text(c.value, lx0 + 30, ly - 1, { size: 16, weight: 700, color: th.bandInk, width: vw + 2, align: "end" });
     link(lx0 - 6, ly - 6, vw + 42, 32, c.url);
   });
-  // Accounts under the contact lines: icon + @handle, centred.
-  agency.accounts.slice(0, 6).forEach((a, i) => {
-    const ly = y + contacts.length * 40 + 16 + i * 36;
-    const v = LINK_PLATFORMS.includes(a.platform) ? a.handle : `@${a.handle}`;
-    const vw = measure(v, { size: 15, weight: 700, width: CONTENT - 60 });
-    const lx0 = (PW - (vw + 28)) / 2;
-    platformIcon(a.platform, lx0, ly, 18, th.bandInk);
-    text(v, lx0 + 28, ly - 1, { size: 15, weight: 700, color: th.bandInk, width: vw + 2, align: "end" });
-    link(lx0 - 6, ly - 6, vw + 40, 30, a.url);
-  });
+  // Accounts under the contact lines: one centred row of icon buttons, each linking to the profile.
+  {
+    const acc = agency.accounts.slice(0, 10);
+    const rowW = acc.length * 44 + Math.max(0, acc.length - 1) * 12;
+    const ay = y + contacts.length * 40 + 20;
+    acc.forEach((a, k) => {
+      const bx = (PW - rowW) / 2 + k * 56;
+      circle(bx + 22, ay + 22, 22, mix(th.bandInk, th.bandBg, 0.88));
+      platformIcon(a.platform, bx + 12, ay + 12, 20, th.bandInk);
+      link(bx, ay, 44, 44, a.url);
+    });
+  }
   text(t("madeWith"), PAD, PH - 56, { size: 11, color: mix(th.bandInk, th.bandBg, 0.45), width: CONTENT, align: "center" });
 
   return doc.save();

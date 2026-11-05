@@ -67,6 +67,7 @@ export function buildDemoAgency(lang: Locale): PublicAgency {
       { platform: "linkedin", handle: "nojoom-agency", url: "https://www.linkedin.com/", followers: 9_800 },
       { platform: "tiktok", handle: "nojoom.agency", url: "https://www.tiktok.com/", followers: 35_600 },
     ],
+    brands: ["najd-coffee", "reem-perfumes", "safarat", "jawal-plus", "alwaha-dates", "active-sport"].map((b) => ({ logoUrl: `/demo/logo-${b}.png`, name: null })),
     creators,
     stats: {
       creators: creators.length,

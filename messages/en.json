@@ -3144,7 +3144,9 @@
     },
     "demoBar": "Demo agency page for preview only: the agency, creators and numbers aren't real.",
     "demoCta": "Get your agency page",
-    "accountsLabel": "Agency accounts"
+    "accountsLabel": "Agency accounts",
+    "brandsTitle": "Brands we've worked with",
+    "brandsEyebrow": "Trusted by"
   },
   "AgencyPageEditor": {
     "tab": "Agency page",
@@ -3222,7 +3224,11 @@
     "accLink": "Profile link",
     "accFollowers": "Followers",
     "accRemove": "Remove",
-    "accAdd": "Add an account"
+    "accAdd": "Add an account",
+    "brandsTitle": "Brands we've worked with",
+    "brandsHint": "Logos of brands your agency has worked with. Shown in a scrolling strip on the agency page and in the PDF.",
+    "brandAdd": "Add logos",
+    "brandRemove": "Remove logo"
   },
   "AgencyBilling": {
     "title": "Subscription",

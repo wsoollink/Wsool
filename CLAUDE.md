@@ -991,6 +991,13 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   (`profileUrl` / `linkProfileUrl`; LinkedIn = `/company/` unless a `/in/` link is pasted), followers, sort), up to `MAX_AGENCY_ACCOUNTS` 12, saved
   with the page form (`saveAgencyPage`, whole list). Shown as icon + followers chips in the agency page hero, on the PDF cover and as @handles on
   its contact page; the demo agency has samples. Official linking (OAuth) for agencies is not built.
+- Owner polish (Nov 2026): the accounts show as **icons only** under the About bio (page) and under the bio on the PDF About page, and as one
+  centred row of icon buttons on the PDF contact page (no longer in the hero / on the cover). Brands the agency worked with: table
+  `agency_brands` (logo_url, name, sort; upload kind `agencyBrand`, shrunk to PNG), up to `MAX_AGENCY_BRANDS` 30, saved with the page form
+  (`{path}` = fresh upload, `{url}` = kept); page = `Marquee` logo strip before About (section `px-5` on phones so its bleed doesn't widen the
+  page), PDF = "Brands" page (4-column logo grid). PDF cover has the same four stat boxes as the page (creators, followers, verified,
+  platform icons) and a clickable link button; creator cards carry a small "open" badge and contact cards an external-link icon so links are
+  visible. Menu links scroll smoothly (`.ag-page` in the `html:has(...)` rule, `globals.css`).
 - A team member has no creator page unless they claim one: web `/onboarding` shows "you're on the X team" + "Open the agency dashboard"
   (`getMembership`), and the app's onboarding (`/api/mobile/v1/me` returns `agency` for members without a page) shows that note first
   with "Open the agency dashboard" (website), "I want a personal creator page" and sign out. Their personal page is separate from the agency.

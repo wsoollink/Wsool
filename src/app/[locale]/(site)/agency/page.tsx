@@ -89,6 +89,7 @@ async function PageTab({ agencyId }: { agencyId: string }) {
     where: { id: agencyId },
     include: {
       accounts: { orderBy: { sort: "asc" } },
+      brands: { orderBy: { sort: "asc" }, select: { logoUrl: true } },
       links: {
         where: { status: "active" },
         orderBy: [{ sort: "asc" }, { decidedAt: "asc" }],
@@ -101,6 +102,7 @@ async function PageTab({ agencyId }: { agencyId: string }) {
     bio: a.bio ?? "", bioEn: a.bioEn ?? "", city: a.city ?? "", cityEn: a.cityEn ?? "", logoUrl: a.logoUrl, whatsapp: a.whatsapp ?? "",
     email: a.email ?? "", website: a.website ?? "", template: a.template, accent: a.accent,
     // Link platforms are edited as the full link; the others as the username.
+    brands: a.brands.map((b) => b.logoUrl),
     accounts: a.accounts.map((x) => ({ platform: x.platform, handle: LINK_PLATFORMS.includes(x.platform) ? x.url : x.handle, followers: x.followers })),
     creators: a.links.map((l) => ({
       linkId: l.id, username: l.page.username, photoUrl: l.page.photoUrl, hidden: l.agencyHidden, creatorHidden: !l.showOnPage,

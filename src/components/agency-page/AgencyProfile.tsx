@@ -10,6 +10,7 @@ import { initials } from "@/lib/initials";
 import { siteOrigin } from "@/lib/site-url";
 import { agencyTheme, agencyThemeStyle } from "./theme";
 import { Roster } from "./Roster";
+import { Marquee } from "@/components/creator/Marquee";
 
 const wrap = "mx-auto w-full max-w-[1160px] px-4 sm:px-6";
 const eyebrow = "text-[12.5px] font-bold tracking-[0.08em] text-[var(--ag-accent)] uppercase";
@@ -33,7 +34,7 @@ export async function AgencyProfile({ agency, lang, preview, demo }: { agency: P
   ] as const;
 
   return (
-    <div style={agencyThemeStyle(theme)} className="flex min-h-dvh flex-1 flex-col bg-[var(--ag-bg)] text-[var(--ag-ink)]">
+    <div style={agencyThemeStyle(theme)} className="ag-page flex min-h-dvh flex-1 flex-col bg-[var(--ag-bg)] text-[var(--ag-ink)]">
       {preview && <p className="bg-[#B45309] px-4 py-2 text-center text-sm font-bold text-white">{t("previewBar")}</p>}
       {demo && (
         <p className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 bg-[#0060E6] px-4 py-2 text-center text-[13.5px] font-semibold text-white">
@@ -80,20 +81,6 @@ export async function AgencyProfile({ agency, lang, preview, demo }: { agency: P
             </span>
             <h1 className="text-[2.6rem] leading-[1.15] font-black tracking-tight text-balance sm:text-5xl lg:text-6xl">{agency.name}</h1>
             {agency.tagline && <p className="max-w-xl text-lg leading-relaxed text-pretty text-[var(--ag-hero-muted)] md:text-xl">{agency.tagline}</p>}
-            {/* The agency's own accounts: icon + followers, each opening the profile. */}
-            {agency.accounts.length > 0 && (
-              <ul className="flex flex-wrap gap-2" aria-label={t("accountsLabel")}>
-                {agency.accounts.map((a) => (
-                  <li key={a.url}>
-                    <a href={a.url} target="_blank" rel="noopener noreferrer" aria-label={`${PLATFORM_NAMES[a.platform]} @${a.handle}`}
-                      className="inline-flex min-h-10 items-center gap-2 rounded-full border border-[var(--ag-hero-line)] px-3.5 text-sm font-semibold hover:bg-[var(--ag-hero-line)]">
-                      <PlatformIcon platform={a.platform} size={16} />
-                      {a.followers > 0 && <span className="font-numbers">{formatCompact(a.followers, lang)}</span>}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            )}
             <div className="mt-2 flex flex-wrap gap-3">
               <a href="#creators" className="inline-flex min-h-12 items-center gap-2 rounded-full bg-[var(--ag-hero-accent)] px-6 font-bold text-[var(--ag-hero-on-accent)]">
                 {t("seeCreators")} <ArrowDown aria-hidden="true" size={17} />
@@ -167,14 +154,43 @@ export async function AgencyProfile({ agency, lang, preview, demo }: { agency: P
           <Roster creators={agency.creators} lang={lang} />
         </section>
 
+        {/* Brands the agency worked with: scrolling logo strip (px-5 on phones: Marquee's -mx-5 bleeds 20px to the edges). */}
+        {agency.brands.length > 0 && (
+          <section className="mx-auto w-full max-w-[1160px] px-5 pb-16 sm:px-6 md:pb-24">
+            <p className={eyebrow}>{t("brandsEyebrow")}</p>
+            <h2 className="mt-2 mb-6 text-2xl font-black tracking-tight md:text-3xl">{t("brandsTitle")}</h2>
+            <Marquee ariaLabel={t("brandsTitle")} seconds={Math.max(20, agency.brands.length * 4)}>
+              {agency.brands.map((b) => (
+                <li key={b.logoUrl} className="flex h-[76px] w-[132px] shrink-0 items-center justify-center rounded-2xl border border-[var(--ag-line)] bg-white px-5 py-4 md:h-[88px] md:w-[160px]">
+                  {/* eslint-disable-next-line @next/next/no-img-element -- brand logos from storage */}
+                  <img src={b.logoUrl} alt={b.name ?? ""} loading="lazy" className="max-h-full max-w-full object-contain" />
+                </li>
+              ))}
+            </Marquee>
+          </section>
+        )}
+
         {/* About */}
-        {(agency.bio || agency.city || website) && (
+        {(agency.bio || agency.city || website || agency.accounts.length > 0) && (
           <section id="about" className="scroll-mt-20 border-t border-[var(--ag-line)] bg-[var(--ag-surface)]">
             <div className={`${wrap} grid grid-cols-1 gap-10 py-16 md:grid-cols-[1.4fr_1fr] md:py-24`}>
               <div>
                 <p className={eyebrow}>{t("aboutEyebrow")}</p>
                 <h2 className="mt-2 text-3xl font-black tracking-tight md:text-4xl">{t("aboutTitle")}</h2>
                 {agency.bio && <p className="mt-5 text-lg leading-[1.9] whitespace-pre-line text-[var(--ag-muted)]">{agency.bio}</p>}
+                {/* The agency's own accounts: icons only, each opening the profile. */}
+                {agency.accounts.length > 0 && (
+                  <ul className="mt-6 flex flex-wrap gap-2.5" aria-label={t("accountsLabel")}>
+                    {agency.accounts.map((a) => (
+                      <li key={a.url}>
+                        <a href={a.url} target="_blank" rel="noopener noreferrer" aria-label={`${PLATFORM_NAMES[a.platform]} @${a.handle}`}
+                          className="flex size-11 items-center justify-center rounded-full border border-[var(--ag-line)] bg-[var(--ag-bg)] text-[var(--ag-ink)] transition-colors hover:border-[var(--ag-accent)] hover:text-[var(--ag-accent)]">
+                          <PlatformIcon platform={a.platform} size={18} />
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
               <dl className="flex flex-col divide-y divide-[var(--ag-line)] self-start rounded-3xl border border-[var(--ag-line)] bg-[var(--ag-bg)] px-6">
                 {agency.city && <Fact icon={<MapPin size={17} />} label={t("facts.city")}>{agency.city}</Fact>}

@@ -68,6 +68,8 @@ export type PublicAgency = {
   hasEnglish: boolean;
   /** The agency's own social accounts. */
   accounts: { platform: Platform; handle: string; url: string; followers: number }[];
+  /** Brands the agency worked with (logos). */
+  brands: { logoUrl: string; name: string | null }[];
   creators: AgencyCreator[];
   stats: { creators: number; followers: number; verified: number; platforms: Platform[] };
 };
@@ -97,6 +99,7 @@ async function loadAgency(slug: string, lang: Locale, preview: boolean): Promise
     where: { slug },
     include: {
       accounts: { orderBy: { sort: "asc" }, select: { platform: true, handle: true, url: true, followers: true } },
+      brands: { orderBy: { sort: "asc" }, select: { logoUrl: true, name: true } },
       links: {
         where: { status: "active", showOnPage: true, agencyHidden: false },
         orderBy: [{ sort: "asc" }, { decidedAt: "asc" }],
@@ -136,6 +139,7 @@ async function loadAgency(slug: string, lang: Locale, preview: boolean): Promise
     accent: a.accent,
     hasEnglish: !!(a.nameEn || a.bioEn || a.taglineEn),
     accounts: a.accounts,
+    brands: a.brands,
     creators,
     stats: {
       creators: creators.length,

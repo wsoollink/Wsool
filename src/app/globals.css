@@ -173,11 +173,11 @@
 
 /* Marketing + agencies pages (owner, Nov 2026): menu links (#features, #pricing…) scroll smoothly and stop below
    the sticky header. Scoped with :has so dashboard navigation keeps its instant scroll. */
-html:has(header > .mk-home-1, header > .mk-pricing-1, .ag-grid) {
+html:has(header > .mk-home-1, header > .mk-pricing-1, .ag-grid, .ag-page) {
   scroll-padding-top: 88px;
 }
 @media (prefers-reduced-motion: no-preference) {
-  html:has(header > .mk-home-1, header > .mk-pricing-1, .ag-grid) {
+  html:has(header > .mk-home-1, header > .mk-pricing-1, .ag-grid, .ag-page) {
     scroll-behavior: smooth;
   }
 }

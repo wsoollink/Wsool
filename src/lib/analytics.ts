@@ -1,5 +1,6 @@
 import "server-only";
 import { createHash } from "node:crypto";
+import { signingKey } from "@/lib/signing";
 
 /** Likely bots and link-preview crawlers: never counted. */
 const BOT = /bot|crawl|spider|slurp|facebookexternalhit|whatsapp|telegram|preview|headless|lighthouse|curl|wget|python|node-fetch/i;
@@ -16,7 +17,7 @@ export function today(now = new Date()) {
  * into an IP; the IP itself is never stored.
  */
 export function visitorHash(ip: string, ua: string, pageId: string, day: Date) {
-  const secret = process.env.CRON_SECRET || process.env.SUPABASE_SECRET_KEY || "local";
+  const secret = signingKey("visitor");
   return createHash("sha256").update([secret, ip, ua, pageId, day.toISOString().slice(0, 10)].join("|")).digest("hex").slice(0, 32);
 }
 

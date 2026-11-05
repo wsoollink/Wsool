@@ -89,7 +89,7 @@ export const AGENCY_LEGAL_TEXT: Record<"ar" | "en", Record<LegalKind, LegalDoc>>
         { ul: [
           "الصانع المرتبط بالوكالة: يرى اسم الوكالة وسجل تعديلاتها في صفحته.",
           "الصانع لا يرى من بحث عنه في الدليل، ونعرض له أرقاماً إجمالية فقط (عدد مرات الظهور والفتح).",
-          "مزودو الخدمة الذين نعتمد عليهم: الاستضافة (Netlify و Cloudflare)، وقاعدة البيانات (Supabase)، والبريد ({mailer})، ورصد الأعطال (Sentry).",
+          "مزودو الخدمة الذين نعتمد عليهم: الاستضافة (Netlify و Cloudflare)، وقاعدة البيانات (Supabase)، والبريد ({mailer})، ورصد الأعطال (Sentry)، والتحقق من أن النماذج يرسلها شخص (Cloudflare Turnstile).",
           "الجهات الحكومية المختصة إذا طُلب ذلك نظاماً.",
         ] },
         { p: "لا نبيع بياناتك ولا نستخدمها في الإعلانات." },
@@ -213,7 +213,7 @@ export const AGENCY_LEGAL_TEXT: Record<"ar" | "en", Record<LegalKind, LegalDoc>>
         { ul: [
           "The creator linked to the agency: sees the agency's name and its change log on their page.",
           "Creators don't see who searched for them in the directory; they only see totals (times shown and opened).",
-          "Service providers we rely on: hosting (Netlify and Cloudflare), database (Supabase), email ({mailer}) and error monitoring (Sentry).",
+          "Service providers we rely on: hosting (Netlify and Cloudflare), database (Supabase), email ({mailer}) error monitoring (Sentry) and checking that forms are sent by a person (Cloudflare Turnstile).",
           "Competent government authorities when required by law.",
         ] },
         { p: "We don't sell your data or use it for advertising." },

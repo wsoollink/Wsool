@@ -8,6 +8,7 @@ import { sendEmail } from "@/lib/email/send";
 import { siteOrigin } from "@/lib/site-url";
 import ar from "../../messages/ar.json";
 import en from "../../messages/en.json";
+import { legacySigningKey, signingKey } from "@/lib/signing";
 
 /**
  * Newsletter with double opt-in (CLAUDE.md section 11, phase 6): an address is
@@ -25,11 +26,11 @@ export type NewsletterList = (typeof NEWSLETTER_LISTS)[number];
 /** What an unsubscribe link removes: one list, or all of them (issues sent to everyone, and old links). */
 export type UnsubscribeScope = NewsletterList | "all";
 
-const secret = () => process.env.CRON_SECRET || process.env.SUPABASE_SECRET_KEY || "local";
+
 // Links from before the lists carry no list: "confirm" = creators list, "unsubscribe" = all lists.
 const purposeOf = (kind: "confirm" | "unsubscribe", scope: string | null) => (scope ? `${kind}:${scope}` : kind);
-const sign = (purpose: string, id: string) =>
-  createHmac("sha256", secret()).update(`newsletter:${purpose}:${id}`).digest("base64url").slice(0, 32);
+const sign = (purpose: string, id: string, key = signingKey("newsletter")) =>
+  createHmac("sha256", key).update(`newsletter:${purpose}:${id}`).digest("base64url").slice(0, 32);
 
 const SCOPES: Record<"confirm" | "unsubscribe", readonly string[]> = { confirm: NEWSLETTER_LISTS, unsubscribe: [...NEWSLETTER_LISTS, "all"] };
 
@@ -39,9 +40,15 @@ export function verifyLink(kind: "unsubscribe", id: string, token: string, scope
 export function verifyLink(kind: "confirm" | "unsubscribe", id: string, token: string, scope?: string | null): UnsubscribeScope | null {
   const l = scope || null;
   if (l && !SCOPES[kind].includes(l)) return null;
-  const expected = Buffer.from(sign(purposeOf(kind, l), id));
   const given = Buffer.from(String(token ?? ""));
-  if (given.length !== expected.length || !timingSafeEqual(given, expected)) return null;
+  // Links already in inboxes may be signed with the key from before SIGNING_SECRET.
+  const old = legacySigningKey();
+  const keys = old ? [signingKey("newsletter"), old] : [signingKey("newsletter")];
+  const ok = keys.some((key) => {
+    const expected = Buffer.from(sign(purposeOf(kind, l), id, key));
+    return given.length === expected.length && timingSafeEqual(given, expected);
+  });
+  if (!ok) return null;
   return (l ?? (kind === "confirm" ? "creators" : "all")) as UnsubscribeScope;
 }
 

@@ -13,6 +13,8 @@
 ## 1. الأمان (الأهم)
 - [ ] تفعيل التحقق بخطوتين (2FA) في كل الحسابات: GitHub، Netlify، Supabase، Cloudflare، Google Workspace، Resend، Anthropic.
 - [ ] التأكد إن كل المفاتيح السرية في Netlify معلّم عليها «Contains secret values» (ما عدا اللي تبدأ بـ `NEXT_PUBLIC_`).
+- [ ] **Cloudflare Turnstile**: Cloudflare → Turnstile → Add widget (الاسم «Wsool»، الدومين `wsool.link`، النوع Managed) → حط `NEXT_PUBLIC_TURNSTILE_SITE_KEY` (عادي) و `TURNSTILE_SECRET_KEY` (سري) في Netlify.
+- [ ] **SIGNING_SECRET** في Netlify (سري): نص عشوائي طويل (مثلاً من `openssl rand -base64 48`). بعده اللي فتحوا صفحات خاصة بكلمة مرور يدخلونها مرة ثانية.
 
 ## 2. الاشتراكات والمصاريف
 - [ ] **ترقية Supabase للخطة المدفوعة (Pro، حوالي 25$ شهرياً)**: نسخ احتياطية يومية، اتصالات أكثر لقاعدة البيانات،

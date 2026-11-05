@@ -9,6 +9,7 @@ import { TextAreaField, TextField } from "@/components/ui/Field";
 import { SUPPORT_EMAIL } from "@/config/site";
 import { CONTACT_TOPICS, type ContactTopic } from "@/lib/validation/support-message";
 import { sendSupportMessage, type ContactResult } from "./actions";
+import { turnstileToken } from "@/lib/turnstile-client";
 
 const EMPTY = { name: "", email: "", topic: "billing" as ContactTopic, username: "", message: "", website: "" };
 
@@ -23,7 +24,7 @@ export function ContactForm({ lang, topic }: { lang: "ar" | "en"; topic?: Contac
   function submit(e: FormEvent) {
     e.preventDefault();
     startTransition(async () => {
-      const res = await sendSupportMessage(form, lang);
+      const res = await sendSupportMessage(form, lang, await turnstileToken("contact"));
       setResult(res);
       if (res.ok) setForm(EMPTY);
     });
@@ -65,8 +66,8 @@ export function ContactForm({ lang, topic }: { lang: "ar" | "en"; topic?: Contac
         <label htmlFor="c-website">Website</label>
         <input id="c-website" tabIndex={-1} autoComplete="off" value={form.website} onChange={set("website")} />
       </div>
-      {(error === "rate" || error === "failed") && (
-        <p role="alert" className="text-sm text-bad">{error === "rate" ? t("errors.rate") : t("errors.failed", { email: SUPPORT_EMAIL })}</p>
+      {(error === "rate" || error === "failed" || error === "captcha") && (
+        <p role="alert" className="text-sm text-bad">{error === "rate" ? t("errors.rate") : error === "captcha" ? t("errors.captcha") : t("errors.failed", { email: SUPPORT_EMAIL })}</p>
       )}
       <Button type="submit" disabled={pending} className="w-full">{pending ? t("sending") : t("send")}</Button>
       <p className="text-xs text-muted">

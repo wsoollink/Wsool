@@ -10,11 +10,12 @@ import { ensureAccount } from "@/lib/account";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { isReviewEmail, reviewTokenHash } from "@/lib/mobile/review-login";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { isHuman } from "@/lib/turnstile";
 
 export type LoginState = {
   step: "email" | "code";
   email?: string;
-  error?: "invalid_email" | "invalid_code" | "rate_limited" | "failed";
+  error?: "invalid_email" | "invalid_code" | "rate_limited" | "failed" | "captcha";
 };
 
 const emailSchema = z.string().trim().toLowerCase().pipe(z.email().max(254));
@@ -31,6 +32,9 @@ export async function requestCode(_prev: LoginState, formData: FormData): Promis
   if (!(await rateLimit(`otp-ip:${ip}`, 10, 3600)) || !(await rateLimit(`otp-email:${email.data}`, 5, 3600))) {
     return { step: "email", email: email.data, error: "rate_limited" };
   }
+
+  // A person, not a script (Cloudflare Turnstile token from the form; off without its keys).
+  if (!(await isHuman(formData.get("cf"), "login"))) return { step: "email", email: email.data, error: "captcha" };
 
   // Platform reviewers' address: the code is fixed (src/lib/mobile/review-login.ts), nothing to email.
   if (isReviewEmail(email.data)) return { step: "code", email: email.data };

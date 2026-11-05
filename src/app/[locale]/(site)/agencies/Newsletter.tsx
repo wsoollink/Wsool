@@ -4,6 +4,7 @@ import { useState, useTransition, type FormEvent } from "react";
 import { useTranslations } from "next-intl";
 import { CircleCheck, Mail } from "lucide-react";
 import { joinNewsletter } from "@/components/marketing/actions";
+import { turnstileToken } from "@/lib/turnstile-client";
 
 /** Agencies newsletter sign-up above the agencies footer (the agencies list, double opt-in). */
 export function AgenciesNewsletter({ lang }: { lang: "ar" | "en" }) {
@@ -13,7 +14,7 @@ export function AgenciesNewsletter({ lang }: { lang: "ar" | "en" }) {
   const [pending, start] = useTransition();
   const submit = (e: FormEvent) => {
     e.preventDefault();
-    start(async () => setState((await joinNewsletter(email, lang, "agencies", "agencies")).ok ? "done" : "error"));
+    start(async () => setState((await joinNewsletter(email, lang, "agencies", "agencies", await turnstileToken("newsletter"))).ok ? "done" : "error"));
   };
   return (
     <section className="mx-auto max-w-[1180px] px-4 pb-20">

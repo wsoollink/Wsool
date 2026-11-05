@@ -1,6 +1,7 @@
 "use client";
 
-import { Suspense, useActionState, useState } from "react";
+import { startTransition, Suspense, useActionState, useState } from "react";
+import { turnstileToken } from "@/lib/turnstile-client";
 import { useTranslations } from "next-intl";
 import { buttonClasses } from "@/components/ui/Button";
 import { requestCode, verifyCode, type LoginState } from "./actions";
@@ -14,13 +15,22 @@ export function LoginForm() {
   const [sent, sendAction, sending] = useActionState<LoginState, FormData>(requestCode, { step: "email" });
   const [checked, verifyAction, verifying] = useActionState<LoginState, FormData>(verifyCode, { step: "code" });
   const [editingEmail, setEditingEmail] = useState(false);
+  const [checking, setChecking] = useState(false);
 
   const onCodeStep = sent.step === "code" && !editingEmail;
   const error = onCodeStep ? checked.error : sent.error;
 
   if (!onCodeStep) {
     return (
-      <form action={(fd) => { setEditingEmail(false); sendAction(fd); }} className="flex flex-col gap-4" noValidate>
+      <form
+        action={async (fd) => {
+          setEditingEmail(false);
+          setChecking(true);
+          fd.set("cf", await turnstileToken("login"));
+          setChecking(false);
+          startTransition(() => sendAction(fd));
+        }}
+        className="flex flex-col gap-4" noValidate>
         <div className="flex flex-col gap-2">
           <label htmlFor="email" className="text-sm font-medium">{t("emailLabel")}</label>
           <input
@@ -31,8 +41,8 @@ export function LoginForm() {
           />
         </div>
         {error && <p id="login-error" role="alert" className="text-sm text-bad">{t(`errors.${error}`)}</p>}
-        <button type="submit" disabled={sending} className={buttonClasses("primary", "w-full")}>
-          {sending ? t("sending") : t("sendCode")}
+        <button type="submit" disabled={sending || checking} className={buttonClasses("primary", "w-full")}>
+          {sending || checking ? t("sending") : t("sendCode")}
         </button>
       </form>
     );

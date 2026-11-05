@@ -2,13 +2,14 @@ import "server-only";
 import { createHmac, timingSafeEqual } from "node:crypto";
 import type { Currency } from "@/generated/prisma/enums";
 import type { Payment, PaymentProvider } from "./types";
+import { signingKey } from "@/lib/signing";
 
 /**
  * Test provider: no money moves. Payment ids carry their outcome and are
  * signed with a server secret, so a browser can't forge a "paid" result.
  * Tokens: "mock_tok_ok" renews fine, "mock_tok_fail" always fails.
  */
-const secret = () => process.env.CRON_SECRET || process.env.SUPABASE_SECRET_KEY || "local-mock";
+const secret = () => signingKey("mock-payment");
 
 function sign(body: string) {
   return createHmac("sha256", secret()).update(body).digest("base64url").slice(0, 22);

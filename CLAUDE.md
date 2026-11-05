@@ -741,8 +741,19 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   options in `src/sentry.shared.ts` (off without `NEXT_PUBLIC_SENTRY_DSN`; `sendDefaultPii: false`, no replay, 5% traces);
   `withSentryConfig` in `next.config.ts` (source maps only with `SENTRY_AUTH_TOKEN` + `SENTRY_ORG`/`SENTRY_PROJECT`).
   Region EU (owner). Listed in the privacy policy. Uptime: UptimeRobot on `https://wsool.link` (owner's account).
-- Not done yet (low): dedicated signing secrets instead of `CRON_SECRET` for mock payments / investor cookie / newsletter
-  links / visitor hash; cleanup of uploaded files no row uses; Turnstile on sign-up forms.
+- **Turnstile** (owner, Nov 2026): Cloudflare bot check on the web login code request (`requestCode`, action `login`), newsletter
+  sign-ups (`joinNewsletter`, `newsletter`), `/contact` (`contact`) and the agency apply form (`agency_apply`). Browser:
+  `turnstileToken(action)` (`src/lib/turnstile-client.ts`, one invisible `interaction-only` widget in a fixed box at the bottom,
+  removed after the token) → server `isHuman(token, action)` (`src/lib/turnstile.ts`, fails closed, checks the action). Keys
+  `NEXT_PUBLIC_TURNSTILE_SITE_KEY` + `TURNSTILE_SECRET_KEY`; both unset = off. The app's `/api/mobile/v1/auth/otp` has no widget (rate
+  limits only). Local tests: the sandbox can't reach Cloudflare: fake the script with `page.route` and point `TURNSTILE_VERIFY_URL` at a
+  fake server. Privacy policies list it.
+- **Signing keys**: `signingKey(purpose)` (`src/lib/signing.ts`) = HMAC of `SIGNING_SECRET` per purpose (newsletter, private-view,
+  investor, visitor, mock-payment); without it the old shared `CRON_SECRET` key (no change). Newsletter links also accept the old key
+  (`legacySigningKey`), so links already emailed keep working; private-view / investor unlock cookies are asked again once.
+- **Unused uploads**: `cleanOrphanUploads()` (`src/lib/storage-cleanup.ts`, hourly job, once a day, 40 owner folders per day in rotation)
+  deletes `media` files older than 7 days that no row uses (the `unused()` SQL lists every column holding a file URL + newsletter bodies:
+  **a new column that stores an uploaded file URL must be added there**). The private `verification` bucket is not touched.
 
 ### Design pass (Oct 2026, owner decisions)
 - The built screens are being matched to the owner's design artifacts ("صفحة الصانع", "لوحة التحكم",

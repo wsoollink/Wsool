@@ -7,6 +7,7 @@ import { siteOrigin } from "@/lib/site-url";
 import { purgeRateLimits } from "@/lib/rate-limit";
 import { purgeAgencyRequests } from "@/lib/agency";
 import { runReminders } from "@/lib/reminders";
+import { cleanOrphanUploads } from "@/lib/storage-cleanup";
 
 /**
  * Hourly job (billing, reminders, permanent deletion after the 30-day undo window, platform link updates), called by the Netlify scheduled function
@@ -27,5 +28,7 @@ export async function POST(req: Request) {
   const connections = await syncConnections().catch((err) => ({ error: String(err) }));
   // Telegram's bot sends channel updates to this site (set once, checked hourly).
   await ensureTelegramWebhook(siteOrigin()).catch((err) => console.error("[telegram] webhook", err));
-  return Response.json({ ...report, purged, reminders, connections });
+  // Uploaded files no row uses (once a day, a slice of the folders).
+  const cleaned = await cleanOrphanUploads().catch((err) => { console.error("[storage-cleanup]", err); return 0; });
+  return Response.json({ ...report, purged, reminders, connections, cleaned });
 }

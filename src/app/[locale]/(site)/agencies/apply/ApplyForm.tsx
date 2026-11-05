@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { TextAreaField, TextField } from "@/components/ui/Field";
 import type { AgencyRequestField } from "@/lib/validation/agency-request";
 import { applyAgency, type ApplyResult } from "./actions";
+import { turnstileToken } from "@/lib/turnstile-client";
 
 const EMPTY = { name: "", agencyName: "", email: "", phone: "", note: "", website: "" };
 type Text = keyof typeof EMPTY;
@@ -36,7 +37,7 @@ export function ApplyForm({ lang }: { lang: "ar" | "en" }) {
   return (
     <form
       noValidate
-      onSubmit={(e: FormEvent) => { e.preventDefault(); start(async () => setResult(await applyAgency({ ...form, newsletter }, lang))); }}
+      onSubmit={(e: FormEvent) => { e.preventDefault(); start(async () => setResult(await applyAgency({ ...form, newsletter }, lang, await turnstileToken("agency_apply")))); }}
       className="flex flex-col gap-4"
     >
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -55,7 +56,7 @@ export function ApplyForm({ lang }: { lang: "ar" | "en" }) {
         <label htmlFor="ap-website">Website</label>
         <input id="ap-website" tabIndex={-1} autoComplete="off" value={form.website} onChange={set("website")} />
       </div>
-      {result && !result.ok && (result.error === "rate" || result.error === "failed") && (
+      {result && !result.ok && (result.error === "rate" || result.error === "failed" || result.error === "captcha") && (
         <p role="alert" className="text-sm text-bad">{t(`errors.${result.error}`)}</p>
       )}
       <Button type="submit" disabled={pending} className="self-start">{pending ? t("sending") : t("send")}</Button>

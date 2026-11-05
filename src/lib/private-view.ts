@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { db } from "@/lib/db";
 import { hashPassword } from "@/lib/investor";
 import { canEncryptTokens, openToken, sealToken } from "@/lib/token-box";
+import { signingKey } from "@/lib/signing";
 
 /**
  * Private view of a creator page (owner, Nov 2026, Pro). Sections the creator marks "private" (or the whole page)
@@ -16,7 +17,7 @@ import { canEncryptTokens, openToken, sealToken } from "@/lib/token-box";
 export const UNLOCK_DAYS = 30;
 export const LINK_PARAM = "k";
 
-const secret = () => process.env.CRON_SECRET || process.env.SUPABASE_SECRET_KEY || "local";
+const secret = () => signingKey("private-view");
 const sign = (text: string) => createHmac("sha256", secret()).update(`private-view:${text}`).digest("base64url");
 
 export const newLinkToken = () => randomBytes(18).toString("base64url");

@@ -9,6 +9,7 @@ import { normalizeUsername, usernameFormatError } from "@/config/usernames";
 import type { Locale } from "@/i18n/config";
 import { setLocale } from "@/i18n/actions";
 import { checkLink, joinNewsletter } from "./actions";
+import { turnstileToken } from "@/lib/turnstile-client";
 import { CLAIM_COOKIE, MARKETING_TEXT, TEMPLATES } from "./content";
 
 const GOOD = "#12805C", BAD = "#D93A3A";
@@ -75,7 +76,7 @@ export function useMarketing(lang: Locale, opts: { initialClaim?: string; source
     if (!EMAIL.test(nl)) return setNlErr(true);
     setNlErr(false);
     startTransition(async () => {
-      const res = await joinNewsletter(nl, lang, opts.source ?? "home");
+      const res = await joinNewsletter(nl, lang, opts.source ?? "home", "creators", await turnstileToken("newsletter"));
       if (res.ok) setNlDone(true);
       else setNlErr(true);
     });

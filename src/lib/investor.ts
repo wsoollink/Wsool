@@ -1,5 +1,6 @@
 import "server-only";
 import { createHash, createHmac, randomBytes, scryptSync, timingSafeEqual } from "node:crypto";
+import { signingKey } from "@/lib/signing";
 
 /** Investor link tokens: only the SHA-256 is stored; the token is shown once. */
 export const newToken = () => randomBytes(24).toString("base64url");
@@ -17,7 +18,7 @@ export function checkPassword(password: string, stored: string) {
   return given.length === expected.length && timingSafeEqual(given, expected);
 }
 
-const secret = () => process.env.CRON_SECRET || process.env.SUPABASE_SECRET_KEY || "local";
+const secret = () => signingKey("investor");
 /** Cookie value proving the password was entered for this link. */
 export const unlockValue = (linkId: string) => createHmac("sha256", secret()).update(`investor:${linkId}`).digest("base64url");
 export const unlockCookie = (linkId: string) => `inv_${linkId.slice(0, 8)}`;

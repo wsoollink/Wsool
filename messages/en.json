@@ -135,7 +135,8 @@
       "invalid_code": "The code is wrong or has expired.",
       "rate_limited": "Too many attempts. Please wait a bit and try again.",
       "failed": "Something went wrong. Please try again.",
-      "google": "We couldn't sign you in with Google. Try again or use your email."
+      "google": "We couldn't sign you in with Google. Try again or use your email.",
+      "captcha": "We couldn't confirm you're not a bot. Refresh the page and try again."
     },
     "agree": "By continuing, you agree to the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>.",
     "google": "Continue with Google",
@@ -2562,7 +2563,8 @@
       "email": "Enter a valid email.",
       "message": "Write your message (at least 10 characters).",
       "rate": "Too many messages. Try again in an hour, or message us on WhatsApp.",
-      "failed": "We couldn't send your message. Try again, or email us at {email}."
+      "failed": "We couldn't send your message. Try again, or email us at {email}.",
+      "captcha": "We couldn't confirm you're not a bot. Refresh the page and try again."
     },
     "topics": {
       "billing": "Subscription & billing",
@@ -3105,7 +3107,8 @@
       "phone": "Enter a valid phone number.",
       "note": "That note is too long.",
       "rate": "Too many requests. Try again shortly.",
-      "failed": "Couldn't send the request. Try again."
+      "failed": "Couldn't send the request. Try again.",
+      "captcha": "We couldn't confirm you're not a bot. Refresh the page and try again."
     },
     "newsletter": "Send me Wsool's newsletter for agencies (about once a month)"
   },

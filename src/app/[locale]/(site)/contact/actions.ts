@@ -4,9 +4,10 @@ import { SUPPORT_EMAIL } from "@/config/site";
 import { sendEmail } from "@/lib/email/send";
 import { renderEmail } from "@/lib/email/layout";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
+import { isHuman } from "@/lib/turnstile";
 import { supportMessageSchema, type SupportMessage } from "@/lib/validation/support-message";
 
-export type ContactResult = { ok: true } | { ok: false; error: "name" | "email" | "message" | "rate" | "failed" };
+export type ContactResult = { ok: true } | { ok: false; error: "name" | "email" | "message" | "rate" | "failed" | "captcha" };
 
 const TOPIC_NAMES = {
   billing: "اشتراك وفواتير", verification: "توثيق الحسابات", technical: "مشكلة تقنية",
@@ -17,7 +18,7 @@ const TOPIC_NAMES = {
  * "Contact us" form: emails the message to support@ with the visitor as reply-to, so a reply in Gmail goes straight
  * back to them. Nothing is stored. Limits: 5 messages an hour per IP, 3 per email address.
  */
-export async function sendSupportMessage(input: SupportMessage, lang: "ar" | "en"): Promise<ContactResult> {
+export async function sendSupportMessage(input: SupportMessage, lang: "ar" | "en", captcha?: string): Promise<ContactResult> {
   const parsed = supportMessageSchema.safeParse(input);
   if (!parsed.success) {
     const first = parsed.error.issues[0]?.message;
@@ -26,6 +27,7 @@ export async function sendSupportMessage(input: SupportMessage, lang: "ar" | "en
   const m = parsed.data;
   // Bots fill the hidden field: answer as if it worked, send nothing.
   if (m.website) return { ok: true };
+  if (!(await isHuman(captcha, "contact"))) return { ok: false, error: "captcha" };
   if (!(await rateLimit(`contact-ip:${await clientIp()}`, 5, 3600)) || !(await rateLimit(`contact-email:${m.email}`, 3, 3600))) {
     return { ok: false, error: "rate" };
   }

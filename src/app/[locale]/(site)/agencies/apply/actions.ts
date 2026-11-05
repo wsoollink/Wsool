@@ -5,20 +5,22 @@ import { db } from "@/lib/db";
 import { renderEmail } from "@/lib/email/layout";
 import { sendEmail } from "@/lib/email/send";
 import { subscribe } from "@/lib/newsletter";
+import { isHuman } from "@/lib/turnstile";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { agencyRequestSchema, type AgencyRequestField, type AgencyRequestInput } from "@/lib/validation/agency-request";
 
-export type ApplyResult = { ok: true } | { ok: false; error: AgencyRequestField | "rate" | "failed" };
+export type ApplyResult = { ok: true } | { ok: false; error: AgencyRequestField | "rate" | "failed" | "captcha" };
 
 /**
  * "Join as an agency" (/agencies/apply): saved for the owner (admin/agencies, one click opens the account) and
  * emailed to support@ with the applicant as reply-to. 5 an hour per IP, 3 a day per email.
  */
-export async function applyAgency(input: AgencyRequestInput, lang: "ar" | "en"): Promise<ApplyResult> {
+export async function applyAgency(input: AgencyRequestInput, lang: "ar" | "en", captcha?: string): Promise<ApplyResult> {
   const parsed = agencyRequestSchema.safeParse(input);
   if (!parsed.success) return { ok: false, error: (parsed.error.issues[0]?.message as AgencyRequestField) ?? "name" };
   const r = parsed.data;
   if (r.website) return { ok: true };
+  if (!(await isHuman(captcha, "agency_apply"))) return { ok: false, error: "captcha" };
   if (!(await rateLimit(`agency-apply-ip:${await clientIp()}`, 5, 3600)) || !(await rateLimit(`agency-apply:${r.email}`, 3, 86_400))) {
     return { ok: false, error: "rate" };
   }

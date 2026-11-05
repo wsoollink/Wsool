@@ -13,8 +13,8 @@
 ## 1. الأمان (الأهم)
 - [ ] تفعيل التحقق بخطوتين (2FA) في كل الحسابات: GitHub، Netlify، Supabase، Cloudflare، Google Workspace، Resend، Anthropic.
 - [ ] التأكد إن كل المفاتيح السرية في Netlify معلّم عليها «Contains secret values» (ما عدا اللي تبدأ بـ `NEXT_PUBLIC_`).
-- [ ] **Cloudflare Turnstile**: Cloudflare → Turnstile → Add widget (الاسم «Wsool»، الدومين `wsool.link`، النوع Managed) → حط `NEXT_PUBLIC_TURNSTILE_SITE_KEY` (عادي) و `TURNSTILE_SECRET_KEY` (سري) في Netlify.
-- [ ] **SIGNING_SECRET** في Netlify (سري): نص عشوائي طويل (مثلاً من `openssl rand -base64 48`). بعده اللي فتحوا صفحات خاصة بكلمة مرور يدخلونها مرة ثانية.
+- [x] **Cloudflare Turnstile**: Cloudflare → Turnstile → Add widget (الاسم «Wsool»، الدومين `wsool.link`، النوع Managed) → حط `NEXT_PUBLIC_TURNSTILE_SITE_KEY` (عادي) و `TURNSTILE_SECRET_KEY` (سري) في Netlify.
+- [x] **SIGNING_SECRET** في Netlify (سري): نص عشوائي طويل (مثلاً من `openssl rand -base64 48`). بعده اللي فتحوا صفحات خاصة بكلمة مرور يدخلونها مرة ثانية.
 
 ## 2. الاشتراكات والمصاريف
 - [ ] **ترقية Supabase للخطة المدفوعة (Pro، حوالي 25$ شهرياً)**: نسخ احتياطية يومية، اتصالات أكثر لقاعدة البيانات،
@@ -40,7 +40,7 @@
 
 ## 3.5 ربط المنصات
 - [x] YouTube: تجهيز Google Cloud + المفاتيح في Netlify + نشر التطبيق + طلب المراجعة (أُرسل 25 أكتوبر 2026).
-- [ ] YouTube: موافقة Google على الصلاحيات (بعدها يختفي تحذير «غير موثّق»).
+- [x] YouTube: موافقة Google على الصلاحيات (بعدها يختفي تحذير «غير موثّق»). ✅ اعتمدت مع الاسم والشعار (نوفمبر 2026).
   قبل موافقة Google الربط يشتغل بس لحسابات التجربة وينتهي بعد 7 أيام.
 
 ## 4. الصفحات القانونية

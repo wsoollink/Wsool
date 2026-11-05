@@ -68,7 +68,7 @@ export function buildDemoAgency(lang: Locale): PublicAgency {
       { platform: "tiktok", handle: "nojoom.agency", url: "https://www.tiktok.com/", followers: 35_600 },
     ],
     // Real brand logos chosen by the owner (Nov 2026), same as the demo creator page.
-    brands: [["ulanzi", "Ulanzi"], ["oppo", "OPPO"], ["anker", "Anker"], ["xiaomi", "Xiaomi"], ["honor", "HONOR"], ["half-million", "½M"]].map(([b, name]) => ({ logoUrl: `/demo/logo-${b}.png`, name })),
+    brands: [["ulanzi", "Ulanzi"], ["oppo", "OPPO"], ["anker", "Anker"], ["xiaomi", "Xiaomi"], ["honor", "HONOR"], ["half-million", "½M"], ["google", "Google"], ["vivo", "vivo"], ["samsung", "Samsung"]].map(([b, name]) => ({ logoUrl: `/demo/logo-${b}.png`, name })),
     creators,
     stats: {
       creators: creators.length,

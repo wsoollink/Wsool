@@ -71,6 +71,9 @@ const BRANDS = [
   ["xiaomi", "Xiaomi", "Xiaomi"],
   ["honor", "HONOR", "HONOR"],
   ["half-million", "½M", "½M"],
+  ["google", "Google", "Google"],
+  ["vivo", "vivo", "vivo"],
+  ["samsung", "Samsung", "Samsung"],
 ] as const;
 
 // Past work: one per brand above (cover public/demo/work-N.jpg + clip work-N.mp4, drawn by scripts/demo-works.py).

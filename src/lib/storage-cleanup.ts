@@ -36,6 +36,8 @@ async function unused(urls: string[]): Promise<Set<string>> {
  * folders. Verification screenshots (private bucket) are not touched. Returns how many files were removed.
  */
 export async function cleanOrphanUploads(now = new Date()): Promise<number> {
+  // Never against a local database: it doesn't know the real files in Supabase Storage and would delete them.
+  if (/@(localhost|127\.0\.0\.1)[:/]/.test(process.env.DATABASE_URL ?? "")) return 0;
   if (!(await rateLimit(`storage-cleanup:${now.toISOString().slice(0, 10)}`, 1, 2 * 86_400))) return 0;
   const started = Date.now();
   const bucket = createSupabaseAdmin().storage.from(MEDIA_BUCKET);

@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { settleCheckout } from "@/lib/billing";
 import { paymentProvider } from "@/lib/payments";
+import { db } from "@/lib/db";
 
 /**
  * The provider sends the browser here after checkout. The payment is read
@@ -17,5 +18,8 @@ export async function GET(req: NextRequest) {
     const payment = await provider.getPayment(paymentId).catch(() => null);
     if (payment) result = await settleCheckout(invoiceId, payment);
   }
-  return NextResponse.redirect(new URL(`/dashboard/subscription?payment=${result}`, req.nextUrl.origin), 303);
+  // Agency plan invoices go back to the agency's Subscription tab.
+  const agency = /^[0-9a-f-]{36}$/.test(invoiceId) ? (await db.invoice.findUnique({ where: { id: invoiceId }, select: { agencyId: true } }))?.agencyId : null;
+  const back = agency ? `/agency?tab=billing&payment=${result}` : `/dashboard/subscription?payment=${result}`;
+  return NextResponse.redirect(new URL(back, req.nextUrl.origin), 303);
 }

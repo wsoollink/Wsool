@@ -35,7 +35,7 @@ async function Overview({ lang }: { lang: Locale }) {
       where: { status: { in: ["paid", "refunded", "failed"] } },
       orderBy: { createdAt: "desc" },
       take: 50,
-      include: { subscription: { select: { user: { select: { email: true, page: { select: { username: true } } } } } } },
+      include: { subscription: { select: { user: { select: { email: true, page: { select: { username: true } } } } } }, agency: { select: { name: true } } },
     }),
   ]);
   // MRR in SAR, VAT included as charged (yearly plans count as 1/12; USD at the fixed peg).
@@ -98,13 +98,14 @@ async function Overview({ lang }: { lang: Locale }) {
             </thead>
             <tbody>
               {invoices.map((inv) => {
-                const who = inv.subscription.user.page?.username ?? inv.subscription.user.email;
+                // Agency plan invoices (owner, Nov 2026) show the agency's name and open the Agencies page.
+                const who = inv.subscription ? (inv.subscription.user.page?.username ?? inv.subscription.user.email) : (inv.agency?.name ?? "—");
                 const tone = inv.status === "paid" ? "bg-good/10 text-good" : inv.status === "refunded" ? "bg-warn/10 text-warn" : "bg-bad/8 text-bad";
                 return (
                   <tr key={inv.id} className="border-b border-navy/6 last:border-0">
                     <td className="px-4 py-3 whitespace-nowrap" dir="ltr">{invoiceLabel(inv.number)} <span className="text-xs text-muted">{t(`kind.${inv.kind}`)}</span></td>
-                    <td className="px-4 py-3" dir="ltr"><Link href={`/admin/users/${inv.userId}`} className="inline-flex min-h-11 items-center font-bold text-blue">{who}</Link></td>
-                    <td className="px-4 py-3">{t(`cycle.${inv.cycle}`)}</td>
+                    <td className="px-4 py-3" dir={inv.agencyId ? undefined : "ltr"}><Link href={inv.agencyId ? "/admin/agencies" : `/admin/users/${inv.userId}`} className="inline-flex min-h-11 items-center font-bold text-blue">{who}</Link></td>
+                    <td className="px-4 py-3">{inv.agencyPlan ? `${t("agencyPlan")} · ` : ""}{t(`cycle.${inv.cycle}`)}</td>
                     <td className="px-4 py-3 font-bold whitespace-nowrap">{formatPrice(Number(inv.amount), inv.currency, lang)}</td>
                     <td className="px-4 py-3">
                       <span className={`rounded-full px-2.5 py-1 text-xs font-bold ${tone}`}>{t(`status.${inv.status}`)}</span>

@@ -1312,7 +1312,7 @@
       "noPayments": "No payments yet.",
       "table": {
         "invoice": "Invoice",
-        "creator": "Creator",
+        "creator": "Creator / agency",
         "amount": "Amount",
         "status": "Status",
         "date": "Date",
@@ -1345,7 +1345,8 @@
       "cycle": {
         "monthly": "Monthly",
         "yearly": "Yearly"
-      }
+      },
+      "agencyPlan": "Agency plan"
     },
     "roleOwner": "Account owner",
     "roleStaff": "Wsool team",
@@ -2189,6 +2190,42 @@
       "title": "Your private link was opened",
       "body": "The private link you made for {name} was just opened for the first time.\nSee how often it's opened, or revoke it, in Privacy & visibility.",
       "cta": "Open Privacy & visibility"
+    },
+    "agency_payment_receipt": {
+      "subject": "Payment received: invoice {invoice}",
+      "title": "Thanks, your agency plan is active",
+      "body": "We received {amount} (VAT included) for your agency plan.\nIt's active until {periodEndDate} and renews automatically.",
+      "cta": "Open subscription"
+    },
+    "agency_renewal_receipt": {
+      "subject": "Your agency plan renewed: invoice {invoice}",
+      "title": "Agency plan renewed",
+      "body": "We renewed your agency plan for {amount} (VAT included).\nIt's active until {periodEndDate}.",
+      "cta": "Open subscription"
+    },
+    "agency_payment_failed": {
+      "subject": "We couldn't renew your agency plan",
+      "title": "Renewal payment failed",
+      "body": "We tried to renew your agency plan for {amount} and the payment didn't go through.\nWe'll try again on {retryDate}. You can pay now with another card from the Subscription tab.",
+      "cta": "Pay now"
+    },
+    "agency_refund_issued": {
+      "subject": "Refund for invoice {invoice}",
+      "title": "Refund issued",
+      "body": "We refunded {amount} to your card for invoice {invoice}.",
+      "cta": "Open subscription"
+    },
+    "agency_plan_expired": {
+      "subject": "Your agency plan ended",
+      "title": "Agency plan ended",
+      "body": "You can't invite new creators until you renew.\nLinked creators stay for {days} days; if the plan isn't renewed they'll be unlinked on {unlinkDate}.",
+      "cta": "Renew plan"
+    },
+    "agency_links_ended": {
+      "subject": "Your agency's creators were unlinked",
+      "title": "Creators unlinked",
+      "body": "Your agency plan ended {days} days ago without renewal, so {count} creators were unlinked. You can invite them again after you renew.",
+      "cta": "Open subscription"
     }
   },
   "Notifications": {
@@ -2597,7 +2634,12 @@
     "loadError": "We couldn't load the payment form. Refresh the page and try again.",
     "saveNote": "Payments are processed securely by Moyasar; we never store your card details. The card is saved with Moyasar for auto-renewal, which you can turn off anytime on the Subscription page.",
     "refund": "Full refund within 7 days of your first subscription: <link>refund policy</link>.",
-    "back": "Back to Subscription"
+    "back": "Back to Subscription",
+    "agencyPlan": "Agency plan {plan} · {cycle}",
+    "agencyPlans": {
+      "starter": "Small",
+      "growth": "Medium"
+    }
   },
   "Agencies": {
     "metaTitle": "Wsool for agencies and marketing companies",
@@ -3297,7 +3339,42 @@
     "ended": "Ended on {date}",
     "endsOn": "Ends on {date}",
     "expiredBanner": "Your {plan} has ended. Linked creators stay, but you can't invite new ones until the plan is renewed.",
-    "renew": "Renew the plan",
-    "expired": "Ended"
+    "renew": "Renew plan",
+    "expired": "Ended",
+    "errors": {
+      "disabled": "Online payment isn't available right now. Message us on WhatsApp.",
+      "already_active": "This plan is active and renews automatically.",
+      "downgrade": "The bigger plan is paid right now. You can move to the smaller one at renewal.",
+      "not_agency": "Company accounts subscribe by contacting us.",
+      "failed": "We couldn't open the payment page. Try again."
+    },
+    "nextSaved": "✓ Saved. The change starts at the next renewal.",
+    "renewsAuto": "Your current plan, renews automatically",
+    "atRenewal": "Switch at renewal",
+    "saving": "Saving…",
+    "opening": "Opening payment…",
+    "subscribe": "Subscribe now",
+    "autoRenew": "Auto-renew",
+    "autoRenewOn": "The plan renews automatically with the saved card.",
+    "autoRenewOff": "The plan ends on its date and doesn't renew.",
+    "payment": {
+      "paid": "✓ Payment received and your plan is active. The invoice is in your email.",
+      "pending": "The payment is processing. We'll update your plan as soon as it's confirmed.",
+      "failed": "The payment didn't go through. Try again or use another card."
+    },
+    "unlinkOn": "If the plan isn't renewed, creators will be unlinked on {date} ({days} days after it ended).",
+    "retrying": "The renewal payment failed; we'll try again on {date}.",
+    "card": "Card: {card}",
+    "nextCharge": "Next renewal on {date} for {amount}",
+    "payNoteOnline": "Pay with mada, Apple Pay or a card; prices include VAT. The tax invoice is emailed to you.",
+    "invoices": "Invoices",
+    "invoiceStatus": {
+      "paid": "Paid",
+      "refunded": "Refunded",
+      "failed": "Failed"
+    },
+    "view": "View",
+    "invoiceLine": "Wsool agency plan {plan} ({cycle})",
+    "backToBilling": "← Subscription"
   }
 }

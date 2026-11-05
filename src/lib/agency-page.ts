@@ -21,7 +21,11 @@ export function refreshAgencyPage(slug: string | null | undefined) {
   try {
     updateTag(agencyCacheTag(slug));
   } catch {
-    revalidateTag(agencyCacheTag(slug), { expire: 0 });
+    try {
+      revalidateTag(agencyCacheTag(slug), { expire: 0 });
+    } catch (err) {
+      console.warn("[cache] agency page refresh skipped", slug, String(err).slice(0, 120));
+    }
   }
 }
 

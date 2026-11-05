@@ -79,7 +79,8 @@ export async function setAgencyPlan(id: string, plan: string, cycle: string | nu
   if (!agency) return { error: "invalid" };
   const planUntil = parsed.data.until ? new Date(`${parsed.data.until}T23:59:59+03:00`) : null;
   await db.$transaction(async (tx) => {
-    await tx.agency.update({ where: { id }, data: { plan: parsed.data.plan, planCycle: parsed.data.cycle, planUntil } });
+    // Set by hand (custom deal, bank transfer, trial date): the card is no longer charged automatically.
+    await tx.agency.update({ where: { id }, data: { plan: parsed.data.plan, planCycle: parsed.data.cycle, planUntil, planAutoRenew: false, planRetryAt: null, planFailedAttempts: 0 } });
     await audit(admin, "agency.plan", { type: "agency", id }, { name: agency.name, plan: parsed.data.plan, cycle: parsed.data.cycle ?? "", until: parsed.data.until }, tx);
   });
   return { ok: true };

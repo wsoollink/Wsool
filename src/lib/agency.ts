@@ -57,7 +57,7 @@ export async function requireAgency(min: AgencyRole = "viewer") {
 }
 
 /** Who to tell about a link change on the agency side: its owners and managers who have an account. */
-async function agencyManagers(agencyId: string) {
+export async function agencyManagers(agencyId: string) {
   const rows = await db.agencyMember.findMany({ where: { agencyId, role: { in: ["owner", "manager"] }, userId: { not: null } }, select: { userId: true } });
   return rows.map((r) => r.userId!);
 }

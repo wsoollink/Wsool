@@ -1,6 +1,7 @@
 import { timingSafeEqual } from "node:crypto";
 import { purgeDeletedAccounts } from "@/lib/account-deletion";
 import { runBillingJob } from "@/lib/billing";
+import { runAgencyBillingJob } from "@/lib/agency-billing";
 import { syncConnections } from "@/lib/connect";
 import { ensureTelegramWebhook } from "@/lib/connect/telegram";
 import { siteOrigin } from "@/lib/site-url";
@@ -20,6 +21,8 @@ export async function POST(req: Request) {
     return new Response("Unauthorized", { status: 401 });
   }
   const report = await runBillingJob();
+  // Agency plans: renewals, "plan ended" notices, creators unlinked 30 days after the end.
+  const agencies = await runAgencyBillingJob().catch((err) => { console.error("[agency-billing]", err); return null; });
   const purged = await purgeDeletedAccounts();
   await purgeRateLimits();
   await purgeAgencyRequests();
@@ -30,5 +33,5 @@ export async function POST(req: Request) {
   await ensureTelegramWebhook(siteOrigin()).catch((err) => console.error("[telegram] webhook", err));
   // Uploaded files no row uses (once a day, a slice of the folders).
   const cleaned = await cleanOrphanUploads().catch((err) => { console.error("[storage-cleanup]", err); return 0; });
-  return Response.json({ ...report, purged, reminders, connections, cleaned });
+  return Response.json({ ...report, agencies, purged, reminders, connections, cleaned });
 }

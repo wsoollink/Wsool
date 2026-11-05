@@ -215,7 +215,7 @@ const LOADERS = {
   async subscription(page: Page) {
     const [sub, invoices] = await Promise.all([
       db.subscription.findUnique({ where: { userId: page.userId } }),
-      db.invoice.findMany({ where: { userId: page.userId, status: { in: ["paid", "refunded"] } }, orderBy: { createdAt: "desc" }, take: 24 }),
+      db.invoice.findMany({ where: { userId: page.userId, agencyId: null, status: { in: ["paid", "refunded"] } }, orderBy: { createdAt: "desc" }, take: 24 }),
     ]);
     return {
       plan: planLabel(sub), status: sub?.status ?? "expired", cycle: sub?.cycle ?? null, currency: sub?.currency ?? null,

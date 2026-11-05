@@ -46,6 +46,13 @@ export const NOTIFICATIONS = {
   agency_accepted: { href: "/agency", reminder: false },
   agency_ended: { href: "/agency", reminder: false },
   private_link_opened: { href: "/dashboard/private", reminder: false },
+  // Agency plan billing (owner, Nov 2026): sent to the agency's owners + managers.
+  agency_payment_receipt: { href: "/agency?tab=billing", reminder: false, billing: true },
+  agency_renewal_receipt: { href: "/agency?tab=billing", reminder: false, billing: true },
+  agency_payment_failed: { href: "/agency?tab=billing", reminder: false, billing: true },
+  agency_refund_issued: { href: "/agency?tab=billing", reminder: false, billing: true },
+  agency_plan_expired: { href: "/agency?tab=billing", reminder: false, billing: true },
+  agency_links_ended: { href: "/agency?tab=billing", reminder: false },
 } as const;
 export type NotificationType = keyof typeof NOTIFICATIONS;
 

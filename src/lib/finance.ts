@@ -42,6 +42,8 @@ function expenseInMonth(e: { date: Date; endDate: Date | null; amount: number; c
   return e.date.getUTCMonth() === start.getUTCMonth() ? amount : 0; // yearly: its anniversary month
 }
 
+const customerKey = (i: { userId: string; agencyId: string | null }) => (i.agencyId ? `agency:${i.agencyId}` : i.userId);
+
 /** Monthly finance table for the last `months` months, plus unit economics. */
 export async function financeReport(months: number) {
   const keys = monthKeys(months);
@@ -49,10 +51,15 @@ export async function financeReport(months: number) {
   // A yearly invoice paid up to a year before still adds MRR in the window.
   const invoices = await db.invoice.findMany({
     where: { status: "paid", OR: [{ paidAt: { gte: from } }, { periodEnd: { gt: from } }] },
-    select: { userId: true, amount: true, vatAmount: true, currency: true, cycle: true, paidAt: true, periodStart: true, periodEnd: true },
+    select: { userId: true, agencyId: true, amount: true, vatAmount: true, currency: true, cycle: true, paidAt: true, periodStart: true, periodEnd: true },
   });
-  const firstPaid = await db.invoice.groupBy({ by: ["userId"], where: { status: { in: ["paid", "refunded"] } }, _min: { paidAt: true } });
-  const firstByUser = new Map(firstPaid.map((f) => [f.userId, f._min.paidAt]));
+  // A customer = a creator, or an agency (whichever member paid).
+  const firstPaid = await db.invoice.groupBy({ by: ["userId", "agencyId"], where: { status: { in: ["paid", "refunded"] } }, _min: { paidAt: true } });
+  const firstByUser = new Map<string, Date | null>();
+  for (const f of firstPaid) {
+    const key = customerKey(f), prev = firstByUser.get(key);
+    if (prev === undefined || (f._min.paidAt && (!prev || f._min.paidAt < prev))) firstByUser.set(key, f._min.paidAt);
+  }
   const expenses = (await db.expense.findMany({ where: { date: { lt: nextMonth(keys[keys.length - 1]) } } })).map((e) => ({ ...e, amount: Number(e.amount) }));
   // Affiliate commissions (SAR) are an automatic acquisition cost in the month they were earned.
   const commissions = await db.referralCommission.findMany({ where: { cancelledAt: null, createdAt: { gte: from } }, select: { amount: true, createdAt: true } });
@@ -68,7 +75,7 @@ export async function financeReport(months: number) {
       // MRR: the invoice's monthly value while its paid period covers the month.
       if (inv.periodStart && inv.periodEnd && inv.periodStart < end && inv.periodEnd > start) {
         mrr += net / (inv.cycle === "yearly" ? 12 : 1);
-        paying.add(inv.userId);
+        paying.add(customerKey(inv));
       }
     }
     const affiliate = commissionsIn(key);

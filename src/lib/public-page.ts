@@ -16,7 +16,12 @@ export const pageCacheTag = (username: string) => `page:${username}`;
  * updateTag(pageCacheTag(username)).
  */
 export function expirePage(username: string) {
-  revalidateTag(pageCacheTag(username), { expire: 0 });
+  // Outside a Next.js request (a script) there is no cache to expire: skip instead of stopping the caller.
+  try {
+    revalidateTag(pageCacheTag(username), { expire: 0 });
+  } catch (err) {
+    console.warn("[cache] expirePage skipped", username, String(err).slice(0, 120));
+  }
 }
 
 /**

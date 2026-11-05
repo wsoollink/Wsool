@@ -751,7 +751,7 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
 - **Signing keys**: `signingKey(purpose)` (`src/lib/signing.ts`) = HMAC of `SIGNING_SECRET` per purpose (newsletter, private-view,
   investor, visitor, mock-payment); without it the old shared `CRON_SECRET` key (no change). Newsletter links also accept the old key
   (`legacySigningKey`), so links already emailed keep working; private-view / investor unlock cookies are asked again once.
-- **Unused uploads**: `cleanOrphanUploads()` (`src/lib/storage-cleanup.ts`, hourly job, once a day, 40 owner folders per day in rotation)
+- **Unused uploads**: never runs against a local `DATABASE_URL` (it would delete real files). `cleanOrphanUploads()` (`src/lib/storage-cleanup.ts`, hourly job, once a day, 40 owner folders per day in rotation)
   deletes `media` files older than 7 days that no row uses (the `unused()` SQL lists every column holding a file URL + newsletter bodies:
   **a new column that stores an uploaded file URL must be added there**). The private `verification` bucket is not touched.
 
@@ -1000,11 +1000,25 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
 ### Agency plans & accounts (owner, Nov 2026)
 - Plans: `agencies.plan` (`trial` default = free beta, `starter` ≤ 10 creators, `growth` ≤ 30, `custom`), `plan_cycle`, `plan_until`; rules in
   `src/config/agency-plans.ts` (`AGENCY_CREATOR_LIMIT`, counted on linked + invited creators in `inviteCreator`, error `limit`). Names and
-  prices come from the `Agencies.plans` messages (same as the landing page). No online payment for agencies yet: the "الاشتراك" tab
-  (`/agency?tab=billing`, managers + owner; `BillingTab` + `Billing.tsx`) shows the plan, usage and plan cards whose button opens WhatsApp
-  with a prefilled request; the owner sets the plan in `admin/agencies` (`setAgencyPlan`, audited `agency.plan`). Stopped agencies can be
+  prices come from the `Agencies.plans` messages (same as the landing page). The "الاشتراك" tab
+  (`/agency?tab=billing`, managers + owner; `BillingTab` + `Billing.tsx`) shows the plan, usage and plan cards (online payment below; WhatsApp
+  for the custom plan or when payments are off); the owner can also set the plan by hand in `admin/agencies` (`setAgencyPlan`, audited `agency.plan`). Stopped agencies can be
   deleted for good (`deleteAgency`, audited `agency.delete`; team/links/activity cascade, creators' pages untouched) so their emails can
   open a new account.
+- **Online payment** (owner, Nov 2026): agencies (kind `agency`; brands and the large/custom plan stay on WhatsApp) buy `starter` / `growth`
+  monthly or yearly from the Subscription tab (`BillingPlans` → `agencyCheckout` in `agency/billing-actions.ts`, owners + managers; test
+  provider = staff only). Prices `AGENCY_PRICES` (`src/config/agency-plans.ts`, VAT included: SAR 299/2,990 and 699/6,990, USD 79/790 and
+  186/1,860; Arabic site SAR, English USD). Logic `src/lib/agency-billing.ts`: invoices share the `invoices` table and the invoice number
+  series (`agency_id` + `agency_plan`, `subscription_id` null; check `invoices_one_owner`; a deleted agency's invoices stay, FK SET NULL),
+  `settleCheckout` / `refundInvoice` branch to `settleAgencyInvoice` / `refundAgencyInvoice`; the period starts after any trial/paid time
+  left; `agencies.payment_token` / `plan_auto_renew` / `plan_currency` / `plan_failed_attempts` / `plan_retry_at`. While a plan renews,
+  the other cycle or the smaller plan are set for the next renewal (`agencyNextPlan`); a bigger plan can be bought at once. Hourly
+  `runAgencyBillingJob` (billing cron): renewals with the saved card (same retries as creators), `agency_plan_expired` once (with the
+  unlink date), and `AGENCY_UNLINK_AFTER_DAYS` (30) after the end every link ends (`endLink`, creators keep 14 days of Pro, invites
+  cancelled, `agency_links_ended`). Notifications go to owners + managers (`agency_*` types, href `/agency?tab=billing`). Invoices list in
+  the tab + printable `/agency/invoices/[id]` (shared `InvoiceDocument`, `src/components/billing/`); creator pages filter `agencyId: null`.
+  Admin Subscriptions lists them with the agency name; finance counts an agency as one customer. `/billing/return` sends agency invoices
+  back to the tab. Agency terms §6 + refund policy describe it.
 - Trial / plan end (owner, Nov 2026): a new agency gets `plan_until` = now + `AGENCY_TRIAL_DAYS` (30); the owner changes the end date (also for the
   trial) in admin/agencies. `agencyDaysLeft()` drives the "plan · N days left" pill in the agency header (links to the Subscription tab), the
   Subscription tab and the admin list; after the end (`agencyPlanExpired`) linked creators stay but `inviteCreator` refuses (`expired`) and the

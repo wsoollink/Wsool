@@ -45,9 +45,10 @@ export const AGENCY_LEGAL_TEXT: Record<"ar" | "en", Record<LegalKind, LegalDoc>>
         { p: "تتعامل الوكالة أو الشركة مع أي بيانات تصلها عن الصناع من خلال وصول وفق نظام حماية البيانات الشخصية في المملكة، وللغرض الذي أتاحها الصانع من أجله فقط، ولا تحتفظ بها خارج المنصة إلا بموافقة الصانع." },
         { h: "6. الأسعار والدفع" },
         { ul: [
-          "حسابات الوكالات والشركات مجانية حالياً خلال الفترة التجريبية.",
-          "عند إطلاق الباقات المدفوعة نبلغكم بالأسعار والشروط قبل بدء أي فوترة، ولكم الخيار في الاشتراك أو إيقاف الحساب.",
+          "يبدأ حساب الوكالة بفترة تجريبية مجانية، وبعدها يشترك في إحدى الباقات المعلنة (شهرية أو سنوية) بالدفع الإلكتروني عن طريق {gateway}، أو باقة خاصة بالاتفاق معنا.",
+          "الاشتراك يتجدد تلقائياً بالبطاقة المحفوظة في نهاية كل فترة حتى يوقفه صاحب الحساب أو مديره من تبويب «الاشتراك».",
           "الأسعار المعلنة شاملة ضريبة القيمة المضافة، وتصدر بها فواتير ضريبية.",
+          "إذا انتهت الفترة التجريبية أو الباقة بدون تجديد، يتوقف إرسال دعوات جديدة، ويبقى الصناع المرتبطون 30 يوماً، ثم ينفك ارتباطهم تلقائياً.",
           "خلال ارتباط الصانع بوكالة، تغطي الوكالة باقته الاحترافية، وعند فك الارتباط تبقى الباقة الاحترافية للصانع 14 يوماً.",
         ] },
         { h: "7. الإيقاف وإنهاء الحساب" },
@@ -112,12 +113,12 @@ export const AGENCY_LEGAL_TEXT: Record<"ar" | "en", Record<LegalKind, LegalDoc>>
       title: "سياسة الإلغاء والاسترجاع للوكالات والشركات",
       intro: "توضّح هذه السياسة كيف يلغي حساب الوكالة أو الشركة اشتراكه في وصول، ومتى يحق له استرجاع المبلغ. وصول تديرها {entity}، {registration}.",
       blocks: [
-        { h: "1. الفترة التجريبية الحالية" },
-        { p: "حسابات الوكالات والشركات مجانية حالياً، فلا يُخصم أي مبلغ. نبلغكم بالأسعار والشروط قبل بدء أي فوترة." },
-        { h: "2. إلغاء الاشتراك (بعد إطلاق الباقات المدفوعة)" },
+        { h: "1. الفترة التجريبية" },
+        { p: "الفترة التجريبية مجانية ولا يُخصم فيها أي مبلغ. الدفع يبدأ فقط عندما يختار صاحب الحساب أو مديره باقة ويدفع لها." },
+        { h: "2. إلغاء الاشتراك" },
         { ul: [
           "يمكن لصاحب الحساب إلغاء التجديد التلقائي في أي وقت دون رسوم، وتبقى المزايا متاحة حتى نهاية الفترة المدفوعة.",
-          "عند انتهاء الاشتراك تنتهي ارتباطات الوكالة بالصناع، ويحتفظ كل صانع بصفحته كاملة وبالباقة الاحترافية 14 يوماً.",
+          "عند انتهاء الاشتراك بدون تجديد يبقى الصناع المرتبطون 30 يوماً، ثم تنتهي ارتباطات الوكالة بهم، ويحتفظ كل صانع بصفحته كاملة وبالباقة الاحترافية 14 يوماً.",
         ] },
         { h: "3. مهلة 7 أيام للاسترجاع الكامل" },
         { ul: [
@@ -169,9 +170,10 @@ export const AGENCY_LEGAL_TEXT: Record<"ar" | "en", Record<LegalKind, LegalDoc>>
         { p: "Agencies and brands handle any creator data they receive through Wsool under the Saudi Personal Data Protection Law, only for the purpose the creator made it available for, and don't keep it outside the platform without the creator's consent." },
         { h: "6. Prices and payment" },
         { ul: [
-          "Agency and brand accounts are free during the current trial period.",
-          "When paid plans launch we will tell you the prices and terms before any billing starts; you can subscribe or close the account.",
+          "An agency account starts with a free trial, then subscribes to one of the listed plans (monthly or yearly) by online payment through {gateway}, or to a custom plan agreed with us.",
+          "The subscription renews automatically with the saved card at the end of each period until the account owner or a manager turns it off in the Subscription tab.",
           "Listed prices include VAT, with tax invoices issued.",
+          "If the trial or plan ends without renewal, new invitations stop; linked creators stay for 30 days, then they're unlinked automatically.",
           "While a creator is linked to an agency, the agency covers their Pro plan; after unlinking the creator keeps Pro for 14 days.",
         ] },
         { h: "7. Suspension and closing the account" },
@@ -236,12 +238,12 @@ export const AGENCY_LEGAL_TEXT: Record<"ar" | "en", Record<LegalKind, LegalDoc>>
       title: "Cancellation and refund policy for agencies and brands",
       intro: "This policy explains how an agency or brand account cancels its Wsool subscription and when a refund applies. Wsool is operated by {entity}, {registration}.",
       blocks: [
-        { h: "1. The current trial period" },
-        { p: "Agency and brand accounts are free for now, so nothing is charged. We will tell you the prices and terms before any billing starts." },
-        { h: "2. Cancelling (once paid plans launch)" },
+        { h: "1. The trial" },
+        { p: "The trial is free and nothing is charged. Billing starts only when the account owner or a manager picks a plan and pays for it." },
+        { h: "2. Cancelling" },
         { ul: [
           "The account owner can turn off auto-renewal at any time at no cost; features stay available until the end of the paid period.",
-          "When the subscription ends, the agency's links with creators end; every creator keeps their page in full and Pro for 14 days.",
+          "When the subscription ends without renewal, linked creators stay for 30 days, then the agency's links with them end; every creator keeps their page in full and Pro for 14 days.",
         ] },
         { h: "3. 7-day full refund" },
         { ul: [

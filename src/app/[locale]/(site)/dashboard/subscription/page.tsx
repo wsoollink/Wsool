@@ -28,7 +28,7 @@ async function Subscription({ lang, searchParams }: { lang: Locale; searchParams
   const result = String((await searchParams).payment ?? "");
   const [sub, invoices, staff] = await Promise.all([
     db.subscription.findUnique({ where: { userId: user.id } }),
-    db.invoice.findMany({ where: { userId: user.id, status: { in: ["paid", "refunded", "failed"] } }, orderBy: { createdAt: "desc" }, take: 24 }),
+    db.invoice.findMany({ where: { userId: user.id, agencyId: null, status: { in: ["paid", "refunded", "failed"] } }, orderBy: { createdAt: "desc" }, take: 24 }),
     getAdmin(),
   ]);
   const provider = paymentProvider();

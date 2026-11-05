@@ -24,20 +24,35 @@ import { Directory } from "./Directory";
 import { AddMember, AgencyNewsletter, ConfirmAction, InviteCreator, ManageButton } from "./Controls";
 import { onList } from "@/lib/newsletter";
 import { PageEditor, type EditorInitial } from "./PageEditor";
-import { BillingPlans, type BillingPlanCard } from "./Billing";
+import { AgencyAutoRenew, BillingPlans, type BillingPlanCard } from "./Billing";
+import { AGENCY_PRICES, AGENCY_UNLINK_AFTER_DAYS, agencyUnlinkDate, isAgencyPaidPlan } from "@/config/agency-plans";
+import { getAdmin } from "@/lib/admin";
+import { invoiceLabel } from "@/lib/billing";
+import { formatPrice } from "@/lib/format";
+import { paymentProvider } from "@/lib/payments";
 import { AGENCY_CREATOR_LIMIT, agencyDaysLeft } from "@/config/agency-plans";
 import { SUPPORT_EMAIL } from "@/config/site";
 import { LINK_PLATFORMS } from "@/config/platforms";
 import { siteOrigin } from "@/lib/site-url";
 
 /** "الاشتراك" tab: current plan + usage, and the plans to ask for (managers and the owner; no online payment yet). */
-async function BillingTab({ agencyId, lang }: { agencyId: string; lang: Locale }) {
-  const [t, ta, a, used] = await Promise.all([
+async function BillingTab({ agencyId, lang, payment }: { agencyId: string; lang: Locale; payment: string | null }) {
+  const [t, ta, a, used, invoices, admin] = await Promise.all([
     getTranslations("AgencyBilling"),
     getTranslations("Agencies"),
-    db.agency.findUniqueOrThrow({ where: { id: agencyId }, select: { name: true, kind: true, plan: true, planCycle: true, planUntil: true } }),
+    db.agency.findUniqueOrThrow({
+      where: { id: agencyId },
+      select: { name: true, kind: true, plan: true, planCycle: true, planUntil: true, planCurrency: true, planAutoRenew: true, paymentToken: true, paymentMethodLabel: true, planRetryAt: true },
+    }),
     db.agencyLink.count({ where: { agencyId, status: { in: ["active", "pending"] } } }),
+    db.invoice.findMany({ where: { agencyId, status: { in: ["paid", "refunded", "failed"] } }, orderBy: { createdAt: "desc" }, take: 24 }),
+    getAdmin(),
   ]);
+  // Online payment: a provider is set (a test provider only for staff, like creators' checkout).
+  const provider = paymentProvider();
+  const online = !!provider && (!provider.testOnly || !!admin);
+  const running = isAgencyPaidPlan(a.plan) && !!a.planUntil && a.planUntil > new Date();
+  const unlinkOn = a.planUntil && a.planUntil < new Date() && !a.planAutoRenew ? agencyUnlinkDate(a.planUntil) : null;
   const limit = AGENCY_CREATOR_LIMIT[a.plan];
   const left = agencyDaysLeft(a.planUntil);
   const date = new Intl.DateTimeFormat(toIntlLocale(lang), { dateStyle: "long" });
@@ -52,10 +67,26 @@ async function BillingTab({ agencyId, lang }: { agencyId: string; lang: Locale }
               {a.planCycle && a.plan !== "trial" && <Pill tone="blue" dot={false}>{t(`cycle.${a.planCycle}`)}</Pill>}
             </p>
             {a.plan === "trial" && <p className="mt-1 text-sm text-muted">{t("trialNote")}</p>}
+            {payment && (
+              <p role="status" className={`mt-2 rounded-xl px-3 py-2 text-sm font-bold ${payment === "paid" ? "bg-good/10 text-good" : payment === "pending" ? "bg-warn/10 text-warn" : "bg-bad/10 text-bad"}`}>
+                {t(`payment.${payment === "paid" || payment === "pending" ? payment : "failed"}`)}
+              </p>
+            )}
             <p className="mt-2 flex flex-wrap items-center gap-2 text-sm text-muted">
               {left === null ? t("openEnded") : left < 0 ? t("ended", { date: date.format(a.planUntil!) }) : t("endsOn", { date: date.format(a.planUntil!) })}
               {left !== null && <Pill tone={left < 0 ? "bad" : left <= 7 ? "warn" : "good"}>{left < 0 ? t("expired") : t("daysLeft", { n: left })}</Pill>}
             </p>
+            {unlinkOn && unlinkOn > new Date() && <p className="mt-2 text-sm font-bold text-bad">{t("unlinkOn", { date: date.format(unlinkOn), days: AGENCY_UNLINK_AFTER_DAYS })}</p>}
+            {a.planRetryAt && <p className="mt-2 text-sm font-bold text-warn">{t("retrying", { date: date.format(a.planRetryAt) })}</p>}
+            {running && a.paymentToken && (
+              <div className="mt-3 flex flex-col gap-1">
+                {a.paymentMethodLabel && <p className="text-sm text-muted">{t("card", { card: a.paymentMethodLabel })}</p>}
+                {a.planCycle && a.planCurrency && isAgencyPaidPlan(a.plan) && a.planAutoRenew && (
+                  <p className="text-sm text-muted">{t("nextCharge", { date: date.format(a.planUntil!), amount: formatPrice(AGENCY_PRICES[a.planCurrency][a.plan][a.planCycle], a.planCurrency, lang) })}</p>
+                )}
+                <AgencyAutoRenew initial={a.planAutoRenew} />
+              </div>
+            )}
           </div>
           <div className="rounded-xl border border-line px-4 py-3 md:min-w-56">
             <p className="text-xs text-muted">{t("usage")}</p>
@@ -70,14 +101,32 @@ async function BillingTab({ agencyId, lang }: { agencyId: string; lang: Locale }
       </Panel>
       {a.kind === "agency" ? (
         <Panel title={t("plansTitle")}>
-          <BillingPlans plans={cards} current={a.plan} agency={a.name} features={ta.raw("planFeatures") as string[]} />
-          <p className="mt-4 text-sm text-muted">{t("payNote")}</p>
+          <BillingPlans plans={cards} current={a.plan} agency={a.name} features={ta.raw("planFeatures") as string[]}
+            pay={{ online, cycle: a.planCycle, autoRenew: a.planAutoRenew, running }} />
+          <p className="mt-4 text-sm text-muted">{online ? t("payNoteOnline") : t("payNote")}</p>
           <p className="mt-1 text-sm text-muted">{t("email", { email: SUPPORT_EMAIL })}</p>
         </Panel>
       ) : (
         <Panel title={t("plansTitle")}>
           <p className="text-sm text-muted">{t("brandNote")}</p>
           <p className="mt-1 text-sm text-muted">{t("email", { email: SUPPORT_EMAIL })}</p>
+        </Panel>
+      )}
+      {invoices.length > 0 && (
+        <Panel title={t("invoices")} flush>
+          <ul className="divide-y divide-line-soft">
+            {invoices.map((inv) => (
+              <li key={inv.id} className="flex flex-wrap items-center gap-3 px-5 py-3 text-sm">
+                <span className="min-w-0 flex-1">
+                  <span className="font-bold" dir="ltr">{invoiceLabel(inv.number)}</span>
+                  <span className="text-muted"> · {inv.agencyPlan ? t(`plan.${inv.agencyPlan}`) : ""} · {t(`cycle.${inv.cycle}`)} · {date.format(inv.paidAt ?? inv.createdAt)}</span>
+                </span>
+                <span className="font-bold">{formatPrice(Number(inv.amount), inv.currency, lang)}</span>
+                <Pill tone={inv.status === "paid" ? "good" : inv.status === "refunded" ? "warn" : "bad"} dot={false}>{t(`invoiceStatus.${inv.status}`)}</Pill>
+                {inv.number && <Link href={`/agency/invoices/${inv.id}`} className="inline-flex min-h-10 items-center font-bold text-blue">{t("view")}</Link>}
+              </li>
+            ))}
+          </ul>
         </Panel>
       )}
     </div>
@@ -199,7 +248,7 @@ async function AgencyDashboard({ lang, searchParams }: { lang: Locale; searchPar
       )}
 
       {tab === "billing" ? (
-        canInvite ? <BillingTab agencyId={m.agency.id} lang={lang} /> : <p className="text-sm text-muted">{t("viewerNote")}</p>
+        canInvite ? <BillingTab agencyId={m.agency.id} lang={lang} payment={typeof sp.payment === "string" ? sp.payment : null} /> : <p className="text-sm text-muted">{t("viewerNote")}</p>
       ) : tab === "page" ? (
         canInvite ? <PageTab agencyId={m.agency.id} /> : <p className="text-sm text-muted">{(await getTranslations("AgencyPageEditor"))("viewerNote")}</p>
       ) : tab === "directory" ? (

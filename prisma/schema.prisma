@@ -660,8 +660,13 @@ model Invoice {
   id                String        @id @default(uuid()) @db.Uuid
   /// Sequential number, assigned when paid (e.g. 1042 -> "WS-001042").
   number            Int?          @unique
+  /// Who paid: the creator, or the agency member who started the checkout.
   userId            String        @map("user_id") @db.Uuid
-  subscriptionId    String        @map("subscription_id") @db.Uuid
+  /// A creator's Pro invoice (null for an agency plan invoice).
+  subscriptionId    String?       @map("subscription_id") @db.Uuid
+  /// An agency plan invoice (owner, Nov 2026); exactly one of subscription_id / agency_id is set.
+  agencyId          String?       @map("agency_id") @db.Uuid
+  agencyPlan        AgencyPlan?   @map("agency_plan")
   kind              InvoiceKind
   status            InvoiceStatus @default(pending)
   cycle             BillingCycle
@@ -683,9 +688,12 @@ model Invoice {
   refundedAt        DateTime?     @map("refunded_at") @db.Timestamptz
   createdAt         DateTime      @default(now()) @map("created_at") @db.Timestamptz
 
-  subscription Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  subscription Subscription? @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  /// SetNull: a deleted agency's paid invoices stay (tax records).
+  agency       Agency?       @relation(fields: [agencyId], references: [id], onDelete: SetNull)
 
   @@index([userId, createdAt])
+  @@index([agencyId, createdAt])
   @@index([status, paidAt])
   @@map("invoices")
 }
@@ -1142,40 +1150,48 @@ model PushToken {
 
 /// Marketing agency (owner, Nov 2026, phase 1): created by Wsool staff for the free beta. Server only.
 model Agency {
-  id            String           @id @default(uuid()) @db.Uuid
-  name          String           @db.VarChar(80)
-  status        AgencyStatus     @default(active)
+  id                 String           @id @default(uuid()) @db.Uuid
+  name               String           @db.VarChar(80)
+  status             AgencyStatus     @default(active)
   /// agency = manages creators + directory; brand = a company that only searches the creator directory (owner, Nov 2026).
-  kind          AgencyKind       @default(agency)
+  kind               AgencyKind       @default(agency)
   /// Public agency page wsool.link/<slug> (owner, Nov 2026). Shares the username namespace with creator pages.
-  slug          String?          @unique @db.VarChar(20)
-  pagePublished Boolean          @default(false) @map("page_published")
-  nameEn        String?          @map("name_en") @db.VarChar(80)
-  tagline       String?          @db.VarChar(100)
-  taglineEn     String?          @map("tagline_en") @db.VarChar(100)
-  bio           String?          @db.VarChar(800)
-  bioEn         String?          @map("bio_en") @db.VarChar(800)
-  city          String?          @db.VarChar(60)
-  cityEn        String?          @map("city_en") @db.VarChar(60)
-  logoUrl       String?          @map("logo_url")
+  slug               String?          @unique @db.VarChar(20)
+  pagePublished      Boolean          @default(false) @map("page_published")
+  nameEn             String?          @map("name_en") @db.VarChar(80)
+  tagline            String?          @db.VarChar(100)
+  taglineEn          String?          @map("tagline_en") @db.VarChar(100)
+  bio                String?          @db.VarChar(800)
+  bioEn              String?          @map("bio_en") @db.VarChar(800)
+  city               String?          @db.VarChar(60)
+  cityEn             String?          @map("city_en") @db.VarChar(60)
+  logoUrl            String?          @map("logo_url")
   /// International digits, like pages.whatsapp.
-  whatsapp      String?          @db.VarChar(15)
-  email         String?          @db.VarChar(254)
-  website       String?          @db.VarChar(200)
-  template      AgencyTemplate   @default(executive)
-  accent        String?          @db.VarChar(7)
+  whatsapp           String?          @db.VarChar(15)
+  email              String?          @db.VarChar(254)
+  website            String?          @db.VarChar(200)
+  template           AgencyTemplate   @default(executive)
+  accent             String?          @db.VarChar(7)
   /// Agency plan (owner, Nov 2026): trial (free beta) until the owner sets a paid one in admin/agencies.
-  plan          AgencyPlan       @default(trial)
-  planCycle     BillingCycle?    @map("plan_cycle")
+  plan               AgencyPlan       @default(trial)
+  planCycle          BillingCycle?    @map("plan_cycle")
   /// Paid until (null = open-ended, e.g. the free beta).
-  planUntil     DateTime?        @map("plan_until") @db.Timestamptz
-  createdBy     String           @map("created_by") @db.Uuid
-  createdAt     DateTime         @default(now()) @map("created_at") @db.Timestamptz
-  members       AgencyMember[]
-  links         AgencyLink[]
-  accounts      AgencyAccount[]
-  brands        AgencyBrand[]
-  activity      AgencyActivity[]
+  planUntil          DateTime?        @map("plan_until") @db.Timestamptz
+  /// Online payment (owner, Nov 2026): currency of the paid plan, saved card token, auto-renew and renewal retries.
+  planCurrency       Currency?        @map("plan_currency")
+  paymentToken       String?          @map("payment_token")
+  paymentMethodLabel String?          @map("payment_method_label") @db.VarChar(60)
+  planAutoRenew      Boolean          @default(false) @map("plan_auto_renew")
+  planFailedAttempts Int              @default(0) @map("plan_failed_attempts")
+  planRetryAt        DateTime?        @map("plan_retry_at") @db.Timestamptz
+  createdBy          String           @map("created_by") @db.Uuid
+  createdAt          DateTime         @default(now()) @map("created_at") @db.Timestamptz
+  members            AgencyMember[]
+  links              AgencyLink[]
+  accounts           AgencyAccount[]
+  brands             AgencyBrand[]
+  activity           AgencyActivity[]
+  invoices           Invoice[]
 
   @@map("agencies")
 }

@@ -8,6 +8,7 @@ import { paymentProvider, type Payment } from "@/lib/payments";
 import { notify } from "@/lib/notify";
 import { expirePage } from "@/lib/public-page";
 import { cancelCommissionForRefund, earnCommission, renewalCredit } from "@/lib/referrals";
+import { refundAgencyInvoice, settleAgencyInvoice } from "@/lib/agency-billing";
 import { siteOrigin } from "@/lib/site-url";
 
 /** "WS-001042" */
@@ -126,6 +127,10 @@ export async function settleCheckout(invoiceId: string, payment: Payment): Promi
     await db.invoice.updateMany({ where: { id: invoice.id, status: "pending" }, data: { status: "failed", providerPaymentId: payment.id, failureReason: payment.failureReason?.slice(0, 200) } });
     return "failed";
   }
+  // An agency plan invoice (src/lib/agency-billing.ts).
+  if (invoice.agencyId) return settleAgencyInvoice(invoice, payment);
+  if (!invoice.subscription || !invoice.subscriptionId) return "mismatch";
+  const subscriptionId = invoice.subscriptionId;
 
   const now = new Date();
   const start = periodStart(invoice.subscription, now);
@@ -145,7 +150,7 @@ export async function settleCheckout(invoiceId: string, payment: Payment): Promi
       });
     }
     await tx.subscription.update({
-      where: { id: invoice.subscriptionId },
+      where: { id: subscriptionId },
       data: {
         plan: "pro", status: "active", cycle: invoice.cycle, currency: invoice.currency, currentPeriodEnd: end,
         cancelAtPeriodEnd: false, failedAttempts: 0, nextRetryAt: null, provider: invoice.provider,
@@ -288,6 +293,11 @@ export async function refundInvoice(invoiceId: string): Promise<{ ok: boolean; e
   const invoice = await db.invoice.findUnique({ where: { id: invoiceId } });
   const provider = paymentProvider();
   if (!invoice || invoice.status !== "paid" || !invoice.providerPaymentId) return { ok: false, error: "not_refundable" };
+  if (invoice.agencyId || !invoice.subscriptionId) {
+    const res = await refundAgencyInvoice(invoice);
+    return { ...res, userId: invoice.userId };
+  }
+  const subscriptionId = invoice.subscriptionId;
   if (!provider || provider.name !== invoice.provider) return { ok: false, error: "provider" };
   // Only what the provider charged goes back; an affiliate credit used on it is restored to the balance.
   const charged = Math.round((Number(invoice.amount) - Number(invoice.creditAmount)) * 100) / 100;
@@ -296,12 +306,12 @@ export async function refundInvoice(invoiceId: string): Promise<{ ok: boolean; e
     if (!res.ok) return { ok: false, error: "provider" };
   }
   // Pro ends now only when this invoice paid for the current (or a later) period, not for an old one.
-  const sub = await db.subscription.findUnique({ where: { id: invoice.subscriptionId }, select: { currentPeriodEnd: true } });
+  const sub = await db.subscription.findUnique({ where: { id: subscriptionId }, select: { currentPeriodEnd: true } });
   const current = !sub?.currentPeriodEnd || !invoice.periodEnd || invoice.periodEnd.getTime() >= sub.currentPeriodEnd.getTime();
   await db.$transaction([
     db.invoice.update({ where: { id: invoice.id }, data: { status: "refunded", refundedAt: new Date() } }),
     db.referralPayout.deleteMany({ where: { invoiceId: invoice.id, method: "credit" } }),
-    ...(current ? [db.subscription.update({ where: { id: invoice.subscriptionId }, data: { status: "canceled", plan: "free", cancelAtPeriodEnd: true, currentPeriodEnd: new Date() } })] : []),
+    ...(current ? [db.subscription.update({ where: { id: subscriptionId }, data: { status: "canceled", plan: "free", cancelAtPeriodEnd: true, currentPeriodEnd: new Date() } })] : []),
   ]);
   await cancelCommissionForRefund(invoice.id);
   await refreshPage(invoice.userId);

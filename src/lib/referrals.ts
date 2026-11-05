@@ -106,7 +106,7 @@ export async function earnCommission(invoiceId: string) {
     });
     if (!referrer || referrer.suspendedAt || !hasPro(referrer.subscription)) return;
 
-    const first = await db.invoice.findFirst({ where: { userId: invoice.userId, status: { in: ["paid", "refunded"] }, paidAt: { not: null } }, orderBy: { paidAt: "asc" }, select: { paidAt: true } });
+    const first = await db.invoice.findFirst({ where: { userId: invoice.userId, agencyId: null, status: { in: ["paid", "refunded"] }, paidAt: { not: null } }, orderBy: { paidAt: "asc" }, select: { paidAt: true } });
     // Payments before the first payment + REFERRAL.months (12 = a yearly plan earns once, monthly 12 times).
     if (invoice.paidAt >= addMonths(first?.paidAt ?? invoice.paidAt, REFERRAL.months)) return;
 

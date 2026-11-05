@@ -21,6 +21,8 @@ import { maskIban, referralBalance, referralLink } from "@/lib/referrals";
 import { planLabel, trialDaysLeft } from "@/config/plans";
 import { DELETE_AFTER_DAYS } from "@/lib/account-deletion";
 import { invoiceLabel } from "@/lib/billing";
+import { UNLINK_GRACE_DAYS } from "@/lib/agency";
+import { onList } from "@/lib/newsletter";
 
 /**
  * What each dashboard section's editor starts from (the same data the website
@@ -258,6 +260,45 @@ const LOADERS = {
         id: l.id, name: l.name, url: privateLinkUrl(origin, page.username, l.tokenSealed), views: l.views,
         lastViewedAt: l.lastViewedAt?.toISOString() ?? null, expiresAt: l.expiresAt?.toISOString() ?? null, expired: l.expired,
       })),
+    };
+  },
+  /** The creator's agency (same data as dashboard/agency): open invites, or the linked agency + its recent changes. */
+  async agency(page: Page) {
+    const links = await db.agencyLink.findMany({
+      where: { pageId: page.id, status: { in: ["pending", "active"] }, agency: { status: "active" } },
+      include: { agency: { select: { name: true, slug: true, pagePublished: true } } },
+      orderBy: { invitedAt: "desc" },
+    });
+    const active = links.find((l) => l.status === "active");
+    const invites = active ? [] : links.filter((l) => l.status === "pending");
+    const activity = active
+      ? await db.agencyActivity.findMany({ where: { pageId: page.id, agencyId: active.agencyId }, orderBy: { createdAt: "desc" }, take: 15 })
+      : [];
+    const people = activity.length
+      ? new Map((await db.agencyMember.findMany({ where: { agencyId: active!.agencyId, userId: { in: [...new Set(activity.map((a) => a.userId))] } }, select: { userId: true, email: true } })).map((m) => [m.userId, m.email]))
+      : new Map<string | null, string>();
+    const perms = (l: (typeof links)[number]) => ({ content: l.canContent, rates: l.canRates, contact: l.canContact });
+    return {
+      graceDays: UNLINK_GRACE_DAYS,
+      invites: invites.map((l) => ({ id: l.id, agency: l.agency.name, requested: perms(l) })),
+      active: active
+        ? {
+            agency: active.agency.name, since: active.decidedAt?.toISOString() ?? null, perms: perms(active), showOnPage: active.showOnPage,
+            pageUrl: active.agency.slug && active.agency.pagePublished ? `wsool.link/${active.agency.slug}` : null,
+          }
+        : null,
+      activity: activity.map((a) => ({ id: a.id, who: people.get(a.userId) ?? null, section: a.section, at: a.createdAt.toISOString() })),
+    };
+  },
+  /** Optional emails (Notifications settings on the website): reminders + the creators newsletter. */
+  async emails(page: Page) {
+    const [settings, user] = await Promise.all([
+      db.notificationSettings.findUnique({ where: { userId: page.userId } }),
+      db.user.findUnique({ where: { id: page.userId }, select: { email: true } }),
+    ]);
+    return {
+      reminders: settings?.emailReminders ?? true,
+      productNews: user ? await onList(user.email, "creators", settings?.emailProductNews ?? true) : false,
     };
   },
 } as const;

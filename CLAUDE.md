@@ -975,7 +975,9 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
 - Creator side: dashboard section `dashboard/agency` ("الوكالة", account group, unscoped): invite cards (set permissions, accept /
   decline; accepting closes other invites), active agency (permission switches saved on change, unlink with a note to restore
   contact details), recent agency changes. Notifications `agency_invite` / `agency_removed` (creator), `agency_accepted` /
-  `agency_ended` (agency owners + managers). App: no agency screen yet (push opens Notifications). Terms section 2 + privacy
+  `agency_ended` (agency owners + managers). App (Nov 2026): Account tab → «الوكالة» (`account/agency.tsx`, section loader `agency`
+  in `src/lib/mobile/sections.ts`, the same server actions through the rpc route; agency pushes open it) and «إعدادات الإيميل»
+  (`account/emails.tsx`, loader `emails`, `saveEmailSettings` = reminders + the creators newsletter list). Terms section 2 + privacy
   "who we share it with" describe agencies.
 
 ### Agency public page (owner, Nov 2026)

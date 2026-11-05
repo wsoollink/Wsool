@@ -43,8 +43,10 @@ export const en: typeof ar = {
   },
   account: {
     plan: "Your plan", daysLeft: "{n} days left", ofDays: "of {n}", money: "Commission and plan", prefs: "Preferences", help: "Help",
-    legal: "Terms and privacy",
+    legal: "Terms and privacy", manage: "Agency and email",
   },
+  agency: {"inviteTitle": "Invitation from {agency}", "inviteBody": "{agency} would like to manage your page. Choose what they can edit; you can change it or unlink anytime.", "perms": "Permissions", "perm": {"content": "Edit content", "rates": "Ad rates", "contact": "Contact details"}, "permHelp": {"content": "Bio, photos, work, brands, links, coupons and appearance", "rates": "Ad rates and the bundle", "contact": "The WhatsApp number and email on your page"}, "proNote": "While you're linked to the agency, your page is on Pro at the agency's cost.", "accept": "Accept", "decline": "Decline", "accepting": "Working…", "activeTitle": "Linked to {agency}", "since": "Since {date}", "never": "The agency can never change your username, subscription, commissions, verification or account links, or delete your account.", "saved": "✓ Permissions saved", "activityTitle": "Recent agency changes", "noActivity": "The agency hasn't changed anything yet.", "edited": "edited {section}", "section": {"edit": "Edit page", "work": "Brands & work", "links": "Links & services", "coupons": "Coupons", "appearance": "Appearance", "rates": "Ad rates", "contact": "Contact", "content": "Content"}, "unlink": "Unlink", "confirmUnlink": "Unlink your page from {agency}? They won't be able to reach your page, and your page and data stay yours. If the agency changed your contact details, put yours back.", "graceNote": "If the agency covered your plan, Pro stays on for {days} days after unlinking.", "emptyTitle": "No agency", "emptyBody": "If you work with a marketing agency, ask them to invite you from their agency dashboard using your username; the invite shows up here.", "error": "Something went wrong. Try again.", "showOnPage": "Show me on the agency's public page", "showOnPageHint": "The agency lists its creators on a public page, showing only what your own page shows.", "showOnPageHintLink": "The agency lists its creators at {link}, showing only what your own page shows.", "subtitle": "The agency that manages your page and what it can edit"},
+  emails: {"title": "Email settings", "subtitle": "Emails you can turn off", "reminders": "Reminder emails", "remindersHint": "Before your trial ends and before a verification expires.", "productNews": "Wsool news and tips", "productNewsHint": "Wsool's newsletter for creators: new features and tips for working with brands, at most once a month.", "billing": "Subscription & billing", "billingHint": "Invoices and failed payments; these can't be turned off", "always": "Account, billing and verification emails are always sent.", "saved": "✓ Saved."},
   home: {
     hello: "Hi {name}", yourLink: "Your page link", published: "Published", hidden: "Hidden", share: "Share link", copy: "Copy", copied: "Copied",
     view: "View page", last30: "Last 30 days", vsPrev: "vs previous month", noCompare: "Nothing to compare yet",
@@ -73,7 +75,7 @@ export const en: typeof ar = {
   },
   section: {
     edit: "Edit page", accounts: "Accounts & numbers", work: "Brands & work", rates: "Ad rates", links: "Links & services", coupons: "Discount coupons",
-    contact: "Contact", verification: "Verification", appearance: "Appearance", analytics: "Analytics", referrals: "Commission", subscription: "Subscription", private: "Privacy & visibility",
+    contact: "Contact", verification: "Verification", appearance: "Appearance", analytics: "Analytics", referrals: "Commission", subscription: "Subscription", private: "Privacy & visibility", agency: "Agency",
   },
 
   editor: {

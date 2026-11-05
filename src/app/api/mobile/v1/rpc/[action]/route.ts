@@ -1,5 +1,7 @@
 import { z } from "zod";
 import { apiError, json, preflight, readBody, withPage } from "@/lib/mobile/api";
+import * as agency from "@/app/[locale]/(site)/dashboard/agency/actions";
+import * as notifications from "@/app/[locale]/(site)/dashboard/notifications/actions";
 import * as accounts from "@/app/[locale]/(site)/dashboard/accounts/actions";
 import * as appearance from "@/app/[locale]/(site)/dashboard/appearance/actions";
 import * as contact from "@/app/[locale]/(site)/dashboard/contact/actions";
@@ -70,6 +72,14 @@ const ACTIONS: Record<string, (...args: never[]) => Promise<unknown>> = {
   cancelVerification: verification.cancelVerification,
   submitLicense: verification.submitLicense,
   cancelLicense: verification.cancelLicense,
+  // Agency (the creator's side: invites, permissions, unlink, listing on the agency page)
+  acceptAgency: agency.acceptAgency,
+  declineAgency: agency.declineAgency,
+  updateAgencyPerms: agency.updateAgencyPerms,
+  unlinkAgency: agency.unlinkAgency,
+  setAgencyPageVisibility: agency.setAgencyPageVisibility,
+  // Optional emails (reminders + the creators newsletter)
+  saveEmailSettings: notifications.saveEmailSettings,
   // Commission payout settings
   savePayoutSettings: referrals.savePayoutSettings,
   // Account deletion (Apple requires it inside the app). Nothing that buys or renews a plan is listed:

@@ -1,7 +1,7 @@
 import { Linking, View } from "react-native";
 import { router } from "expo-router";
 import Constants from "expo-constants";
-import { CircleDollarSign, CreditCard, FileText, LifeBuoy, Star } from "lucide-react-native";
+import { Building2, CircleDollarSign, CreditCard, FileText, LifeBuoy, Mail, Star } from "lucide-react-native";
 import { Avatar, Button, Card, Group, IconTile, ListRow, Row, Screen, Segmented, T } from "../../../components/ui";
 import { useI18n, type Lang } from "../../../i18n";
 import { useAuth } from "../../../lib/app";
@@ -58,6 +58,11 @@ export default function AccountTab() {
       <Group title={t("account.money")}>
         <ListRow icon={<IconTile color="#E8590C"><CircleDollarSign size={17} color="#fff" /></IconTile>} label={t("section.referrals")} onPress={() => router.push("/account/referrals")} />
         <ListRow icon={<IconTile color="#0060E6"><CreditCard size={17} color="#fff" /></IconTile>} label={t("section.subscription")} onPress={() => router.push("/account/subscription")} />
+      </Group>
+
+      <Group title={t("account.manage")}>
+        <ListRow icon={<IconTile color="#021941"><Building2 size={17} color="#fff" /></IconTile>} label={t("section.agency")} onPress={() => router.push("/account/agency")} />
+        <ListRow icon={<IconTile color="#7C3AED"><Mail size={17} color="#fff" /></IconTile>} label={t("emails.title")} onPress={() => router.push("/account/emails")} />
       </Group>
 
       <View style={{ gap: 6 }}>

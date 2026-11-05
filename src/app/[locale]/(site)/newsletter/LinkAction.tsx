@@ -9,7 +9,7 @@ import { runNewsletterLink, type LinkOutcome } from "./actions";
 type Texts = Record<"title" | "body" | "cta" | "home", string> & Record<LinkOutcome, { title: string; body: string }>;
 
 /** Asks for one press before confirming / unsubscribing, then shows the result. */
-export function LinkAction({ kind, id, token, texts }: { kind: "confirm" | "unsubscribe"; id: string; token: string; texts: Texts }) {
+export function LinkAction({ kind, id, token, list, texts }: { kind: "confirm" | "unsubscribe"; id: string; token: string; list: string; texts: Texts }) {
   const [outcome, setOutcome] = useState<LinkOutcome | null>(null);
   const [pending, start] = useTransition();
   const shown = outcome ? texts[outcome] : texts;
@@ -21,7 +21,7 @@ export function LinkAction({ kind, id, token, texts }: { kind: "confirm" | "unsu
         {outcome ? (
           <Link href="/" className={buttonClasses("secondary")}>{texts.home}</Link>
         ) : (
-          <button type="button" disabled={pending} aria-busy={pending} onClick={() => start(async () => setOutcome(await runNewsletterLink(kind, id, token)))} className={buttonClasses("primary")}>
+          <button type="button" disabled={pending} aria-busy={pending} onClick={() => start(async () => setOutcome(await runNewsletterLink(kind, id, token, list)))} className={buttonClasses("primary")}>
             {texts.cta}
           </button>
         )}

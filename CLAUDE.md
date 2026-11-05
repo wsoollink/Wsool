@@ -659,6 +659,15 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   links (no stored token) for `/newsletter/confirm` and `/newsletter/unsubscribe`, one-click
   `List-Unsubscribe` POST at `/api/newsletter/unsubscribe`, one confirmation per address per 10 min.
   Admin overview shows the confirmed count; CSV at `/api/admin/newsletter` (`users.view`, audited).
+- **Newsletter lists** (owner, Nov 2026): two lists, columns `creators` / `agencies` on `newsletter_subscribers` (true = on it,
+  false = left it, never re-added automatically, null = never on it). `syncLists()` (`src/lib/newsletter.ts`, run before admin counts,
+  sends and CSV) adds creators' account emails (live, not suspended pages; starts off if their old "Wsool news" switch was off) and
+  agency members of active agencies. Sign-ups: home = creators, `/agencies` card (`AgenciesNewsletter`) + the apply form's checkbox =
+  agencies (double opt-in, `subscribe(email, lang, source, list)`). Links carry `l=` (confirm: the list; unsubscribe: list or `all`;
+  old links without `l` = creators / all). Switches: creator Notifications "Wsool news" (`setList`, also writes `email_product_news`),
+  agency Team tab `AgencyNewsletter` (per member). Each issue has `audience` (creators | agencies | all = each address once, its
+  unsubscribe link leaves every list); admin shows counts per list and CSV per list (`/api/admin/newsletter?list=`). A purged
+  account's subscriber row is deleted.
 - **Sending the newsletter** (`admin/newsletter/`, editor at `/admin/newsletter/edit?id=`; no server-action
   redirects (they showed a blank page on Netlify): actions return data and the client navigates;
   permission `newsletter.send`): tables

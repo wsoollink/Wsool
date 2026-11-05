@@ -4,6 +4,7 @@ import { SUPPORT_EMAIL } from "@/config/site";
 import { db } from "@/lib/db";
 import { renderEmail } from "@/lib/email/layout";
 import { sendEmail } from "@/lib/email/send";
+import { subscribe } from "@/lib/newsletter";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { agencyRequestSchema, type AgencyRequestField, type AgencyRequestInput } from "@/lib/validation/agency-request";
 
@@ -37,5 +38,6 @@ export async function applyAgency(input: AgencyRequestInput, lang: "ar" | "en"):
     footer: "افتح الحساب من لوحة الإدارة ← الوكالات ← طلبات الانضمام.",
   });
   await sendEmail({ to: SUPPORT_EMAIL, subject: `[وكالة] ${r.agencyName}: ${r.name}`.slice(0, 120), replyTo: r.email, ...content }).catch(() => false);
+  if (r.newsletter) await subscribe(r.email, lang, "agency-apply", "agencies").catch(() => {});
   return { ok: true };
 }

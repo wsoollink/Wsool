@@ -10,14 +10,16 @@ import type { AgencyRequestField } from "@/lib/validation/agency-request";
 import { applyAgency, type ApplyResult } from "./actions";
 
 const EMPTY = { name: "", agencyName: "", email: "", phone: "", note: "", website: "" };
+type Text = keyof typeof EMPTY;
 
 /** "Join as an agency" form. Controlled fields, so a failed send keeps what was typed. */
 export function ApplyForm({ lang }: { lang: "ar" | "en" }) {
   const t = useTranslations("AgencyApply");
   const [form, setForm] = useState(EMPTY);
+  const [newsletter, setNewsletter] = useState(false);
   const [result, setResult] = useState<ApplyResult | null>(null);
   const [pending, start] = useTransition();
-  const set = (k: keyof typeof EMPTY) => (e: { target: { value: string } }) => setForm((f) => ({ ...f, [k]: e.target.value }));
+  const set = (k: Text) => (e: { target: { value: string } }) => setForm((f) => ({ ...f, [k]: e.target.value }));
   const err = (k: AgencyRequestField) => (result && !result.ok && result.error === k ? t(`errors.${k}`) : undefined);
 
   if (result?.ok) {
@@ -34,7 +36,7 @@ export function ApplyForm({ lang }: { lang: "ar" | "en" }) {
   return (
     <form
       noValidate
-      onSubmit={(e: FormEvent) => { e.preventDefault(); start(async () => setResult(await applyAgency(form, lang))); }}
+      onSubmit={(e: FormEvent) => { e.preventDefault(); start(async () => setResult(await applyAgency({ ...form, newsletter }, lang))); }}
       className="flex flex-col gap-4"
     >
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -44,6 +46,10 @@ export function ApplyForm({ lang }: { lang: "ar" | "en" }) {
       <TextField id="ap-email" label={t("email")} hint={t("emailHint")} type="email" autoComplete="email" dir="ltr" value={form.email} onChange={set("email")} maxLength={254} required error={err("email")} />
       <TextField id="ap-phone" label={t("phone")} hint={t("phoneHint")} type="tel" autoComplete="tel" dir="ltr" inputMode="tel" placeholder="05XXXXXXXX" value={form.phone} onChange={set("phone")} maxLength={40} required error={err("phone")} />
       <TextAreaField id="ap-note" label={t("note")} rows={4} value={form.note} onChange={set("note")} maxLength={1000} error={err("note")} />
+      <label className="flex min-h-11 cursor-pointer items-start gap-3 text-sm">
+        <input type="checkbox" checked={newsletter} onChange={(e) => setNewsletter(e.target.checked)} className="mt-0.5 size-5 shrink-0 accent-blue" />
+        <span>{t("newsletter")}</span>
+      </label>
       {/* Honeypot: hidden from people, bots fill it. */}
       <div aria-hidden="true" className="absolute -left-[9999px] h-0 overflow-hidden">
         <label htmlFor="ap-website">Website</label>

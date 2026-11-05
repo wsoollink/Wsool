@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { z } from "zod";
 import { ACT_COOKIE, ACT_NAV_COOKIE, endLink, inviteCreator, requireAgency, roleAtLeast, type InviteError } from "@/lib/agency";
 import { db } from "@/lib/db";
+import { setList } from "@/lib/newsletter";
 import { sendAgencyTeamInvite } from "@/lib/notify";
 import { rateLimit } from "@/lib/rate-limit";
 
@@ -76,4 +77,11 @@ export async function removeMember(memberId: string) {
   if (!target || target.role === "owner" || target.id === m.member.id || (target.role === "manager" && !roleAtLeast(m.member.role, "owner"))) return { error: "invalid" };
   await db.agencyMember.delete({ where: { id: target.id } });
   return { ok: true };
+}
+
+/** The member's own switch for the agencies newsletter (their account email is on it unless switched off). */
+export async function setAgencyNewsletter(on: boolean, lang: string) {
+  const m = await requireAgency();
+  await setList(m.member.email, "agencies", !!on, lang === "en" ? "en" : "ar");
+  return { ok: true as const };
 }

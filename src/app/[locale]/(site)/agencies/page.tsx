@@ -11,6 +11,7 @@ import {
 } from "./Visuals";
 import { AgenciesFooter, AgenciesHeader, APPLY } from "./Header";
 import { AgencyPlans, type AgencyPlan } from "./Plans";
+import { AgenciesNewsletter } from "./Newsletter";
 
 type Item = { t: string; b: string };
 type Plan = AgencyPlan;
@@ -282,6 +283,8 @@ export default async function AgenciesPage({ params }: PageProps<"/[locale]/agen
             <Link href={TRIAL} className="relative inline-flex min-h-12 items-center justify-center rounded-full bg-white px-8 text-[15px] font-bold text-[#021941] shadow-[0_14px_30px_-12px_rgba(0,0,0,0.5)] hover:bg-white/90">{t("ctaTrial")}</Link>
           </div>
         </section>
+
+        <AgenciesNewsletter lang={lang} />
       </main>
 
       <AgenciesFooter lang={lang} />

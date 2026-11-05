@@ -21,7 +21,8 @@ import { notificationText } from "@/lib/notify";
 import { initials } from "@/lib/initials";
 import { signOut } from "../login/actions";
 import { Directory } from "./Directory";
-import { AddMember, ConfirmAction, InviteCreator, ManageButton } from "./Controls";
+import { AddMember, AgencyNewsletter, ConfirmAction, InviteCreator, ManageButton } from "./Controls";
+import { onList } from "@/lib/newsletter";
 import { PageEditor, type EditorInitial } from "./PageEditor";
 import { BillingPlans, type BillingPlanCard } from "./Billing";
 import { AGENCY_CREATOR_LIMIT, agencyDaysLeft } from "@/config/agency-plans";
@@ -134,7 +135,7 @@ async function AgencyDashboard({ lang, searchParams }: { lang: Locale; searchPar
   const daysLeft = agencyDaysLeft(m.agency.planUntil);
   const date = new Intl.DateTimeFormat(toIntlLocale(lang), { dateStyle: "medium" });
 
-  const [links, members, ownPage, updates] = await Promise.all([
+  const [links, members, newsletterOn, ownPage, updates] = await Promise.all([
     tab !== "creators" ? Promise.resolve([]) : db.agencyLink.findMany({
       where: { agencyId: m.agency.id, status: { in: ["active", "pending"] } },
       orderBy: { invitedAt: "desc" },
@@ -149,6 +150,7 @@ async function AgencyDashboard({ lang, searchParams }: { lang: Locale; searchPar
       },
     }),
     tab === "team" ? db.agencyMember.findMany({ where: { agencyId: m.agency.id }, orderBy: { invitedAt: "asc" } }) : Promise.resolve([]),
+    tab === "team" ? onList(m.member.email, "agencies") : Promise.resolve(true),
     db.page.findUnique({ where: { userId: me.id }, select: { username: true } }),
     // Agency notifications (a creator accepted / unlinked): members without a creator page have no bell, so they show here.
     tab === "creators" ? db.notification.findMany({ where: { userId: me.id, type: { in: ["agency_accepted", "agency_ended"] } }, orderBy: { createdAt: "desc" }, take: 5 }) : Promise.resolve([]),
@@ -319,6 +321,7 @@ async function AgencyDashboard({ lang, searchParams }: { lang: Locale; searchPar
           {canInvite && <div className="border-t border-line-soft p-5"><AddMember /></div>}
         </Panel>
       )}
+      {tab === "team" && <AgencyNewsletter initial={newsletterOn} />}
 
       {ownPage && (
         <p className="text-sm text-muted"><Link href="/dashboard" className="font-semibold text-blue">{t("myPage")}</Link> · <span dir="ltr">wsool.link/{ownPage.username}</span></p>

@@ -20,13 +20,13 @@ async function Newsletter({ lang }: { lang: Locale }) {
   const t = await getTranslations("Admin.newsletter");
   const [counts, campaigns] = await Promise.all([
     audienceCounts(),
-    db.newsletterCampaign.findMany({ orderBy: { createdAt: "desc" }, take: 50, select: { id: true, subjectAr: true, subjectEn: true, status: true, createdAt: true, sentAt: true, sentCount: true, failedCount: true } }),
+    db.newsletterCampaign.findMany({ orderBy: { createdAt: "desc" }, take: 50, select: { id: true, subjectAr: true, subjectEn: true, status: true, audience: true, createdAt: true, sentAt: true, sentCount: true, failedCount: true } }),
   ]);
   const date = new Intl.DateTimeFormat(toIntlLocale(lang), { dateStyle: "medium" });
   const tiles = [
-    { label: t("confirmed"), value: counts.confirmed },
-    { label: t("ar"), value: counts.ar },
-    { label: t("en"), value: counts.en },
+    { label: t("lists.creators"), value: counts.creators.total },
+    { label: t("lists.agencies"), value: counts.agencies.total },
+    { label: t("lists.all"), value: counts.all.total },
     { label: t("pending"), value: counts.pending },
   ];
 
@@ -35,12 +35,13 @@ async function Newsletter({ lang }: { lang: Locale }) {
       <KpiStrip items={tiles.map((tile) => ({ label: tile.label, value: formatNumber(tile.value, lang) }))} />
       <div className="flex flex-wrap items-center gap-2">
         <NewCampaignButton label={t("newCampaign")} />
-        {can(admin, "users.view") && (
-          // A route handler download, not a page: plain <a>.
-          <a href="/api/admin/newsletter" download className="inline-flex min-h-11 items-center gap-2 rounded-full border border-line bg-card shadow-card hover:bg-hover px-5 text-sm font-bold">
-            <Download aria-hidden="true" size={16} /> {t("exportCsv")}
-          </a>
-        )}
+        {can(admin, "users.view") &&
+          (["creators", "agencies"] as const).map((l) => (
+            // A route handler download, not a page: plain <a>.
+            <a key={l} href={`/api/admin/newsletter?list=${l}`} download className="inline-flex min-h-11 items-center gap-2 rounded-full border border-line bg-card shadow-card hover:bg-hover px-5 text-sm font-bold">
+              <Download aria-hidden="true" size={16} /> {t("exportList", { list: t(`lists.${l}`) })}
+            </a>
+          ))}
         {counts.unsubscribed > 0 && <p className="text-xs text-muted">{t("unsubscribedNote", { n: formatNumber(counts.unsubscribed, lang) })}</p>}
       </div>
 
@@ -60,6 +61,7 @@ async function Newsletter({ lang }: { lang: Locale }) {
                       {c.failedCount > 0 && <span className="text-bad"> · {t("failedN", { n: formatNumber(c.failedCount, lang) })}</span>}
                     </span>
                   )}
+                  <span className="rounded-full bg-navy/5 px-2.5 py-1 text-xs font-bold">{t(`lists.${c.audience}`)}</span>
                   <span className="text-xs text-muted">{date.format(c.sentAt ?? c.createdAt)}</span>
                   <span className={`rounded-full px-2.5 py-1 text-xs font-bold ${statusTone[c.status]}`}>{t(`status.${c.status}`)}</span>
                 </Link>

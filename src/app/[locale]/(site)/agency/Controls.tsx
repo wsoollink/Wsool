@@ -2,10 +2,12 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Send, Settings2, UserPlus, X } from "lucide-react";
 import { buttonClasses } from "@/components/ui/Button";
-import { cancelInvite, inviteCreatorAction, inviteMember, manageCreator, removeCreator, removeMember } from "./actions";
+import { Card } from "@/components/ui/Card";
+import { Switch } from "@/components/ui/Switch";
+import { cancelInvite, inviteCreatorAction, inviteMember, manageCreator, removeCreator, removeMember, setAgencyNewsletter } from "./actions";
 
 const field = "h-11 w-full min-w-0 rounded-[10px] border border-navy/15 bg-card px-3 text-[15px] outline-none shadow-card focus:border-blue focus:ring-3 focus:ring-blue/15";
 
@@ -139,5 +141,24 @@ export function InviteFromDirectory({ username }: { username: string }) {
       </button>
       {result?.error && <p role="alert" className="text-xs text-bad">{result.error}</p>}
     </div>
+  );
+}
+
+/** The signed-in member's own switch for the agencies newsletter (saved on tap). */
+export function AgencyNewsletter({ initial }: { initial: boolean }) {
+  const t = useTranslations("AgencyApp.newsletter");
+  const locale = useLocale();
+  const [on, setOn] = useState(initial);
+  const [saved, setSaved] = useState(false);
+  const [, start] = useTransition();
+  return (
+    <Card className="flex flex-col gap-1">
+      <h2 className="mb-1 font-bold">{t("title")}</h2>
+      <Switch
+        checked={on} label={t("label")} hint={t("hint")}
+        onChange={(v) => { setOn(v); setSaved(false); start(async () => { await setAgencyNewsletter(v, locale.startsWith("en") ? "en" : "ar"); setSaved(true); }); }}
+      />
+      <p role="status" className="text-sm text-good">{saved ? t("saved") : ""}</p>
+    </Card>
   );
 }

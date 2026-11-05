@@ -4,6 +4,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { isLocale, toIntlLocale, type Locale } from "@/i18n/config";
 import { requireCreator } from "@/lib/creator";
 import { db } from "@/lib/db";
+import { onList } from "@/lib/newsletter";
 import { notificationText } from "@/lib/notify";
 import { EmailSettings } from "./EmailSettings";
 import { NotificationList } from "./NotificationList";
@@ -17,6 +18,7 @@ async function List({ lang }: { lang: Locale }) {
     db.notification.findMany({ where: { userId: user.id }, orderBy: { createdAt: "desc" }, take: 50 }),
     db.notificationSettings.findUnique({ where: { userId: user.id } }),
   ]);
+  const productNews = await onList(user.email, "creators", settings?.emailProductNews ?? true);
   const time = new Intl.DateTimeFormat(toIntlLocale(lang), { hour: "numeric", minute: "2-digit" });
   const day = new Intl.DateTimeFormat(toIntlLocale(lang), { day: "numeric", month: "short" });
   const startOfToday = today().getTime();
@@ -31,7 +33,7 @@ async function List({ lang }: { lang: Locale }) {
   return (
     <div className="flex flex-col gap-4">
       <NotificationList items={list} />
-      <EmailSettings initial={{ reminders: settings?.emailReminders ?? true, productNews: settings?.emailProductNews ?? true }} />
+      <EmailSettings initial={{ reminders: settings?.emailReminders ?? true, productNews }} />
     </div>
   );
 }

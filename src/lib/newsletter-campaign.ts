@@ -1,13 +1,13 @@
 import "server-only";
 import { createTranslator } from "use-intl/core";
 import { z } from "zod";
-import type { NewsletterCampaign } from "@/generated/prisma/client";
+import type { NewsletterAudience, NewsletterCampaign, Prisma } from "@/generated/prisma/client";
 import { toIntlLocale, type Locale } from "@/i18n/config";
 import { db } from "@/lib/db";
 import { renderEmail } from "@/lib/email/layout";
 import { markupToText } from "@/lib/email/markup";
 import { BATCH_SIZE, sendBatch, type Email } from "@/lib/email/send";
-import { unsubscribeUrl } from "@/lib/newsletter";
+import { oneClickHeaders, syncLists, unsubscribeUrl } from "@/lib/newsletter";
 import ar from "../../messages/ar.json";
 import en from "../../messages/en.json";
 
@@ -22,6 +22,7 @@ export const campaignSchema = z
     ctaLabelEn: z.string().trim().max(40),
     ctaUrl: z.union([z.literal(""), z.url({ protocol: /^https$/ }).max(500)]),
     headingFont: z.enum(["wsool", "system"]),
+    audience: z.enum(["creators", "agencies", "all"]),
   })
   .refine((c) => !!(c.subjectAr && c.bodyAr) || !!(c.subjectEn && c.bodyEn), { message: "empty" })
   // A button needs its link, and a link needs a label in every language that is filled in.
@@ -29,7 +30,7 @@ export const campaignSchema = z
   .refine((c) => !(c.ctaLabelAr || c.ctaLabelEn) || !!c.ctaUrl, { message: "cta" });
 
 export type CampaignInput = z.input<typeof campaignSchema>;
-type Content = Pick<NewsletterCampaign, keyof CampaignInput>;
+type Content = Omit<Pick<NewsletterCampaign, keyof CampaignInput>, "audience"> & { audience?: NewsletterAudience };
 
 /** The version a subscriber gets: their language when it's complete, else the other one. */
 export function versionFor(c: Content, lang: Locale): Locale | null {
@@ -45,7 +46,8 @@ export function renderCampaign(c: Content, lang: Locale, subscriberId: string | 
   const body = lang === "ar" ? c.bodyAr : c.bodyEn;
   const ctaLabel = lang === "ar" ? c.ctaLabelAr : c.ctaLabelEn;
   const t = createTranslator({ locale: toIntlLocale(lang), messages: lang === "ar" ? ar : en, namespace: "Newsletter.campaign" });
-  const unsubscribe = subscriberId ? unsubscribeUrl(subscriberId) : t("unsubscribeSample");
+  // The link leaves the list this issue went to (an issue for everyone: every list).
+  const unsubscribe = subscriberId ? unsubscribeUrl(subscriberId, c.audience ?? "creators") : t("unsubscribeSample");
   const content = renderEmail({
     lang,
     preheader: markupToText(body).replace(/\s+/g, " ").trim().slice(0, 110),
@@ -59,22 +61,30 @@ export function renderCampaign(c: Content, lang: Locale, subscriberId: string | 
   return { subject, ...content };
 }
 
-const oneClick = (subscriberId: string) => ({
-  "List-Unsubscribe": `<${unsubscribeUrl(subscriberId).replace("/newsletter/", "/api/newsletter/")}>`,
-  "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
-});
-
-/** Subscriber counts for the admin page. */
-export async function audienceCounts() {
-  const rows = await db.newsletterSubscriber.groupBy({ by: ["status", "lang"], _count: true });
-  const n = (status?: string, lang?: string) =>
-    rows.filter((r) => (!status || r.status === status) && (!lang || r.lang === lang)).reduce((s, r) => s + r._count, 0);
-  return { confirmed: n("confirmed"), ar: n("confirmed", "ar"), en: n("confirmed", "en"), pending: n("pending"), unsubscribed: n("unsubscribed") };
+/** Who an issue goes to: confirmed addresses on its list (both lists = each address once). */
+export function audienceWhere(audience: NewsletterAudience): Prisma.NewsletterSubscriberWhereInput {
+  const lists = audience === "all" ? [{ creators: true }, { agencies: true }] : [{ [audience]: true }];
+  return { status: "confirmed", OR: lists };
 }
 
-/** Confirmed subscribers this issue hasn't reached yet. */
-export const remainingFor = (campaignId: string) =>
-  db.newsletterSubscriber.count({ where: { status: "confirmed", deliveries: { none: { campaignId } } } });
+export type AudienceCounts = Record<NewsletterAudience, { total: number; ar: number; en: number }> & { pending: number; unsubscribed: number };
+
+/** Subscriber counts per list for the admin pages (adds new creators / agency members first). */
+export async function audienceCounts(): Promise<AudienceCounts> {
+  await syncLists();
+  const rows = await db.newsletterSubscriber.groupBy({ by: ["status", "lang", "creators", "agencies"], _count: true });
+  const count = (audience: NewsletterAudience) => {
+    const on = rows.filter((r) => r.status === "confirmed" && (audience === "all" ? r.creators || r.agencies : r[audience]));
+    const sum = (lang?: string) => on.filter((r) => !lang || r.lang === lang).reduce((s, r) => s + r._count, 0);
+    return { total: sum(), ar: sum("ar"), en: sum("en") };
+  };
+  const n = (status: string) => rows.filter((r) => r.status === status).reduce((s, r) => s + r._count, 0);
+  return { creators: count("creators"), agencies: count("agencies"), all: count("all"), pending: n("pending"), unsubscribed: n("unsubscribed") };
+}
+
+/** Addresses on this issue's list that it hasn't reached yet. */
+export const remainingFor = (campaignId: string, audience: NewsletterAudience) =>
+  db.newsletterSubscriber.count({ where: { ...audienceWhere(audience), deliveries: { none: { campaignId } } } });
 
 export type BatchResult = { sent: number; failed: number; remaining: number; done: boolean; error?: "no_key" | "not_sending" };
 
@@ -91,7 +101,7 @@ export async function sendNextBatches(campaignId: string, rounds = 3): Promise<B
 
   for (let round = 0; round < rounds; round++) {
     const next = await db.newsletterSubscriber.findMany({
-      where: { status: "confirmed", deliveries: { none: { campaignId } } },
+      where: { ...audienceWhere(campaign.audience), deliveries: { none: { campaignId } } },
       orderBy: { confirmedAt: "asc" },
       take: BATCH_SIZE,
       select: { id: true, email: true, lang: true },
@@ -113,13 +123,13 @@ export async function sendNextBatches(campaignId: string, rounds = 3): Promise<B
     const emails: Email[] = batch.map((s) => {
       const lang = versionFor(campaign, s.lang) ?? "ar";
       const { subject, html, text } = renderCampaign(campaign, lang, s.id);
-      return { to: s.email, subject, html, text, headers: oneClick(s.id) };
+      return { to: s.email, subject, html, text, headers: oneClickHeaders(s.id, campaign.audience) };
     });
     const result = await sendBatch(emails);
     if (result === "no_key") {
       // Nothing went out: release the claims so the send can resume once the key is set.
       await db.newsletterDelivery.deleteMany({ where: { campaignId, subscriberId: { in: batch.map((s) => s.id) } } });
-      return { sent, failed, remaining: await remainingFor(campaignId), done: false, error: "no_key" };
+      return { sent, failed, remaining: await remainingFor(campaignId, campaign.audience), done: false, error: "no_key" };
     }
     const ok = result === "ok";
     await db.$transaction([
@@ -130,7 +140,7 @@ export async function sendNextBatches(campaignId: string, rounds = 3): Promise<B
     else failed += batch.length;
   }
 
-  const remaining = await remainingFor(campaignId);
+  const remaining = await remainingFor(campaignId, campaign.audience);
   if (remaining === 0) await db.newsletterCampaign.updateMany({ where: { id: campaignId, status: "sending" }, data: { status: "sent", sentAt: new Date() } });
   return { sent, failed, remaining, done: remaining === 0 };
 }

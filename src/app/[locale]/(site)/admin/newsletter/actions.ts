@@ -7,6 +7,7 @@ import { db } from "@/lib/db";
 import { sendEmail } from "@/lib/email/send";
 import { rateLimit } from "@/lib/rate-limit";
 import { createUploadTicket, isOwnUploadedFile, publicFileUrl } from "@/lib/storage";
+import { syncLists } from "@/lib/newsletter";
 import { campaignSchema, remainingFor, renderCampaign, sendNextBatches, versionFor, type CampaignInput } from "@/lib/newsletter-campaign";
 
 const id = z.uuid();
@@ -20,6 +21,7 @@ const draftSchema = z.object({
   ctaLabelEn: z.string().trim().max(40),
   ctaUrl: z.string().trim().max(500),
   headingFont: z.enum(["wsool", "system"]),
+  audience: z.enum(["creators", "agencies", "all"]),
 });
 
 type Result = { ok?: boolean; error?: string };
@@ -79,11 +81,12 @@ export async function startSending(campaignId: string): Promise<Result> {
   const valid = campaignSchema.safeParse(c);
   if (!valid.success) return { error: valid.error.issues[0]?.message === "cta" ? "cta" : "empty" };
   if (!process.env.RESEND_API_KEY) return { error: "no_key" };
-  const audience = await remainingFor(campaignId);
+  await syncLists();
+  const audience = await remainingFor(campaignId, c.audience);
   if (audience === 0) return { error: "no_subscribers" };
   const started = await db.$transaction(async (tx) => {
     const res = await tx.newsletterCampaign.updateMany({ where: { id: campaignId, status: "draft" }, data: { status: "sending", startedAt: new Date() } });
-    if (res.count) await audit(admin, "newsletter.send", { type: "newsletter_campaign", id: campaignId }, { subject: c.subjectAr || c.subjectEn, count: audience }, tx);
+    if (res.count) await audit(admin, "newsletter.send", { type: "newsletter_campaign", id: campaignId }, { subject: c.subjectAr || c.subjectEn, count: audience, audience: c.audience }, tx);
     return res.count > 0;
   });
   return started ? { ok: true } : { error: "not_draft" };

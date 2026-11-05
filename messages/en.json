@@ -1511,7 +1511,7 @@
       "sendTest": "Send me a test",
       "testSent": "✓ Test sent to {email}.",
       "sendAll": "Send to {n} subscribers",
-      "confirmSend": "Send this issue to {n} confirmed subscribers? Once it starts it can't be edited.",
+      "confirmSend": "Send this issue to {n} subscribers on “{list}”? It can't be edited once it starts.",
       "progress": "Sending… {done} of {total}",
       "keepOpen": "Keep this page open until sending finishes.",
       "resume": "Resume sending",
@@ -1521,7 +1521,7 @@
       "confirmDelete": "Delete this draft?",
       "sentOn": "Sent {date}",
       "langNote": "Each subscriber gets their language's version; if it's empty they get the other one.",
-      "audience": "Goes to {n} confirmed subscribers ({ar} Arabic, {en} English).",
+      "audience": "Goes to {n} subscribers on “{list}” ({ar} Arabic, {en} English).",
       "errors": {
         "invalid": "A field is longer than allowed.",
         "empty": "Write a subject and text for at least one version.",
@@ -1559,7 +1559,20 @@
         "system": "Standard font",
         "systemHint": "The device font, looks the same everywhere",
         "note": "The Wsool font shows in Apple Mail (iPhone, Mac) and some Android apps; Gmail and Outlook show the standard font. Body text always uses the standard font so it reads well on every device."
-      }
+      },
+      "lists": {
+        "creators": "Creators",
+        "agencies": "Agencies",
+        "all": "Everyone"
+      },
+      "listCount": "{n} subscribers",
+      "listHint": {
+        "creators": "Creators list: every creator with a Wsool page (added automatically) + home page sign-ups.",
+        "agencies": "Agencies list: agency team members (added automatically) + agencies page sign-ups.",
+        "all": "Both lists; each address gets one copy even if it's on both. The unsubscribe link removes it from both."
+      },
+      "sendTo": "Send to",
+      "exportList": "Download {list} list"
     },
     "discounts": {
       "filters": "Filter codes",
@@ -2184,7 +2197,7 @@
     "reminders": "Reminder emails",
     "remindersHint": "Before your trial ends and before a verification expires.",
     "productNews": "Wsool news and tips",
-    "productNewsHint": "New features and tips for working with brands, at most once a month.",
+    "productNewsHint": "Wsool's newsletter for creators: new features and tips for working with brands, at most once a month.",
     "alwaysSent": "Account, billing and verification emails are always sent.",
     "saved": "✓ Saved.",
     "filter": "Filter notifications",
@@ -2332,7 +2345,8 @@
       "body": "Thanks for your interest! Tap the button to confirm this is your email and join the newsletter: new templates, features and tips for working with brands, about once a month.",
       "ignore": "If you didn't ask to subscribe, ignore this email and we won't send you anything.",
       "cta": "Confirm my subscription",
-      "footer": "You can unsubscribe anytime: {url}"
+      "footer": "You can unsubscribe anytime: {url}",
+      "bodyAgencies": "Thanks for your interest! Press the button to confirm this is your email and join Wsool's newsletter for agencies: new agency dashboard features, creator news and campaign tips, about one email a month."
     },
     "confirmed": {
       "title": "You're subscribed",
@@ -2809,7 +2823,15 @@
     "billYearly": "Yearly",
     "billYearlyBadge": "2 months free",
     "billSwitch": "Billing period",
-    "ctaAgencyDemo": "See a demo agency page"
+    "ctaAgencyDemo": "See a demo agency page",
+    "newsletter": {
+      "title": "Wsool newsletter for agencies",
+      "body": "New agency dashboard features, influencer market news and tips for better campaigns. About one email a month.",
+      "label": "Your email",
+      "cta": "Subscribe",
+      "done": "We sent you a confirmation email: open it and press “Confirm my subscription”.",
+      "error": "Enter a valid email."
+    }
   },
   "Acting": {
     "banner": "You're managing <b>{creator}</b>'s page for <b>{agency}</b>. Only the sections the creator allowed are shown.",
@@ -2901,7 +2923,13 @@
     "viewerNote": "You have view-only access.",
     "directoryTitle": "Creator directory",
     "directorySub": "Find creators who chose to be listed for brands",
-    "updatesTitle": "Latest updates"
+    "updatesTitle": "Latest updates",
+    "newsletter": {
+      "title": "Newsletter",
+      "label": "Wsool newsletter for agencies",
+      "hint": "New agency features and news that matter to you, at most once a month. Turn it off any time.",
+      "saved": "Saved"
+    }
   },
   "AgencySection": {
     "inviteTitle": "Invitation from {agency}",
@@ -3078,7 +3106,8 @@
       "note": "That note is too long.",
       "rate": "Too many requests. Try again shortly.",
       "failed": "Couldn't send the request. Try again."
-    }
+    },
+    "newsletter": "Send me Wsool's newsletter for agencies (about once a month)"
   },
   "AgencyContact": {
     "title": "Contact the agencies team",

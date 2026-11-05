@@ -13,8 +13,8 @@ type SP = Promise<Record<string, string | string[] | undefined>>;
 
 async function Run({ searchParams }: { searchParams: SP }) {
   const sp = await searchParams;
-  const id = String(sp.id ?? ""), token = String(sp.t ?? "");
-  if (!/^[0-9a-f-]{36}$/.test(id) || !verifyLink("confirm", id, token)) return <Result kind="invalid" />;
+  const id = String(sp.id ?? ""), token = String(sp.t ?? ""), list = String(sp.l ?? "");
+  if (!/^[0-9a-f-]{36}$/.test(id) || !verifyLink("confirm", id, token, list)) return <Result kind="invalid" />;
   // Nothing changes on page load (mail scanners open links): the person presses the button.
   const t = await getTranslations("Newsletter");
   const texts = {
@@ -23,7 +23,7 @@ async function Run({ searchParams }: { searchParams: SP }) {
     unsubscribed: { title: t("unsubscribed.title"), body: t("unsubscribed.body") },
     invalid: { title: t("invalid.title"), body: t("invalid.body") },
   };
-  return <LinkAction kind="confirm" id={id} token={token} texts={texts} />;
+  return <LinkAction kind="confirm" id={id} token={token} list={list} texts={texts} />;
 }
 
 /** Link from the newsletter email (confirm). */

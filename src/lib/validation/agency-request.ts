@@ -8,6 +8,8 @@ export const agencyRequestSchema = z.object({
   email: z.string().trim().toLowerCase().pipe(z.email("email").max(254, "email")),
   phone: z.string().max(40, "phone").transform(normalizeWhatsapp).pipe(z.string().regex(/^[0-9]{8,15}$/, "phone")),
   note: z.string().trim().max(1000, "note").default(""),
+  /** "Send me Wsool's agency news" (the agencies newsletter, double opt-in). */
+  newsletter: z.boolean().default(false),
   /** Honeypot: a field people never see. */
   website: z.string().max(200).default(""),
 });

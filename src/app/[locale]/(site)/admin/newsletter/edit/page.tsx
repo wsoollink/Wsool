@@ -18,13 +18,14 @@ async function Campaign({ lang, searchParams }: { lang: Locale; searchParams: SP
   if (typeof id !== "string" || !/^[0-9a-f-]{36}$/.test(id)) notFound();
   const c = await db.newsletterCampaign.findUnique({ where: { id } });
   if (!c) notFound();
-  const [counts, remaining] = await Promise.all([audienceCounts(), remainingFor(c.id)]);
+  const counts = await audienceCounts();
+  const remaining = await remainingFor(c.id, c.audience);
   const date = new Intl.DateTimeFormat(toIntlLocale(lang), { dateStyle: "medium", timeStyle: "short" });
   return (
     <CampaignEditor
       id={c.id}
       status={c.status}
-      initial={{ subjectAr: c.subjectAr, bodyAr: c.bodyAr, subjectEn: c.subjectEn, bodyEn: c.bodyEn, ctaLabelAr: c.ctaLabelAr, ctaLabelEn: c.ctaLabelEn, ctaUrl: c.ctaUrl, headingFont: c.headingFont }}
+      initial={{ subjectAr: c.subjectAr, bodyAr: c.bodyAr, subjectEn: c.subjectEn, bodyEn: c.bodyEn, ctaLabelAr: c.ctaLabelAr, ctaLabelEn: c.ctaLabelEn, ctaUrl: c.ctaUrl, headingFont: c.headingFont, audience: c.audience }}
       audience={counts}
       progress={{ sent: c.sentCount, failed: c.failedCount, remaining }}
       sentOn={c.sentAt ? date.format(c.sentAt) : null}

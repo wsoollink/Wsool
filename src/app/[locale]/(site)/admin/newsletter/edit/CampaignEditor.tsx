@@ -9,7 +9,7 @@ import { EmojiPicker } from "@/components/admin/EmojiPicker";
 import { buttonClasses } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import type { CampaignStatus } from "@/generated/prisma/enums";
-import type { CampaignInput } from "@/lib/newsletter-campaign";
+import type { AudienceCounts, CampaignInput } from "@/lib/newsletter-campaign";
 import { insertText } from "@/lib/text-insert";
 import { deleteDraft, previewCampaign, retryFailed, saveCampaign, sendBatches, sendTest, startSending } from "../actions";
 import { statusTone } from "../status";
@@ -21,7 +21,7 @@ type Props = {
   id: string;
   status: CampaignStatus;
   initial: Fields;
-  audience: { confirmed: number; ar: number; en: number };
+  audience: AudienceCounts;
   progress: { sent: number; failed: number; remaining: number };
   sentOn: string | null;
   adminEmail: string;
@@ -90,11 +90,11 @@ export function CampaignEditor({ id, status, initial, audience, progress, sentOn
     });
   const onSend = () =>
     startTransition(async () => {
-      if (!window.confirm(t("confirmSend", { n: audience.confirmed }))) return;
+      if (!window.confirm(t("confirmSend", { n: reach.total, list: t(`lists.${f.audience}`) }))) return;
       if (!(await save())) return;
       const res = await startSending(id);
       if (!res.ok) return fail(res.error);
-      await sendLoop(0, audience.confirmed);
+      await sendLoop(0, reach.total);
     });
   const onResume = () => startTransition(() => sendLoop(progress.sent + progress.failed, progress.sent + progress.failed + progress.remaining));
   const onRetry = () =>
@@ -141,9 +141,29 @@ export function CampaignEditor({ id, status, initial, audience, progress, sentOn
   };
 
   const L = tab === "ar" ? "Ar" : "En";
+  const reach = audience[f.audience];
   return (
     <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
       <div className="flex flex-col gap-4">
+        <Card className="flex flex-col gap-3">
+          <fieldset className="flex flex-col gap-1.5" disabled={!editable}>
+            <legend className="mb-1.5 font-bold">{t("sendTo")}</legend>
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+              {(["creators", "agencies", "all"] as const).map((k) => (
+                <label
+                  key={k}
+                  className={`flex min-h-11 cursor-pointer flex-col gap-0.5 rounded-[10px] border px-3 py-2 has-[:focus-visible]:ring-3 has-[:focus-visible]:ring-blue/30 ${f.audience === k ? "border-blue bg-blue/5" : "border-navy/15"}`}
+                >
+                  <input type="radio" name="nl-audience" value={k} checked={f.audience === k} onChange={() => set({ audience: k })} className="sr-only" />
+                  <span className="text-[15px] font-bold">{t(`lists.${k}`)}</span>
+                  <span className="text-xs text-muted">{t("listCount", { n: audience[k].total })}</span>
+                </label>
+              ))}
+            </div>
+            <p className="text-xs text-muted">{t(`listHint.${f.audience}`)}</p>
+          </fieldset>
+        </Card>
+
         <Card className="flex flex-col gap-4">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div role="tablist" aria-label={t("subject")} className="inline-flex rounded-full bg-navy/5 p-1">
@@ -188,10 +208,10 @@ export function CampaignEditor({ id, status, initial, audience, progress, sentOn
         <Card className="flex flex-col gap-3">
           {status === "draft" && (
             <>
-              <p className="text-sm text-muted">{t("audience", { n: audience.confirmed, ar: audience.ar, en: audience.en })}</p>
+              <p className="text-sm text-muted">{t("audience", { n: reach.total, ar: reach.ar, en: reach.en, list: t(`lists.${f.audience}`) })}</p>
               <div className="flex flex-wrap gap-2">
-                <button type="button" onClick={onSend} disabled={pending || audience.confirmed === 0} className={buttonClasses("primary", "gap-2")}>
-                  <Send aria-hidden="true" size={16} /> {t("sendAll", { n: audience.confirmed })}
+                <button type="button" onClick={onSend} disabled={pending || reach.total === 0} className={buttonClasses("primary", "gap-2")}>
+                  <Send aria-hidden="true" size={16} /> {t("sendAll", { n: reach.total })}
                 </button>
                 <button type="button" onClick={onTest} disabled={pending} className={buttonClasses("secondary")}>{t("sendTest")}</button>
                 <button type="button" onClick={onSave} disabled={pending} className={buttonClasses("secondary")}>{pending && !run ? t("saving") : t("save")}</button>

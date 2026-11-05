@@ -13,16 +13,18 @@ export const DELETE_AFTER_DAYS = 30;
  */
 export async function purgeDeletedAccounts(now = new Date()) {
   const cutoff = new Date(now.getTime() - DELETE_AFTER_DAYS * 86_400_000);
-  const pages = await db.page.findMany({ where: { deletedAt: { lte: cutoff } }, select: { userId: true } });
+  const pages = await db.page.findMany({ where: { deletedAt: { lte: cutoff } }, select: { userId: true, user: { select: { email: true } } } });
   const supabase = createSupabaseAdmin();
   let purged = 0;
-  for (const { userId } of pages) {
+  for (const { userId, user } of pages) {
     for (const kind of Object.keys(UPLOAD_KINDS) as UploadKind[]) {
       const bucket = supabase.storage.from(UPLOAD_KINDS[kind].bucket);
       const { data } = await bucket.list(`${userId}/${kind}`, { limit: 1000 });
       if (data?.length) await bucket.remove(data.map((f) => `${userId}/${kind}/${f.name}`));
     }
     await db.user.delete({ where: { id: userId } });
+    // Off the newsletter lists too (rows are keyed by email, not by user).
+    await db.newsletterSubscriber.deleteMany({ where: { email: user.email.toLowerCase() } });
     await supabase.auth.admin.deleteUser(userId).catch(() => {});
     purged++;
   }

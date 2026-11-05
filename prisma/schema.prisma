@@ -4,8 +4,8 @@
 // query on creator data is scoped to the signed-in user (CLAUDE.md section 12).
 
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider        = "prisma-client"
+  output          = "../src/generated/prisma"
   // One SQL query per read, nested relations included (default "join"): each extra query is a
   // network round trip to Supabase.
   previewFeatures = ["relationJoins"]
@@ -94,17 +94,17 @@ model User {
   aiReads              AiRead[]
 
   /// Affiliate program: the creator whose referral link this user signed up through (set once, on sign-up).
-  referredById         String?               @map("referred_by") @db.Uuid
-  referredAt           DateTime?             @map("referred_at") @db.Timestamptz
-  referredBy           User?                 @relation("Referrals", fields: [referredById], references: [id], onDelete: SetNull)
-  referrals            User[]                @relation("Referrals")
-  referralAccount      ReferralAccount?
-  commissionsEarned    ReferralCommission[]  @relation("CommissionReferrer")
-  commissionsFrom      ReferralCommission[]  @relation("CommissionReferred")
-  referralClicks       ReferralClick[]
-  referralPayouts      ReferralPayout[]
-  pushTokens           PushToken[]
-  agencyMemberships    AgencyMember[]
+  referredById      String?              @map("referred_by") @db.Uuid
+  referredAt        DateTime?            @map("referred_at") @db.Timestamptz
+  referredBy        User?                @relation("Referrals", fields: [referredById], references: [id], onDelete: SetNull)
+  referrals         User[]               @relation("Referrals")
+  referralAccount   ReferralAccount?
+  commissionsEarned ReferralCommission[] @relation("CommissionReferrer")
+  commissionsFrom   ReferralCommission[] @relation("CommissionReferred")
+  referralClicks    ReferralClick[]
+  referralPayouts   ReferralPayout[]
+  pushTokens        PushToken[]
+  agencyMemberships AgencyMember[]
 
   @@index([referredById])
   @@map("users")
@@ -850,11 +850,21 @@ model NewsletterSubscriber {
   confirmedAt    DateTime?        @map("confirmed_at") @db.Timestamptz
   unsubscribedAt DateTime?        @map("unsubscribed_at") @db.Timestamptz
   createdAt      DateTime         @default(now()) @map("created_at") @db.Timestamptz
+  /// List membership (owner, Nov 2026): true = on the list, false = left it (never re-added automatically),
+  /// null = never on it. Creators' and agency members' account emails are added automatically (syncLists).
+  creators       Boolean?
+  agencies       Boolean?
 
   deliveries NewsletterDelivery[]
 
   @@index([status])
   @@map("newsletter_subscribers")
+}
+
+enum NewsletterAudience {
+  creators
+  agencies
+  all
 }
 
 enum CampaignStatus {
@@ -874,25 +884,27 @@ enum EmailFont {
 }
 
 model NewsletterCampaign {
-  id          String         @id @default(uuid()) @db.Uuid
-  subjectAr   String         @default("") @map("subject_ar") @db.VarChar(150)
-  bodyAr      String         @default("") @map("body_ar")
-  subjectEn   String         @default("") @map("subject_en") @db.VarChar(150)
-  bodyEn      String         @default("") @map("body_en")
+  id          String             @id @default(uuid()) @db.Uuid
+  subjectAr   String             @default("") @map("subject_ar") @db.VarChar(150)
+  bodyAr      String             @default("") @map("body_ar")
+  subjectEn   String             @default("") @map("subject_en") @db.VarChar(150)
+  bodyEn      String             @default("") @map("body_en")
   /// Optional button under the text.
-  ctaLabelAr  String         @default("") @map("cta_label_ar") @db.VarChar(40)
-  ctaLabelEn  String         @default("") @map("cta_label_en") @db.VarChar(40)
-  ctaUrl      String         @default("") @map("cta_url") @db.VarChar(500)
+  ctaLabelAr  String             @default("") @map("cta_label_ar") @db.VarChar(40)
+  ctaLabelEn  String             @default("") @map("cta_label_en") @db.VarChar(40)
+  ctaUrl      String             @default("") @map("cta_url") @db.VarChar(500)
   /// Font of the title and headings: Wsool's (Noto Kufi Arabic, where the mail app allows web fonts) or the system font.
-  headingFont EmailFont      @default(wsool) @map("heading_font")
-  status      CampaignStatus @default(draft)
-  createdBy   String         @map("created_by") @db.Uuid
-  createdAt   DateTime       @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt   DateTime       @updatedAt @map("updated_at") @db.Timestamptz
-  startedAt   DateTime?      @map("started_at") @db.Timestamptz
-  sentAt      DateTime?      @map("sent_at") @db.Timestamptz
-  sentCount   Int            @default(0) @map("sent_count")
-  failedCount Int            @default(0) @map("failed_count")
+  headingFont EmailFont          @default(wsool) @map("heading_font")
+  /// Who gets it: the creators list, the agencies list, or both (each address once).
+  audience    NewsletterAudience @default(creators)
+  status      CampaignStatus     @default(draft)
+  createdBy   String             @map("created_by") @db.Uuid
+  createdAt   DateTime           @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime           @updatedAt @map("updated_at") @db.Timestamptz
+  startedAt   DateTime?          @map("started_at") @db.Timestamptz
+  sentAt      DateTime?          @map("sent_at") @db.Timestamptz
+  sentCount   Int                @default(0) @map("sent_count")
+  failedCount Int                @default(0) @map("failed_count")
 
   deliveries NewsletterDelivery[]
 
@@ -1037,12 +1049,12 @@ model RateLimit {
 /// Affiliate program (CLAUDE.md, owner Oct 2026): how a creator wants their commission paid.
 /// Server only (IBAN), never exposed through the Data API.
 model ReferralAccount {
-  userId       String         @id @map("user_id") @db.Uuid
-  payoutMethod PayoutMethod   @default(credit) @map("payout_method")
+  userId       String       @id @map("user_id") @db.Uuid
+  payoutMethod PayoutMethod @default(credit) @map("payout_method")
   /// International bank account number, uppercase without spaces (bank payouts).
-  iban         String?        @db.VarChar(34)
-  holderName   String?        @map("holder_name") @db.VarChar(100)
-  updatedAt    DateTime       @updatedAt @map("updated_at") @db.Timestamptz
+  iban         String?      @db.VarChar(34)
+  holderName   String?      @map("holder_name") @db.VarChar(100)
+  updatedAt    DateTime     @updatedAt @map("updated_at") @db.Timestamptz
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -1130,40 +1142,40 @@ model PushToken {
 
 /// Marketing agency (owner, Nov 2026, phase 1): created by Wsool staff for the free beta. Server only.
 model Agency {
-  id          String         @id @default(uuid()) @db.Uuid
-  name        String         @db.VarChar(80)
-  status      AgencyStatus   @default(active)
+  id            String           @id @default(uuid()) @db.Uuid
+  name          String           @db.VarChar(80)
+  status        AgencyStatus     @default(active)
   /// agency = manages creators + directory; brand = a company that only searches the creator directory (owner, Nov 2026).
-  kind        AgencyKind     @default(agency)
+  kind          AgencyKind       @default(agency)
   /// Public agency page wsool.link/<slug> (owner, Nov 2026). Shares the username namespace with creator pages.
-  slug        String?        @unique @db.VarChar(20)
-  pagePublished Boolean      @default(false) @map("page_published")
-  nameEn      String?        @map("name_en") @db.VarChar(80)
-  tagline     String?        @db.VarChar(100)
-  taglineEn   String?        @map("tagline_en") @db.VarChar(100)
-  bio         String?        @db.VarChar(800)
-  bioEn       String?        @map("bio_en") @db.VarChar(800)
-  city        String?        @db.VarChar(60)
-  cityEn      String?        @map("city_en") @db.VarChar(60)
-  logoUrl     String?        @map("logo_url")
+  slug          String?          @unique @db.VarChar(20)
+  pagePublished Boolean          @default(false) @map("page_published")
+  nameEn        String?          @map("name_en") @db.VarChar(80)
+  tagline       String?          @db.VarChar(100)
+  taglineEn     String?          @map("tagline_en") @db.VarChar(100)
+  bio           String?          @db.VarChar(800)
+  bioEn         String?          @map("bio_en") @db.VarChar(800)
+  city          String?          @db.VarChar(60)
+  cityEn        String?          @map("city_en") @db.VarChar(60)
+  logoUrl       String?          @map("logo_url")
   /// International digits, like pages.whatsapp.
-  whatsapp    String?        @db.VarChar(15)
-  email       String?        @db.VarChar(254)
-  website     String?        @db.VarChar(200)
-  template    AgencyTemplate @default(executive)
-  accent      String?        @db.VarChar(7)
+  whatsapp      String?          @db.VarChar(15)
+  email         String?          @db.VarChar(254)
+  website       String?          @db.VarChar(200)
+  template      AgencyTemplate   @default(executive)
+  accent        String?          @db.VarChar(7)
   /// Agency plan (owner, Nov 2026): trial (free beta) until the owner sets a paid one in admin/agencies.
-  plan        AgencyPlan     @default(trial)
-  planCycle   BillingCycle?  @map("plan_cycle")
+  plan          AgencyPlan       @default(trial)
+  planCycle     BillingCycle?    @map("plan_cycle")
   /// Paid until (null = open-ended, e.g. the free beta).
-  planUntil   DateTime?      @map("plan_until") @db.Timestamptz
-  createdBy   String         @map("created_by") @db.Uuid
-  createdAt   DateTime       @default(now()) @map("created_at") @db.Timestamptz
-  members     AgencyMember[]
-  links       AgencyLink[]
-  accounts    AgencyAccount[]
-  brands      AgencyBrand[]
-  activity    AgencyActivity[]
+  planUntil     DateTime?        @map("plan_until") @db.Timestamptz
+  createdBy     String           @map("created_by") @db.Uuid
+  createdAt     DateTime         @default(now()) @map("created_at") @db.Timestamptz
+  members       AgencyMember[]
+  links         AgencyLink[]
+  accounts      AgencyAccount[]
+  brands        AgencyBrand[]
+  activity      AgencyActivity[]
 
   @@map("agencies")
 }
@@ -1222,27 +1234,27 @@ enum AgencyRole {
 
 /// An agency managing a creator's page, with the permissions the creator chose. The page always stays the creator's.
 model AgencyLink {
-  id         String     @id @default(uuid()) @db.Uuid
-  agencyId   String     @map("agency_id") @db.Uuid
-  agency     Agency     @relation(fields: [agencyId], references: [id], onDelete: Cascade)
-  pageId     String     @map("page_id") @db.Uuid
-  page       Page       @relation(fields: [pageId], references: [id], onDelete: Cascade)
-  status     LinkStatus @default(pending)
-  canContent Boolean    @default(true) @map("can_content")
-  canRates   Boolean    @default(true) @map("can_rates")
-  canContact Boolean    @default(false) @map("can_contact")
-  invitedBy  String     @map("invited_by") @db.Uuid
-  invitedAt  DateTime   @default(now()) @map("invited_at") @db.Timestamptz
-  decidedAt  DateTime?  @map("decided_at") @db.Timestamptz
-  endedAt    DateTime?  @map("ended_at") @db.Timestamptz
+  id           String     @id @default(uuid()) @db.Uuid
+  agencyId     String     @map("agency_id") @db.Uuid
+  agency       Agency     @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  pageId       String     @map("page_id") @db.Uuid
+  page         Page       @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  status       LinkStatus @default(pending)
+  canContent   Boolean    @default(true) @map("can_content")
+  canRates     Boolean    @default(true) @map("can_rates")
+  canContact   Boolean    @default(false) @map("can_contact")
+  invitedBy    String     @map("invited_by") @db.Uuid
+  invitedAt    DateTime   @default(now()) @map("invited_at") @db.Timestamptz
+  decidedAt    DateTime?  @map("decided_at") @db.Timestamptz
+  endedAt      DateTime?  @map("ended_at") @db.Timestamptz
   /// "creator" (unlinked) or "agency" (removed the creator, or the agency was stopped).
-  endedBy    String?    @map("ended_by") @db.VarChar(10)
+  endedBy      String?    @map("ended_by") @db.VarChar(10)
   /// Listed on the agency's public page (on by default; the creator can turn it off, the agency can hide them too).
-  showOnPage Boolean    @default(true) @map("show_on_page")
+  showOnPage   Boolean    @default(true) @map("show_on_page")
   /// Hidden by the agency from its public page (the creator's own switch is showOnPage).
-  agencyHidden Boolean  @default(false) @map("agency_hidden")
+  agencyHidden Boolean    @default(false) @map("agency_hidden")
   /// Order on the agency page (smaller first).
-  sort       Int        @default(0)
+  sort         Int        @default(0)
 
   @@index([pageId, status])
   @@index([agencyId, status])

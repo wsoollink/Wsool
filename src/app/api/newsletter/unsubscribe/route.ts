@@ -7,7 +7,8 @@ import { unsubscribe, verifyLink } from "@/lib/newsletter";
 export async function POST(req: Request) {
   const url = new URL(req.url);
   const id = url.searchParams.get("id") ?? "", token = url.searchParams.get("t") ?? "";
-  if (!verifyLink("unsubscribe", id, token)) return new Response("Invalid", { status: 400 });
-  await unsubscribe(id);
+  const scope = verifyLink("unsubscribe", id, token, url.searchParams.get("l"));
+  if (!scope) return new Response("Invalid", { status: 400 });
+  await unsubscribe(id, scope);
   return new Response("ok");
 }

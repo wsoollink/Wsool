@@ -12,6 +12,7 @@ import {
 import { AgenciesFooter, AgenciesHeader, APPLY } from "./Header";
 import { AgencyPlans, type AgencyPlan } from "./Plans";
 import { AgenciesNewsletter } from "./Newsletter";
+import { shareMeta } from "@/lib/seo";
 
 type Item = { t: string; b: string };
 type Plan = AgencyPlan;
@@ -21,7 +22,7 @@ export async function generateMetadata({ params }: PageProps<"/[locale]/agencies
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const t = await getTranslations({ locale: toIntlLocale(locale), namespace: "Agencies" });
-  return { title: t("metaTitle"), description: t("metaDesc") };
+  return shareMeta(locale, { title: t("metaTitle"), description: t("metaDesc"), path: "/agencies", canonical: true });
 }
 
 const TRIAL = APPLY;

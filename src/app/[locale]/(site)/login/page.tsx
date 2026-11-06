@@ -7,6 +7,15 @@ import { isLocale, toIntlLocale } from "@/i18n/config";
 import { getCurrentUser } from "@/lib/auth";
 import { GoogleSignIn, OAuthError } from "./GoogleSignIn";
 import { LoginForm } from "./LoginForm";
+import { shareMeta } from "@/lib/seo";
+import type { Metadata } from "next";
+
+export async function generateMetadata({ params }: PageProps<"/[locale]/login">): Promise<Metadata> {
+  const { locale } = await params;
+  if (!isLocale(locale)) return {};
+  const m = await getTranslations({ locale: toIntlLocale(locale), namespace: "Metadata" });
+  return shareMeta(locale, { title: m("loginTitle"), description: m("loginDesc"), path: "/login" });
+}
 
 async function RedirectIfSignedIn() {
   if (await getCurrentUser()) redirect("/dashboard");

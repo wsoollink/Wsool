@@ -5,12 +5,28 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ReportPage, type ReportData } from "@/components/reports/ReportPage";
 import { isLocale, locales, toIntlLocale, type Locale } from "@/i18n/config";
-import { countReportView, reportByToken, totals, viewsByDay } from "@/lib/ad-reports";
+import { countReportView, reportByToken, reportPreview, totals, viewsByDay } from "@/lib/ad-reports";
 import { isBot } from "@/lib/analytics";
 import type { PostMetrics } from "@/lib/connect/types";
+import { shareMeta } from "@/lib/seo";
 
-// Private: never in search results, and the link isn't passed on to the sites it links to.
-export const metadata: Metadata = { robots: { index: false, follow: false }, referrer: "no-referrer" };
+// Private: never in search results, and the link isn't passed on to the sites it links to. The preview (WhatsApp) names the
+// brand and who made it, in the report's language.
+export async function generateMetadata({ params }: PageProps<"/[locale]/r/[token]">): Promise<Metadata> {
+  const { locale, token } = await params;
+  const r = await reportPreview(token);
+  const lang: Locale = r ? (r.lang as Locale) : isLocale(locale) ? locale : "ar";
+  const m = await getTranslations({ locale: toIntlLocale(lang), namespace: "Metadata" });
+  const by = !r ? null : r.agency ? (lang === "en" && r.agency.nameEn) || r.agency.name : nameIn(r.page!.translations, lang, r.page!.username);
+  return {
+    ...shareMeta(lang, {
+      title: r ? m("reportTitle", { brand: r.brand }) : m("reportDemoTitle"),
+      description: by ? `${by} · ${m("reportDesc")}` : m("reportDesc"),
+      path: `/r/${token}`, robots: { index: false, follow: false },
+    }),
+    referrer: "no-referrer",
+  };
+}
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale, token: "_" }));

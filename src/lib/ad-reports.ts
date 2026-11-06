@@ -258,5 +258,19 @@ export async function reportByToken(token: string) {
   return r && !r.revokedAt ? r : null;
 }
 
+/** What a link preview of a shared report shows (brand, who made it, its language): one small query, no posts. */
+export async function reportPreview(token: string) {
+  if (!/^[A-Za-z0-9_-]{20,40}$/.test(token)) return null;
+  const r = await db.adReport.findUnique({
+    where: { tokenHash: hashReportToken(token) },
+    select: {
+      brand: true, lang: true, revokedAt: true,
+      page: { select: { username: true, translations: { select: { lang: true, fullName: true } } } },
+      agency: { select: { name: true, nameEn: true } },
+    },
+  });
+  return r && !r.revokedAt ? r : null;
+}
+
 /** One opening of the shared link (not bots). */
 export const countReportView = (id: string) => db.adReport.update({ where: { id }, data: { views: { increment: 1 }, lastViewedAt: new Date() } }).catch(() => {});

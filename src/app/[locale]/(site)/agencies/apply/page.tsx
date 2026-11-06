@@ -5,12 +5,14 @@ import { CheckCircle2 } from "lucide-react";
 import { isLocale, toIntlLocale } from "@/i18n/config";
 import { AgenciesFooter, AgenciesHeader } from "../Header";
 import { ApplyForm } from "./ApplyForm";
+import { shareMeta } from "@/lib/seo";
 
 export async function generateMetadata({ params }: PageProps<"/[locale]/agencies/apply">): Promise<Metadata> {
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const t = await getTranslations({ locale: toIntlLocale(locale), namespace: "AgencyApply" });
-  return { title: t("metaTitle") };
+  const m = await getTranslations({ locale: toIntlLocale(locale), namespace: "Metadata" });
+  return shareMeta(locale, { title: t("metaTitle"), description: m("agencyApplyDesc"), path: "/agencies/apply", canonical: true });
 }
 
 /** "Join as an agency" (owner, Nov 2026): name, agency, the email to open the account with, phone. */

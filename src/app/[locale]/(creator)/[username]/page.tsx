@@ -2,39 +2,35 @@ import { createHash } from "node:crypto";
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import { notFound, permanentRedirect, redirect } from "next/navigation";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { HiddenPage } from "@/components/marketing/Pages";
 import { toIntlLocale } from "@/i18n/config";
 import { loadCreatorPage, withPrivateView } from "@/lib/creator-page";
 import type { PublishedPage } from "@/lib/public-page";
 import type { Locale } from "@/i18n/config";
-import { siteOrigin } from "@/lib/site-url";
+import { shareMeta } from "@/lib/seo";
 import { CreatorProfile } from "./CreatorProfile";
 import { AgencyProfile } from "@/components/agency-page/AgencyProfile";
 import type { PublicAgency } from "@/lib/agency-page";
 
-function agencyMetadata(agency: PublicAgency, lang: Locale): Metadata {
+function agencyMetadata(agency: PublicAgency, lang: Locale, fallback: string): Metadata {
   const title = agency.tagline ? `${agency.name} · ${agency.tagline}` : agency.name;
   const description = agency.bio.slice(0, 200) || agency.tagline || undefined;
   const shown = [lang, agency.name, agency.tagline, agency.logoUrl, agency.template, agency.accent, agency.stats.creators, agency.stats.followers,
     agency.creators.slice(0, 6).map((c) => c.photoUrl).join(",")];
   const v = createHash("sha1").update(shown.join("|")).digest("hex").slice(0, 10);
   const image = { url: `/${agency.slug}/og?lang=${lang}&v=${v}`, width: 1200, height: 630, alt: agency.name };
-  return {
-    metadataBase: new URL(siteOrigin()),
-    title,
-    description,
-    alternates: { canonical: `/${agency.slug}` },
-    openGraph: { type: "website", title, description, url: `/${agency.slug}`, siteName: "Wsool", images: [image] },
-    twitter: { card: "summary_large_image", title, description, images: [image] },
-  };
+  return shareMeta(lang, { title, description: description || fallback, path: `/${agency.slug}`, image, canonical: true });
 }
 
 export async function generateMetadata({ params }: PageProps<"/[locale]/[username]">): Promise<Metadata> {
   const { locale, username } = await params;
   const { data, lang, agency } = await loadCreatorPage(locale, username);
-  if (agency) return agencyMetadata(agency, lang);
-  if (data?.status !== "published") return { robots: { index: false } };
+  const m = await getTranslations({ locale: toIntlLocale(lang), namespace: "Metadata" });
+  if (agency) return agencyMetadata(agency, lang, m("agencyDesc"));
+  // Unknown name: invite to claim it. Hidden page: just "not available". Both keep the site name in a shared preview.
+  if (!data) return shareMeta(lang, { title: m("notFoundTitle"), description: m("notFoundDesc"), path: "/", robots: { index: false } });
+  if (data.status !== "published") return shareMeta(lang, { title: m("unavailableTitle"), description: m("description"), path: `/${decodeURIComponent(username).toLowerCase()}`, robots: { index: false } });
   // Whole page private: no bio in previews, and search engines leave it out.
   const locked = data.privacy.locked;
   const tr = data.translations.find((x) => x.lang === lang) ?? data.translations[0];
@@ -46,15 +42,10 @@ export async function generateMetadata({ params }: PageProps<"/[locale]/[usernam
     data.accounts.map((a) => `${a.platform}:${a.followers}:${a.verified ? 1 : 0}`).join(",")];
   const v = createHash("sha1").update(shown.join("|")).digest("hex").slice(0, 10);
   const image = { url: `/${data.username}/og?lang=${lang}&v=${v}`, width: 1200, height: 630, alt: name };
-  return {
-    metadataBase: new URL(siteOrigin()),
-    title,
-    description: tr?.bio || undefined,
+  return shareMeta(lang, {
+    title, description: tr?.bio || m("creatorDesc"), path: `/${data.username}`, image, type: "profile", canonical: true,
     ...(locked && { robots: { index: false } }),
-    alternates: { canonical: `/${data.username}` },
-    openGraph: { type: "profile", title, description: tr?.bio || undefined, url: `/${data.username}`, siteName: "Wsool", images: [image] },
-    twitter: { card: "summary_large_image", title, description: tr?.bio || undefined, images: [image] },
-  };
+  });
 }
 
 export default async function CreatorPage({ params }: PageProps<"/[locale]/[username]">) {

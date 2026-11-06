@@ -11,16 +11,15 @@ import { buttonClasses } from "@/components/ui/Button";
 import { isLocale, toIntlLocale, type Locale } from "@/i18n/config";
 import { ACADEMY_CATEGORIES, ARTICLES_PER_PAGE, publishedArticles, type AcademyCategory } from "@/lib/academy";
 import { siteOrigin } from "@/lib/site-url";
+import { shareMeta } from "@/lib/seo";
 
 export async function generateMetadata({ params }: PageProps<"/[locale]/academy">): Promise<Metadata> {
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const t = await getTranslations({ locale: toIntlLocale(locale), namespace: "Academy" });
   return {
-    title: `${t("name")} · ${locale === "en" ? "Wsool" : "وصول"}`,
-    description: t("lead"),
+    ...shareMeta(locale, { title: t("name"), description: t("lead"), path: "/academy" }),
     alternates: { canonical: `${siteOrigin()}/academy`, types: { "application/rss+xml": `${siteOrigin()}/academy/feed` } },
-    openGraph: { title: t("name"), description: t("lead"), type: "website", url: `${siteOrigin()}/academy` },
   };
 }
 

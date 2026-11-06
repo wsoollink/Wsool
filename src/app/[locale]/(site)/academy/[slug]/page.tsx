@@ -13,6 +13,7 @@ import { isLocale, locales, toIntlLocale, type Locale } from "@/i18n/config";
 import { publishedArticle, publishedArticles, related } from "@/lib/academy";
 import { markupHeadings, markupToWebHtml } from "@/lib/email/markup";
 import { siteOrigin } from "@/lib/site-url";
+import { shareMeta } from "@/lib/seo";
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale, slug: "_" }));
@@ -23,18 +24,17 @@ export async function generateMetadata({ params }: PageProps<"/[locale]/academy/
   if (!isLocale(locale)) return {};
   const a = await publishedArticle(locale, slug);
   if (!a) return { robots: { index: false } };
-  const t = await getTranslations({ locale: toIntlLocale(locale), namespace: "Academy" });
+  const t = await getTranslations({ locale: toIntlLocale(a.lang), namespace: "Academy" });
   const url = `${siteOrigin()}/academy/${a.slug}`;
+  // The article's own language decides the preview (an English article opened by an Arabic visitor previews in English).
+  const lang = a.lang as Locale;
   return {
-    title: `${a.title} · ${t("name")}`,
-    description: a.summary || undefined,
+    ...shareMeta(lang, {
+      title: `${a.title} · ${t("name")}`, plainTitle: true, description: a.summary || t("lead"), path: `/academy/${a.slug}`, type: "article",
+      ...(a.coverUrl && { image: { url: a.coverUrl, alt: a.title } }),
+      og: { publishedTime: a.publishedAt?.toISOString(), modifiedTime: a.updatedAt.toISOString(), authors: [t("author")] },
+    }),
     alternates: { canonical: url },
-    openGraph: {
-      type: "article", url, title: a.title, description: a.summary || undefined, siteName: locale === "en" ? "Wsool" : "وصول",
-      publishedTime: a.publishedAt?.toISOString(), modifiedTime: a.updatedAt.toISOString(), authors: [t("author")],
-      ...(a.coverUrl && { images: [{ url: a.coverUrl }] }),
-    },
-    twitter: { card: a.coverUrl ? "summary_large_image" : "summary", title: a.title, description: a.summary || undefined },
   };
 }
 

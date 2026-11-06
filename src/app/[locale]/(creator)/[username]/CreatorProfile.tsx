@@ -74,7 +74,9 @@ export async function CreatorProfile({ page, lang, preview = false }: ProfilePro
   const location = [tr?.country, tr?.city].filter(Boolean).join(lang === "ar" ? "، " : ", ");
   const tags = page.tags.filter((tag) => tag.lang === lang);
   const theme = pageTheme(page.template, page.accent, page.customColors);
-  const pageUrl = `${siteOrigin()}/${page.username}`;
+  // Shared in the language the visitor is reading: WhatsApp's preview bot has no language of its own, so the other
+  // language travels as ?lang= (src/proxy.ts).
+  const pageUrl = `${siteOrigin()}/${page.username}${lang !== page.primaryLang ? `?lang=${lang}` : ""}`;
   const shortUrl = `${siteOrigin().replace(/^https?:\/\//, "")}/${page.username}`;
   const otherLang: Locale | null = page.enEnabled ? (lang === "ar" ? "en" : "ar") : null;
   const monthName = (iso: string) => new Intl.DateTimeFormat(locale, { month: "long", timeZone: "UTC" }).format(new Date(iso));

@@ -1,7 +1,29 @@
 {
   "Metadata": {
     "title": "Wsool | وصول",
-    "description": "ملفك الإعلامي كاملاً في رابط واحد | Your Media kit in one link"
+    "description": "ملفك الإعلامي كاملاً في رابط واحد | Your Media kit in one link",
+    "siteName": "Wsool | وصول",
+    "pricingTitle": "Pricing",
+    "pricingDesc": "Start free on Basic, or go Pro for USD {month} a month or USD {year} a year, VAT included. Every new account tries Pro free for {days} days, no card needed.",
+    "termsDesc": "Wsool's terms of use: your account and page, subscriptions and payment, and the content you publish.",
+    "privacyDesc": "What data Wsool collects, how it is used and protected, and your rights over it.",
+    "refundDesc": "When you can cancel your Wsool subscription and get a refund, and how to ask for one.",
+    "loginTitle": "Log in",
+    "loginDesc": "Open your Wsool page dashboard with a code sent to your email. New here? Your page starts with a 14-day free trial.",
+    "agencyApplyDesc": "Request a Wsool agency account and manage every creator you work with from one dashboard. We reply within one business day.",
+    "agencyContactDesc": "Questions about Wsool agency and brand accounts? Message our team and we reply within one business day.",
+    "agencyTermsDesc": "Terms for Wsool agency and brand accounts: the account and team, creator pages, and the subscription.",
+    "agencyPrivacyDesc": "How Wsool handles the data of agencies, brands and their teams.",
+    "agencyRefundDesc": "Cancellation and refund policy for Wsool agency and brand subscriptions.",
+    "agencyDemoDesc": "A demo agency page on Wsool: its creators with verified numbers and an agency PDF, all in one link.",
+    "reportTitle": "{brand} ad report",
+    "reportDesc": "Ad results straight from the platforms: views and engagement for every post, in one Wsool report.",
+    "reportDemoTitle": "Demo ad report",
+    "creatorDesc": "Media kit on Wsool: verified numbers, brands worked with, ad rates and contact.",
+    "agencyDesc": "Agency page on Wsool: the creators it represents, their verified numbers and contact.",
+    "unavailableTitle": "Page not available",
+    "notFoundTitle": "Claim your link on Wsool",
+    "notFoundDesc": "There's no page at this link yet. Build your whole media kit in one link, free."
   },
   "Home": {
     "hello": "Hi {name}",

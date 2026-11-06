@@ -9,12 +9,14 @@ import { SELLER, SUPPORT_EMAIL, SUPPORT_WHATSAPP_DISPLAY, supportWhatsappUrl } f
 import { isLocale, toIntlLocale } from "@/i18n/config";
 import { ContactForm } from "../../contact/ContactForm";
 import { AgenciesFooter, AgenciesHeader, APPLY } from "../Header";
+import { shareMeta } from "@/lib/seo";
 
 export async function generateMetadata({ params }: PageProps<"/[locale]/agencies/contact">): Promise<Metadata> {
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const t = await getTranslations({ locale: toIntlLocale(locale), namespace: "AgencyContact" });
-  return { title: `${t("title")} · ${locale === "en" ? "Wsool" : "وصول"}` };
+  const m = await getTranslations({ locale: toIntlLocale(locale), namespace: "Metadata" });
+  return shareMeta(locale, { title: t("title"), description: m("agencyContactDesc"), path: "/agencies/contact", canonical: true });
 }
 
 /** Contact page for agencies and brands (owner, Nov 2026): the same form (topic "partnership"), the join form, company details, WhatsApp. */

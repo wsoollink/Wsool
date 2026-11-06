@@ -927,6 +927,15 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   every tappable element dips in colour and presses in on `:active` (zero-specificity `:where()` rules in `globals.css`, plus `active:`
   colours in `buttonClasses` / `navRow`); the agencies pages' glows are radial gradients (`.ag-glow`), not big CSS blurs (iPhone lag).
 
+### Link previews (owner, Nov 2026)
+- Every shared page (WhatsApp, X, iMessage) shows the site name in its title ("Pricing · Wsool" / "الأسعار · وصول") and its own
+  description, in its language: pages build their metadata with `shareMeta(lang, {title, description, path, image?})`
+  (`src/lib/seo.ts`; Next.js replaces a parent's `openGraph` instead of merging it, so a page that sets only `title` would show the
+  home preview). Texts in `Metadata` messages. **Every new public page needs a `shareMeta` call.** Creator/agency pages use their OG image,
+  reports name the brand + who made it (`reportPreview`), articles follow the article's language, unknown names invite to claim.
+- Preview bots send no language, so they get Arabic; `?lang=ar|en` picks the language for one request (`src/proxy.ts`, no cookie).
+  The creator page's share button adds it when the visitor reads the page's other language.
+
 ### Speed (owner, Oct 2026)
 - Netlify functions run in **Frankfurt** (owner changed "Functions region"), next to Supabase (`wsool-eu`). Every database
   query is a network round trip, so: Prisma `relationJoins` (nested reads = one query), queries that don't depend on each

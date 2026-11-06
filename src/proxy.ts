@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { REF_PARAM } from "@/config/referrals";
-import { LOCALE_COOKIE, resolveLocale } from "@/i18n/config";
+import { isLocale, LOCALE_COOKIE, resolveLocale } from "@/i18n/config";
 import { rewriteWithSession } from "@/lib/supabase/proxy";
 import { PATH_HEADER } from "@/lib/next-path";
 
@@ -34,7 +34,10 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(landing, 307);
   }
 
-  const locale = resolveLocale(
+  // ?lang=ar|en picks the language for this one request (no cookie): shared links say which language their preview
+  // (WhatsApp, X) should use, since those bots send no language of their own.
+  const asked = request.nextUrl.searchParams.get("lang");
+  const locale = isLocale(asked) ? asked : resolveLocale(
     request.cookies.get(LOCALE_COOKIE)?.value,
     request.headers.get("accept-language"),
   );

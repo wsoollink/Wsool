@@ -14,12 +14,13 @@ import { isLocale, toIntlLocale } from "@/i18n/config";
 import { CONTACT_TOPICS, type ContactTopic } from "@/lib/validation/support-message";
 import { ContactForm } from "./ContactForm";
 import { SiteFooter } from "@/components/site/SiteFooter";
+import { shareMeta } from "@/lib/seo";
 
 export async function generateMetadata({ params }: PageProps<"/[locale]/contact">): Promise<Metadata> {
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const t = await getTranslations({ locale: toIntlLocale(locale), namespace: "Contact" });
-  return { title: `${t("metaTitle")} · ${locale === "en" ? "Wsool" : "وصول"}`, description: t("lead") };
+  return shareMeta(locale, { title: t("metaTitle"), description: t("lead"), path: "/contact", canonical: true });
 }
 
 /** "Contact us" (owner, Oct 2026): form to support@, company details and a WhatsApp card. Linked from the marketing footer. */

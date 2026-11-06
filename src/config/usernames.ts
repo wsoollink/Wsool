@@ -27,6 +27,8 @@ export const RESERVED_USERNAMES: ReadonlySet<string> = new Set([
   "demo", "home", "new", "edit", "user", "users", "creator", "creators", "page",
   "pages", "templates", "status", "health", "robots", "sitemap", "manifest",
   "favicon", "_next", "_vercel",
+  // Wsool Academy (owner, Nov 2026): articles at /academy
+  "academy", "academies", "wiki", "learn", "articles", "article", "rss", "feed",
   // Brand and infrastructure
   "wsool", "wsool.link", "wsoollink", "official", "team", "staff", "root",
   "system", "www", "mail", "email", "smtp", "cdn", "dev", "test", "staging",

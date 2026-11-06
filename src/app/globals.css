@@ -208,8 +208,12 @@ html:has(header > .mk-home-1, header > .mk-pricing-1, .ag-grid, .ag-page) {
 .ag-glow { background: radial-gradient(closest-side, var(--glow), transparent); }
 
 /* ---- Wsool Academy (articles, src/lib/email/markup.ts markupToWebHtml) ---- */
+/* Solid navy first, then the gradients as images: if a browser drops a gradient (seen on iPhone, Nov 2026) the white
+   text still sits on navy. Stops stay within 0-100% and the radial size is a keyword, the forms every engine reads. */
 .ac-hero {
-  background: radial-gradient(120% 140% at 100% 0%, rgba(34, 184, 240, 0.35), transparent 55%), linear-gradient(135deg, #021941 0%, #0a2a63 60%, #0060e6 140%);
+  background-color: #021941;
+  background-image: radial-gradient(farthest-corner at 100% 0%, rgba(34, 184, 240, 0.32), rgba(34, 184, 240, 0) 55%),
+    linear-gradient(135deg, #021941 0%, #0a2a63 65%, #0b4fb8 100%);
 }
 .ac-cover-fallback { background: linear-gradient(135deg, #0060e6, #22b8f0); }
 .ac-body { font-size: 17px; line-height: 2; color: var(--color-navy); overflow-wrap: anywhere; }

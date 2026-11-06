@@ -18,6 +18,7 @@ const GROUPS = {
   users: ["user.", "page.", "creators.", "demo.", "agency."],
   money: ["invoice.", "vat.", "expense.", "investor_link.", "discount.", "referral."],
   newsletter: ["newsletter."],
+  academy: ["academy."],
   categories: ["category."],
   team: ["team."],
 } as const;

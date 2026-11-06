@@ -215,3 +215,15 @@ section:has(div[role="group"] > button[aria-pressed] + button[aria-pressed="true
 div:has(> header > :is(.mk-home-1, .mk-pricing-1, .mk-notfound-1, .mk-hidden-1, .mk-servererror-1)) {
   overflow-x: clip !important;
 }
+
+/* Academy link in the header nav (Nov 2026): on tablets and small laptops the header got crowded and "Log in" /
+   "Start free" wrapped onto two lines; tighter nav links and no wrapping keep it on one row. */
+@media (min-width: 768px) and (max-width: 1199px) {
+  header :is(.mk-home-3, .mk-pricing-3, .mk-notfound-3, .mk-hidden-3, .mk-servererror-3) > a { padding: 0 10px !important; }
+  header a { white-space: nowrap; }
+}
+/* Below 1000px the five links + log in + start free don't fit next to the logo: the links bar hides (like on phones;
+   every link is also in the footer). */
+@media (min-width: 768px) and (max-width: 999px) {
+  header :is(.mk-home-3, .mk-pricing-3, .mk-notfound-3, .mk-hidden-3, .mk-servererror-3) { display: none !important; }
+}

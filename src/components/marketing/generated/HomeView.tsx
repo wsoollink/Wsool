@@ -32,13 +32,16 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
             <Link href="/agencies" style={{"height": "36px", "padding": "0 16px", "borderRadius": "999px", "display": "flex", "alignItems": "center", "color": "var(--mk-text)", "fontSize": "14px", "fontWeight": "500", "textDecoration": "none"}}>
               {t(7)}
             </Link>
+            <Link href="/academy" style={{"height": "36px", "padding": "0 16px", "borderRadius": "999px", "display": "flex", "alignItems": "center", "color": "var(--mk-text)", "fontSize": "14px", "fontWeight": "500", "textDecoration": "none"}}>
+              {t(8)}
+            </Link>
           </nav>
           <div style={{"display": "flex", "alignItems": "center", "gap": "10px"}}>
             <Link href="/login" style={{"fontSize": "14px", "fontWeight": "500", "color": "var(--mk-text)", "textDecoration": "none", "padding": "0 6px"}} className="mk-home-4">
-              {t(8)}
+              {t(9)}
             </Link>
             <ThemeToggle />
-            <a href="#" onClick={v.switchLang} hrefLang={v.en ? "ar" : "en"} lang={v.en ? "ar" : "en"} aria-label={t(9)} style={{"width": "40px", "height": "40px", "borderRadius": "50%", "border": "1px solid rgba(var(--mk-ink),0.09)", "background": "var(--mk-card)", "display": "flex", "alignItems": "center", "justifyContent": "center"}}>
+            <a href="#" onClick={v.switchLang} hrefLang={v.en ? "ar" : "en"} lang={v.en ? "ar" : "en"} aria-label={t(10)} style={{"width": "40px", "height": "40px", "borderRadius": "50%", "border": "1px solid rgba(var(--mk-ink),0.09)", "background": "var(--mk-card)", "display": "flex", "alignItems": "center", "justifyContent": "center"}}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{"stroke": "var(--mk-text)"}}>
                 <circle cx="12" cy="12" r="9" />
                 <path d="M3 12h18" />
@@ -46,7 +49,7 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
               </svg>
             </a>
             <Link href="/login" style={{"height": "42px", "padding": "0 18px", "borderRadius": "999px", "border": "none", "background": "var(--mk-solid)", "color": "var(--mk-on-solid)", "fontFamily": "inherit", "fontSize": "14px", "fontWeight": "700", "display": "inline-flex", "alignItems": "center", "justifyContent": "center", "gap": "10px", "cursor": "pointer", "textDecoration": "none", "boxShadow": "0 10px 24px rgba(var(--mk-shadow),0.18)"}}>
-              {t(10)}
+              {t(11)}
             </Link>
           </div>
         </div>
@@ -57,32 +60,32 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
           <div style={{"flex": "1 1 480px", "minWidth": "0", "display": "flex", "flexDirection": "column", "gap": "24px"}} className="mk-home-6">
             <a href="#pricing" style={{"alignSelf": "flex-start", "display": "inline-flex", "alignItems": "center", "gap": "10px", "height": "36px", "padding": "0 6px 0 14px", "borderRadius": "999px", "background": "var(--mk-card)", "border": "1px solid rgba(var(--mk-ink),0.09)", "color": "var(--mk-text)", "fontSize": "13px", "fontWeight": "500", "textDecoration": "none", "boxShadow": "0 4px 12px rgba(var(--mk-shadow),0.05)"}} className="ws-rise mk-home-7">
               <span style={{"height": "24px", "padding": "0 10px", "borderRadius": "999px", "background": "#0A6CFF", "color": "#FFFFFF", "fontSize": "11.5px", "fontWeight": "700", "display": "flex", "alignItems": "center"}}>
-                {t(11)}
+                {t(12)}
               </span>
-              {t(12)}
+              {t(13)}
             </a>
             <h1 style={{"animationDelay": ".1s", "margin": "0", "fontSize": "68px", "lineHeight": "1.12", "fontWeight": "900", "letterSpacing": "-0.02em", "color": "var(--mk-text)"}} className="ws-rise mk-home-8">
-              {t(13)}
+              {t(14)}
               <br />
               <span style={{"backgroundImage": "linear-gradient(90deg, #0A6CFF, #22B8F0)", "WebkitBackgroundClip": "text", "backgroundClip": "text", "WebkitTextFillColor": "transparent"}}>
-                {t(14)}
+                {t(15)}
               </span>
             </h1>
             <p style={{"animationDelay": ".2s", "margin": "0", "fontSize": "19px", "lineHeight": "1.85", "color": "var(--mk-muted)", "maxWidth": "540px"}} className="ws-rise mk-home-9">
-              {t(15)}
+              {t(16)}
             </p>
             <div style={{"animationDelay": ".3s", "width": "100%", "display": "flex"}} className="ws-rise mk-home-10">
               <div style={{"display": "flex", "flexDirection": "column", "gap": "10px", "width": "100%", "maxWidth": "520px"}}>
                 <label htmlFor="claim" style={{"position": "absolute", "width": "1px", "height": "1px", "overflow": "hidden", "clip": "rect(0 0 0 0)"}}>
-                  {t(16)}
+                  {t(17)}
                 </label>
                 <div dir="ltr" style={{"display": "flex", "alignItems": "center", "gap": "6px", "padding": "7px", "borderRadius": "999px", "background": "var(--mk-card)", "border": `1.5px solid ${v.claimBorder}`, "boxShadow": "0 18px 40px rgba(var(--mk-shadow),0.10)"}}>
                   <span style={{"paddingLeft": "16px", "fontSize": "17px", "fontWeight": "500", "color": "var(--mk-muted)"}} className="mk-home-11">
-                    {t(17)}
+                    {t(18)}
                   </span>
                   <input id="claim" type="text" autoComplete="off" spellCheck="false" placeholder="yourname" value={v.claimV} onChange={v.onClaim} style={{"flex": "1", "minWidth": "0", "height": "48px", "border": "none", "background": "transparent", "fontFamily": "inherit", "fontSize": "17px", "fontWeight": "700", "color": "var(--mk-text)", "outline": "none"}} className="mk-home-12" />
                   <button type="button" onClick={v.claimGo} style={{"height": "48px", "padding": "0 22px", "borderRadius": "999px", "border": "none", "background": "#0A6CFF", "color": "#FFFFFF", "fontFamily": "inherit", "fontSize": "14.5px", "fontWeight": "700", "display": "inline-flex", "alignItems": "center", "justifyContent": "center", "gap": "10px", "cursor": "pointer", "textDecoration": "none", "boxShadow": "none", "flexShrink": "0"}} className="mk-home-13">
-                    <span className="mk-dsk">{t(18)}</span><span className="mk-mob">{t(19)}</span>
+                    <span className="mk-dsk">{t(19)}</span><span className="mk-mob">{t(20)}</span>
                   </button>
                 </div>
                 <span style={{"fontSize": "13px", "color": v.claimColor, "padding": "0 8px"}}>
@@ -95,12 +98,6 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{"stroke": "var(--mk-good)"}}>
                   <path d="M5 12l5 5 9-10" />
                 </svg>
-                {t(20)}
-              </span>
-              <span style={{"display": "inline-flex", "alignItems": "center", "gap": "6px"}}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{"stroke": "var(--mk-good)"}}>
-                  <path d="M5 12l5 5 9-10" />
-                </svg>
                 {t(21)}
               </span>
               <span style={{"display": "inline-flex", "alignItems": "center", "gap": "6px"}}>
@@ -109,21 +106,27 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
                 </svg>
                 {t(22)}
               </span>
+              <span style={{"display": "inline-flex", "alignItems": "center", "gap": "6px"}}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{"stroke": "var(--mk-good)"}}>
+                  <path d="M5 12l5 5 9-10" />
+                </svg>
+                {t(23)}
+              </span>
             </div>
             <Link href="/demo" style={{"animationDelay": ".5s", "alignSelf": "flex-start", "minHeight": "44px", "display": "inline-flex", "alignItems": "center", "fontSize": "15px", "fontWeight": "700", "color": "var(--mk-blue-text)", "textDecoration": "none"}} className="ws-rise mk-home-15">
-              {t(23)}
+              {t(24)}
             </Link>
           </div>
           <div style={{"position": "relative", "flex": "0 0 auto", "display": "flex", "justifyContent": "center", "padding": "30px 110px"}} className="mk-home-16">
             <div aria-hidden="true" style={{"position": "absolute", "inset": "-60px -80px", "background": "radial-gradient(closest-side at 60% 40%, rgba(10,108,255,0.32), transparent 70%), radial-gradient(closest-side at 30% 70%, rgba(34,184,240,0.30), transparent 70%)", "filter": "blur(10px)"}} className="ws-glow mk-home-17"></div>
-            <div role="img" aria-label={t(24)} style={{"position": "relative", "zIndex": "2", "width": "304px", "borderRadius": "44px", "padding": "9px", "background": "linear-gradient(160deg, #0E2A5C, #021941)", "boxShadow": "0 50px 100px rgba(var(--mk-shadow),0.35), inset 0 0 0 1px rgba(255,255,255,0.08)"}} className="ws-float mk-home-18">
+            <div role="img" aria-label={t(25)} style={{"position": "relative", "zIndex": "2", "width": "304px", "borderRadius": "44px", "padding": "9px", "background": "linear-gradient(160deg, #0E2A5C, #021941)", "boxShadow": "0 50px 100px rgba(var(--mk-shadow),0.35), inset 0 0 0 1px rgba(255,255,255,0.08)"}} className="ws-float mk-home-18">
               <div style={{"borderRadius": "36px", "overflow": "hidden", "background": "#F6F8FC"}}>
                 <div style={{"position": "relative", "width": "100%", "aspectRatio": "1 / 0.9"}}>
                   <img src={v.en ? "/marketing/fd09a17e0b58ec7890f59ce7bd4f7075.jpg" : "/marketing/4fb3e447104aa9686e8633c83300f7f0.jpg"} alt="" style={{"position": "absolute", "inset": "0", "width": "100%", "height": "100%", "objectFit": "cover", "objectPosition": "center 15%", "display": "block", "WebkitMaskImage": "linear-gradient(to bottom, #000 50%, transparent 100%)", "maskImage": "linear-gradient(to bottom, #000 50%, transparent 100%)"}} />
                 </div>
                 <div style={{"marginTop": "-44px", "position": "relative", "padding": "0 12px 16px", "display": "flex", "flexDirection": "column", "alignItems": "center", "gap": "5px", "textAlign": "center", "color": "#021941"}}>
                   <span style={{"display": "flex", "alignItems": "center", "gap": "5px", "fontWeight": "700", "fontSize": "17px"}}>
-                    {t(25)}
+                    {t(26)}
                     <span style={{"width": "15px", "height": "15px", "borderRadius": "50%", "background": "#0A6CFF", "display": "inline-flex", "alignItems": "center", "justifyContent": "center"}}>
                       <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="3.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                         <path d="M5 12l5 5 9-10" />
@@ -131,10 +134,10 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
                     </span>
                   </span>
                   <span style={{"fontSize": "11.5px", "fontWeight": "500", "color": "#0A6CFF"}}>
-                    {t(26)}
+                    {t(27)}
                   </span>
                   <span style={{"fontSize": "9px", "color": "#56607A", "marginTop": "3px"}}>
-                    {t(27)}
+                    {t(28)}
                   </span>
                   <span dir="ltr" style={{"fontFamily": "var(--font-numbers)", "fontWeight": "900", "fontSize": "27px", "lineHeight": "1.1", "backgroundImage": "linear-gradient(90deg, #0A6CFF, #22B8F0)", "WebkitBackgroundClip": "text", "backgroundClip": "text", "WebkitTextFillColor": "transparent"}}>
                     {v.count}
@@ -160,37 +163,37 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
                     <div style={{"background": "#FFFFFF", "border": "1px solid rgba(2,25,65,0.09)", "borderRadius": "12px", "padding": "9px 6px", "display": "flex", "flexDirection": "column", "alignItems": "center", "gap": "2px"}}>
                       <span style={{"display": "flex", "alignItems": "center", "gap": "4px", "fontSize": "9.5px", "fontWeight": "600"}}>
                         <img src="/marketing/551e04e928d68f549e3f79f0634c235b.png" alt="" style={{"width": "10px", "height": "10px", "objectFit": "contain", "display": "block"}} />
-                        {t(28)}
+                        {t(29)}
                       </span>
                       <span dir="ltr" style={{"fontFamily": "var(--font-numbers)", "fontWeight": "900", "fontSize": "14px", "color": "#021941"}}>
-                        {t(29)}
+                        {t(30)}
                       </span>
                     </div>
                     <div style={{"background": "#FFFFFF", "border": "1px solid rgba(2,25,65,0.09)", "borderRadius": "12px", "padding": "9px 6px", "display": "flex", "flexDirection": "column", "alignItems": "center", "gap": "2px"}}>
                       <span style={{"display": "flex", "alignItems": "center", "gap": "4px", "fontSize": "9.5px", "fontWeight": "600"}}>
                         <img src="/marketing/1df8b82db5b11403f9af5f4c69f985de.png" alt="" style={{"width": "10px", "height": "10px", "objectFit": "contain", "display": "block"}} />
-                        {t(30)}
+                        {t(31)}
                       </span>
                       <span dir="ltr" style={{"fontFamily": "var(--font-numbers)", "fontWeight": "900", "fontSize": "14px", "color": "#021941"}}>
-                        {t(31)}
+                        {t(32)}
                       </span>
                     </div>
                     <div style={{"background": "#FFFFFF", "border": "1px solid rgba(2,25,65,0.09)", "borderRadius": "12px", "padding": "9px 6px", "display": "flex", "flexDirection": "column", "alignItems": "center", "gap": "2px"}}>
                       <span style={{"display": "flex", "alignItems": "center", "gap": "4px", "fontSize": "9.5px", "fontWeight": "600"}}>
                         <img src="/marketing/e5586d94fe91cd757b5b299bc2987bc9.png" alt="" style={{"width": "10px", "height": "10px", "objectFit": "contain", "display": "block"}} />
-                        {t(32)}
+                        {t(33)}
                       </span>
                       <span dir="ltr" style={{"fontFamily": "var(--font-numbers)", "fontWeight": "900", "fontSize": "14px", "color": "#021941"}}>
-                        {t(33)}
+                        {t(34)}
                       </span>
                     </div>
                     <div style={{"background": "#FFFFFF", "border": "1px solid rgba(2,25,65,0.09)", "borderRadius": "12px", "padding": "9px 6px", "display": "flex", "flexDirection": "column", "alignItems": "center", "gap": "2px"}}>
                       <span style={{"display": "flex", "alignItems": "center", "gap": "4px", "fontSize": "9.5px", "fontWeight": "600"}}>
                         <img src="/marketing/6e04570b6d158aff8d0bb786cab9467d.png" alt="" style={{"width": "10px", "height": "10px", "objectFit": "contain", "display": "block"}} />
-                        {t(34)}
+                        {t(35)}
                       </span>
                       <span dir="ltr" style={{"fontFamily": "var(--font-numbers)", "fontWeight": "900", "fontSize": "14px", "color": "#021941"}}>
-                        {t(35)}
+                        {t(36)}
                       </span>
                     </div>
                   </div>
@@ -207,10 +210,10 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
                 </span>
                 <span style={{"display": "flex", "flexDirection": "column", "gap": "1px"}}>
                   <span style={{"fontSize": "12px", "color": "var(--mk-muted)"}}>
-                    {t(36)}
+                    {t(37)}
                   </span>
                   <span dir="ltr" style={{"fontFamily": "var(--font-numbers)", "fontWeight": "900", "fontSize": "18px", "color": "var(--mk-text)", "textAlign": v.en ? "left" : "right"}}>
-                    {t(37)}
+                    {t(38)}
                   </span>
                 </span>
               </div>
@@ -218,28 +221,28 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
             <div style={{"position": "absolute", "zIndex": "3", "top": "230px", "left": v.en ? undefined : "0px", "animationDelay": "1.4s", "background": "rgba(var(--mk-card-rgb),0.92)", "backdropFilter": "blur(12px)", "WebkitBackdropFilter": "blur(12px)", "border": "1px solid rgba(var(--mk-ink),0.09)", "borderRadius": "18px", "boxShadow": "0 24px 50px rgba(var(--mk-shadow),0.14)", "padding": "12px 14px", "right": v.en ? "0px" : undefined}} className="ws-float2 mk-home-20">
               <div style={{"display": "flex", "flexDirection": "column", "gap": "8px", "minWidth": "170px"}}>
                 <span style={{"fontSize": "12.5px", "fontWeight": "700", "color": "var(--mk-text)"}}>
-                  {t(38)}
+                  {t(39)}
                 </span>
                 <span style={{"display": "flex", "justifyContent": "space-between", "gap": "18px", "fontSize": "12px", "color": "var(--mk-muted)"}}>
                   <span>
-                    {t(39)}
+                    {t(40)}
                   </span>
                   <span>
                     <b dir="ltr" style={{"color": "var(--mk-text)"}}>
-                      {t(40)}
+                      {t(41)}
                     </b>
-                    {" "}{t(41)}
+                    {" "}{t(42)}
                   </span>
                 </span>
                 <span style={{"display": "flex", "justifyContent": "space-between", "gap": "18px", "fontSize": "12px", "color": "var(--mk-muted)"}}>
                   <span>
-                    {t(42)}
+                    {t(43)}
                   </span>
                   <span>
                     <b dir="ltr" style={{"color": "var(--mk-text)"}}>
-                      {t(43)}
+                      {t(44)}
                     </b>
-                    {" "}{t(44)}
+                    {" "}{t(45)}
                   </span>
                 </span>
               </div>
@@ -248,10 +251,10 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
               <div style={{"display": "flex", "flexDirection": "column", "gap": "8px", "width": "170px"}}>
                 <span style={{"display": "flex", "justifyContent": "space-between", "fontSize": "12px", "color": "var(--mk-muted)"}}>
                   <span>
-                    {t(45)}
+                    {t(46)}
                   </span>
                   <b style={{"color": "var(--mk-good)"}}>
-                    {t(46)}
+                    {t(47)}
                   </b>
                 </span>
                 <div dir="ltr" style={{"display": "flex", "alignItems": "flex-end", "gap": "4px", "height": "44px"}}>
@@ -274,91 +277,91 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
                   </svg>
                 </span>
                 <span style={{"fontSize": "13px", "fontWeight": "700", "color": "var(--mk-text)"}}>
-                  {t(47)}
+                  {t(48)}
                 </span>
               </div>
             </div>
           </div>
         </div>
       </section>
-      <section aria-label={t(48)} style={{"borderTop": "1px solid rgba(var(--mk-ink),0.09)", "borderBottom": "1px solid rgba(var(--mk-ink),0.09)", "background": "rgba(var(--mk-card-rgb),0.6)"}}>
+      <section aria-label={t(49)} style={{"borderTop": "1px solid rgba(var(--mk-ink),0.09)", "borderBottom": "1px solid rgba(var(--mk-ink),0.09)", "background": "rgba(var(--mk-card-rgb),0.6)"}}>
         <div style={{"maxWidth": "1200px", "margin": "0 auto", "padding": "22px 32px", "display": "flex", "alignItems": "center", "gap": "24px"}} className="mk-home-23">
           <span style={{"flexShrink": "0", "fontSize": "13.5px", "fontWeight": "500", "color": "var(--mk-muted)"}} className="mk-home-24">
-            {t(49)}
+            {t(50)}
           </span>
           <div dir="ltr" style={{"flex": "1", "minWidth": "0", "overflow": "hidden", "WebkitMaskImage": "linear-gradient(to right, transparent, #000 10%, #000 90%, transparent)", "maskImage": "linear-gradient(to right, transparent, #000 10%, #000 90%, transparent)"}}>
             <div style={{"display": "flex", "width": "max-content"}} className="ws-marq">
               <span style={{"flex": "0 0 auto", "display": "inline-flex", "alignItems": "center", "gap": "10px", "marginRight": "40px", "fontSize": "16px", "fontWeight": "700", "color": "var(--mk-text)", "opacity": "0.75"}}>
                 <img src="/marketing/551e04e928d68f549e3f79f0634c235b.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
-                {t(50)}
-              </span>
-              <span style={{"flex": "0 0 auto", "display": "inline-flex", "alignItems": "center", "gap": "10px", "marginRight": "40px", "fontSize": "16px", "fontWeight": "700", "color": "var(--mk-text)", "opacity": "0.75"}}>
-                <img src="/marketing/1df8b82db5b11403f9af5f4c69f985de.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                 {t(51)}
               </span>
               <span style={{"flex": "0 0 auto", "display": "inline-flex", "alignItems": "center", "gap": "10px", "marginRight": "40px", "fontSize": "16px", "fontWeight": "700", "color": "var(--mk-text)", "opacity": "0.75"}}>
-                <img src="/marketing/e5586d94fe91cd757b5b299bc2987bc9.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
+                <img src="/marketing/1df8b82db5b11403f9af5f4c69f985de.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                 {t(52)}
               </span>
               <span style={{"flex": "0 0 auto", "display": "inline-flex", "alignItems": "center", "gap": "10px", "marginRight": "40px", "fontSize": "16px", "fontWeight": "700", "color": "var(--mk-text)", "opacity": "0.75"}}>
-                <img src="/marketing/6e04570b6d158aff8d0bb786cab9467d.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
+                <img src="/marketing/e5586d94fe91cd757b5b299bc2987bc9.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                 {t(53)}
               </span>
               <span style={{"flex": "0 0 auto", "display": "inline-flex", "alignItems": "center", "gap": "10px", "marginRight": "40px", "fontSize": "16px", "fontWeight": "700", "color": "var(--mk-text)", "opacity": "0.75"}}>
-                <img src="/marketing/6acf843784273799121efacbee2c5eab.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
+                <img src="/marketing/6e04570b6d158aff8d0bb786cab9467d.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                 {t(54)}
               </span>
               <span style={{"flex": "0 0 auto", "display": "inline-flex", "alignItems": "center", "gap": "10px", "marginRight": "40px", "fontSize": "16px", "fontWeight": "700", "color": "var(--mk-text)", "opacity": "0.75"}}>
-                <img src="/marketing/18a6d2d10238b2687911d702e2367069.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
+                <img src="/marketing/6acf843784273799121efacbee2c5eab.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                 {t(55)}
               </span>
               <span style={{"flex": "0 0 auto", "display": "inline-flex", "alignItems": "center", "gap": "10px", "marginRight": "40px", "fontSize": "16px", "fontWeight": "700", "color": "var(--mk-text)", "opacity": "0.75"}}>
-                <img src="/marketing/94f072271263d65724e19992fa15f043.svg" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
+                <img src="/marketing/18a6d2d10238b2687911d702e2367069.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                 {t(56)}
               </span>
               <span style={{"flex": "0 0 auto", "display": "inline-flex", "alignItems": "center", "gap": "10px", "marginRight": "40px", "fontSize": "16px", "fontWeight": "700", "color": "var(--mk-text)", "opacity": "0.75"}}>
-                <img src="/marketing/0e8c40e233948def3c2f1f6d96693876.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
+                <img src="/marketing/94f072271263d65724e19992fa15f043.svg" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                 {t(57)}
               </span>
               <span style={{"flex": "0 0 auto", "display": "inline-flex", "alignItems": "center", "gap": "10px", "marginRight": "40px", "fontSize": "16px", "fontWeight": "700", "color": "var(--mk-text)", "opacity": "0.75"}}>
-                <img src="/marketing/6ce5be0f4f135b376b27d79a10ace0b6.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
+                <img src="/marketing/0e8c40e233948def3c2f1f6d96693876.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                 {t(58)}
               </span>
-              <span aria-hidden="true" style={{"flex": "0 0 auto", "display": "inline-flex", "alignItems": "center", "gap": "10px", "marginRight": "40px", "fontSize": "16px", "fontWeight": "700", "color": "var(--mk-text)", "opacity": "0.75"}}>
-                <img src="/marketing/551e04e928d68f549e3f79f0634c235b.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
+              <span style={{"flex": "0 0 auto", "display": "inline-flex", "alignItems": "center", "gap": "10px", "marginRight": "40px", "fontSize": "16px", "fontWeight": "700", "color": "var(--mk-text)", "opacity": "0.75"}}>
+                <img src="/marketing/6ce5be0f4f135b376b27d79a10ace0b6.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                 {t(59)}
               </span>
               <span aria-hidden="true" style={{"flex": "0 0 auto", "display": "inline-flex", "alignItems": "center", "gap": "10px", "marginRight": "40px", "fontSize": "16px", "fontWeight": "700", "color": "var(--mk-text)", "opacity": "0.75"}}>
-                <img src="/marketing/1df8b82db5b11403f9af5f4c69f985de.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
+                <img src="/marketing/551e04e928d68f549e3f79f0634c235b.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                 {t(60)}
               </span>
               <span aria-hidden="true" style={{"flex": "0 0 auto", "display": "inline-flex", "alignItems": "center", "gap": "10px", "marginRight": "40px", "fontSize": "16px", "fontWeight": "700", "color": "var(--mk-text)", "opacity": "0.75"}}>
-                <img src="/marketing/e5586d94fe91cd757b5b299bc2987bc9.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
+                <img src="/marketing/1df8b82db5b11403f9af5f4c69f985de.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                 {t(61)}
               </span>
               <span aria-hidden="true" style={{"flex": "0 0 auto", "display": "inline-flex", "alignItems": "center", "gap": "10px", "marginRight": "40px", "fontSize": "16px", "fontWeight": "700", "color": "var(--mk-text)", "opacity": "0.75"}}>
-                <img src="/marketing/6e04570b6d158aff8d0bb786cab9467d.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
+                <img src="/marketing/e5586d94fe91cd757b5b299bc2987bc9.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                 {t(62)}
               </span>
               <span aria-hidden="true" style={{"flex": "0 0 auto", "display": "inline-flex", "alignItems": "center", "gap": "10px", "marginRight": "40px", "fontSize": "16px", "fontWeight": "700", "color": "var(--mk-text)", "opacity": "0.75"}}>
-                <img src="/marketing/6acf843784273799121efacbee2c5eab.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
+                <img src="/marketing/6e04570b6d158aff8d0bb786cab9467d.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                 {t(63)}
               </span>
               <span aria-hidden="true" style={{"flex": "0 0 auto", "display": "inline-flex", "alignItems": "center", "gap": "10px", "marginRight": "40px", "fontSize": "16px", "fontWeight": "700", "color": "var(--mk-text)", "opacity": "0.75"}}>
-                <img src="/marketing/18a6d2d10238b2687911d702e2367069.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
+                <img src="/marketing/6acf843784273799121efacbee2c5eab.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                 {t(64)}
               </span>
               <span aria-hidden="true" style={{"flex": "0 0 auto", "display": "inline-flex", "alignItems": "center", "gap": "10px", "marginRight": "40px", "fontSize": "16px", "fontWeight": "700", "color": "var(--mk-text)", "opacity": "0.75"}}>
-                <img src="/marketing/94f072271263d65724e19992fa15f043.svg" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
+                <img src="/marketing/18a6d2d10238b2687911d702e2367069.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                 {t(65)}
               </span>
               <span aria-hidden="true" style={{"flex": "0 0 auto", "display": "inline-flex", "alignItems": "center", "gap": "10px", "marginRight": "40px", "fontSize": "16px", "fontWeight": "700", "color": "var(--mk-text)", "opacity": "0.75"}}>
-                <img src="/marketing/0e8c40e233948def3c2f1f6d96693876.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
+                <img src="/marketing/94f072271263d65724e19992fa15f043.svg" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                 {t(66)}
               </span>
               <span aria-hidden="true" style={{"flex": "0 0 auto", "display": "inline-flex", "alignItems": "center", "gap": "10px", "marginRight": "40px", "fontSize": "16px", "fontWeight": "700", "color": "var(--mk-text)", "opacity": "0.75"}}>
-                <img src="/marketing/6ce5be0f4f135b376b27d79a10ace0b6.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
+                <img src="/marketing/0e8c40e233948def3c2f1f6d96693876.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                 {t(67)}
+              </span>
+              <span aria-hidden="true" style={{"flex": "0 0 auto", "display": "inline-flex", "alignItems": "center", "gap": "10px", "marginRight": "40px", "fontSize": "16px", "fontWeight": "700", "color": "var(--mk-text)", "opacity": "0.75"}}>
+                <img src="/marketing/6ce5be0f4f135b376b27d79a10ace0b6.png" alt="" style={{"width": "22px", "height": "22px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
+                {t(68)}
               </span>
             </div>
           </div>
@@ -368,23 +371,23 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
         <div style={{"display": "flex", "flexDirection": "column", "gap": "14px", "alignItems": "center", "textAlign": "center", "maxWidth": "760px", "margin": "0 auto"}} className="ws-reveal">
           <span style={{"display": "inline-flex", "alignItems": "center", "gap": "8px", "fontSize": "13.5px", "fontWeight": "700", "color": "var(--mk-logo-blue-text)"}}>
             <span style={{"width": "18px", "height": "2px", "background": "#0A6CFF", "borderRadius": "2px"}}></span>
-            {t(68)}
+            {t(69)}
           </span>
           <h2 style={{"margin": "0", "fontSize": "48px", "lineHeight": "1.2", "fontWeight": "900", "letterSpacing": "-0.015em", "color": "var(--mk-text)"}} className="mk-home-26">
-            {t(69)}
+            {t(70)}
           </h2>
           <p style={{"margin": "0", "fontSize": "18px", "lineHeight": "1.8", "color": "var(--mk-muted)"}} className="mk-home-27">
-            {t(70)}
+            {t(71)}
           </p>
         </div>
         <div style={{"display": "grid", "gridTemplateColumns": "repeat(6, minmax(0, 1fr))", "gridAutoRows": "minmax(300px, auto)", "gap": "16px"}} className="mk-home-28">
           <div style={{"gridColumn": "span 4", "gridRow": "span 2", "background": "var(--mk-card)", "border": "1px solid rgba(var(--mk-ink),0.09)", "borderRadius": "28px", "padding": "30px", "display": "flex", "flexDirection": "column", "gap": "18px", "overflow": "hidden", "position": "relative"}} className="ws-lift ws-reveal mk-home-29">
             <div style={{"display": "flex", "flexDirection": "column", "gap": "8px", "position": "relative", "zIndex": "1"}}>
               <h3 style={{"margin": "0", "fontSize": "22px", "fontWeight": "900", "color": "var(--mk-text)"}} className="mk-home-30">
-                {t(71)}
+                {t(72)}
               </h3>
               <p style={{"margin": "0", "fontSize": "14.5px", "lineHeight": "1.8", "color": "var(--mk-muted)", "maxWidth": "440px"}}>
-                {t(72)}
+                {t(73)}
               </p>
             </div>
             <div style={{"flex": "1", "display": "flex", "alignItems": "flex-end", "justifyContent": "center", "position": "relative"}}>
@@ -394,20 +397,20 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
                   <span style={{"width": "9px", "height": "9px", "borderRadius": "50%", "background": "#FBBF24"}}></span>
                   <span style={{"width": "9px", "height": "9px", "borderRadius": "50%", "background": "#34D399"}}></span>
                   <span style={{"flex": "1", "height": "26px", "marginLeft": "10px", "borderRadius": "999px", "background": "var(--mk-soft)", "display": "flex", "alignItems": "center", "padding": "0 12px", "fontSize": "12px", "fontWeight": "700", "color": "var(--mk-text)"}}>
-                    {t(73)}
+                    {t(74)}
                   </span>
                 </div>
                 <div style={{"padding": "18px", "display": "flex", "gap": "16px", "alignItems": "center"}}>
                   <img src={v.en ? "/marketing/fd09a17e0b58ec7890f59ce7bd4f7075.jpg" : "/marketing/4fb3e447104aa9686e8633c83300f7f0.jpg"} alt="" style={{"width": "72px", "height": "72px", "borderRadius": "20px", "objectFit": "cover", "objectPosition": "center 15%", "display": "block", "flexShrink": "0"}} />
                   <div style={{"display": "flex", "flexDirection": "column", "gap": "3px"}}>
                     <span style={{"fontWeight": "900", "fontSize": "18px", "color": "var(--mk-text)"}}>
-                      {t(74)}
-                    </span>
-                    <span style={{"fontSize": "13px", "color": "var(--mk-logo-blue-text)", "fontWeight": "500"}}>
                       {t(75)}
                     </span>
-                    <span dir="ltr" style={{"fontFamily": "var(--font-numbers)", "fontWeight": "900", "fontSize": "22px", "backgroundImage": "linear-gradient(90deg, #0A6CFF, #22B8F0)", "WebkitBackgroundClip": "text", "backgroundClip": "text", "WebkitTextFillColor": "transparent", "textAlign": v.en ? "left" : "right"}}>
+                    <span style={{"fontSize": "13px", "color": "var(--mk-logo-blue-text)", "fontWeight": "500"}}>
                       {t(76)}
+                    </span>
+                    <span dir="ltr" style={{"fontFamily": "var(--font-numbers)", "fontWeight": "900", "fontSize": "22px", "backgroundImage": "linear-gradient(90deg, #0A6CFF, #22B8F0)", "WebkitBackgroundClip": "text", "backgroundClip": "text", "WebkitTextFillColor": "transparent", "textAlign": v.en ? "left" : "right"}}>
+                      {t(77)}
                     </span>
                   </div>
                 </div>
@@ -415,31 +418,31 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
                   <div style={{"background": "var(--mk-card)", "border": "1px solid rgba(var(--mk-ink),0.09)", "borderRadius": "12px", "padding": "10px", "display": "flex", "flexDirection": "column", "alignItems": "center", "gap": "2px"}}>
                     <img src="/marketing/551e04e928d68f549e3f79f0634c235b.png" alt="" style={{"width": "14px", "height": "14px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                     <span dir="ltr" style={{"fontFamily": "var(--font-numbers)", "fontWeight": "900", "fontSize": "15px", "color": "var(--mk-text)"}}>
-                      {t(77)}
+                      {t(78)}
                     </span>
                   </div>
                   <div style={{"background": "var(--mk-card)", "border": "1px solid rgba(var(--mk-ink),0.09)", "borderRadius": "12px", "padding": "10px", "display": "flex", "flexDirection": "column", "alignItems": "center", "gap": "2px"}}>
                     <img src="/marketing/1df8b82db5b11403f9af5f4c69f985de.png" alt="" style={{"width": "14px", "height": "14px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                     <span dir="ltr" style={{"fontFamily": "var(--font-numbers)", "fontWeight": "900", "fontSize": "15px", "color": "var(--mk-text)"}}>
-                      {t(78)}
+                      {t(79)}
                     </span>
                   </div>
                   <div style={{"background": "var(--mk-card)", "border": "1px solid rgba(var(--mk-ink),0.09)", "borderRadius": "12px", "padding": "10px", "display": "flex", "flexDirection": "column", "alignItems": "center", "gap": "2px"}}>
                     <img src="/marketing/e5586d94fe91cd757b5b299bc2987bc9.png" alt="" style={{"width": "14px", "height": "14px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                     <span dir="ltr" style={{"fontFamily": "var(--font-numbers)", "fontWeight": "900", "fontSize": "15px", "color": "var(--mk-text)"}}>
-                      {t(79)}
+                      {t(80)}
                     </span>
                   </div>
                   <div style={{"background": "var(--mk-card)", "border": "1px solid rgba(var(--mk-ink),0.09)", "borderRadius": "12px", "padding": "10px", "display": "flex", "flexDirection": "column", "alignItems": "center", "gap": "2px"}}>
                     <img src="/marketing/6e04570b6d158aff8d0bb786cab9467d.png" alt="" style={{"width": "14px", "height": "14px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                     <span dir="ltr" style={{"fontFamily": "var(--font-numbers)", "fontWeight": "900", "fontSize": "15px", "color": "var(--mk-text)"}}>
-                      {t(80)}
+                      {t(81)}
                     </span>
                   </div>
                 </div>
                 <div style={{"padding": "0 18px 14px", "display": "flex", "flexDirection": "column", "gap": "8px"}}>
                   <span style={{"fontSize": "12px", "fontWeight": "700", "color": "var(--mk-text)"}}>
-                    {t(81)}
+                    {t(82)}
                   </span>
                   <div style={{"display": "flex", "gap": "8px"}}>
                     <span style={{"flex": "1", "aspectRatio": "9 / 14", "borderRadius": "10px", "background": "linear-gradient(160deg, #1A2B4F, #021941)", "display": "flex", "alignItems": "center", "justifyContent": "center"}}>
@@ -466,10 +469,10 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
                 </div>
                 <div style={{"padding": "0 18px 22px", "display": "grid", "gridTemplateColumns": "1fr 1fr", "gap": "8px"}}>
                   <span style={{"height": "40px", "borderRadius": "12px", "background": "var(--mk-card)", "border": "1px solid rgba(var(--mk-ink),0.09)", "display": "flex", "alignItems": "center", "justifyContent": "center", "fontSize": "12.5px", "fontWeight": "700", "color": "var(--mk-text)"}}>
-                    {t(82)}
+                    {t(83)}
                   </span>
                   <span style={{"height": "40px", "borderRadius": "12px", "background": "var(--mk-card)", "border": "1px solid rgba(var(--mk-ink),0.09)", "display": "flex", "alignItems": "center", "justifyContent": "center", "fontSize": "12.5px", "fontWeight": "700", "color": "var(--mk-text)"}}>
-                    {t(83)}
+                    {t(84)}
                   </span>
                 </div>
               </div>
@@ -478,10 +481,10 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
           <div style={{"gridColumn": "span 2", "gridRow": "span 1", "background": "var(--mk-card)", "border": "1px solid rgba(var(--mk-ink),0.09)", "borderRadius": "28px", "padding": "30px", "display": "flex", "flexDirection": "column", "gap": "18px", "overflow": "hidden", "position": "relative"}} className="ws-lift ws-reveal mk-home-32">
             <div style={{"display": "flex", "flexDirection": "column", "gap": "8px", "position": "relative", "zIndex": "1"}}>
               <h3 style={{"margin": "0", "fontSize": "22px", "fontWeight": "900", "color": "var(--mk-text)"}} className="mk-home-33">
-                {t(84)}
+                {t(85)}
               </h3>
               <p style={{"margin": "0", "fontSize": "14.5px", "lineHeight": "1.8", "color": "var(--mk-muted)", "maxWidth": "440px"}}>
-                {t(85)}
+                {t(86)}
               </p>
             </div>
             <div style={{"flex": "1", "display": "flex", "alignItems": "flex-end", "justifyContent": "center", "position": "relative"}}>
@@ -489,37 +492,37 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
                 <div style={{"display": "flex", "alignItems": "center", "gap": "10px", "padding": "10px 12px", "borderRadius": "14px", "background": "var(--mk-soft)"}}>
                   <img src="/marketing/551e04e928d68f549e3f79f0634c235b.png" alt="" style={{"width": "18px", "height": "18px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                   <span style={{"flex": "1", "fontSize": "13.5px", "fontWeight": "700", "color": "var(--mk-text)"}}>
-                    {t(86)}
+                    {t(87)}
                   </span>
                   <span style={{"display": "inline-flex", "alignItems": "center", "gap": "4px", "fontSize": "12px", "fontWeight": "700", "color": "var(--mk-good)"}}>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{"stroke": "var(--mk-good)"}}>
                       <path d="M5 12l5 5 9-10" />
                     </svg>
-                    {t(87)}
+                    {t(88)}
                   </span>
                 </div>
                 <div style={{"display": "flex", "alignItems": "center", "gap": "10px", "padding": "10px 12px", "borderRadius": "14px", "background": "var(--mk-soft)"}}>
                   <img src="/marketing/1df8b82db5b11403f9af5f4c69f985de.png" alt="" style={{"width": "18px", "height": "18px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                   <span style={{"flex": "1", "fontSize": "13.5px", "fontWeight": "700", "color": "var(--mk-text)"}}>
-                    {t(88)}
+                    {t(89)}
                   </span>
                   <span style={{"display": "inline-flex", "alignItems": "center", "gap": "4px", "fontSize": "12px", "fontWeight": "700", "color": "var(--mk-good)"}}>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{"stroke": "var(--mk-good)"}}>
                       <path d="M5 12l5 5 9-10" />
                     </svg>
-                    {t(89)}
+                    {t(90)}
                   </span>
                 </div>
                 <div style={{"display": "flex", "alignItems": "center", "gap": "10px", "padding": "10px 12px", "borderRadius": "14px", "background": "var(--mk-soft)"}}>
                   <img src="/marketing/e5586d94fe91cd757b5b299bc2987bc9.png" alt="" style={{"width": "18px", "height": "18px", "objectFit": "contain", "display": "block"}} className="mk-icon" />
                   <span style={{"flex": "1", "fontSize": "13.5px", "fontWeight": "700", "color": "var(--mk-text)"}}>
-                    {t(90)}
+                    {t(91)}
                   </span>
                   <span style={{"display": "inline-flex", "alignItems": "center", "gap": "4px", "fontSize": "12px", "fontWeight": "700", "color": "var(--mk-good)"}}>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{"stroke": "var(--mk-good)"}}>
                       <path d="M5 12l5 5 9-10" />
                     </svg>
-                    {t(91)}
+                    {t(92)}
                   </span>
                 </div>
               </div>
@@ -528,42 +531,42 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
           <div style={{"gridColumn": "span 2", "gridRow": "span 1", "background": "var(--mk-card)", "border": "1px solid rgba(var(--mk-ink),0.09)", "borderRadius": "28px", "padding": "30px", "display": "flex", "flexDirection": "column", "gap": "18px", "overflow": "hidden", "position": "relative"}} className="ws-lift ws-reveal mk-home-34">
             <div style={{"display": "flex", "flexDirection": "column", "gap": "8px", "position": "relative", "zIndex": "1"}}>
               <h3 style={{"margin": "0", "fontSize": "22px", "fontWeight": "900", "color": "var(--mk-text)"}} className="mk-home-35">
-                {t(92)}
+                {t(93)}
               </h3>
               <p style={{"margin": "0", "fontSize": "14.5px", "lineHeight": "1.8", "color": "var(--mk-muted)", "maxWidth": "440px"}}>
-                {t(93)}
+                {t(94)}
               </p>
             </div>
             <div style={{"flex": "1", "display": "flex", "alignItems": "flex-end", "justifyContent": "center", "position": "relative"}}>
               <div style={{"width": "100%", "borderRadius": "18px", "border": "2px solid #0A6CFF", "padding": "14px", "display": "flex", "flexDirection": "column", "gap": "10px", "background": "var(--mk-card)"}}>
                 <span style={{"display": "flex", "justifyContent": "space-between", "alignItems": "center"}}>
                   <b style={{"fontSize": "14px", "color": "var(--mk-text)"}}>
-                    {t(94)}
+                    {t(95)}
                   </b>
                   <span style={{"padding": "3px 10px", "borderRadius": "999px", "background": "var(--mk-soft)", "color": "var(--mk-logo-blue-text)", "fontSize": "11.5px", "fontWeight": "700"}}>
-                    {t(95)}
-                  </span>
-                </span>
-                <span style={{"display": "flex", "justifyContent": "space-between", "fontSize": "13px", "color": "var(--mk-muted)"}}>
-                  <span>
                     {t(96)}
                   </span>
+                </span>
+                <span style={{"display": "flex", "justifyContent": "space-between", "fontSize": "13px", "color": "var(--mk-muted)"}}>
+                  <span>
+                    {t(97)}
+                  </span>
                   <span>
                     <b dir="ltr" style={{"fontFamily": "var(--font-numbers)", "fontSize": "17px", "color": "var(--mk-text)"}}>
-                      {t(97)}
+                      {t(98)}
                     </b>
-                    {" "}{t(98)}
+                    {" "}{t(99)}
                   </span>
                 </span>
                 <span style={{"display": "flex", "justifyContent": "space-between", "fontSize": "13px", "color": "var(--mk-muted)"}}>
                   <span>
-                    {t(99)}
+                    {t(100)}
                   </span>
                   <span>
                     <b dir="ltr" style={{"fontFamily": "var(--font-numbers)", "fontSize": "17px", "color": "var(--mk-text)"}}>
-                      {t(100)}
+                      {t(101)}
                     </b>
-                    {" "}{t(101)}
+                    {" "}{t(102)}
                   </span>
                 </span>
               </div>
@@ -572,10 +575,10 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
           <div style={{"gridColumn": "span 3", "gridRow": "span 1", "background": "var(--mk-card)", "border": "1px solid rgba(var(--mk-ink),0.09)", "borderRadius": "28px", "padding": "30px", "display": "flex", "flexDirection": "column", "gap": "18px", "overflow": "hidden", "position": "relative"}} className="ws-lift ws-reveal mk-home-36">
             <div style={{"display": "flex", "flexDirection": "column", "gap": "8px", "position": "relative", "zIndex": "1"}}>
               <h3 style={{"margin": "0", "fontSize": "22px", "fontWeight": "900", "color": "var(--mk-text)"}} className="mk-home-37">
-                {t(102)}
+                {t(103)}
               </h3>
               <p style={{"margin": "0", "fontSize": "14.5px", "lineHeight": "1.8", "color": "var(--mk-muted)", "maxWidth": "440px"}}>
-                {t(103)}
+                {t(104)}
               </p>
             </div>
             <div style={{"flex": "1", "display": "flex", "alignItems": "flex-end", "justifyContent": "center", "position": "relative"}}>
@@ -595,26 +598,26 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
                 <div style={{"display": "flex", "flexDirection": "column", "gap": "8px", "minWidth": "130px"}}>
                   <span style={{"display": "flex", "justifyContent": "space-between", "gap": "12px", "fontSize": "12.5px", "color": "var(--mk-muted)"}}>
                     <span>
-                      {t(104)}
-                    </span>
-                    <b style={{"color": "var(--mk-text)"}}>
                       {t(105)}
-                    </b>
-                  </span>
-                  <span style={{"display": "flex", "justifyContent": "space-between", "gap": "12px", "fontSize": "12.5px", "color": "var(--mk-muted)"}}>
-                    <span>
+                    </span>
+                    <b style={{"color": "var(--mk-text)"}}>
                       {t(106)}
-                    </span>
-                    <b style={{"color": "var(--mk-text)"}}>
-                      {t(107)}
                     </b>
                   </span>
                   <span style={{"display": "flex", "justifyContent": "space-between", "gap": "12px", "fontSize": "12.5px", "color": "var(--mk-muted)"}}>
                     <span>
-                      {t(108)}
+                      {t(107)}
                     </span>
                     <b style={{"color": "var(--mk-text)"}}>
+                      {t(108)}
+                    </b>
+                  </span>
+                  <span style={{"display": "flex", "justifyContent": "space-between", "gap": "12px", "fontSize": "12.5px", "color": "var(--mk-muted)"}}>
+                    <span>
                       {t(109)}
+                    </span>
+                    <b style={{"color": "var(--mk-text)"}}>
+                      {t(110)}
                     </b>
                   </span>
                 </div>
@@ -624,10 +627,10 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
           <div style={{"gridColumn": "span 3", "gridRow": "span 1", "background": "linear-gradient(160deg, #0B2F6E, #021941)", "color": "#FFFFFF", "border": "none", "borderRadius": "28px", "padding": "30px", "display": "flex", "flexDirection": "column", "gap": "18px", "overflow": "hidden", "position": "relative"}} className="ws-lift ws-reveal mk-home-38">
             <div style={{"display": "flex", "flexDirection": "column", "gap": "8px", "position": "relative", "zIndex": "1"}}>
               <h3 style={{"margin": "0", "fontSize": "22px", "fontWeight": "900", "color": "#FFFFFF"}} className="mk-home-39">
-                {t(110)}
+                {t(111)}
               </h3>
               <p style={{"margin": "0", "fontSize": "14.5px", "lineHeight": "1.8", "color": "rgba(255,255,255,0.72)", "maxWidth": "440px"}}>
-                {t(111)}
+                {t(112)}
               </p>
             </div>
             <div style={{"flex": "1", "display": "flex", "alignItems": "flex-end", "justifyContent": "center", "position": "relative"}}>
@@ -641,7 +644,7 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
                   <span style={{"height": "56px", "borderRadius": "8px", "backgroundImage": v.en ? "url('/marketing/fd09a17e0b58ec7890f59ce7bd4f7075.jpg')" : "url('/marketing/4fb3e447104aa9686e8633c83300f7f0.jpg')", "backgroundSize": "cover", "backgroundPosition": "center 15%"}}></span>
                   <span style={{"height": "8px", "width": "70%", "borderRadius": "4px", "background": "#021941"}}></span>
                   <span dir="ltr" style={{"fontFamily": "var(--font-numbers)", "fontWeight": "900", "fontSize": "15px", "color": "#021941"}}>
-                    {t(112)}
+                    {t(113)}
                   </span>
                 </div>
                 <div style={{"position": "absolute", "bottom": "0", "left": "50%", "width": "120px", "height": "160px", "marginLeft": "-60px", "borderRadius": "12px", "background": "#FFFFFF", "border": "1px solid rgba(255,255,255,0.2)", "boxShadow": "0 16px 30px rgba(0,0,0,0.25)", "transform": "rotate(14deg) translateX(40px)", "transformOrigin": "bottom center", "padding": "12px", "boxSizing": "border-box", "display": "flex", "flexDirection": "column", "gap": "6px"}}>
@@ -663,17 +666,17 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
           <div style={{"display": "flex", "flexDirection": "column", "gap": "14px", "alignItems": "center", "textAlign": "center", "maxWidth": "760px", "margin": "0 auto"}} className="ws-reveal">
             <span style={{"display": "inline-flex", "alignItems": "center", "gap": "8px", "fontSize": "13.5px", "fontWeight": "700", "color": "var(--mk-logo-blue-text)"}}>
               <span style={{"width": "18px", "height": "2px", "background": "#0A6CFF", "borderRadius": "2px"}}></span>
-              {t(113)}
+              {t(114)}
             </span>
             <h2 style={{"margin": "0", "fontSize": "48px", "lineHeight": "1.2", "fontWeight": "900", "letterSpacing": "-0.015em", "color": "var(--mk-text)"}} className="mk-home-42">
-              {t(114)}
+              {t(115)}
             </h2>
             <p style={{"margin": "0", "fontSize": "18px", "lineHeight": "1.8", "color": "var(--mk-muted)"}} className="mk-home-43">
-              {t(115)}
+              {t(116)}
             </p>
           </div>
           <div onMouseEnter={v.pause} onMouseLeave={v.resume} style={{"display": "flex", "flexDirection": "column", "alignItems": "center", "gap": "26px"}} className="ws-reveal">
-            <div role="group" aria-roledescription={t(116)} aria-label={t(117)} style={{"position": "relative", "width": "100%", "height": "410px", "marginBottom": "-60px", "overflow": "hidden", "WebkitMaskImage": "linear-gradient(to right, transparent, #000 14%, #000 86%, transparent)", "maskImage": "linear-gradient(to right, transparent, #000 14%, #000 86%, transparent)"}} className="mk-home-44">
+            <div role="group" aria-roledescription={t(117)} aria-label={t(118)} style={{"position": "relative", "width": "100%", "height": "410px", "marginBottom": "-60px", "overflow": "hidden", "WebkitMaskImage": "linear-gradient(to right, transparent, #000 14%, #000 86%, transparent)", "maskImage": "linear-gradient(to right, transparent, #000 14%, #000 86%, transparent)"}} className="mk-home-44">
               <div style={{"position": "absolute", "inset": "14px 0 0 0"}}>
                 {(v.deck as any[]).map((d: any, dIndex: number) => (
                   <Fragment key={dIndex}>
@@ -684,7 +687,7 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
                       <span style={{"width": "70%", "height": "7px", "borderRadius": "4px", "background": d.ink}}></span>
                       <span style={{"width": "44%", "height": "5px", "borderRadius": "3px", "background": d.ac}}></span>
                       <span dir="ltr" style={{"fontFamily": "var(--font-numbers)", "fontWeight": "900", "fontSize": "22px", "color": d.ink}} className="mk-home-47">
-                        {t(118)}
+                        {t(119)}
                       </span>
                       <span style={{"display": "flex", "gap": "6px", "width": "100%"}}>
                         <span style={{"flex": "1", "height": "36px", "borderRadius": "10px", "background": d.card}} className="mk-home-48"></span>
@@ -699,7 +702,7 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
               </div>
             </div>
             <div style={{"display": "flex", "alignItems": "center", "gap": "16px"}}>
-              <button type="button" onClick={v.deckPrev} aria-label={t(119)} style={{"width": "48px", "height": "48px", "borderRadius": "50%", "border": "1px solid rgba(var(--mk-ink),0.09)", "background": "var(--mk-card)", "display": "flex", "alignItems": "center", "justifyContent": "center", "cursor": "pointer", "padding": "0"}}>
+              <button type="button" onClick={v.deckPrev} aria-label={t(120)} style={{"width": "48px", "height": "48px", "borderRadius": "50%", "border": "1px solid rgba(var(--mk-ink),0.09)", "background": "var(--mk-card)", "display": "flex", "alignItems": "center", "justifyContent": "center", "cursor": "pointer", "padding": "0"}}>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{"stroke": "var(--mk-text)"}}>
                   <path d={v.en ? "M15 6l-6 6 6 6" : "M9 6l6 6-6 6"} />
                 </svg>
@@ -707,7 +710,7 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
               <span aria-live="polite" style={{"minWidth": "130px", "textAlign": "center", "fontSize": "20px", "fontWeight": "900", "color": "var(--mk-text)"}}>
                 {v.deckName}
               </span>
-              <button type="button" onClick={v.deckNext} aria-label={t(120)} style={{"width": "48px", "height": "48px", "borderRadius": "50%", "border": "1px solid rgba(var(--mk-ink),0.09)", "background": "var(--mk-card)", "display": "flex", "alignItems": "center", "justifyContent": "center", "cursor": "pointer", "padding": "0"}}>
+              <button type="button" onClick={v.deckNext} aria-label={t(121)} style={{"width": "48px", "height": "48px", "borderRadius": "50%", "border": "1px solid rgba(var(--mk-ink),0.09)", "background": "var(--mk-card)", "display": "flex", "alignItems": "center", "justifyContent": "center", "cursor": "pointer", "padding": "0"}}>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{"stroke": "var(--mk-text)"}}>
                   <path d={v.en ? "M9 6l6 6-6 6" : "M15 6l-6 6 6 6"} />
                 </svg>
@@ -727,53 +730,53 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
         <div style={{"display": "flex", "flexDirection": "column", "gap": "14px", "alignItems": "center", "textAlign": "center", "maxWidth": "760px", "margin": "0 auto"}} className="ws-reveal">
           <span style={{"display": "inline-flex", "alignItems": "center", "gap": "8px", "fontSize": "13.5px", "fontWeight": "700", "color": "var(--mk-logo-blue-text)"}}>
             <span style={{"width": "18px", "height": "2px", "background": "#0A6CFF", "borderRadius": "2px"}}></span>
-            {t(121)}
+            {t(122)}
           </span>
           <h2 style={{"margin": "0", "fontSize": "48px", "lineHeight": "1.2", "fontWeight": "900", "letterSpacing": "-0.015em", "color": "var(--mk-text)"}} className="mk-home-51">
-            {t(122)}
+            {t(123)}
           </h2>
         </div>
         <div style={{"display": "flex", "flexWrap": "wrap", "gap": "16px"}}>
           <div style={{"flex": "1 1 280px", "background": "var(--mk-card)", "border": "1px solid rgba(var(--mk-ink),0.09)", "borderRadius": "24px", "boxShadow": "0 1px 2px rgba(var(--mk-shadow),0.04)", "padding": "28px", "display": "flex", "flexDirection": "column", "gap": "12px", "position": "relative", "overflow": "hidden"}} className="ws-lift ws-reveal">
             <span dir="ltr" aria-hidden="true" style={{"position": "absolute", "top": "-18px", "left": "12px", "fontFamily": "var(--font-numbers)", "fontWeight": "900", "fontSize": "110px", "lineHeight": "1", "color": "#EEF3FB"}}>
-              {t(123)}
-            </span>
-            <span dir="ltr" style={{"position": "relative", "fontFamily": "var(--font-numbers)", "fontWeight": "900", "fontSize": "16px", "color": "var(--mk-logo-blue-text)", "textAlign": v.en ? "left" : "right"}}>
               {t(124)}
             </span>
-            <h3 style={{"position": "relative", "margin": "0", "fontSize": "21px", "fontWeight": "900", "color": "var(--mk-text)"}}>
+            <span dir="ltr" style={{"position": "relative", "fontFamily": "var(--font-numbers)", "fontWeight": "900", "fontSize": "16px", "color": "var(--mk-logo-blue-text)", "textAlign": v.en ? "left" : "right"}}>
               {t(125)}
+            </span>
+            <h3 style={{"position": "relative", "margin": "0", "fontSize": "21px", "fontWeight": "900", "color": "var(--mk-text)"}}>
+              {t(126)}
             </h3>
             <p style={{"position": "relative", "margin": "0", "fontSize": "15px", "lineHeight": "1.8", "color": "var(--mk-muted)"}}>
-              {t(126)}
+              {t(127)}
             </p>
           </div>
           <div style={{"flex": "1 1 280px", "background": "var(--mk-card)", "border": "1px solid rgba(var(--mk-ink),0.09)", "borderRadius": "24px", "boxShadow": "0 1px 2px rgba(var(--mk-shadow),0.04)", "padding": "28px", "display": "flex", "flexDirection": "column", "gap": "12px", "position": "relative", "overflow": "hidden"}} className="ws-lift ws-reveal">
             <span dir="ltr" aria-hidden="true" style={{"position": "absolute", "top": "-18px", "left": "12px", "fontFamily": "var(--font-numbers)", "fontWeight": "900", "fontSize": "110px", "lineHeight": "1", "color": "#EEF3FB"}}>
-              {t(127)}
-            </span>
-            <span dir="ltr" style={{"position": "relative", "fontFamily": "var(--font-numbers)", "fontWeight": "900", "fontSize": "16px", "color": "var(--mk-logo-blue-text)", "textAlign": v.en ? "left" : "right"}}>
               {t(128)}
             </span>
-            <h3 style={{"position": "relative", "margin": "0", "fontSize": "21px", "fontWeight": "900", "color": "var(--mk-text)"}}>
+            <span dir="ltr" style={{"position": "relative", "fontFamily": "var(--font-numbers)", "fontWeight": "900", "fontSize": "16px", "color": "var(--mk-logo-blue-text)", "textAlign": v.en ? "left" : "right"}}>
               {t(129)}
+            </span>
+            <h3 style={{"position": "relative", "margin": "0", "fontSize": "21px", "fontWeight": "900", "color": "var(--mk-text)"}}>
+              {t(130)}
             </h3>
             <p style={{"position": "relative", "margin": "0", "fontSize": "15px", "lineHeight": "1.8", "color": "var(--mk-muted)"}}>
-              {t(130)}
+              {t(131)}
             </p>
           </div>
           <div style={{"flex": "1 1 280px", "background": "var(--mk-card)", "border": "1px solid rgba(var(--mk-ink),0.09)", "borderRadius": "24px", "boxShadow": "0 1px 2px rgba(var(--mk-shadow),0.04)", "padding": "28px", "display": "flex", "flexDirection": "column", "gap": "12px", "position": "relative", "overflow": "hidden"}} className="ws-lift ws-reveal">
             <span dir="ltr" aria-hidden="true" style={{"position": "absolute", "top": "-18px", "left": "12px", "fontFamily": "var(--font-numbers)", "fontWeight": "900", "fontSize": "110px", "lineHeight": "1", "color": "#EEF3FB"}}>
-              {t(131)}
-            </span>
-            <span dir="ltr" style={{"position": "relative", "fontFamily": "var(--font-numbers)", "fontWeight": "900", "fontSize": "16px", "color": "var(--mk-logo-blue-text)", "textAlign": v.en ? "left" : "right"}}>
               {t(132)}
             </span>
-            <h3 style={{"position": "relative", "margin": "0", "fontSize": "21px", "fontWeight": "900", "color": "var(--mk-text)"}}>
+            <span dir="ltr" style={{"position": "relative", "fontFamily": "var(--font-numbers)", "fontWeight": "900", "fontSize": "16px", "color": "var(--mk-logo-blue-text)", "textAlign": v.en ? "left" : "right"}}>
               {t(133)}
+            </span>
+            <h3 style={{"position": "relative", "margin": "0", "fontSize": "21px", "fontWeight": "900", "color": "var(--mk-text)"}}>
+              {t(134)}
             </h3>
             <p style={{"position": "relative", "margin": "0", "fontSize": "15px", "lineHeight": "1.8", "color": "var(--mk-muted)"}}>
-              {t(134)}
+              {t(135)}
             </p>
           </div>
         </div>
@@ -782,21 +785,21 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
         <div style={{"display": "flex", "flexDirection": "column", "gap": "14px", "alignItems": "center", "textAlign": "center", "maxWidth": "760px", "margin": "0 auto"}} className="ws-reveal">
           <span style={{"display": "inline-flex", "alignItems": "center", "gap": "8px", "fontSize": "13.5px", "fontWeight": "700", "color": "var(--mk-logo-blue-text)"}}>
             <span style={{"width": "18px", "height": "2px", "background": "#0A6CFF", "borderRadius": "2px"}}></span>
-            {t(135)}
+            {t(136)}
           </span>
           <h2 style={{"margin": "0", "fontSize": "48px", "lineHeight": "1.2", "fontWeight": "900", "letterSpacing": "-0.015em", "color": "var(--mk-text)"}} className="mk-home-53">
-            {t(136)}
+            {t(137)}
           </h2>
         </div>
         <div style={{"display": "flex", "flexDirection": "column", "gap": "32px"}}>
-          <div role="group" aria-label={t(137)} style={{"alignSelf": "center", "display": "flex", "padding": "5px", "gap": "4px", "borderRadius": "999px", "background": "var(--mk-card)", "border": "1px solid rgba(var(--mk-ink),0.09)"}}>
+          <div role="group" aria-label={t(138)} style={{"alignSelf": "center", "display": "flex", "padding": "5px", "gap": "4px", "borderRadius": "999px", "background": "var(--mk-card)", "border": "1px solid rgba(var(--mk-ink),0.09)"}}>
             <button type="button" onClick={v.pickM} aria-pressed={v.mP} style={{"height": "42px", "padding": "0 22px", "borderRadius": "999px", "border": "none", "cursor": "pointer", "fontFamily": "inherit", "fontSize": "14px", "fontWeight": "700", "background": v.mBg, "color": v.mC}}>
-              {t(138)}
+              {t(139)}
             </button>
             <button type="button" onClick={v.pickY} aria-pressed={v.yP} style={{"height": "42px", "padding": "0 22px", "borderRadius": "999px", "border": "none", "cursor": "pointer", "fontFamily": "inherit", "fontSize": "14px", "fontWeight": "700", "background": v.yBg, "color": v.yC, "display": "flex", "alignItems": "center", "gap": "8px"}}>
-              {t(139)}
+              {t(140)}
               <span style={{"padding": "2px 8px", "borderRadius": "999px", "background": "rgba(18,128,92,0.12)", "color": "var(--mk-good)", "fontSize": "11px"}}>
-                {t(140)}
+                {t(141)}
               </span>
             </button>
           </div>
@@ -804,30 +807,24 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
             <div style={{"flex": "1 1 340px", "maxWidth": "480px", "background": "var(--mk-card)", "border": "1px solid rgba(var(--mk-ink),0.09)", "borderRadius": "28px", "boxShadow": "0 1px 2px rgba(var(--mk-shadow),0.04)", "padding": "32px", "display": "flex", "flexDirection": "column", "gap": "22px"}} className="ws-reveal">
               <div style={{"display": "flex", "flexDirection": "column", "gap": "8px"}}>
                 <span style={{"fontSize": "18px", "fontWeight": "900", "color": "var(--mk-text)"}}>
-                  {t(141)}
+                  {t(142)}
                 </span>
                 <span style={{"display": "flex", "alignItems": "baseline", "gap": "8px"}}>
                   <span dir="ltr" style={{"fontFamily": "var(--font-numbers)", "fontWeight": "900", "fontSize": "52px", "color": "var(--mk-text)"}}>
-                    {t(142)}
+                    {t(143)}
                   </span>
                   <span style={{"fontSize": "14px", "color": "var(--mk-muted)"}}>
-                    {t(143)}
+                    {t(144)}
                   </span>
                 </span>
                 <span style={{"fontSize": "14.5px", "color": "var(--mk-muted)"}}>
-                  {t(144)}
+                  {t(145)}
                 </span>
               </div>
               <Link href="/login" style={{"height": "52px", "padding": "0 24px", "borderRadius": "999px", "border": "1px solid rgba(var(--mk-ink),0.09)", "background": "var(--mk-card)", "color": "var(--mk-text)", "fontFamily": "inherit", "fontSize": "15px", "fontWeight": "500", "display": "inline-flex", "alignItems": "center", "justifyContent": "center", "gap": "8px", "cursor": "pointer", "textDecoration": "none"}}>
-                {t(145)}
+                {t(146)}
               </Link>
               <ul style={{"margin": "0", "padding": "0", "listStyle": "none", "color": "var(--mk-text)"}}>
-                <li style={{"display": "flex", "alignItems": "center", "gap": "10px", "minHeight": "38px", "fontSize": "14.5px"}}>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{"stroke": "var(--mk-muted)"}}>
-                    <path d="M5 12l5 5 9-10" />
-                  </svg>
-                  {t(146)}
-                </li>
                 <li style={{"display": "flex", "alignItems": "center", "gap": "10px", "minHeight": "38px", "fontSize": "14.5px"}}>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{"stroke": "var(--mk-muted)"}}>
                     <path d="M5 12l5 5 9-10" />
@@ -858,6 +855,12 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
                   </svg>
                   {t(151)}
                 </li>
+                <li style={{"display": "flex", "alignItems": "center", "gap": "10px", "minHeight": "38px", "fontSize": "14.5px"}}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{"stroke": "var(--mk-muted)"}}>
+                    <path d="M5 12l5 5 9-10" />
+                  </svg>
+                  {t(152)}
+                </li>
               </ul>
             </div>
             <div style={{"flex": "1 1 340px", "maxWidth": "480px", "borderRadius": "28px", "padding": "32px", "display": "flex", "flexDirection": "column", "gap": "22px", "position": "relative", "overflow": "hidden", "background": "linear-gradient(160deg, #0B2F6E, #021941)", "color": "#FFFFFF", "boxShadow": "0 30px 70px rgba(var(--mk-shadow),0.30)"}} className="ws-reveal">
@@ -865,10 +868,10 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
               <div style={{"position": "relative", "display": "flex", "flexDirection": "column", "gap": "8px"}}>
                 <span style={{"display": "flex", "alignItems": "center", "justifyContent": "space-between"}}>
                   <span style={{"fontSize": "18px", "fontWeight": "900"}}>
-                    {t(152)}
+                    {t(153)}
                   </span>
                   <span style={{"height": "28px", "padding": "0 12px", "borderRadius": "999px", "background": "rgba(255,255,255,0.14)", "fontSize": "12px", "fontWeight": "700", "display": "flex", "alignItems": "center"}}>
-                    {t(153)}
+                    {t(154)}
                   </span>
                 </span>
                 <span style={{"display": "flex", "alignItems": "baseline", "gap": "8px"}}>
@@ -880,34 +883,28 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
                   </span>
                 </span>
                 <span style={{"fontSize": "14.5px", "fontWeight": "700", "color": "#7EE2B8"}}>
-                  {t(154)}
+                  {t(155)}
                 </span>
               </div>
               <Link href="/login" style={{"height": "52px", "padding": "0 24px", "borderRadius": "999px", "border": "none", "background": "#FFFFFF", "color": "#021941", "fontFamily": "inherit", "fontSize": "15px", "fontWeight": "700", "display": "inline-flex", "alignItems": "center", "justifyContent": "center", "gap": "10px", "cursor": "pointer", "textDecoration": "none", "boxShadow": "0 10px 24px rgba(2,25,65,0.18)", "position": "relative"}}>
-                {t(155)}
+                {t(156)}
               </Link>
               <ul style={{"position": "relative", "margin": "0", "padding": "0", "listStyle": "none"}}>
                 <li style={{"display": "flex", "alignItems": "center", "gap": "10px", "minHeight": "38px", "fontSize": "14.5px"}}>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7EE2B8" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                     <path d="M5 12l5 5 9-10" />
                   </svg>
-                  {t(156)}
-                </li>
-                <li style={{"display": "flex", "alignItems": "center", "gap": "10px", "minHeight": "38px", "fontSize": "14.5px"}}>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7EE2B8" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <path d="M5 12l5 5 9-10" />
-                  </svg>
                   {t(157)}
-                  <svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M23.50 12.00L23.39 12.60L23.10 13.17L22.73 13.70L22.38 14.21L22.16 14.72L22.10 15.28L22.14 15.89L22.20 16.54L22.16 17.18L21.96 17.75L21.57 18.21L21.03 18.56L20.44 18.83L19.89 19.10L19.44 19.44L19.10 19.89L18.83 20.44L18.56 21.03L18.21 21.57L17.75 21.96L17.18 22.16L16.54 22.20L15.89 22.14L15.28 22.10L14.72 22.16L14.21 22.38L13.70 22.73L13.17 23.10L12.60 23.39L12.00 23.50L11.40 23.39L10.83 23.10L10.30 22.73L9.79 22.38L9.28 22.16L8.72 22.10L8.11 22.14L7.46 22.20L6.82 22.16L6.25 21.96L5.79 21.57L5.44 21.03L5.17 20.44L4.90 19.89L4.56 19.44L4.11 19.10L3.56 18.83L2.97 18.56L2.43 18.21L2.04 17.75L1.84 17.18L1.80 16.54L1.86 15.89L1.90 15.28L1.84 14.72L1.62 14.21L1.27 13.70L0.90 13.17L0.61 12.60L0.50 12.00L0.61 11.40L0.90 10.83L1.27 10.30L1.62 9.79L1.84 9.28L1.90 8.72L1.86 8.11L1.80 7.46L1.84 6.82L2.04 6.25L2.43 5.79L2.97 5.44L3.56 5.17L4.11 4.90L4.56 4.56L4.90 4.11L5.17 3.56L5.44 2.97L5.79 2.43L6.25 2.04L6.82 1.84L7.46 1.80L8.11 1.86L8.72 1.90L9.28 1.84L9.79 1.62L10.30 1.27L10.83 0.90L11.40 0.61L12.00 0.50L12.60 0.61L13.17 0.90L13.70 1.27L14.21 1.62L14.72 1.84L15.28 1.90L15.89 1.86L16.54 1.80L17.18 1.84L17.75 2.04L18.21 2.43L18.56 2.97L18.83 3.56L19.10 4.11L19.44 4.56L19.89 4.90L20.44 5.17L21.03 5.44L21.57 5.79L21.96 6.25L22.16 6.82L22.20 7.46L22.14 8.11L22.10 8.72L22.16 9.28L22.38 9.79L22.73 10.30L23.10 10.83L23.39 11.40Z" fill="#0095F6" />
-                    <path d="M7.6 12.4l3 3 5.8-6.2" fill="none" stroke="#FFFFFF" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
                 </li>
                 <li style={{"display": "flex", "alignItems": "center", "gap": "10px", "minHeight": "38px", "fontSize": "14.5px"}}>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7EE2B8" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                     <path d="M5 12l5 5 9-10" />
                   </svg>
                   {t(158)}
+                  <svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M23.50 12.00L23.39 12.60L23.10 13.17L22.73 13.70L22.38 14.21L22.16 14.72L22.10 15.28L22.14 15.89L22.20 16.54L22.16 17.18L21.96 17.75L21.57 18.21L21.03 18.56L20.44 18.83L19.89 19.10L19.44 19.44L19.10 19.89L18.83 20.44L18.56 21.03L18.21 21.57L17.75 21.96L17.18 22.16L16.54 22.20L15.89 22.14L15.28 22.10L14.72 22.16L14.21 22.38L13.70 22.73L13.17 23.10L12.60 23.39L12.00 23.50L11.40 23.39L10.83 23.10L10.30 22.73L9.79 22.38L9.28 22.16L8.72 22.10L8.11 22.14L7.46 22.20L6.82 22.16L6.25 21.96L5.79 21.57L5.44 21.03L5.17 20.44L4.90 19.89L4.56 19.44L4.11 19.10L3.56 18.83L2.97 18.56L2.43 18.21L2.04 17.75L1.84 17.18L1.80 16.54L1.86 15.89L1.90 15.28L1.84 14.72L1.62 14.21L1.27 13.70L0.90 13.17L0.61 12.60L0.50 12.00L0.61 11.40L0.90 10.83L1.27 10.30L1.62 9.79L1.84 9.28L1.90 8.72L1.86 8.11L1.80 7.46L1.84 6.82L2.04 6.25L2.43 5.79L2.97 5.44L3.56 5.17L4.11 4.90L4.56 4.56L4.90 4.11L5.17 3.56L5.44 2.97L5.79 2.43L6.25 2.04L6.82 1.84L7.46 1.80L8.11 1.86L8.72 1.90L9.28 1.84L9.79 1.62L10.30 1.27L10.83 0.90L11.40 0.61L12.00 0.50L12.60 0.61L13.17 0.90L13.70 1.27L14.21 1.62L14.72 1.84L15.28 1.90L15.89 1.86L16.54 1.80L17.18 1.84L17.75 2.04L18.21 2.43L18.56 2.97L18.83 3.56L19.10 4.11L19.44 4.56L19.89 4.90L20.44 5.17L21.03 5.44L21.57 5.79L21.96 6.25L22.16 6.82L22.20 7.46L22.14 8.11L22.10 8.72L22.16 9.28L22.38 9.79L22.73 10.30L23.10 10.83L23.39 11.40Z" fill="#0095F6" />
+                    <path d="M7.6 12.4l3 3 5.8-6.2" fill="none" stroke="#FFFFFF" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
                 </li>
                 <li style={{"display": "flex", "alignItems": "center", "gap": "10px", "minHeight": "38px", "fontSize": "14.5px"}}>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7EE2B8" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -939,6 +936,12 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
                   </svg>
                   {t(163)}
                 </li>
+                <li style={{"display": "flex", "alignItems": "center", "gap": "10px", "minHeight": "38px", "fontSize": "14.5px"}}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7EE2B8" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M5 12l5 5 9-10" />
+                  </svg>
+                  {t(164)}
+                </li>
               </ul>
             </div>
           </div>
@@ -949,15 +952,15 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
           <div style={{"display": "flex", "flexDirection": "column", "gap": "14px", "alignItems": "flex-start", "textAlign": v.en ? "left" : "right", "maxWidth": "760px"}} className="ws-reveal mk-home-55">
             <span style={{"display": "inline-flex", "alignItems": "center", "gap": "8px", "fontSize": "13.5px", "fontWeight": "700", "color": "var(--mk-logo-blue-text)"}}>
               <span style={{"width": "18px", "height": "2px", "background": "#0A6CFF", "borderRadius": "2px"}}></span>
-              {t(164)}
+              {t(165)}
             </span>
             <h2 style={{"margin": "0", "fontSize": "48px", "lineHeight": "1.2", "fontWeight": "900", "letterSpacing": "-0.015em", "color": "var(--mk-text)"}} className="mk-home-56">
-              {t(165)}
+              {t(166)}
             </h2>
             <p style={{"margin": "0", "fontSize": "18px", "lineHeight": "1.8", "color": "var(--mk-muted)", "display": "flex", "alignItems": "center", "flexWrap": "wrap", "gap": "12px"}} className="mk-home-57">
-              {t(166)}
+              {t(167)}
               <Link href="/contact" style={{"height": "52px", "padding": "0 24px", "borderRadius": "999px", "border": "1px solid rgba(var(--mk-ink),0.09)", "background": "var(--mk-card)", "color": "var(--mk-text)", "fontFamily": "inherit", "fontSize": "15px", "fontWeight": "500", "display": "inline-flex", "alignItems": "center", "justifyContent": "center", "gap": "8px", "cursor": "pointer", "textDecoration": "none"}} className="mk-home-58">
-                {t(167)}
+                {t(168)}
               </Link>
             </p>
           </div>
@@ -993,23 +996,23 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
           <div aria-hidden="true" style={{"position": "absolute", "top": "-160px", "left": "-120px", "width": "460px", "height": "460px", "borderRadius": "50%", "background": "radial-gradient(closest-side, rgba(34,184,240,0.45), transparent)"}}></div>
           <div aria-hidden="true" style={{"position": "absolute", "bottom": "-200px", "right": "-140px", "width": "480px", "height": "480px", "borderRadius": "50%", "background": "radial-gradient(closest-side, rgba(10,108,255,0.40), transparent)"}}></div>
           <h2 style={{"position": "relative", "margin": "0", "fontSize": "56px", "lineHeight": "1.15", "fontWeight": "900", "letterSpacing": "-0.02em"}} className="mk-home-61">
-            {t(168)}
+            {t(169)}
           </h2>
           <p style={{"position": "relative", "margin": "0", "fontSize": "18px", "lineHeight": "1.8", "color": "rgba(255,255,255,0.75)", "maxWidth": "520px"}} className="mk-home-62">
-            {t(169)}
+            {t(170)}
           </p>
           <div style={{"position": "relative", "width": "100%", "display": "flex", "justifyContent": "center"}}>
             <div style={{"display": "flex", "flexDirection": "column", "gap": "10px", "width": "100%", "maxWidth": "520px"}}>
               <label htmlFor="claim2" style={{"position": "absolute", "width": "1px", "height": "1px", "overflow": "hidden", "clip": "rect(0 0 0 0)"}}>
-                {t(170)}
+                {t(171)}
               </label>
               <div dir="ltr" style={{"display": "flex", "alignItems": "center", "gap": "6px", "padding": "7px", "borderRadius": "999px", "background": "#FFFFFF", "border": `1.5px solid ${v.claimBorder}`, "boxShadow": "0 18px 40px rgba(2,25,65,0.10)"}}>
                 <span style={{"paddingLeft": "16px", "fontSize": "17px", "fontWeight": "500", "color": "#56607A"}} className="mk-home-63">
-                  {t(171)}
+                  {t(172)}
                 </span>
                 <input id="claim2" type="text" autoComplete="off" spellCheck="false" placeholder="yourname" value={v.claimV} onChange={v.onClaim} style={{"flex": "1", "minWidth": "0", "height": "48px", "border": "none", "background": "transparent", "fontFamily": "inherit", "fontSize": "17px", "fontWeight": "700", "color": "#021941", "outline": "none"}} className="mk-home-64" />
                 <button type="button" onClick={v.claimGo} style={{"height": "48px", "padding": "0 22px", "borderRadius": "999px", "border": "none", "background": "#0A6CFF", "color": "#FFFFFF", "fontFamily": "inherit", "fontSize": "14.5px", "fontWeight": "700", "display": "inline-flex", "alignItems": "center", "justifyContent": "center", "gap": "10px", "cursor": "pointer", "textDecoration": "none", "boxShadow": "none", "flexShrink": "0"}} className="mk-home-65">
-                  <span className="mk-dsk">{t(172)}</span><span className="mk-mob">{t(173)}</span>
+                  <span className="mk-dsk">{t(173)}</span><span className="mk-mob">{t(174)}</span>
                 </button>
               </div>
               <span style={{"fontSize": "13px", "color": v.claimColorD, "padding": "0 8px"}}>
@@ -1030,14 +1033,14 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
               </svg>
             </span>
             <h2 id="nl-title" style={{"margin": "0", "fontSize": "28px", "lineHeight": "1.3", "fontWeight": "900", "color": "var(--mk-text)"}} className="mk-home-68">
-              {t(174)}
+              {t(175)}
             </h2>
             <p style={{"margin": "0", "fontSize": "14.5px", "lineHeight": "1.8", "color": "var(--mk-muted)"}}>
-              {t(175)}
+              {t(176)}
             </p>
             <div style={{"display": "flex", "flexDirection": "column", "gap": "10px"}}>
               <span style={{"fontSize": "13px", "fontWeight": "700", "color": "var(--mk-text)"}}>
-                {t(176)}
+                {t(177)}
               </span>
               <div style={{"display": "flex", "flexWrap": "wrap", "gap": "8px"}}>
                 {(v.socialList as any[]).map((s: any) => (
@@ -1049,7 +1052,7 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
             </div>
             <div style={{"display": "flex", "flexDirection": "column", "gap": "10px"}}>
               <span style={{"fontSize": "13px", "fontWeight": "700", "color": "var(--mk-text)"}}>
-                {t(177)}
+                {t(178)}
               </span>
               <div style={{"display": "flex", "flexWrap": "wrap", "gap": "8px"}}>
                 <a href={v.appIosHref} target="_blank" rel="noopener" aria-label={v.appIosLabel} className="wapp">
@@ -1065,21 +1068,21 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
             {v.nlForm && (
               <>
                 <label htmlFor="nl-email" style={{"position": "absolute", "width": "1px", "height": "1px", "overflow": "hidden", "clip": "rect(0 0 0 0)"}}>
-                  {t(178)}
+                  {t(179)}
                 </label>
                 <div style={{"display": "flex", "alignItems": "center", "gap": "6px", "padding": "6px", "borderRadius": "999px", "background": "#F4F6FA", "border": `1.5px solid ${v.nlBorder}`, "transition": "border-color .2s ease, box-shadow .2s ease"}} className="nlbox">
                   <input id="nl-email" dir="ltr" type="email" inputMode="email" autoComplete="email" placeholder="name@email.com" value={v.nlV} onChange={v.onNl} onKeyDown={v.nlKey} aria-invalid={v.nlInvalid} aria-describedby="nl-msg" style={{"flex": "1", "minWidth": "0", "height": "46px", "padding": "0 16px", "border": "none", "background": "transparent", "fontFamily": "inherit", "fontSize": "15px", "color": "var(--mk-text)", "textAlign": v.en ? "left" : "right"}} className="nlin" />
                   <button type="button" onClick={v.nlGo} style={{"height": "46px", "padding": "0 24px", "borderRadius": "999px", "border": "none", "background": "#0060E6", "color": "#FFFFFF", "fontFamily": "inherit", "fontSize": "15px", "fontWeight": "700", "cursor": "pointer", "flexShrink": "0"}}>
-                    {t(179)}
+                    {t(180)}
                   </button>
                 </div>
                 <span id="nl-msg" role="status" style={{"minHeight": "18px", "fontSize": "13px", "color": "var(--mk-bad)", "padding": "0 12px"}}>
                   {v.nlErrMsg}
                 </span>
                 <span style={{"fontSize": "12.5px", "color": "var(--mk-muted)", "padding": "0 12px"}}>
-                  {t(180)}{" "}
+                  {t(181)}{" "}
                   <Link href="/privacy" style={{"color": "var(--mk-text)", "textDecoration": "underline"}}>
-                    {t(181)}
+                    {t(182)}
                   </Link>
                 </span>
               </>
@@ -1094,16 +1097,16 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
                   </span>
                   <div style={{"display": "flex", "flexDirection": "column", "gap": "4px"}}>
                     <span style={{"fontSize": "14.5px", "lineHeight": "1.7", "color": "var(--mk-text)"}}>
-                      {t(182)}{" "}
+                      {t(183)}{" "}
                       <b dir="ltr">
                         {v.nlV}
                       </b>
                     </span>
                     <span style={{"fontSize": "13.5px", "color": "var(--mk-muted)"}}>
-                      {t(183)}
+                      {t(184)}
                     </span>
                     <button type="button" onClick={v.nlReset} style={{"alignSelf": "flex-start", "marginTop": "4px", "padding": "0", "border": "none", "background": "none", "fontFamily": "inherit", "fontSize": "13px", "fontWeight": "700", "color": "var(--mk-blue-text)", "cursor": "pointer", "textDecoration": "underline"}}>
-                      {t(184)}
+                      {t(185)}
                     </button>
                   </div>
                 </div>
@@ -1113,65 +1116,68 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
         </section>
         <div style={{"display": "flex", "flexWrap": "wrap", "justifyContent": "space-between", "gap": "36px"}}>
           <div style={{"display": "flex", "flexDirection": "column", "gap": "14px", "whiteSpace": "nowrap"}}>
-            <img className="mk-logo-light" src={v.en ? "/marketing/a841426bbb5bd28188577aa5bd4b74da.png" : "/marketing/84a13f503b73bc5552ed2fb6c15e33e3.png"} alt={t(185)} style={{"height": "38px", "width": "auto", "display": "block", "alignSelf": "flex-start"}} /><img className="mk-logo-dark" src={v.en ? "/brand/logo-en-dark.png" : "/brand/logo-ar-dark.png"} alt={t(185)} style={{"height": "38px", "width": "auto", "display": "block", "alignSelf": "flex-start"}} />
+            <img className="mk-logo-light" src={v.en ? "/marketing/a841426bbb5bd28188577aa5bd4b74da.png" : "/marketing/84a13f503b73bc5552ed2fb6c15e33e3.png"} alt={t(186)} style={{"height": "38px", "width": "auto", "display": "block", "alignSelf": "flex-start"}} /><img className="mk-logo-dark" src={v.en ? "/brand/logo-en-dark.png" : "/brand/logo-ar-dark.png"} alt={t(186)} style={{"height": "38px", "width": "auto", "display": "block", "alignSelf": "flex-start"}} />
             <p style={{"margin": "0", "fontSize": "14px", "lineHeight": "1.8", "color": "var(--mk-muted)"}}>
-              {t(186)}
+              {t(187)}
             </p>
           </div>
           <div style={{"display": "flex", "flexWrap": "wrap", "gap": "72px"}} className="mk-home-70">
             <div style={{"display": "flex", "flexDirection": "column", "gap": "12px"}}>
               <span style={{"fontSize": "13px", "fontWeight": "700", "color": "var(--mk-text)"}}>
-                {t(187)}
+                {t(188)}
               </span>
               <Link href="/#features" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
-                {t(188)}
-              </Link>
-              <Link href="/#templates" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
                 {t(189)}
               </Link>
-              <Link href="/pricing" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
+              <Link href="/#templates" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
                 {t(190)}
               </Link>
-              <Link href="/demo" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
+              <Link href="/pricing" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
                 {t(191)}
               </Link>
-              <Link href="/agencies" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
+              <Link href="/demo" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
                 {t(192)}
               </Link>
-            </div>
-            <div style={{"display": "flex", "flexDirection": "column", "gap": "12px"}}>
-              <span style={{"fontSize": "13px", "fontWeight": "700", "color": "var(--mk-text)"}}>
+              <Link href="/agencies" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
                 {t(193)}
-              </span>
-              <Link href="/#faq" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
+              </Link>
+              <Link href="/academy" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
                 {t(194)}
               </Link>
-              <Link href="/contact" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
+            </div>
+            <div style={{"display": "flex", "flexDirection": "column", "gap": "12px"}}>
+              <span style={{"fontSize": "13px", "fontWeight": "700", "color": "var(--mk-text)"}}>
                 {t(195)}
+              </span>
+              <Link href="/#faq" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
+                {t(196)}
+              </Link>
+              <Link href="/contact" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
+                {t(197)}
               </Link>
             </div>
             <div style={{"display": "flex", "flexDirection": "column", "gap": "12px"}}>
               <span style={{"fontSize": "13px", "fontWeight": "700", "color": "var(--mk-text)"}}>
-                {t(196)}
+                {t(198)}
               </span>
               <Link href="/terms" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
-                {t(197)}
+                {t(199)}
               </Link>
               <Link href="/privacy" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
-                {t(198)}
+                {t(200)}
               </Link>
               <Link href="/refund" style={{"fontSize": "14px", "color": "var(--mk-muted)", "textDecoration": "none"}}>
-                {t(199)}
+                {t(201)}
               </Link>
             </div>
           </div>
         </div>
         <div style={{"display": "flex", "flexWrap": "wrap", "justifyContent": "space-between", "gap": "12px", "paddingTop": "24px", "borderTop": "1px solid rgba(var(--mk-ink),0.09)", "fontSize": "13px", "color": "var(--mk-muted)"}}>
           <span>
-            {t(200)}
+            {t(202)}
           </span>
           <span>
-            {t(201)}
+            {t(203)}
           </span>
         </div>
       </footer>

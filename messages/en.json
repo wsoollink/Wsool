@@ -933,7 +933,8 @@
       "categories": "Categories",
       "groupOwner": "Owner",
       "referrals": "Commissions",
-      "agencies": "Agencies"
+      "agencies": "Agencies",
+      "academy": "Academy"
     },
     "overview": {
       "demoTitle": "Demo page wsool.link/demo",
@@ -1246,6 +1247,9 @@
         },
         "expenses": {
           "edit": "Adds and deletes expenses"
+        },
+        "academy": {
+          "edit": "Writes and publishes Academy articles"
         }
       },
       "invite": "Add",
@@ -1269,7 +1273,8 @@
         "verification": "Verification",
         "users": "Users",
         "money": "Finance",
-        "newsletter": "Newsletter"
+        "newsletter": "Newsletter",
+        "academy": "Academy"
       },
       "roleHint": "Picking a role fills in its permissions; you can change them.",
       "ownerOnly": "Only the owner can add members, change permissions and platform settings.",
@@ -1295,7 +1300,8 @@
         "money": "Invoices, finance & codes",
         "newsletter": "Newsletter",
         "categories": "Categories",
-        "team": "Team"
+        "team": "Team",
+        "academy": "Academy"
       },
       "from": "From",
       "to": "To",
@@ -1374,7 +1380,8 @@
       "insights": "Creators by category, country, city, platform and size",
       "categories": "The list creators pick their content category from",
       "referrals": "What creators earned on the customers they brought, and bank transfers",
-      "agencies": "Marketing agencies in the free beta"
+      "agencies": "Marketing agencies in the free beta",
+      "academy": "Wsool Academy articles (wsool.link/academy)"
     },
     "sentence": {
       "demo": {
@@ -1447,6 +1454,14 @@
         "decline_request": "Declined the agency request from {name} ({email})",
         "plan": "Set the agency {name} plan to {plan}",
         "delete": "Deleted the agency {name} permanently"
+      },
+      "academy": {
+        "save": "Saved the draft article “{title}”",
+        "publish": "Published the article “{title}”",
+        "schedule": "Scheduled the article “{title}”",
+        "unpublish": "Unpublished the article “{title}” (back to draft)",
+        "delete": "Deleted the article “{title}”",
+        "import": "Added {count} starter articles as drafts"
       }
     },
     "newsletter": {
@@ -1790,6 +1805,58 @@
       "planSaved": "✓ Plan saved",
       "delete": "Delete permanently",
       "confirmDelete": "Delete the agency {name} permanently? Its team and history are deleted; creators' pages aren't affected. This can't be undone."
+    },
+    "academy": {
+      "newAr": "New Arabic article",
+      "newEn": "New English article",
+      "starters": "Add starter articles",
+      "added": "Added {n} articles as drafts",
+      "empty": "No articles yet. Start a new one, or add the starter articles and edit them.",
+      "untitled": "(untitled)",
+      "state": {
+        "draft": "Draft",
+        "scheduled": "Scheduled",
+        "published": "Published"
+      },
+      "on": "Publishes {date}",
+      "view": "View article",
+      "back": "← Academy",
+      "lang": "Article language",
+      "titleLabel": "Title",
+      "slug": "Article address",
+      "slugHint": "Lowercase English letters, numbers and dashes only, e.g. how-to-price-your-ads. The Arabic and English versions can share one address.",
+      "summary": "Summary",
+      "summaryHint": "One or two lines under the title and in Google results",
+      "category": "Category",
+      "cover": "Cover image",
+      "addCover": "Add a cover image",
+      "removeCover": "Remove image",
+      "coverHint": "A wide (16:9) image works best. It's also the link preview on WhatsApp and X.",
+      "body": "Article text",
+      "bodyHint": "Use the formatting buttons: with 3 or more headings, an \"In this article\" list appears by itself.",
+      "publish": "Publish now",
+      "update": "Update article",
+      "saveDraft": "Save as draft",
+      "unpublish": "Unpublish (back to draft)",
+      "scheduleAt": "Publish time",
+      "schedule": "Schedule",
+      "delete": "Delete article",
+      "confirmDelete": "Delete this article for good?",
+      "preview": "Preview as it appears on the site",
+      "saved": {
+        "draft": "✓ Saved",
+        "now": "✓ Published",
+        "schedule": "✓ Scheduled; it goes live on time (within an hour of the set time)"
+      },
+      "errors": {
+        "title": "Add a title (3+ characters).",
+        "slug": "Add a valid article address.",
+        "invalid": "Check the fields and try again.",
+        "slug_taken": "Another article in this language uses this address.",
+        "past": "Pick a time in the future.",
+        "not_found": "This article no longer exists.",
+        "upload": "Couldn't upload the image. Try another (JPG or PNG, under 5 MB)."
+      }
     }
   },
   "Billing": {
@@ -3458,6 +3525,39 @@
         "invalid": "This page expired or was deleted.",
         "has_page": "You already have a Wsool page."
       }
+    }
+  },
+  "Academy": {
+    "name": "Wsool Academy",
+    "home": "Wsool home",
+    "start": "Start free",
+    "title": "Learn how to grow as a creator",
+    "lead": "Practical articles on pricing sponsored content, working with brands and growing your accounts, from the Wsool team.",
+    "categories": "Categories",
+    "all": "All",
+    "search": "Search articles",
+    "pages": "Pages",
+    "soon": "Articles are coming soon. Stay tuned!",
+    "noResults": "No articles match your search.",
+    "minutes": "{n, plural, =1 {1 min read} other {# min read}}",
+    "author": "Wsool Team",
+    "breadcrumb": "Breadcrumb",
+    "toc": "In this article",
+    "share": "Share:",
+    "copy": "Copy link",
+    "copied": "Link copied",
+    "allArticles": "All articles",
+    "related": "You might also like",
+    "ctaTitle": "Build your media kit for free",
+    "ctaText": "One page with your verified numbers, work and rates, shared with any brand as one link.",
+    "ctaButton": "Start free",
+    "cat": {
+      "pricing": "Pricing",
+      "brands": "Brands & negotiation",
+      "growth": "Growth & verification",
+      "content": "Content & media kit",
+      "platforms": "Platforms",
+      "tools": "Tools & tips"
     }
   }
 }

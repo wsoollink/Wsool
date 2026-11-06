@@ -760,6 +760,26 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   deletes `media` files older than 7 days that no row uses (the `unused()` SQL lists every column holding a file URL + newsletter bodies:
   **a new column that stores an uploaded file URL must be added there**). The private `verification` bucket is not touched.
 
+### Wsool Academy (owner, Nov 2026)
+- Articles at `wsool.link/academy` (list: categories `ACADEMY_CATEGORIES`, search `?q=`, `?c=`, pages `?p=`, newest one big) and
+  `/academy/<slug>` (title, "Wsool Team" author, date, reading time, cover, "In this article" list from ≥3 `##` headings, body, share,
+  CTA, related). Usernames `academy`, `academies`, `wiki`, `learn`, `articles`, `article`, `rss`, `feed` are reserved. Table `articles`
+  (lang, slug unique per lang, title, summary, body, cover_url, category, published_at = null draft / future = scheduled, RLS on, server
+  only). Logic `src/lib/academy.ts` (`"use cache"`, tag `ACADEMY_TAG`, `cacheLife("hours")`: scheduled ones appear within the hour) +
+  `src/lib/academy-shared.ts` (schema, categories, slug pattern; also used by the browser). Addresses carry no language: an article opens
+  by slug in the visitor's language if it has one, else the other (crawlers get both); it then shows in its own `lang`/`dir`.
+- Body = the newsletter format rendered by `markupToWebHtml()` (`src/lib/email/markup.ts`, classes `.ac-*` in `globals.css`, headings get
+  ids, `markupHeadings()`); a list may now follow a text line without a blank line (both email and web). Outside links open in a new tab
+  with `rel="noopener nofollow"`.
+- Admin `admin/academy` (permission `academy.edit`, group "Academy"): new Arabic / English article, "Add starter articles" (drafts from
+  `src/content/academy-starters.ts`, 5 ar + 5 en), editor `/admin/academy/edit?id=` (`ArticleEditor`: language, title, address, summary,
+  category, cover (upload kind `academyImage`), body with the newsletter's `MarkupToolbar` (now takes an `upload` prop) + live preview;
+  publish now / save draft / unpublish / schedule / delete), audited `academy.*`. Article images are in the unused-uploads check.
+- SEO: metadata + canonical + Open Graph (cover) + Article JSON-LD per article; `src/app/sitemap.ts` (dynamic: marketing pages, articles,
+  public creator pages that aren't whole-page private or unclaimed drafts) and `src/app/robots.ts` (dashboards, admin, APIs, billing
+  disallowed); RSS `/academy/feed?lang=ar|en`. Links: marketing header nav + footer (design files, `LINKS`), `SiteFooter`. Marketing header
+  on 768-1199px: tighter links, no wrapping; 768-999px: the links bar hides (`marketing.css`).
+
 ### Pre-launch review (Nov 2026)
 - Agency billing: "from the next renewal" choices live in `agencies.next_plan` / `next_cycle` (the current plan and its creator limit stay until
   that renewal is paid; only the same plan's other cycle or growth → starter; a bigger plan is bought now); auto-renew can't be switched back on

@@ -1400,3 +1400,26 @@ model AgencyBrand {
   @@index([agencyId, sort])
   @@map("agency_brands")
 }
+
+/// Wsool Academy (owner, Nov 2026): articles at wsool.link/academy, written by staff (permission academy.edit) in the
+/// newsletter's text format. Each language has its own articles (no auto-translation); the slug is unique per language.
+model Article {
+  id          String    @id @default(uuid()) @db.Uuid
+  lang        Lang
+  slug        String    @db.VarChar(80)
+  title       String    @db.VarChar(120)
+  /// One or two lines under the title, in lists and as the search/preview description.
+  summary     String    @default("") @db.VarChar(300)
+  body        String    @default("")
+  coverUrl    String?   @map("cover_url") @db.VarChar(500)
+  category    String    @db.VarChar(30)
+  /// Draft while null; published (or scheduled) from this time on.
+  publishedAt DateTime? @map("published_at") @db.Timestamptz
+  createdBy   String?   @map("created_by") @db.Uuid
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@unique([lang, slug])
+  @@index([lang, publishedAt])
+  @@map("articles")
+}

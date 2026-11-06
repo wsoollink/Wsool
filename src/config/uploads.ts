@@ -16,6 +16,8 @@ export const UPLOAD_KINDS = {
   couponLogo: { types: ["image/jpeg", "image/png", "image/webp", "image/avif"], maxBytes: 4 * 1024 * 1024, bucket: MEDIA_BUCKET },
   /** Image inside a newsletter email (staff): formats every mail app shows (no WebP/AVIF). */
   newsletterImage: { types: ["image/jpeg", "image/png", "image/gif"], maxBytes: 5 * 1024 * 1024, bucket: MEDIA_BUCKET },
+  /** Academy article cover / image inside an article (staff, their own folder). */
+  academyImage: { types: ["image/jpeg", "image/png", "image/webp", "image/gif"], maxBytes: 5 * 1024 * 1024, bucket: MEDIA_BUCKET },
   thumb: { types: ["image/jpeg", "image/png", "image/webp"], maxBytes: 4 * 1024 * 1024, bucket: MEDIA_BUCKET },
   video: { types: ["video/mp4", "video/quicktime"], maxBytes: 50 * 1024 * 1024, bucket: MEDIA_BUCKET },
   verification: { types: ["image/jpeg", "image/png", "image/webp"], maxBytes: 10 * 1024 * 1024, bucket: VERIFICATION_BUCKET },

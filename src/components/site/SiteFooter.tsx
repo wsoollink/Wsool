@@ -4,18 +4,18 @@ import { SELLER } from "@/config/site";
 
 const TEXT = {
   ar: {
-    links: [["/", "الرئيسية"], ["/pricing", "الأسعار"], ["/demo", "صفحة تجريبية"], ["/agencies", "للوكالات"], ["/contact", "تواصل معنا"], ["/terms", "شروط الاستخدام"], ["/privacy", "سياسة الخصوصية"], ["/refund", "سياسة الاسترجاع"]],
+    links: [["/", "الرئيسية"], ["/pricing", "الأسعار"], ["/demo", "صفحة تجريبية"], ["/agencies", "للوكالات"], ["/academy", "الأكاديمية"], ["/contact", "تواصل معنا"], ["/terms", "شروط الاستخدام"], ["/privacy", "سياسة الخصوصية"], ["/refund", "سياسة الاسترجاع"]],
     nav: "روابط الموقع", made: "صُنع في السعودية",
   },
   en: {
-    links: [["/", "Home"], ["/pricing", "Pricing"], ["/demo", "Demo page"], ["/agencies", "For agencies"], ["/contact", "Contact us"], ["/terms", "Terms of use"], ["/privacy", "Privacy policy"], ["/refund", "Refund policy"]],
+    links: [["/", "Home"], ["/pricing", "Pricing"], ["/demo", "Demo page"], ["/agencies", "For agencies"], ["/academy", "Academy"], ["/contact", "Contact us"], ["/terms", "Terms of use"], ["/privacy", "Privacy policy"], ["/refund", "Refund policy"]],
     nav: "Site links", made: "Made in Saudi Arabia",
   },
 } as const;
 
 /**
  * Footer of the creators' side pages that aren't generated from the marketing design: /contact, /terms, /privacy,
- * /refund (owner audit, Nov 2026). Same company line as the home page footer.
+ * /refund, /academy (owner audit, Nov 2026). Same company line as the home page footer.
  */
 export function SiteFooter({ lang }: { lang: "ar" | "en" }) {
   const t = TEXT[lang];

@@ -32,13 +32,16 @@ export function ServerErrorView({ v, t }: { v: any; t: (i: number) => string }) 
             <Link href="/agencies" style={{"height": "36px", "padding": "0 16px", "borderRadius": "999px", "display": "flex", "alignItems": "center", "color": "var(--mk-text)", "fontSize": "14px", "fontWeight": "500", "textDecoration": "none"}}>
               {t(7)}
             </Link>
+            <Link href="/academy" style={{"height": "36px", "padding": "0 16px", "borderRadius": "999px", "display": "flex", "alignItems": "center", "color": "var(--mk-text)", "fontSize": "14px", "fontWeight": "500", "textDecoration": "none"}}>
+              {t(8)}
+            </Link>
           </nav>
           <div style={{"display": "flex", "alignItems": "center", "gap": "10px"}}>
             <Link href="/login" style={{"fontSize": "14px", "fontWeight": "500", "color": "var(--mk-text)", "textDecoration": "none", "padding": "0 6px"}} className="mk-servererror-4">
-              {t(8)}
+              {t(9)}
             </Link>
             <ThemeToggle />
-            <a href="#" onClick={v.switchLang} hrefLang={v.en ? "ar" : "en"} lang={v.en ? "ar" : "en"} aria-label={t(9)} style={{"width": "40px", "height": "40px", "borderRadius": "50%", "border": "1px solid rgba(var(--mk-ink),0.09)", "background": "var(--mk-card)", "display": "flex", "alignItems": "center", "justifyContent": "center"}}>
+            <a href="#" onClick={v.switchLang} hrefLang={v.en ? "ar" : "en"} lang={v.en ? "ar" : "en"} aria-label={t(10)} style={{"width": "40px", "height": "40px", "borderRadius": "50%", "border": "1px solid rgba(var(--mk-ink),0.09)", "background": "var(--mk-card)", "display": "flex", "alignItems": "center", "justifyContent": "center"}}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{"stroke": "var(--mk-text)"}}>
                 <circle cx="12" cy="12" r="9" />
                 <path d="M3 12h18" />
@@ -46,7 +49,7 @@ export function ServerErrorView({ v, t }: { v: any; t: (i: number) => string }) 
               </svg>
             </a>
             <Link href="/login" style={{"height": "42px", "padding": "0 18px", "borderRadius": "999px", "border": "none", "background": "var(--mk-solid)", "color": "var(--mk-on-solid)", "fontFamily": "inherit", "fontSize": "14px", "fontWeight": "700", "display": "inline-flex", "alignItems": "center", "justifyContent": "center", "gap": "10px", "cursor": "pointer", "textDecoration": "none", "boxShadow": "0 10px 24px rgba(var(--mk-shadow),0.18)"}}>
-              {t(10)}
+              {t(11)}
             </Link>
           </div>
         </div>
@@ -63,37 +66,37 @@ export function ServerErrorView({ v, t }: { v: any; t: (i: number) => string }) 
             </svg>
           </span>
           <h1 style={{"margin": "0", "fontSize": "40px", "lineHeight": "1.25", "fontWeight": "900", "letterSpacing": "-0.015em"}} className="mk-servererror-7">
-            {t(11)}
+            {t(12)}
           </h1>
           <p style={{"margin": "0", "fontSize": "17px", "lineHeight": "1.85", "color": "var(--mk-muted)", "maxWidth": "480px"}} className="mk-servererror-8">
-            {t(12)}
+            {t(13)}
           </p>
           <div style={{"display": "flex", "flexWrap": "wrap", "gap": "10px", "justifyContent": "center"}}>
             <button onClick={v.reload} type="button" style={{"height": "52px", "padding": "0 24px", "borderRadius": "999px", "border": "none", "background": "#0A6CFF", "color": "#FFFFFF", "fontFamily": "inherit", "fontSize": "15px", "fontWeight": "700", "display": "inline-flex", "alignItems": "center", "justifyContent": "center", "gap": "10px", "cursor": "pointer", "textDecoration": "none", "boxShadow": "0 10px 24px rgba(10,108,255,0.35)"}}>
-              {t(13)}
+              {t(14)}
             </button>
             <Link href="/" style={{"height": "52px", "padding": "0 24px", "borderRadius": "999px", "border": "1px solid rgba(var(--mk-ink),0.09)", "background": "var(--mk-card)", "color": "var(--mk-text)", "fontFamily": "inherit", "fontSize": "15px", "fontWeight": "500", "display": "inline-flex", "alignItems": "center", "justifyContent": "center", "gap": "8px", "cursor": "pointer", "textDecoration": "none"}}>
-              {t(14)}
+              {t(15)}
             </Link>
           </div>
           <span style={{"fontSize": "12.5px", "color": "var(--mk-muted)"}}>
-            {t(15)}{" "}
+            {t(16)}{" "}
             <span dir="ltr">
-              {t(16)}
+              {t(17)}
             </span>
-            {" "}{t(17)}{" "}
+            {" "}{t(18)}{" "}
             <Link href="/contact">
-              {t(18)}
+              {t(19)}
             </Link>
           </span>
         </div>
       </main>
       <footer style={{"maxWidth": "1200px", "margin": "0 auto", "padding": "24px 32px", "display": "flex", "justifyContent": "space-between", "flexWrap": "wrap", "gap": "10px", "fontSize": "13px", "color": "var(--mk-muted)"}} className="mk-servererror-9">
         <span dir="ltr">
-          {t(19)}
+          {t(20)}
         </span>
         <span>
-          {t(20)}
+          {t(21)}
         </span>
       </footer>
     </div>

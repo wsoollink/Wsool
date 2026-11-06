@@ -13,11 +13,20 @@ import { insertText } from "@/lib/text-insert";
 import { shrinkImage, uploadFile } from "@/lib/upload-client";
 import { newsletterImageUrl, requestNewsletterUpload } from "../actions";
 
+/** Where images go: the newsletter's by default; the Academy passes its own upload kind and actions. */
+export type ImageUpload = {
+  kind: "newsletterImage" | "academyImage";
+  request: typeof requestNewsletterUpload;
+  url: (path: string) => Promise<{ url?: string; error?: string }>;
+};
+const NEWSLETTER_UPLOAD: ImageUpload = { kind: "newsletterImage", request: requestNewsletterUpload, url: newsletterImageUrl };
+
 type Props = {
   target: RefObject<HTMLTextAreaElement | null>;
   value: string;
   onChange: (value: string) => void;
   disabled?: boolean;
+  upload?: ImageUpload;
 };
 type Color = keyof typeof TEXT_COLORS;
 
@@ -29,7 +38,7 @@ const divider = <span aria-hidden="true" className="mx-0.5 h-6 w-px bg-navy/10" 
  * (## heading, **bold**, *italic*, [blue]…[/blue], lists, links, images, [center], [box], ---) into the
  * text, and the live preview shows the real email. Edits go in like typing, so undo/redo works.
  */
-export function MarkupToolbar({ target, value, onChange, disabled }: Props) {
+export function MarkupToolbar({ target, value, onChange, disabled, upload = NEWSLETTER_UPLOAD }: Props) {
   const t = useTranslations("Admin.newsletter.toolbar");
   const file = useRef<HTMLInputElement>(null);
   const colorBox = useRef<HTMLDivElement>(null);
@@ -125,9 +134,9 @@ export function MarkupToolbar({ target, value, onChange, disabled }: Props) {
     try {
       // PNG and GIF keep transparency / animation; everything else becomes a light JPEG.
       const ready = picked.type === "image/gif" ? picked : await shrinkImage(picked, 1200, 0.85, picked.type === "image/png" ? "image/png" : "image/jpeg");
-      const up = await uploadFile("newsletterImage", ready, requestNewsletterUpload);
+      const up = await uploadFile(upload.kind, ready, upload.request);
       if ("error" in up) return setError(t(`upload.${up.error}`));
-      const res = await newsletterImageUrl(up.path);
+      const res = await upload.url(up.path);
       if (!res.url) return setError(t("upload.failed"));
       block(`![](${res.url})`);
     } finally {
@@ -198,7 +207,7 @@ export function MarkupToolbar({ target, value, onChange, disabled }: Props) {
           </button>
         </span>
         <input
-          ref={file} type="file" accept={UPLOAD_KINDS.newsletterImage.types.join(",")} className="sr-only" tabIndex={-1} aria-hidden="true"
+          ref={file} type="file" accept={UPLOAD_KINDS[upload.kind].types.join(",")} className="sr-only" tabIndex={-1} aria-hidden="true"
           onChange={(e) => { pickImage(e.target.files?.[0]); e.target.value = ""; }}
         />
       </div>

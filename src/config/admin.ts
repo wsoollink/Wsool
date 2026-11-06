@@ -14,6 +14,8 @@ export const PERMISSIONS = [
   "expenses.edit",
   "refunds",
   "newsletter.send",
+  /** Write, publish and delete Academy articles (wsool.link/academy). */
+  "academy.edit",
   "discounts.manage",
   "referrals.manage",
 ] as const;
@@ -28,11 +30,12 @@ export const ROLE_PRESETS: Record<"verifier" | "support" | "finance" | "custom",
 };
 
 /** How permissions are grouped in the Team page (every permission in exactly one group). */
-export const PERMISSION_GROUPS: Record<"verification" | "users" | "money" | "newsletter", Permission[]> = {
+export const PERMISSION_GROUPS: Record<"verification" | "users" | "money" | "newsletter" | "academy", Permission[]> = {
   verification: ["verifications.view", "verifications.decide"],
   users: ["users.view", "users.edit", "users.suspend", "trial.extend"],
   money: ["revenue.view", "expenses.edit", "refunds", "discounts.manage", "referrals.manage"],
   newsletter: ["newsletter.send"],
+  academy: ["academy.edit"],
 };
 
 export const ADMIN_SECTIONS = [
@@ -45,6 +48,7 @@ export const ADMIN_SECTIONS = [
   { key: "discounts", href: "/admin/discounts", permission: "discounts.manage" },
   { key: "referrals", href: "/admin/referrals", permission: "referrals.manage" },
   { key: "newsletter", href: "/admin/newsletter", permission: "newsletter.send" },
+  { key: "academy", href: "/admin/academy", permission: "academy.edit" },
   { key: "categories", href: "/admin/categories", permission: "owner" },
   { key: "agencies", href: "/admin/agencies", permission: "owner" },
   { key: "team", href: "/admin/team", permission: "owner" },

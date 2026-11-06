@@ -26,24 +26,32 @@ const LINK = "color:#0060E6;text-decoration:underline;";
 const INLINE = /\[([^\]\n]+)\]\(((?:https?:\/\/|mailto:)[^\s)]+)\)|\*\*([^*\n]+)\*\*|\*([^*\n]+)\*|https?:\/\/[^\s<]+[^\s<.,،؛:!?)"'*[]/g;
 const COLOR = /\[(blue|green|red|gray)\]([^\n]+?)\[\/\1\]/g;
 
+/** Web pages (the Academy) get classes instead of inline colours, so dark mode works. */
+type Mode = "email" | "web";
+const linkAttrs = (url: string, mode: Mode) =>
+  mode === "email" ? `style="${LINK}"`
+    // Our own pages open in place; other sites in a new tab (nofollow: links in articles aren't endorsements).
+    : /^https:\/\/(www\.)?wsool\.link(\/|$)/.test(url) || url.startsWith("mailto:") ? `class="ac-link"` : `class="ac-link" target="_blank" rel="noopener nofollow"`;
+
 /** Links, bold, italic and bare web addresses inside an already escaped piece of a line. */
-function marks(escaped: string) {
+function marks(escaped: string, mode: Mode = "email") {
   return escaped.replace(INLINE, (all, text?: string, url?: string, bold?: string, italic?: string) => {
     if (bold !== undefined) return `<strong>${bold}</strong>`;
     if (italic !== undefined) return `<em>${italic}</em>`;
-    if (text !== undefined) return `<a href="${url}" style="${LINK}">${text}</a>`;
-    return `<a href="${all}" style="${LINK}">${all}</a>`;
+    if (text !== undefined) return `<a href="${url}" ${linkAttrs(url!, mode)}>${text}</a>`;
+    return `<a href="${all}" ${linkAttrs(all, mode)}>${all}</a>`;
   });
 }
 
 /** Inline marks inside an already escaped line, with coloured spans around the other marks. */
-function inline(escaped: string) {
+function inline(escaped: string, mode: Mode = "email") {
   let out = "", last = 0;
   for (const m of escaped.matchAll(COLOR)) {
-    out += marks(escaped.slice(last, m.index)) + `<span style="color:${TEXT_COLORS[m[1] as keyof typeof TEXT_COLORS]};">${marks(m[2])}</span>`;
+    const span = mode === "web" ? `<span class="ac-${m[1]}">` : `<span style="color:${TEXT_COLORS[m[1] as keyof typeof TEXT_COLORS]};">`;
+    out += marks(escaped.slice(last, m.index), mode) + span + marks(m[2], mode) + "</span>";
     last = m.index + m[0].length;
   }
-  return out + marks(escaped.slice(last));
+  return out + marks(escaped.slice(last), mode);
 }
 
 const IMAGE = /^!\[([^\]\n]*)\]\((https:\/\/[^\s)]+)\)$/;
@@ -53,19 +61,32 @@ const WRAP = /^\[(\/?)(center|box)\]$/;
 /** A line that is always a block of its own: an image, a heading or a divider. */
 const standalone = (line: string) => IMAGE.test(line) || line.startsWith("## ") || line === "---";
 
-/** Splits text into blocks (blank lines), with image, heading and divider lines on their own. */
+/** What a line is, for grouping: a bullet item, a numbered item, or text. */
+const lineKind = (line: string) => (line.startsWith("- ") ? "ul" : NUMBERED.test(line) ? "ol" : "text");
+
+/**
+ * Splits text into blocks (blank lines), with image, heading and divider lines on their own. A list that follows a
+ * line of text without a blank line between still becomes its own list block (and the text after it a paragraph).
+ */
 function blocks(body: string): string[] {
   const out: string[] = [];
+  const push = (lines: string[]) => { if (lines.join("").trim()) out.push(lines.join("\n").trim()); };
   for (const chunk of body.split(/\n\s*\n/)) {
     let current: string[] = [];
-    for (const line of chunk.split("\n")) {
-      if (standalone(line.trim())) {
-        if (current.join("").trim()) out.push(current.join("\n").trim());
-        out.push(line.trim());
-        current = [];
-      } else current.push(line);
+    let kind = "";
+    for (const raw of chunk.split("\n")) {
+      const line = raw.trim();
+      if (standalone(line)) {
+        push(current);
+        out.push(line);
+        current = []; kind = "";
+        continue;
+      }
+      const k = lineKind(line);
+      if (current.length && k !== kind) { push(current); current = []; }
+      current.push(raw); kind = k;
     }
-    if (current.join("").trim()) out.push(current.join("\n").trim());
+    push(current);
   }
   return out;
 }
@@ -121,6 +142,48 @@ export function markupToHtml(body: string, headingFont?: string): string {
     })
     .filter(Boolean)
     .join("\n");
+}
+
+/** Readable id for a heading (anchor links in the Academy's table of contents). */
+export const headingId = (i: number) => `h-${i + 1}`;
+
+function webBlock(b: string, center: boolean, heading: { n: number }) {
+  const c = center ? " ac-center" : "";
+  const img = b.match(IMAGE);
+  if (img) return `<figure class="ac-figure${c}"><img src="${esc(img[2])}" alt="${esc(img[1])}" loading="lazy" decoding="async"></figure>`;
+  if (b === "---") return `<hr class="ac-hr">`;
+  if (b.startsWith("## ")) {
+    const text = b.slice(3).replace(/\n/g, " ");
+    return `<h2 id="${headingId(heading.n++)}" class="ac-h2${c}">${inline(esc(text), "web")}</h2>`;
+  }
+  const lines = b.split("\n");
+  const list = lines.every((l) => l.startsWith("- ")) ? "ul" : lines.every((l) => NUMBERED.test(l)) ? "ol" : null;
+  if (list) return `<${list} class="ac-${list}${c}">${lines.map((l) => `<li>${inline(esc(l.replace(list === "ul" ? /^- / : NUMBERED, "")), "web")}</li>`).join("")}</${list}>`;
+  return `<p class="ac-p${c}">${lines.map((l) => inline(esc(l), "web")).join("<br>")}</p>`;
+}
+
+/** Web HTML for the same format (Academy articles): classes styled in globals.css (`.ac-*`), headings get ids. */
+export function markupToWebHtml(body: string): string {
+  const heading = { n: 0 };
+  return sections(body)
+    .map(({ text, center, box }) => {
+      const html = blocks(text).map((b) => webBlock(b, center, heading)).join("\n");
+      return html && box ? `<div class="ac-box">${html}</div>` : html;
+    })
+    .filter(Boolean)
+    .join("\n");
+}
+
+/** The ## headings of a body, in order (the article's table of contents). */
+export function markupHeadings(body: string): { id: string; text: string }[] {
+  const out: { id: string; text: string }[] = [];
+  for (const { text } of sections(body)) for (const b of blocks(text)) {
+    if (b.startsWith("## ")) {
+      const t = b.slice(3).replace(/\n/g, " ");
+      out.push({ id: headingId(out.length), text: t.replace(COLOR, "$2").replace(/\*\*?([^*\n]+)\*\*?/g, "$1").replace(/\[([^\]\n]+)\]\([^\s)]+\)/g, "$1") });
+    }
+  }
+  return out;
 }
 
 /** Plain-text copy of the same body (for the text part of the email and the inbox preview line). */

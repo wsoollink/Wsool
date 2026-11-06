@@ -206,3 +206,28 @@ html:has(header > .mk-home-1, header > .mk-pricing-1, .ag-grid, .ag-page) {
 /* Soft colour glows on the agencies pages: a radial gradient instead of a huge CSS blur, which made scrolling and
    taps lag on iPhones (owner, Nov 2026). --glow = the colour with its alpha. */
 .ag-glow { background: radial-gradient(closest-side, var(--glow), transparent); }
+
+/* ---- Wsool Academy (articles, src/lib/email/markup.ts markupToWebHtml) ---- */
+.ac-hero {
+  background: radial-gradient(120% 140% at 100% 0%, rgba(34, 184, 240, 0.35), transparent 55%), linear-gradient(135deg, #021941 0%, #0a2a63 60%, #0060e6 140%);
+}
+.ac-cover-fallback { background: linear-gradient(135deg, #0060e6, #22b8f0); }
+.ac-body { font-size: 17px; line-height: 2; color: var(--color-navy); overflow-wrap: anywhere; }
+.ac-body > * + * { margin-top: 1.1em; }
+.ac-body .ac-h2 { margin-top: 1.8em; font-size: 1.45em; line-height: 1.5; font-weight: 900; scroll-margin-top: 90px; }
+.ac-body .ac-ul, .ac-body .ac-ol { padding-inline-start: 1.4em; }
+.ac-body .ac-ul { list-style: disc; }
+.ac-body .ac-ol { list-style: decimal; }
+.ac-body li + li { margin-top: 0.35em; }
+.ac-body .ac-link { color: var(--color-blue); text-decoration: underline; text-underline-offset: 3px; }
+.ac-body .ac-hr { border: 0; border-top: 1px solid var(--color-line); margin: 2em 0; }
+.ac-body .ac-figure img { width: 100%; height: auto; border-radius: 14px; }
+.ac-body .ac-center { text-align: center; }
+.ac-body .ac-center.ac-ul, .ac-body .ac-center.ac-ol { list-style-position: inside; padding: 0; }
+.ac-body .ac-box { border: 1px solid color-mix(in srgb, var(--color-blue) 30%, transparent); background: color-mix(in srgb, var(--color-blue) 8%, transparent); border-radius: 14px; padding: 1em 1.2em; }
+.ac-body .ac-box > * + * { margin-top: 0.8em; }
+.ac-body .ac-blue { color: var(--color-blue); }
+.ac-body .ac-green { color: var(--color-good); }
+.ac-body .ac-red { color: var(--color-bad); }
+.ac-body .ac-gray { color: var(--color-muted); }
+@media (max-width: 640px) { .ac-body { font-size: 16px; line-height: 1.95; } }

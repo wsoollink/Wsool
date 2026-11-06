@@ -31,6 +31,7 @@ export async function auditSentences(entries: Entry[]) {
       label: str(d.label),
       count: str(d.count),
       subject: str(d.subject),
+      title: str(d.title),
       percent: str(d.percent),
       code: str(d.code),
       added: str(d.added),

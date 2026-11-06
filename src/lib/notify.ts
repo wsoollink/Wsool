@@ -112,7 +112,7 @@ function emailFor(type: NotificationType, data: Data, lang: Locale, footer: stri
  * language. With a dedupeKey the same notification is never sent twice (safe
  * for hourly reminder jobs). Never throws.
  */
-export async function notify(userId: string, type: NotificationType, data: Data = {}, opts: { dedupeKey?: string } = {}) {
+export async function notify(userId: string, type: NotificationType, data: Data = {}, opts: { dedupeKey?: string; lang?: Locale } = {}) {
   try {
     const user = await db.user.findUnique({
       where: { id: userId },
@@ -129,7 +129,8 @@ export async function notify(userId: string, type: NotificationType, data: Data 
     if (NOTIFICATIONS[type].reminder && user.notificationSettings?.emailReminders === false) return;
     // Placeholder accounts (pages prepared by an agency) have no real inbox.
     if (user.email.endsWith("@wsool.invalid")) return;
-    const lang = (user.page?.primaryLang ?? "ar") as Locale;
+    // No page yet (the welcome email): the language they signed up in.
+    const lang = (user.page?.primaryLang ?? opts.lang ?? "ar") as Locale;
     // Mobile app: the same notification as a phone push (no-op without registered devices).
     const text = notificationText(type, data, lang);
     if (text) await sendPush(userId, { title: text.title, body: text.body, href: text.href });

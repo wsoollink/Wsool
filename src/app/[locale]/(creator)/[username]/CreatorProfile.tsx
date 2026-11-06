@@ -188,7 +188,7 @@ export async function CreatorProfile({ page, lang, preview = false }: ProfilePro
               </ul>
             )}
 
-            {page.showNumbers && (
+            {page.showNumbers && totalFollowers > 0 && (
               <div className="flex flex-col items-center gap-0.5 py-1 text-center">
                 <p className="text-sm text-[var(--page-muted)]">{t("followersTotal")}</p>
                 <CountUp value={totalFollowers} locale={locale} className={`${numbersFont} grad-num text-[44px] leading-[1.15] font-black tabular-nums`} />

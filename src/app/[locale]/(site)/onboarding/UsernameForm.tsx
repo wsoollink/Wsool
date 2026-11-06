@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useState, useTransition } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { SubmitButton } from "@/components/SubmitButton";
 import { normalizeUsername, usernameFormatError, USERNAME_MAX } from "@/config/usernames";
 import { checkUsername, claimUsername, type AvailabilityResult, type ClaimState } from "./actions";
@@ -13,6 +13,8 @@ export function UsernameForm({ initial }: { initial?: string }) {
   const [state, action] = useActionState<ClaimState, FormData>(claimUsername, {});
   const [value, setValue] = useState(state.name ?? initial ?? "");
   const [checked, setChecked] = useState<AvailabilityResult | null>(null);
+  // Page language: starts as the site's language; many Arabic speakers keep their phone in English, so it's a choice.
+  const [pageLang, setPageLang] = useState<"ar" | "en">(useLocale().startsWith("en") ? "en" : "ar");
   const [, startCheck] = useTransition();
 
   const name = normalizeUsername(value);
@@ -57,6 +59,18 @@ export function UsernameForm({ initial }: { initial?: string }) {
           {errorKey && t(`errors.${errorKey}`)}
         </p>
       </div>
+      <fieldset className="flex flex-col gap-2">
+        <legend className="mb-2 text-sm font-medium">{t("pageLang")}</legend>
+        <div className="grid grid-cols-2 gap-1 rounded-[14px] bg-navy/5 p-1">
+          {(["ar", "en"] as const).map((l) => (
+            <label key={l} className={`flex min-h-11 cursor-pointer items-center justify-center rounded-[10px] text-sm font-bold has-focus-visible:outline-2 has-focus-visible:outline-blue ${pageLang === l ? "bg-card text-navy shadow-card" : "text-muted"}`}>
+              <input type="radio" name="primaryLang" value={l} checked={pageLang === l} onChange={() => setPageLang(l)} className="sr-only" />
+              {l === "ar" ? "العربية" : "English"}
+            </label>
+          ))}
+        </div>
+        <p className="text-xs text-muted">{t("pageLangHint")}</p>
+      </fieldset>
       <SubmitButton className="w-full" pendingText={t("saving")}>{t("submit")}</SubmitButton>
     </form>
   );

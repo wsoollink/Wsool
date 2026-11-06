@@ -397,7 +397,7 @@ export async function buildMediaKit(page: PublishedPage, lang: Locale): Promise<
     const place = [tr?.country, tr?.city].filter(Boolean).join(t("listSep"));
     if (place) cy += 8 + text(place, PAD, cy + 8, { size: 15, color: P.muted, width: CONTENT, align: "center" });
     cy += gap;
-    if (page.showNumbers) {
+    if (page.showNumbers && total > 0) {
       cy += text(t("followersAll"), PAD, cy, { size: 15, color: P.muted, width: CONTENT, align: "center" }) + 2;
       const totalText = formatNumber(total, lang);
       cy += text(totalText, PAD, cy, { size: 76, weight: 700, color: P.ink, width: CONTENT, align: "center", numbers: isLatin(totalText), lineHeight: 1.05 });

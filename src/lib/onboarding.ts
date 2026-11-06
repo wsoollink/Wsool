@@ -1,8 +1,9 @@
 import "server-only";
 import { Prisma } from "@/generated/prisma/client";
 import { normalizeUsername } from "@/config/usernames";
-import { ensureAccount } from "@/lib/account";
+import { ensureAccount, requestLang } from "@/lib/account";
 import type { CurrentUser } from "@/lib/auth";
+import type { Locale } from "@/i18n/config";
 import { db } from "@/lib/db";
 import { usernameError, type UsernameError } from "@/lib/username";
 
@@ -12,7 +13,7 @@ export type ClaimResult = { ok: true; name: string } | { name: string; error: Us
  * Claims a username and creates the creator's page (first time only).
  * Shared by the website onboarding and the mobile app.
  */
-export async function claimPage(user: CurrentUser, raw: string): Promise<ClaimResult> {
+export async function claimPage(user: CurrentUser, raw: string, lang?: Locale): Promise<ClaimResult> {
   const name = normalizeUsername(String(raw ?? "").slice(0, 40));
   // A suspended account can't take a name (same rule as requireCreator).
   if ((await db.user.findUnique({ where: { id: user.id }, select: { suspendedAt: true } }))?.suspendedAt) return { name, error: "suspended" };
@@ -22,7 +23,8 @@ export async function claimPage(user: CurrentUser, raw: string): Promise<ClaimRe
   await ensureAccount(user);
   if (await db.page.findUnique({ where: { userId: user.id }, select: { id: true } })) return { name, error: "has_page" };
   try {
-    await db.page.create({ data: { userId: user.id, username: name } });
+    // The page starts in the language they're using (English sign-ups get an English page, Arabic can be added later).
+    await db.page.create({ data: { userId: user.id, username: name, primaryLang: lang ?? (await requestLang()) } });
   } catch (e) {
     // Someone else claimed it between the check and the insert.
     if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") return { name, error: "taken" };

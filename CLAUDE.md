@@ -372,6 +372,10 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   taken by another page). Usernames are lowercased as the creator types.
 - `/onboarding` lets a signed-in user without a page claim a name (live availability check,
   then `claimUsername` creates the page). `/dashboard` sends users without a page there.
+- Page language (owner QA, Nov 2026): onboarding asks for the page's main language (العربية / English, starts as the site language;
+  many Arabic speakers keep their phone in English). `claimPage(user, name, lang?)`; without a choice (app) it uses `requestLang()`
+  (`src/lib/account.ts`: site cookie, else Accept-Language). The welcome email goes out in that request language (`notify(..., {lang})`),
+  since the account has no page yet. A page with no accounts hides the "total followers" number (page, OG image, PDF cover).
 - Changing the name later: `nextUsernameChange()` enforces 30 days between changes. The first
   claim does not start the cooldown, so a creator can fix a typo once right away. The change
   form is `UsernameCard` at the top of Edit page (`changeUsername`, live check via `checkUsername`). The old name goes

@@ -104,7 +104,7 @@
     "onFree": "Your page is on the Basic plan",
     "dataSafe": "Your data is safe; bring the features back anytime",
     "bringBack": "Get the features back",
-    "paidPlan": "Paid plan",
+    "paidPlan": "Pro plan",
     "renewsOn": "Renews {date} · {price} {currency, select, SAR {SAR} USD {USD} other {{currency}}} {cycle, select, yearly {per year} other {per month}}",
     "endsOn": "Ends {date} · won't renew",
     "manage": "Manage",
@@ -202,7 +202,9 @@
     "teamTitle": "You're on the {agency} team",
     "teamBody": "This creates a personal creator page for you, separate from the agency. You don't need it if you only work for the agency.",
     "teamOpen": "Open the agency dashboard",
-    "orOwn": "Or pick a new name for a new page:"
+    "orOwn": "Or pick a new name for a new page:",
+    "pageLang": "Your page's main language",
+    "pageLangHint": "You can add the other language or change it later in Edit page."
   },
   "UsernameCard": {
     "title": "Your page link",
@@ -2016,7 +2018,7 @@
     "confirmCancelBtn": "Confirm cancellation",
     "cancelled": "Renewal cancelled. Your plan stays active until {date}.",
     "resume": "Resume",
-    "paidPlan": "Paid plan",
+    "paidPlan": "Pro plan",
     "freePlan": "Basic plan",
     "unitMonth": "{currency} per month",
     "unitYear": "{currency} per year",

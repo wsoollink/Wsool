@@ -20,7 +20,8 @@ export type ClaimState = { name?: string; error?: UsernameError | "failed" };
 /** Claims the username and creates the creator's page (first time only). */
 export async function claimUsername(_prev: ClaimState, formData: FormData): Promise<ClaimState> {
   const user = await requireUser();
-  const res = await claimPage(user, String(formData.get("username") ?? ""));
+  const lang = formData.get("primaryLang");
+  const res = await claimPage(user, String(formData.get("username") ?? ""), lang === "en" || lang === "ar" ? lang : undefined);
   if ("ok" in res || res.error === "has_page") redirect("/dashboard");
   if (res.error === "suspended") redirect("/suspended");
   return { name: res.name, error: res.error };

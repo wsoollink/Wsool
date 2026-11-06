@@ -106,3 +106,5 @@
   D-U-N-S (مطلوب، 29 أكتوبر) ثم حساب Play Console كمنظمة.
 - **D-U-N-S (3 نوفمبر 2026)**: أرسل المالك استبيان D&B (D&B SAME، عن طريق Apple) مع السجل التجاري بالعربي والإنجليزي والعنوان الوطني.
   ننتظر الرقم (1-2 أسبوع)، وبعده حساب Apple Developer وGoogle Play باسم الشركة.
+- **رقم D-U-N-S وصل (6 نوفمبر 2026)**: 986473516 باسم SAFHAT WSOOL COMPANY FOR INFORMATION TECHNOLOGY (الدمام، موثّق من السجل الوطني).
+  D&B تقول يظهر عند Apple بعد 2-4 أيام عمل. الخطوة الجاية: التسجيل في Apple Developer Program كمنظمة، ثم Google Play Console كمنظمة.

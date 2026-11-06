@@ -100,6 +100,25 @@ export async function signInWithGoogle(formData?: FormData) {
   redirect(data.url);
 }
 
+/**
+ * "Continue with Apple" (web): Supabase's Apple provider (Services ID + key set by the owner, docs/apple-sign-in.md)
+ * → Apple → Supabase → /api/auth/callback?provider=apple (same account + trial as email / Google).
+ */
+export async function signInWithApple(formData?: FormData) {
+  const next = safeNextPath(formData?.get(NEXT_PARAM));
+  if (next) (await cookies()).set(NEXT_COOKIE, next, { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/", maxAge: 600 });
+  const h = await headers();
+  const host = h.get("x-forwarded-host") ?? h.get("host");
+  const proto = h.get("x-forwarded-proto") ?? (host?.startsWith("localhost") ? "http" : "https");
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "apple",
+    options: { redirectTo: `${proto}://${host}/api/auth/callback?provider=apple` },
+  });
+  if (error || !data.url) redirect("/login?error=apple");
+  redirect(data.url);
+}
+
 export async function signOut() {
   const supabase = await createSupabaseServerClient();
   await supabase.auth.signOut();

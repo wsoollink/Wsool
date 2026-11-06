@@ -136,12 +136,16 @@
       "rate_limited": "Too many attempts. Please wait a bit and try again.",
       "failed": "Something went wrong. Please try again.",
       "google": "We couldn't sign you in with Google. Try again or use your email.",
-      "captcha": "We couldn't confirm you're not a bot. Refresh the page and try again."
+      "captcha": "We couldn't confirm you're not a bot. Refresh the page and try again.",
+      "apple": "We couldn't sign you in with Apple. Try again or use your email."
     },
     "agree": "By continuing, you agree to the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>.",
     "google": "Continue with Google",
     "googleRedirecting": "Opening Google…",
-    "or": "or with email"
+    "or": "or with email",
+    "apple": "Continue with Apple",
+    "appleRedirecting": "Redirecting to Apple…",
+    "appleInviteNote": "Invited by an agency? Sign in with the email the invite went to, and don't pick “Hide My Email”."
   },
   "Dashboard": {
     "welcome": "Welcome to Wsool",

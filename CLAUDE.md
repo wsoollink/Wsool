@@ -357,6 +357,11 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   `ensureAccount`, `wsool_next`). Code: `src/lib/google-oauth.ts`. Without the two vars the Supabase flow above stays. Owner setup: add
   `https://wsool.link/api/auth/google/callback` (+ test origins) to the client's Authorized redirect URIs. Then Google's Branding page
   (app name وصول, logo, wsool.link links) can be verified so the picker shows the app name.
+- **Apple sign-in** (owner, Nov 2026): web `signInWithApple` (Supabase OAuth, provider `apple`) → `/api/auth/callback?provider=apple`
+  (errors → `/login?error=apple`); the black/white button (`GoogleSignIn.tsx`, Apple's style) shows only when Apple is on in Supabase
+  (`appleSignInEnabled()`, same settings read as Google), with a note for agency invitees not to pick "Hide My Email" (relay addresses
+  don't match invites). App: native button behind `EXPO_PUBLIC_APPLE_SIGN_IN=1` → `/api/mobile/v1/auth/id-token`. Owner setup (Services
+  ID `link.wsool.web`, key, Supabase client IDs, 6-month client secret, private email relay for `mail.wsool.link`): `docs/apple-sign-in.md`.
 - Supabase project: `wsool-eu` in Frankfurt (eu-central-1).
 - Sandbox only: run the app with `NODE_USE_ENV_PROXY=1` (Node's fetch ignores HTTPS_PROXY
   otherwise) and the overrides in `.env.local`.

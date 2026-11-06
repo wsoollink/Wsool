@@ -1,7 +1,7 @@
 /**
  * Terms of Use and Privacy Policy, from the owner's document "وصول — شروط
  * الاستخدام وسياسة الخصوصية", adjusted to how Wsool actually works (Netlify
- * hosting, email code or Google sign-in without passwords, no stored IP addresses).
+ * hosting, email code or Google / Apple sign-in without passwords, no stored IP addresses).
  * {entity}, {registration}, {email}, {whatsapp}, {gateway}, {mailer}, {servers} are filled
  * from LEGAL in src/config/site.ts. Should be reviewed by a Saudi lawyer.
  */
@@ -98,7 +98,7 @@ export const LEGAL_TEXT: Record<"ar" | "en", Record<LegalKind, LegalDoc>> = {
         { h: "1. البيانات التي نجمعها" },
         { table: [
           ["النوع", "أمثلة", "مصدرها"],
-          ["بيانات الحساب", "البريد الإلكتروني (ندخلك برمز يوصلك عليه، بدون كلمة مرور). وإذا دخلت بحساب Google ناخذ منه الإيميل والاسم فقط", "أنت عند التسجيل، أو Google بموافقتك"],
+          ["بيانات الحساب", "البريد الإلكتروني (ندخلك برمز يوصلك عليه، بدون كلمة مرور). وإذا دخلت بحساب Google أو Apple ناخذ منه الإيميل فقط (ومع Apple تقدر تختار «إخفاء بريدي» فيوصلنا إيميل وسيط من Apple يحوّل لك رسائلنا)", "أنت عند التسجيل، أو Google / Apple بموافقتك"],
           ["محتوى صفحتك", "الاسم، النبذة، الصور، روابط الحسابات، أرقام المتابعين، الأعمال، رقم الترخيص", "أنت من لوحة التحكم"],
           ["لقطات التوثيق", "صور شاشة حساباتك لإثبات الأرقام، تُحفظ بشكل خاص ويراها فريق المراجعة فقط", "أنت عند طلب التوثيق"],
           ["الحسابات المربوطة", "إذا ربطت حسابك في منصة (مثل YouTube و Instagram و Threads و Facebook و TikTok و X و Twitch و Discord و Telegram) ناخذ منها بموافقتك: معرّف الحساب واسمه وعدد المتابعين، وإحصائيات جمهور مجمّعة إذا كانت المنصة توفرها (الجنس والأعمار وأكثر الدول بالنسب). لا نقرأ رسائلك ولا ننشر شي باسمك، ومفتاح الربط محفوظ مشفّراً", "المنصة بموافقتك عند الربط، ثم تحديث تلقائي يومي"],
@@ -127,6 +127,7 @@ export const LEGAL_TEXT: Record<"ar" | "en", Record<LegalKind, LegalDoc>> = {
         { ul: [
           "Supabase: قاعدة البيانات وتسجيل الدخول وتخزين الملفات.",
           "Google: تسجيل الدخول بحساب Google لمن يختاره.",
+          "Apple: تسجيل الدخول بحساب Apple لمن يختاره.",
           "وكالة التسويق التي تربط صفحتك بها (إن وجدت): تطّلع على بيانات صفحتك وأرقامها وإحصائياتها بالقدر الذي تسمح به، ولا تصل لاشتراكك أو بيانات الدفع أو العمولة. ينتهي وصولها بمجرد فك الارتباط. وإن كانت لها صفحة عامة تظهر فيها بصورتك واسمك وتخصصك وأرقامك العامة ما لم تُخفِ نفسك.",
           "الشركات والوكالات المسجلة في دليل وصول (إذا اخترت الظهور فيه): ترى ما تعرضه صفحتك للعامة فقط. نحسب لك عدد مرات ظهور صفحتك في البحث وفتحها من الدليل، ولا نشارك من بحث عنك.",
           "YouTube (خدمات YouTube API): إذا ربطت قناتك نقرأ عدد المشتركين وإحصائيات الجمهور المجمّعة لعرضها في صفحتك. باستخدامك الربط توافق على شروط YouTube (https://www.youtube.com/t/terms)، وتخضع بياناتك لدى Google لسياسة خصوصية Google (https://policies.google.com/privacy). تقدر تفك الربط من لوحة التحكم، أو تسحب صلاحية وصول من صفحة أمان حسابك في Google (https://myaccount.google.com/permissions)، وعندها نوقف التحديث ونحذف مفتاح الربط.",
@@ -167,7 +168,7 @@ export const LEGAL_TEXT: Record<"ar" | "en", Record<LegalKind, LegalDoc>> = {
         { h: "8. ملفات تعريف الارتباط" },
         { p: "نستخدم ملفات ضرورية فقط لتسجيل الدخول وحفظ اللغة، وملفاً لمدة 30 يوماً يتذكر رابط الإحالة الذي فتحته (برنامج العمولة)، وملفاً لمدة 30 يوماً يتذكر أنك فتحت العرض الخاص لصفحة صانع (بالرقم السري أو الرابط الخاص). لا نستخدم ملفات إعلانية أو تتبع من طرف ثالث." },
         { h: "9. حماية البيانات" },
-        { p: "نستخدم التشفير أثناء النقل، والدخول برموز لمرة واحدة أو بحساب Google بدل كلمات المرور، وصلاحيات وصول محدودة لفريقنا حسب الحاجة مع سجل لكل إجراء. ومع ذلك لا توجد وسيلة حماية كاملة 100%." },
+        { p: "نستخدم التشفير أثناء النقل، والدخول برموز لمرة واحدة أو بحساب Google أو Apple بدل كلمات المرور، وصلاحيات وصول محدودة لفريقنا حسب الحاجة مع سجل لكل إجراء. ومع ذلك لا توجد وسيلة حماية كاملة 100%." },
         { h: "10. الأطفال" },
         { p: "المنصة غير موجهة لمن هم دون 18 سنة، ولا نجمع بياناتهم عن علم." },
         { h: "11. تحديث السياسة" },
@@ -302,7 +303,7 @@ export const LEGAL_TEXT: Record<"ar" | "en", Record<LegalKind, LegalDoc>> = {
         { h: "1. Data we collect" },
         { table: [
           ["Type", "Examples", "Source"],
-          ["Account data", "Email address (you sign in with a code we send there; no password). If you sign in with Google, we receive only your email and name", "You, at signup, or Google with your consent"],
+          ["Account data", "Email address (you sign in with a code we send there; no password). If you sign in with Google or Apple, we receive only your email (with Apple you can pick “Hide My Email”, and we get an Apple relay address that forwards our emails to you)", "You, at signup, or Google / Apple with your consent"],
           ["Page content", "Name, bio, photos, social links, follower counts, work samples, licence number", "You, from the dashboard"],
           ["Verification screenshots", "Screenshots of your accounts proving your numbers, stored privately and seen only by our review team", "You, when requesting verification"],
           ["Connected accounts", "If you connect an account on a platform (such as YouTube, Instagram, Threads, Facebook, TikTok, X, Twitch, Discord or Telegram), with your consent we receive: the account's id and name, its follower count, and aggregated audience stats where the platform offers them (gender, age groups and top countries as percentages). We never read your messages or post on your behalf, and the connection key is stored encrypted", "The platform, with your consent when you connect, then a daily automatic update"],
@@ -331,6 +332,7 @@ export const LEGAL_TEXT: Record<"ar" | "en", Record<LegalKind, LegalDoc>> = {
         { ul: [
           "Supabase: database, sign-in and file storage.",
           "Google: sign-in with a Google account, for those who choose it.",
+          "Apple: sign-in with an Apple account, for those who choose it.",
           "The marketing agency you link your page to (if any): it sees your page data, numbers and analytics as far as you allow, never your subscription, payment or commission details. Its access ends as soon as you unlink. If it has a public agency page, it shows your photo, name, specialty and public numbers unless you hide yourself.",
           "Brands and agencies using the Wsool directory (if you choose to be listed): they see only what your page shows publicly. We count how often your page appears in searches and is opened from the directory; we don't share who searched.",
           "YouTube (YouTube API Services): if you connect your channel, we read its subscriber count and aggregated audience stats to show them on your page. By using the connection you agree to the YouTube Terms of Service (https://www.youtube.com/t/terms), and Google's handling of your data is covered by the Google Privacy Policy (https://policies.google.com/privacy). You can disconnect from your dashboard, or revoke Wsool's access on your Google account's security page (https://myaccount.google.com/permissions); we then stop updating and delete the connection key.",
@@ -371,7 +373,7 @@ export const LEGAL_TEXT: Record<"ar" | "en", Record<LegalKind, LegalDoc>> = {
         { h: "8. Cookies" },
         { p: "We use only essential cookies for login and language preference, plus one 30-day cookie that remembers a referral link you opened (affiliate program) and one 30-day cookie that remembers you opened a creator page's private view (with its password or private link). We do not use advertising or third-party tracking cookies." },
         { h: "9. Security" },
-        { p: "We use encryption in transit, one-time sign-in codes or Google sign-in instead of passwords, and limited, need-based staff access with every action logged. No method of protection is 100% secure." },
+        { p: "We use encryption in transit, one-time sign-in codes or Google / Apple sign-in instead of passwords, and limited, need-based staff access with every action logged. No method of protection is 100% secure." },
         { h: "10. Children" },
         { p: "Wsool is not intended for anyone under 18, and we do not knowingly collect their data." },
         { h: "11. Changes to this policy" },

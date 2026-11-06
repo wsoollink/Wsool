@@ -1,5 +1,6 @@
 import "server-only";
 import { UPLOAD_KINDS, type UploadKind } from "@/config/uploads";
+import { releaseLinks } from "@/lib/connect";
 import { db } from "@/lib/db";
 import { createSupabaseAdmin } from "@/lib/supabase/admin";
 
@@ -17,6 +18,8 @@ export async function purgeDeletedAccounts(now = new Date()) {
   const supabase = createSupabaseAdmin();
   let purged = 0;
   for (const { userId, user } of pages) {
+    // Platform links go with the account: revoke them (Telegram's bot leaves the channel) before the rows are deleted.
+    await releaseLinks({ userId }).catch(() => {});
     for (const kind of Object.keys(UPLOAD_KINDS) as UploadKind[]) {
       const bucket = supabase.storage.from(UPLOAD_KINDS[kind].bucket);
       const { data } = await bucket.list(`${userId}/${kind}`, { limit: 1000 });

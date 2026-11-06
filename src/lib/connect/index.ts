@@ -45,7 +45,8 @@ export const providerFor = (platform: string) => {
  */
 export function requestOrigin(req: Request) {
   const host = req.headers.get("x-forwarded-host") ?? req.headers.get("host");
-  if (!host) return siteOrigin();
+  // Only our own hosts (the site, Netlify branch deploys, local): anything else falls back to the site address.
+  if (!host || !/^(wsool\.link|www\.wsool\.link|[a-z0-9-]+--graceful-fox-a6c2f5\.netlify\.app|graceful-fox-a6c2f5\.netlify\.app|localhost(:\d+)?|127\.0\.0\.1(:\d+)?)$/i.test(host)) return siteOrigin();
   const proto = req.headers.get("x-forwarded-proto") ?? (host.startsWith("localhost") || host.startsWith("127.") ? "http" : "https");
   return `${proto}://${host}`;
 }
@@ -199,8 +200,8 @@ export async function syncConnections(limit = 40) {
   const due = await db.platformConnection.findMany({
     where: {
       status: "active", OR: [{ lastSyncAt: null }, { lastSyncAt: { lt: new Date(Date.now() - 20 * 3_600_000) } }],
-      // Paused while the page is on Free (kept, resumes with Pro).
-      ...(!FREE_LIMITS.connections && { account: { page: { user: { subscription: proSubscription() } } } }),
+      // Not for deleted pages or suspended accounts; paused while the page is on Free (kept, resumes with Pro).
+      account: { page: { deletedAt: null, user: { suspendedAt: null, ...(!FREE_LIMITS.connections && { subscription: proSubscription() }) } } },
     },
     orderBy: { lastSyncAt: { sort: "asc", nulls: "first" } },
     take: limit,
@@ -278,6 +279,21 @@ export async function checkBotLink(userId: string, accountId: string): Promise<{
 }
 
 /** Unlink (the creator's own account only): the token is revoked at the platform and deleted here. Verification stays until it expires. */
+/**
+ * Lets go of the platform side of links about to be deleted with their accounts (Accounts & numbers, account purge):
+ * revokes the token, and for Telegram the bot leaves the channel, so nobody else can claim it through "Check the link".
+ */
+export async function releaseLinks(where: { accountIds: string[] } | { userId: string }) {
+  const conns = await db.platformConnection.findMany({
+    where: "accountIds" in where ? { accountId: { in: where.accountIds } } : { account: { page: { userId: where.userId } } },
+    select: { platform: true, refreshToken: true },
+  });
+  for (const c of conns) {
+    const token = openToken(c.refreshToken);
+    if (token) await PROVIDERS[c.platform]?.revoke(token).catch(() => {});
+  }
+}
+
 export async function disconnect(userId: string, accountId: string) {
   const c = await db.platformConnection.findFirst({ where: { accountId, account: { page: { userId } } }, select: { id: true, platform: true, refreshToken: true } });
   if (!c) return false;

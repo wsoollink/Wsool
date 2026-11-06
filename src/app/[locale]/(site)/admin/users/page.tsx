@@ -51,9 +51,9 @@ async function Results({ lang, searchParams }: { lang: Locale; searchParams: SP 
     ? { AND: [text, { id: { in: rows.filter((r) => matchesFilters(r, insight)).map((r) => r.userId) } }] }
     : text;
   const [counts, users] = await Promise.all([
-    Promise.all(FILTERS.map((f) => db.user.count({ where: { AND: [search, filterWhere(f, now)] } }))),
+    Promise.all(FILTERS.map((f) => db.user.count({ where: { AND: [{ placeholder: false }, search, filterWhere(f, now)] } }))),
     db.user.findMany({
-      where: { AND: [search, filterWhere(filter, now)] },
+      where: { AND: [{ placeholder: false }, search, filterWhere(filter, now)] },
       orderBy: { createdAt: "desc" },
       take: 100,
       select: {

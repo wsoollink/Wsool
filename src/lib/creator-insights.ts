@@ -44,6 +44,8 @@ export async function creatorRows(now = new Date()): Promise<CreatorRow[]> {
   const since = new Date(now.getTime() - 30 * 86_400_000);
   const [users, views] = await Promise.all([
     db.user.findMany({
+      // Pages an agency prepared and nobody claimed yet aren't creators.
+      where: { placeholder: false },
       orderBy: { createdAt: "desc" },
       select: {
         id: true, email: true, createdAt: true, suspendedAt: true,

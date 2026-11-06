@@ -3409,7 +3409,8 @@
     },
     "view": "View",
     "invoiceLine": "Wsool agency plan {plan} ({cycle})",
-    "backToBilling": "← Subscription"
+    "backToBilling": "← Subscription",
+    "nextPlan": "From the next renewal: {plan} ({cycle})"
   },
   "AgencyDrafts": {
     "newTitle": "Prepare a page for a new creator",

@@ -120,6 +120,8 @@ export async function settleCheckout(invoiceId: string, payment: Payment): Promi
   const invoice = await db.invoice.findUnique({ where: { id: invoiceId }, include: { subscription: true } });
   if (!invoice || payment.invoiceId !== invoice.id) return "mismatch";
   if (invoice.status === "paid") return "paid";
+  // A renewal still being charged belongs to the hourly job (its webhook can arrive first): the job settles it.
+  if (invoice.kind === "renewal" && invoice.status === "pending") return "pending";
   if (Math.abs(Number(invoice.amount) - payment.amount) > 0.001 || invoice.currency !== payment.currency) return "mismatch";
   if (payment.status === "pending") return "pending";
 
@@ -253,7 +255,9 @@ export async function runBillingJob(now = new Date()): Promise<JobReport> {
     if (payment.status === "paid") {
       const number = await db.$transaction(async (tx) => {
         const [{ nextval }] = await tx.$queryRaw<{ nextval: bigint }[]>`SELECT nextval('invoice_number_seq')`;
-        await tx.invoice.update({ where: { id: invoice.id }, data: { status: "paid", number: Number(nextval), providerPaymentId: payment.id, paidAt: now } });
+        // Only if still pending (a retried job run must not settle it twice).
+        const { count } = await tx.invoice.updateMany({ where: { id: invoice.id, status: "pending" }, data: { status: "paid", number: Number(nextval), providerPaymentId: payment.id, paidAt: now } });
+        if (count !== 1) return null;
         await tx.subscription.update({ where: { id: sub.id }, data: { status: "active", currentPeriodEnd: end, failedAttempts: 0, nextRetryAt: null } });
         // The credit used is a payout of the creator's commission balance.
         if (creditSar > 0) {
@@ -262,6 +266,7 @@ export async function runBillingJob(now = new Date()): Promise<JobReport> {
         return Number(nextval);
       });
       report.renewed++;
+      if (number === null) continue;
       await notify(sub.userId, "renewal_receipt", { invoice: invoiceLabel(number), amount, currency: sub.currency, periodEndDate: end.toISOString() });
       if (creditSar > 0) await notify(sub.userId, "commission_credit", { amount: credit, currency: sub.currency, invoice: invoiceLabel(number) });
       await earnCommission(invoice.id);

@@ -42,7 +42,7 @@ async function BillingTab({ agencyId, lang, payment }: { agencyId: string; lang:
     getTranslations("Agencies"),
     db.agency.findUniqueOrThrow({
       where: { id: agencyId },
-      select: { name: true, kind: true, plan: true, planCycle: true, planUntil: true, planCurrency: true, planAutoRenew: true, paymentToken: true, paymentMethodLabel: true, planRetryAt: true },
+      select: { name: true, kind: true, plan: true, planCycle: true, planUntil: true, planCurrency: true, planAutoRenew: true, paymentToken: true, paymentMethodLabel: true, planRetryAt: true, nextPlan: true, nextCycle: true },
     }),
     db.agencyLink.count({ where: { agencyId, status: { in: ["active", "pending", "draft"] } } }),
     db.invoice.findMany({ where: { agencyId, status: { in: ["paid", "refunded", "failed"] } }, orderBy: { createdAt: "desc" }, take: 24 }),
@@ -81,9 +81,19 @@ async function BillingTab({ agencyId, lang, payment }: { agencyId: string; lang:
             {running && a.paymentToken && (
               <div className="mt-3 flex flex-col gap-1">
                 {a.paymentMethodLabel && <p className="text-sm text-muted">{t("card", { card: a.paymentMethodLabel })}</p>}
-                {a.planCycle && a.planCurrency && isAgencyPaidPlan(a.plan) && a.planAutoRenew && (
-                  <p className="text-sm text-muted">{t("nextCharge", { date: date.format(a.planUntil!), amount: formatPrice(AGENCY_PRICES[a.planCurrency][a.plan][a.planCycle], a.planCurrency, lang) })}</p>
-                )}
+                {a.planCycle && a.planCurrency && isAgencyPaidPlan(a.plan) && a.planAutoRenew && (() => {
+                  // A plan / cycle chosen "from the next renewal" is what gets charged then.
+                  const nextPlan = a.nextPlan && isAgencyPaidPlan(a.nextPlan) ? a.nextPlan : a.plan;
+                  const nextCycle = a.nextCycle ?? a.planCycle;
+                  return (
+                    <>
+                      <p className="text-sm text-muted">{t("nextCharge", { date: date.format(a.planUntil!), amount: formatPrice(AGENCY_PRICES[a.planCurrency][nextPlan][nextCycle], a.planCurrency, lang) })}</p>
+                      {(nextPlan !== a.plan || nextCycle !== a.planCycle) && (
+                        <p className="text-sm font-bold text-blue">{t("nextPlan", { plan: t(`plan.${nextPlan}`), cycle: t(`cycle.${nextCycle}`) })}</p>
+                      )}
+                    </>
+                  );
+                })()}
                 <AgencyAutoRenew initial={a.planAutoRenew} />
               </div>
             )}

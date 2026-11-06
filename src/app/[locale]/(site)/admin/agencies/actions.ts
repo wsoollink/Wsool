@@ -3,6 +3,7 @@
 import { z } from "zod";
 import { deactivateAgency } from "@/lib/agency";
 import { audit, requireAdmin } from "@/lib/admin";
+import { deleteAgencyDrafts } from "@/lib/agency-drafts";
 import { db } from "@/lib/db";
 import { sendAgencyTeamInvite } from "@/lib/notify";
 import { AGENCY_PLANS, AGENCY_TRIAL_DAYS } from "@/config/agency-plans";
@@ -95,6 +96,8 @@ export async function deleteAgency(id: string): Promise<{ ok?: true; error?: "in
   if (!z.uuid().safeParse(id).success) return { error: "invalid" };
   const agency = await db.agency.findFirst({ where: { id, status: "inactive" } });
   if (!agency) return { error: "invalid" };
+  // Unclaimed draft pages hang off the agency's links: delete them first, or their usernames stay taken for good.
+  await deleteAgencyDrafts(id);
   await db.$transaction(async (tx) => {
     await tx.agency.delete({ where: { id } });
     await audit(admin, "agency.delete", { type: "agency", id }, { name: agency.name }, tx);

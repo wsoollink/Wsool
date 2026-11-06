@@ -89,6 +89,12 @@ async function removeDraft(linkId: string, where: { agencyId?: string; draftEmai
 
 export const deleteDraft = (agencyId: string, linkId: string) => removeDraft(linkId, { agencyId });
 
+/** Before an agency is deleted for good: its unclaimed draft pages (and their placeholder accounts) go too. */
+export async function deleteAgencyDrafts(agencyId: string) {
+  const drafts = await db.agencyLink.findMany({ where: { agencyId, status: "draft" }, select: { id: true } });
+  for (const d of drafts) await removeDraft(d.id, { agencyId });
+}
+
 /** Drafts waiting for this signed-in email (shown on /onboarding). */
 export function draftsFor(email: string) {
   return db.agencyLink.findMany({

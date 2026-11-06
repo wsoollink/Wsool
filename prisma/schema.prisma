@@ -1187,6 +1187,9 @@ model Agency {
   planAutoRenew      Boolean          @default(false) @map("plan_auto_renew")
   planFailedAttempts Int              @default(0) @map("plan_failed_attempts")
   planRetryAt        DateTime?        @map("plan_retry_at") @db.Timestamptz
+  /// Plan / cycle chosen "from the next renewal" (switch to yearly, or the smaller plan); applied when that renewal is paid.
+  nextPlan           AgencyPlan?      @map("next_plan")
+  nextCycle          BillingCycle?    @map("next_cycle")
   createdBy          String           @map("created_by") @db.Uuid
   createdAt          DateTime         @default(now()) @map("created_at") @db.Timestamptz
   members            AgencyMember[]

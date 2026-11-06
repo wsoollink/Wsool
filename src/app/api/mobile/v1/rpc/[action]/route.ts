@@ -96,6 +96,8 @@ export const POST = withPage(async ({ req }) => {
   const name = new URL(req.url).pathname.split("/").pop() ?? "";
   const fn = Object.hasOwn(ACTIONS, name) ? ACTIONS[name] : null;
   if (!fn) return apiError("unknown_action", 404);
+  // The app never acts for a creator: a browser's agency "Manage" cookie here would skip the activity log.
+  if (/(?:^|;\s*)wsool_act=/.test(req.headers.get("cookie") ?? "")) return apiError("unauthorized", 401);
   const data = await readBody(req, body);
   if (!data) return apiError("invalid");
   try {

@@ -55,6 +55,10 @@ export async function channelProfile(chatId: string): Promise<ProviderProfile | 
     if (chat.error_code === 403 || chat.error_code === 400) throw new RevokedError();
     throw new Error(`telegram ${chat.error_code ?? "?"}`);
   }
+  // Telegram still answers getChat for public channels after the bot was removed: the link holds only while it's an admin.
+  const me = (await bot<{ id: number }>("getMe")).result?.id;
+  const member = me ? await bot<{ status: string }>("getChatMember", { chat_id: chatId, user_id: me }) : null;
+  if (member?.ok && member.result?.status !== "administrator" && member.result?.status !== "creator") throw new RevokedError();
   const count = await bot<number>("getChatMemberCount", { chat_id: chatId });
   const handle = chat.result?.username ?? null;
   if (!chat.result || !handle) return null;

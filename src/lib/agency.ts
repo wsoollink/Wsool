@@ -204,7 +204,8 @@ export async function actingFor(user: CurrentUser, scope?: ActScope) {
   if (!link || link.page.user.suspendedAt || link.page.deletedAt) return "ended" as const;
   const role = link.agency.members[0]?.role ?? "viewer";
   const perms: Perms = { content: link.canContent, rates: link.canRates, contact: link.canContact };
-  const allowed = scope === "view"
+  // Every scope needs editor or above, like "Manage" itself (a viewer setting the cookie by hand gets nothing).
+  const allowed = !roleAtLeast(role, "editor") ? false : scope === "view"
     || (scope === "accounts" ? link.status === "draft" && roleAtLeast(role, "editor") : !!scope && perms[scope] && roleAtLeast(role, "editor"));
   if (!allowed) return "denied" as const;
   // A server action (not a page render) = a change: log which section it came from.

@@ -125,7 +125,7 @@ export async function unsubscribe(id: string, scope: UnsubscribeScope) {
 export async function syncLists() {
   await db.$executeRaw`
     INSERT INTO newsletter_subscribers (id, email, lang, status, source, confirmed_at, creators)
-    SELECT gen_random_uuid(), lower(u.email), p.primary_lang, 'confirmed', 'account', now(), coalesce(ns.email_product_news, true)
+    SELECT DISTINCT ON (lower(u.email)) gen_random_uuid(), lower(u.email), p.primary_lang, 'confirmed', 'account', now(), coalesce(ns.email_product_news, true)
     FROM users u
     JOIN pages p ON p.user_id = u.id
     LEFT JOIN notification_settings ns ON ns.user_id = u.id
@@ -140,6 +140,8 @@ export async function syncLists() {
     SELECT DISTINCT ON (lower(m.email)) gen_random_uuid(), lower(m.email), 'ar', 'confirmed', 'agency', now(), true
     FROM agency_members m
     JOIN agencies a ON a.id = m.agency_id
+    -- Only members who signed in (an invite typed by someone else is not consent), not suspended.
+    JOIN users u ON u.id = m.user_id AND u.suspended_at IS NULL
     WHERE a.status = 'active'
     ON CONFLICT (email) DO UPDATE SET
       agencies = true, status = 'confirmed', confirmed_at = coalesce(newsletter_subscribers.confirmed_at, now())

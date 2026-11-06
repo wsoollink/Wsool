@@ -760,6 +760,19 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   deletes `media` files older than 7 days that no row uses (the `unused()` SQL lists every column holding a file URL + newsletter bodies:
   **a new column that stores an uploaded file URL must be added there**). The private `verification` bucket is not touched.
 
+### Pre-launch review (Nov 2026)
+- Agency billing: "from the next renewal" choices live in `agencies.next_plan` / `next_cycle` (the current plan and its creator limit stay until
+  that renewal is paid; only the same plan's other cycle or growth → starter; a bigger plan is bought now); auto-renew can't be switched back on
+  after the plan ended; settling locks the agency row (`FOR UPDATE`) and a new checkout fails the agency's older pending ones; a refund ends the
+  plan at that invoice's `periodStart` (earlier paid time kept); a running custom deal refuses checkout. `settleCheckout` leaves a still-pending
+  **renewal** invoice to the hourly job, and both renewal jobs settle with `updateMany where pending` (webhook race: no double number / receipt).
+- Connections: deleting a linked account or purging an account calls `releaseLinks()` first (revoke; Telegram's bot leaves, so the channel can't be
+  claimed by someone else via "Check the link"); `channelProfile` throws `RevokedError` when the bot is no longer an admin; daily sync skips
+  deleted pages and suspended users; `requestOrigin` only trusts wsool.link, Netlify branch hosts and localhost.
+- Agencies: every acting scope (also `view`) needs editor+; the app rpc route refuses requests carrying the `wsool_act` cookie; deleting an
+  agency deletes its unclaimed drafts first (`deleteAgencyDrafts`); admin counts, Users, Insights and the CSV skip placeholder accounts.
+- Newsletter: `syncLists` adds agency members only once they signed in (not suspended) and de-duplicates creator emails by lowercase.
+
 ### Design pass (Oct 2026, owner decisions)
 - The built screens are being matched to the owner's design artifacts ("صفحة الصانع", "لوحة التحكم",
   "لوحة الإدارة"), in that order. Where a design conflicts with this file, this file wins (44px touch

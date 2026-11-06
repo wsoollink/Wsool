@@ -33,11 +33,15 @@ export async function startAgencyCheckout(payer: { id: string; email: string }, 
   const agency = await db.agency.findUnique({ where: { id: agencyId } });
   if (!agency || agency.status !== "active" || agency.kind !== "agency") return { error: "not_agency" };
   const now = new Date();
+  // A custom deal the owner set by hand isn't replaced by a smaller bought plan while it runs.
+  if (agency.plan === "custom" && (!agency.planUntil || agency.planUntil > now)) return { error: "not_agency" };
   const paidAndRunning = isAgencyPaidPlan(agency.plan) && !!agency.planUntil && agency.planUntil > now;
   if (paidAndRunning && agency.planAutoRenew && agency.plan === plan) return { error: "already_active" };
   // Moving down while the bigger plan is still paid: change it for the next renewal instead.
   if (paidAndRunning && agency.plan === "growth" && plan === "starter") return { error: "downgrade" };
   const amount = AGENCY_PRICES[currency][plan][cycle];
+  // One open checkout at a time: an older unpaid one (another tab, a double click) can't be paid on top of this one.
+  await db.invoice.updateMany({ where: { agencyId, kind: "checkout", status: "pending" }, data: { status: "failed", failureReason: "Replaced by a newer checkout" } });
   const invoice = await db.invoice.create({
     data: { userId: payer.id, agencyId, agencyPlan: plan, kind: "checkout", cycle, currency, amount, vatAmount: vatPart(amount), provider: provider.name },
   });
@@ -57,11 +61,14 @@ export async function startAgencyCheckout(payer: { id: string; email: string }, 
 /** settleCheckout() for an agency invoice (already checked against the payment): plan, period, saved card. */
 export async function settleAgencyInvoice(invoice: Invoice, payment: Payment): Promise<"paid"> {
   if (!invoice.agencyId || !invoice.agencyPlan) throw new Error("not an agency invoice");
-  const agency = await db.agency.findUniqueOrThrow({ where: { id: invoice.agencyId } });
+  const agencyId = invoice.agencyId;
   const now = new Date();
-  const start = periodStart(agency.planUntil, now);
-  const end = addCycle(start, invoice.cycle);
+  // Start and end are worked out under a row lock: two payments settling at once each add their own period.
   const done = await db.$transaction(async (tx) => {
+    await tx.$queryRaw`SELECT id FROM agencies WHERE id = ${agencyId}::uuid FOR UPDATE`;
+    const agency = await tx.agency.findUniqueOrThrow({ where: { id: agencyId } });
+    const start = periodStart(agency.planUntil, now);
+    const end = addCycle(start, invoice.cycle);
     const [{ nextval }] = await tx.$queryRaw<{ nextval: bigint }[]>`SELECT nextval('invoice_number_seq')`;
     const { count } = await tx.invoice.updateMany({
       where: { id: invoice.id, status: { in: ["pending", "failed"] } },
@@ -72,15 +79,15 @@ export async function settleAgencyInvoice(invoice: Invoice, payment: Payment): P
       where: { id: agency.id },
       data: {
         plan: invoice.agencyPlan!, planCycle: invoice.cycle, planCurrency: invoice.currency, planUntil: end,
-        planAutoRenew: true, planFailedAttempts: 0, planRetryAt: null,
+        planAutoRenew: true, planFailedAttempts: 0, planRetryAt: null, nextPlan: null, nextCycle: null,
         ...(payment.token && { paymentToken: payment.token, paymentMethodLabel: payment.methodLabel?.slice(0, 60) ?? null }),
       },
     });
-    return Number(nextval);
+    return { number: Number(nextval), end, slug: agency.slug };
   });
   if (done !== null) {
-    refreshAgencyPage(agency.slug);
-    await tell(agency.id, "agency_payment_receipt", { invoice: invoiceLabel(done), amount: Number(invoice.amount), currency: invoice.currency, periodEndDate: end.toISOString() });
+    refreshAgencyPage(done.slug);
+    await tell(agencyId, "agency_payment_receipt", { invoice: invoiceLabel(done.number), amount: Number(invoice.amount), currency: invoice.currency, periodEndDate: done.end.toISOString() });
   }
   return "paid";
 }
@@ -89,15 +96,21 @@ export async function settleAgencyInvoice(invoice: Invoice, payment: Payment): P
 export async function setAgencyAutoRenew(agencyId: string, on: boolean) {
   const a = await db.agency.findUnique({ where: { id: agencyId } });
   if (!a || !isAgencyPaidPlan(a.plan) || (on && !a.paymentToken)) return false;
-  await db.agency.update({ where: { id: a.id }, data: { planAutoRenew: on } });
+  // Back on only while the plan still runs (an ended plan is bought again from the checkout, not charged for past months).
+  if (on && (!a.planUntil || a.planUntil <= new Date())) return false;
+  await db.agency.update({ where: { id: a.id }, data: on ? { planAutoRenew: true, planFailedAttempts: 0, planRetryAt: null } : { planAutoRenew: false } });
   return true;
 }
 
 /** The plan and cycle charged from the next renewal on (e.g. move to the smaller plan or to yearly). */
 export async function setAgencyNextPlan(agencyId: string, plan: AgencyPaidPlan, cycle: BillingCycle) {
   const a = await db.agency.findUnique({ where: { id: agencyId } });
-  if (!a || !isAgencyPaidPlan(a.plan) || !a.planAutoRenew) return false;
-  await db.agency.update({ where: { id: a.id }, data: { plan, planCycle: cycle } });
+  if (!a || !isAgencyPaidPlan(a.plan) || !a.planAutoRenew || !a.planUntil || a.planUntil <= new Date()) return false;
+  // Only the same plan in the other cycle, or the smaller plan: a bigger plan is bought now through the checkout.
+  if (plan !== a.plan && !(a.plan === "growth" && plan === "starter")) return false;
+  // Stored apart from the current plan, which stays (with its creator limit) until the renewal is paid.
+  const same = plan === a.plan && cycle === a.planCycle;
+  await db.agency.update({ where: { id: a.id }, data: same ? { nextPlan: null, nextCycle: null } : { nextPlan: plan, nextCycle: cycle } });
   return true;
 }
 
@@ -112,7 +125,8 @@ export async function refundAgencyInvoice(invoice: Invoice): Promise<{ ok: boole
   const current = !!agency && (!agency.planUntil || !invoice.periodEnd || invoice.periodEnd.getTime() >= agency.planUntil.getTime());
   await db.$transaction([
     db.invoice.update({ where: { id: invoice.id }, data: { status: "refunded", refundedAt: new Date() } }),
-    ...(current && agency ? [db.agency.update({ where: { id: agency.id }, data: { planUntil: new Date(), planAutoRenew: false } })] : []),
+    // The plan then ends where this invoice's period began (time paid by earlier invoices stays), or now.
+    ...(current && agency ? [db.agency.update({ where: { id: agency.id }, data: { planUntil: invoice.periodStart && invoice.periodStart > new Date() ? invoice.periodStart : new Date(), planAutoRenew: false } })] : []),
   ]);
   if (agency) await tell(agency.id, "agency_refund_issued", { invoice: invoiceLabel(invoice.number), amount: Number(invoice.amount), currency: invoice.currency });
   return { ok: true };
@@ -135,34 +149,39 @@ export async function runAgencyBillingJob(now = new Date()): Promise<AgencyJobRe
     },
   });
   for (const a of due) {
-    const plan = a.plan as AgencyPaidPlan;
-    if (!provider || !a.paymentToken || !a.planCycle || !a.planCurrency || !a.planUntil) {
+    // A plan / cycle chosen "from the next renewal" is charged now and becomes the plan once paid.
+    const plan = (a.nextPlan && isAgencyPaidPlan(a.nextPlan) ? a.nextPlan : a.plan) as AgencyPaidPlan;
+    const cycle = a.nextCycle ?? a.planCycle;
+    if (!provider || !a.paymentToken || !cycle || !a.planCurrency || !a.planUntil) {
       await db.agency.update({ where: { id: a.id }, data: { planAutoRenew: false, planRetryAt: null } });
       continue; // ends like a cancelled plan: the "expired" notice below goes out
     }
-    const amount = AGENCY_PRICES[a.planCurrency][plan][a.planCycle];
+    const amount = AGENCY_PRICES[a.planCurrency][plan][cycle];
     const start = a.planUntil;
-    const end = addCycle(start, a.planCycle);
+    const end = addCycle(start, cycle);
     const invoice = await db.invoice.create({
       data: {
-        userId: (await agencyManagers(a.id))[0] ?? a.createdBy, agencyId: a.id, agencyPlan: plan, kind: "renewal", cycle: a.planCycle,
+        userId: (await agencyManagers(a.id))[0] ?? a.createdBy, agencyId: a.id, agencyPlan: plan, kind: "renewal", cycle,
         currency: a.planCurrency, amount, vatAmount: vatPart(amount), provider: provider.name, periodStart: start, periodEnd: end,
       },
     });
     let payment: Payment;
     try {
-      payment = await provider.chargeToken({ token: a.paymentToken, amount, currency: a.planCurrency, description: `Wsool agency plan ${plan} renewal (${a.planCycle})`, invoiceId: invoice.id });
+      payment = await provider.chargeToken({ token: a.paymentToken, amount, currency: a.planCurrency, description: `Wsool agency plan ${plan} renewal (${cycle})`, invoiceId: invoice.id });
     } catch {
       payment = { id: `error_${invoice.id}`, status: "failed", amount, currency: a.planCurrency, invoiceId: invoice.id, failureReason: "Provider error" };
     }
     if (payment.status === "paid") {
+      // Only if still pending: the payment webhook may have settled this renewal meanwhile (then nothing more to do).
       const number = await db.$transaction(async (tx) => {
         const [{ nextval }] = await tx.$queryRaw<{ nextval: bigint }[]>`SELECT nextval('invoice_number_seq')`;
-        await tx.invoice.update({ where: { id: invoice.id }, data: { status: "paid", number: Number(nextval), providerPaymentId: payment.id, paidAt: now } });
-        await tx.agency.update({ where: { id: a.id }, data: { planUntil: end, planFailedAttempts: 0, planRetryAt: null } });
+        const { count } = await tx.invoice.updateMany({ where: { id: invoice.id, status: "pending" }, data: { status: "paid", number: Number(nextval), providerPaymentId: payment.id, paidAt: now } });
+        if (count !== 1) return null;
+        await tx.agency.update({ where: { id: a.id }, data: { plan, planCycle: cycle, planUntil: end, planFailedAttempts: 0, planRetryAt: null, nextPlan: null, nextCycle: null } });
         return Number(nextval);
       });
       report.agencyRenewed++;
+      if (number === null) continue;
       await tell(a.id, "agency_renewal_receipt", { invoice: invoiceLabel(number), amount, currency: a.planCurrency, periodEndDate: end.toISOString() });
     } else {
       const attempts = a.planFailedAttempts + 1;

@@ -3,7 +3,7 @@
 import { z } from "zod";
 import type { Platform } from "@/generated/prisma/enums";
 import { autoFilled, linkProfileUrl, profileUrl } from "@/config/platforms";
-import { checkBotLink, disconnect } from "@/lib/connect";
+import { checkBotLink, disconnect, releaseLinks } from "@/lib/connect";
 import { requireCreator } from "@/lib/creator";
 import { db } from "@/lib/db";
 import { pageChanged } from "@/lib/public-page";
@@ -41,6 +41,9 @@ export async function saveAccounts(items: AccountInput[]): Promise<AccountsResul
   const now = new Date();
   const resets = new Set<string>();
   const kept = new Set(ids);
+  // Linked accounts being removed: let go of them on the platform first (Telegram's bot leaves the channel).
+  const removedLinked = current.filter((a) => !kept.has(a.id) && a.connection).map((a) => a.id);
+  if (removedLinked.length) await releaseLinks({ accountIds: removedLinked });
   const result = await db.$transaction(async (tx) => {
     await tx.socialAccount.deleteMany({ where: { pageId: page.id, id: { notIn: [...kept] as string[] } } });
     await dropDeletedViews(tx, page.id, kept as Set<string>);

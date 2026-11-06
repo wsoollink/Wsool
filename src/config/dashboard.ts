@@ -16,6 +16,7 @@ export const DASHBOARD_SECTIONS = [
   { key: "appearance", href: "/dashboard/appearance", group: "account" },
   { key: "private", href: "/dashboard/private", group: "account" },
   { key: "analytics", href: "/dashboard/analytics", group: "account" },
+  { key: "reports", href: "/dashboard/reports", group: "account" },
   { key: "referrals", href: "/dashboard/referrals", group: "account" },
   { key: "agency", href: "/dashboard/agency", group: "account" },
   { key: "subscription", href: "/dashboard/subscription", group: "account" },

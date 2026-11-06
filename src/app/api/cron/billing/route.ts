@@ -2,6 +2,7 @@ import { timingSafeEqual } from "node:crypto";
 import { purgeDeletedAccounts } from "@/lib/account-deletion";
 import { runBillingJob } from "@/lib/billing";
 import { runAgencyBillingJob } from "@/lib/agency-billing";
+import { syncAdReports } from "@/lib/ad-reports";
 import { expireDrafts } from "@/lib/agency-drafts";
 import { syncConnections } from "@/lib/connect";
 import { ensureTelegramWebhook } from "@/lib/connect/telegram";
@@ -32,9 +33,11 @@ export async function POST(req: Request) {
   const reminders = await runReminders();
   // Linked platform accounts (YouTube…): followers + audience, once a day each.
   const connections = await syncConnections().catch((err) => ({ error: String(err) }));
+  // Ad reports: posts' numbers (daily for 30 days, weekly until 90).
+  const adReports = await syncAdReports().catch((err) => { console.error("[ad-reports]", err); return null; });
   // Telegram's bot sends channel updates to this site (set once, checked hourly).
   await ensureTelegramWebhook(siteOrigin()).catch((err) => console.error("[telegram] webhook", err));
   // Uploaded files no row uses (once a day, a slice of the folders).
   const cleaned = await cleanOrphanUploads().catch((err) => { console.error("[storage-cleanup]", err); return 0; });
-  return Response.json({ ...report, agencies, draftsExpired, purged, reminders, connections, cleaned });
+  return Response.json({ ...report, agencies, draftsExpired, purged, reminders, connections, adReports, cleaned });
 }

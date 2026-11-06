@@ -56,6 +56,7 @@ export function PlanPicker({ defaultCurrency, canPay, renew, showTrial }: { defa
     { label: t("cmp.rates"), free: FREE_LIMITS.rates ? yes : no, pro: yes },
     { label: t("cmp.audience"), free: FREE_LIMITS.audience ? yes : no, pro: yes },
     { label: t("cmp.connections"), free: FREE_LIMITS.connections ? yes : no, pro: yes },
+    { label: t("cmp.adReports"), free: no, pro: yes },
     { label: t("cmp.badge"), free: no, pro: yes },
     { label: t("cmp.analytics"), free: FREE_LIMITS.analytics ? yes : no, pro: yes },
     { label: t("cmp.pdf"), free: FREE_LIMITS.pdf ? yes : no, pro: yes },

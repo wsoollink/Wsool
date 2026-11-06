@@ -187,7 +187,7 @@ show in PDF, currency, VAT included or not. Hidden → show "الأسعار عن
 ## 8. Dashboard sections
 
 Home · Edit page · Accounts & numbers · Brands & work · **Ad rates** · **Links & services** · Contact · Verification ·
-Appearance · Analytics · Subscription · Notifications (bell with unread dot in every header).
+Appearance · Analytics · **Ad reports** · Subscription · Notifications (bell with unread dot in every header).
 Mobile: ☰ menu in every page header opening a side drawer with all sections (owner, Oct 2026; replaced the
 bottom tab bar). The drawer is one scrolling column (card, sections, footer) with 40px rows so nothing hides behind
 a fixed footer on short screens. Collapsible rows are buttons, not `<details>` (iOS underlined `<summary>` text). Desktop: left sidebar.
@@ -779,6 +779,23 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   public creator pages that aren't whole-page private or unclaimed drafts) and `src/app/robots.ts` (dashboards, admin, APIs, billing
   disallowed); RSS `/academy/feed?lang=ar|en`. Links: marketing header nav + footer (design files, `LINKS`), `SiteFooter`. Marketing header
   on 768-1199px: tighter links, no wrapping; 768-999px: the links bar hides (`marketing.css`).
+
+### Ad reports (owner, Nov 2026, Pro; Faisal Al-Saif meeting idea)
+- After a campaign the creator (dashboard section `reports`, «تقارير الإعلانات», account group, **unscoped** = never an acting agency) or an
+  agency (`/agency?tab=reports`, editors+, kind `agency`) lists post links; numbers are read from the creator's **linked account** (never typed):
+  `Provider.postStats` (`src/lib/connect/*`: YouTube = Data API counts + Analytics shares/watch time when that box was ticked; Instagram /
+  Threads = found by shortcode among the newest 300 posts (`findPost`), then media insights; Facebook Pages = the post among the Page's posts by
+  the id in the link, reactions/comments/shares + `post_media_view` / `post_impressions_unique`). TikTok (needs `video.list`) and X (paid) later.
+  Links: `parseReportPost()` (`src/lib/ad-report-links.ts`, pure). A post that isn't the account's own is refused (`not_found`).
+- Tables `ad_reports` (page_id XOR agency_id, brand, lang, token hash + sealed token, revoked_at, views), `ad_report_posts` (account, key,
+  external_id, title, thumb (Instagram/Threads/Facebook pictures copied to the creator's folder, upload kind `reportThumb`, in the unused-files
+  check), metrics json, sync_error), `ad_report_snapshots` (post × Saudi day). Logic `src/lib/ad-reports.ts`: `readPost` (checks Pro via
+  `canConnect`, the link via `linkAccess()` in `src/lib/connect/index.ts`, and for agency reports an active link with `can_content`, else
+  `unlinked`), `addPosts` (reads at once, failed ones are dropped with their reason), hourly `syncAdReports` (daily < 30 days old, weekly < 90).
+- Share link `wsool.link/r/<token>` (`(site)/r/[token]`, noindex, no-referrer; bots not counted): `ReportPage` (`src/components/reports/`:
+  brand, by creator/agency, totals, engagement rate = interactions ÷ views, views per day (`viewsByDay`), posts, Print / PDF). Demo report
+  `/r/demo` (`src/lib/demo-report.ts`, fictional brand, linked from the section). Shared UI `ReportsManager` (create, add posts, update now,
+  remove, copy/open, new link, stop link, delete). Terms (creators §2, agencies §3) + privacy describe it; Meta review texts mention post insights.
 
 ### Pre-launch review (Nov 2026)
 - Agency billing: "from the next renewal" choices live in `agencies.next_plan` / `next_cycle` (the current plan and its creator limit stay until

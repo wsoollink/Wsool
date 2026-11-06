@@ -180,6 +180,7 @@ model Page {
   pageViews      PageView[]
   contactClicks  ContactClick[]
   agencyLinks    AgencyLink[]
+  adReports      AdReport[]
   privateLinks   PrivateLink[]
   directoryStats DirectoryStat[]
 
@@ -325,6 +326,7 @@ model SocialAccount {
   bundles              BundlePlatform[]
   verificationRequests VerificationRequest[]
   connection           PlatformConnection?
+  reportPosts          AdReportPost[]
 
   @@index([pageId, sort])
   @@map("social_accounts")
@@ -1194,6 +1196,7 @@ model Agency {
   createdAt          DateTime         @default(now()) @map("created_at") @db.Timestamptz
   members            AgencyMember[]
   links              AgencyLink[]
+  adReports          AdReport[]
   accounts           AgencyAccount[]
   brands             AgencyBrand[]
   activity           AgencyActivity[]
@@ -1422,4 +1425,71 @@ model Article {
   @@unique([lang, slug])
   @@index([lang, publishedAt])
   @@map("articles")
+}
+
+/// Ad reports (owner, Nov 2026): a brand's campaign results read from the creator's linked accounts, shared by a private link
+/// wsool.link/r/<token>. Made by a creator (page_id) or by an agency across its linked creators (agency_id): exactly one is set.
+model AdReport {
+  id           String         @id @default(uuid()) @db.Uuid
+  pageId       String?        @map("page_id") @db.Uuid
+  page         Page?          @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  agencyId     String?        @map("agency_id") @db.Uuid
+  agency       Agency?        @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  brand        String         @db.VarChar(80)
+  /// Language of the shared page (the creator's or agency's choice).
+  lang         Lang           @default(ar)
+  /// The share link's token: only its SHA-256 is looked up; the sealed copy lets the owner copy the link again.
+  tokenHash    String         @unique @map("token_hash") @db.VarChar(64)
+  tokenSealed  String         @map("token_sealed")
+  revokedAt    DateTime?      @map("revoked_at") @db.Timestamptz
+  views        Int            @default(0)
+  lastViewedAt DateTime?      @map("last_viewed_at") @db.Timestamptz
+  createdBy    String         @map("created_by") @db.Uuid
+  createdAt    DateTime       @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt    DateTime       @updatedAt @map("updated_at") @db.Timestamptz
+  posts        AdReportPost[]
+
+  @@index([pageId])
+  @@index([agencyId])
+  @@map("ad_reports")
+}
+
+/// One post in a report (an account of a creator; for agency reports, of one of its linked creators).
+model AdReportPost {
+  id         String             @id @default(uuid()) @db.Uuid
+  reportId   String             @map("report_id") @db.Uuid
+  report     AdReport           @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  accountId  String             @map("account_id") @db.Uuid
+  account    SocialAccount      @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  platform   Platform
+  url        String             @db.VarChar(500)
+  /// The post's id in its link (video id / shortcode / Facebook id); externalId = the platform's id once found.
+  key        String             @db.VarChar(120)
+  externalId String?            @map("external_id") @db.VarChar(120)
+  title      String?            @db.VarChar(300)
+  thumbUrl   String?            @map("thumb_url") @db.VarChar(1000)
+  postedAt   DateTime?          @map("posted_at") @db.Timestamptz
+  /// Latest numbers ({views, reach, likes, comments, shares, saves, watchMinutes, avgViewSeconds}).
+  metrics    Json               @default("{}")
+  lastSyncAt DateTime?          @map("last_sync_at") @db.Timestamptz
+  /// Why the last read failed (not_found | unlinked | revoked | paused | failed); null = fine.
+  syncError  String?            @map("sync_error") @db.VarChar(30)
+  sort       Int                @default(0)
+  createdAt  DateTime           @default(now()) @map("created_at") @db.Timestamptz
+  snapshots  AdReportSnapshot[]
+
+  @@index([reportId])
+  @@index([lastSyncAt])
+  @@map("ad_report_posts")
+}
+
+/// The numbers of a post once a day (Saudi date), for the report's growth chart.
+model AdReportSnapshot {
+  postId  String       @map("post_id") @db.Uuid
+  post    AdReportPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  day     DateTime     @db.Date
+  metrics Json
+
+  @@id([postId, day])
+  @@map("ad_report_snapshots")
 }

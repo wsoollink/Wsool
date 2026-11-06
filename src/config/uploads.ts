@@ -18,6 +18,8 @@ export const UPLOAD_KINDS = {
   newsletterImage: { types: ["image/jpeg", "image/png", "image/gif"], maxBytes: 5 * 1024 * 1024, bucket: MEDIA_BUCKET },
   /** Academy article cover / image inside an article (staff, their own folder). */
   academyImage: { types: ["image/jpeg", "image/png", "image/webp", "image/gif"], maxBytes: 5 * 1024 * 1024, bucket: MEDIA_BUCKET },
+  /** A post's picture copied from Instagram / Threads / Facebook into the creator's folder (ad reports; their links expire). */
+  reportThumb: { types: ["image/jpeg", "image/png", "image/webp"], maxBytes: 4 * 1024 * 1024, bucket: MEDIA_BUCKET },
   thumb: { types: ["image/jpeg", "image/png", "image/webp"], maxBytes: 4 * 1024 * 1024, bucket: MEDIA_BUCKET },
   video: { types: ["video/mp4", "video/quicktime"], maxBytes: 50 * 1024 * 1024, bucket: MEDIA_BUCKET },
   verification: { types: ["image/jpeg", "image/png", "image/webp"], maxBytes: 10 * 1024 * 1024, bucket: VERIFICATION_BUCKET },

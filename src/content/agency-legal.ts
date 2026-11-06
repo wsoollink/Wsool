@@ -33,6 +33,7 @@ export const AGENCY_LEGAL_TEXT: Record<"ar" | "en", Record<LegalKind, LegalDoc>>
           "تبقى الصفحة وبياناتها ملكاً للصانع. لا تستطيع الوكالة تغيير اسم المستخدم أو الاشتراك أو التوثيق أو حذف الحساب.",
           "يرى الصانع سجلاً بكل تعديل تقوم به الوكالة، ويستطيع تغيير الصلاحيات أو فك الارتباط في أي وقت.",
           "الوكالة مسؤولة عن صحة ما تنشره في صفحات الصناع، ويُمنع نشر معلومات مضللة أو أرقام غير صحيحة أو أي محتوى دون موافقة الصانع.",
+          "تقارير الحملات: يمكن للوكالة إنشاء تقرير لحملة يضم منشورات الصناع المرتبطين بها الذين سمحوا بـ«المحتوى»، وتُقرأ الأرقام من حسابات الصانع المربوطة. يُستخدم التقرير لعرض نتائج الحملة على المعلن فقط، ويتوقف تحديث منشورات الصانع عند فك الارتباط.",
           "عند انتهاء الارتباط من أي طرف، يتوقف وصول الوكالة للصفحة فوراً.",
         ] },
         { h: "4. دليل الصناع" },
@@ -161,6 +162,7 @@ export const AGENCY_LEGAL_TEXT: Record<"ar" | "en", Record<LegalKind, LegalDoc>>
           "The creator sees a log of every change the agency makes and can change permissions or unlink at any time.",
           "The agency is responsible for what it publishes on creators' pages; misleading information, false numbers or anything the creator didn't agree to is not allowed.",
           "When the link ends from either side, the agency's access stops immediately.",
+          "Campaign reports: an agency can create a campaign report with posts of its linked creators who allowed \"content\"; the numbers are read from the creator's linked accounts. Reports are only for showing campaign results to the advertiser, and a creator's posts stop updating when they unlink.",
         ] },
         { h: "4. Creator directory" },
         { ul: [

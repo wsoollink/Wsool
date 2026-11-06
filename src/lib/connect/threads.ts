@@ -1,6 +1,7 @@
 import "server-only";
 import { RevokedError } from "./errors";
-import type { Audience, Provider, ProviderProfile } from "./types";
+import type { Audience, PostStats, Provider, ProviderProfile } from "./types";
+import { clean, findPost, insightValues, type Insight } from "./post-insights";
 
 /**
  * Threads (owner, Oct 2026) through the Threads API (same Meta app as Instagram, "Access the Threads API" use case): the
@@ -146,5 +147,28 @@ export const threads: Provider = {
   },
 
   // Threads has no token revoke endpoint: removing the app happens in the creator's Threads settings.
+  // Ad reports: a thread of the linked account, found by its code among the newest posts, then read by id.
+  async postStats(token, post): Promise<PostStats | null> {
+    type Thread = { id: string; shortcode?: string; permalink?: string; text?: string; timestamp?: string; thumbnail_url?: string; media_url?: string; media_type?: string };
+    const fields = "id,shortcode,permalink,text,timestamp,thumbnail_url,media_url,media_type";
+    const t = post.externalId
+      ? await graph<Thread>(`/${post.externalId}`, { fields }, token)
+      : await findPost<Thread>(
+        (after) => graph(`/me/threads`, { fields, limit: "50", ...(after && { after }) }, token),
+        (x) => x.shortcode === post.key || !!x.permalink?.includes(`/post/${post.key}`),
+      );
+    if (!t?.id) return null;
+    const insights = await quiet(graph<{ data?: Insight[] }>(`/${t.id}/insights`, { metric: "views,likes,replies,reposts,quotes,shares" }, token));
+    const i = insightValues(insights?.data);
+    return {
+      externalId: t.id,
+      title: t.text?.split("\n")[0]?.slice(0, 200) || null,
+      thumbUrl: t.thumbnail_url ?? (t.media_type === "IMAGE" ? t.media_url ?? null : null),
+      postedAt: t.timestamp ? new Date(t.timestamp) : null,
+      // Reposts + quotes count as shares here (the report shows one "shares" number for every platform).
+      metrics: clean({ views: i.views, likes: i.likes, comments: i.replies, shares: (i.reposts ?? 0) + (i.quotes ?? 0) + (i.shares ?? 0) || undefined }),
+    };
+  },
+
   async revoke() {},
 };

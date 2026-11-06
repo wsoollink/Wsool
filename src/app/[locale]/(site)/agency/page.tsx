@@ -34,6 +34,7 @@ import { AGENCY_CREATOR_LIMIT, agencyDaysLeft } from "@/config/agency-plans";
 import { SUPPORT_EMAIL } from "@/config/site";
 import { LINK_PLATFORMS } from "@/config/platforms";
 import { siteOrigin } from "@/lib/site-url";
+import { ReportsTab } from "./ReportsTab";
 
 /** "الاشتراك" tab: current plan + usage, and the plans to ask for (managers and the owner; no online payment yet). */
 async function BillingTab({ agencyId, lang, payment }: { agencyId: string; lang: Locale; payment: string | null }) {
@@ -187,7 +188,7 @@ async function AgencyDashboard({ lang, searchParams }: { lang: Locale; searchPar
   const sp = await searchParams;
   const brand = m.agency.kind === "brand";
   // Brand accounts only search the directory; agencies also manage creators.
-  const tabs = brand ? (["directory", "team", "billing"] as const) : (["creators", "page", "directory", "team", "billing"] as const);
+  const tabs = brand ? (["directory", "team", "billing"] as const) : (["creators", "reports", "page", "directory", "team", "billing"] as const);
   const tab = (tabs as readonly string[]).includes(sp.tab as string) ? (sp.tab as (typeof tabs)[number]) : tabs[0];
   const canInvite = roleAtLeast(m.member.role, "manager");
   const canEdit = roleAtLeast(m.member.role, "editor");
@@ -262,6 +263,8 @@ async function AgencyDashboard({ lang, searchParams }: { lang: Locale; searchPar
 
       {tab === "billing" ? (
         canInvite ? <BillingTab agencyId={m.agency.id} lang={lang} payment={typeof sp.payment === "string" ? sp.payment : null} /> : <p className="text-sm text-muted">{t("viewerNote")}</p>
+      ) : tab === "reports" ? (
+        canEdit ? <ReportsTab agencyId={m.agency.id} lang={lang} /> : <p className="text-sm text-muted">{(await getTranslations("AdReports"))("viewerNote")}</p>
       ) : tab === "page" ? (
         canInvite ? <PageTab agencyId={m.agency.id} /> : <p className="text-sm text-muted">{(await getTranslations("AgencyPageEditor"))("viewerNote")}</p>
       ) : tab === "directory" ? (

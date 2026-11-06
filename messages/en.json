@@ -230,7 +230,8 @@
     "whatsapp": "WhatsApp support",
     "whatsappText": "Hi, I have a question about my Wsool account",
     "agency": "Agency",
-    "private": "Privacy & visibility"
+    "private": "Privacy & visibility",
+    "reports": "Ad reports"
   },
   "CreatorPage": {
     "demoBadge": "Demo page",
@@ -2019,7 +2020,8 @@
       "links": "Links & services",
       "linksCount": "{links} links, {services} services",
       "coupons": "Discount coupons",
-      "couponsCount": "{n, plural, one {# coupon} other {# coupons}}"
+      "couponsCount": "{n, plural, one {# coupon} other {# coupons}}",
+      "adReports": "Ad reports for brands"
     },
     "viewInvoice": "View invoice from {date}",
     "haveCode": "Have a discount code?",
@@ -2535,7 +2537,8 @@
     "coupons": "Your store discount codes and tracking links",
     "referrals": "Earn from every subscriber who comes through your link",
     "agency": "The marketing agency managing your page, with permissions you choose",
-    "private": "Brand directory listing, password and private links"
+    "private": "Brand directory listing, password and private links",
+    "reports": "Your ads' numbers straight from the platforms, shared by a private link"
   },
   "SaveBar": {
     "save": "Save changes",
@@ -2997,7 +3000,8 @@
       "team": "Team",
       "directory": "Directory",
       "page": "Agency page",
-      "billing": "Subscription"
+      "billing": "Subscription",
+      "reports": "Campaign reports"
     },
     "kpi": {
       "creators": "Creators",
@@ -3559,5 +3563,116 @@
       "platforms": "Platforms",
       "tools": "Tools & tips"
     }
+  },
+  "AdReports": {
+    "proOnly": "Ad reports are on Pro: numbers come straight from your linked accounts, and the brand gets a private link.",
+    "newTitle": "New ad report",
+    "newHint": "After the ad is live, add the post links. We read their numbers from the platform and update them every day for 30 days, then weekly until 90 days.",
+    "noAccounts": "Link your YouTube, Instagram, Threads or Facebook account first, so we can read your posts' numbers.",
+    "linkAccounts": "Link your accounts →",
+    "brand": "Brand or campaign",
+    "brandPlaceholder": "e.g. Noon · Winter campaign",
+    "lang": "Report language",
+    "posts": "Posts",
+    "postsHint": "Paste the post link (a YouTube video, Instagram post or Reel, a thread, or a Facebook Page post) and pick the account that posted it. It must be one of your linked accounts.",
+    "account": "Account",
+    "pickAccount": "Pick the account",
+    "postLink": "Post link",
+    "removeRow": "Remove row",
+    "addRow": "Another post",
+    "create": "Create report",
+    "reading": "Reading the numbers from the platform…",
+    "created": "✓ Report created. Copy the link and send it to the brand.",
+    "added": "✓ Posts added.",
+    "partly": "Created, but some links couldn't be read:",
+    "empty": "No reports yet.",
+    "createdOn": "{date}",
+    "postsCount": "{n, plural, =0 {no posts} one {1 post} other {# posts}}",
+    "opened": "{n, plural, =0 {link not opened yet} one {opened once} other {opened # times}}",
+    "linkStopped": "link stopped",
+    "m": {
+      "views": "Views",
+      "likes": "Likes",
+      "comments": "Comments",
+      "shares": "Shares"
+    },
+    "refresh": "Update numbers now",
+    "removePost": "Remove post",
+    "confirmRemove": "Remove this post from the report?",
+    "addPosts": "Add posts",
+    "cancel": "Cancel",
+    "copyLink": "Copy report link",
+    "copied": "Copied",
+    "open": "View report",
+    "renew": "New link",
+    "newLink": "Make a new link",
+    "confirmRenew": "The old link stops working and you'll need to send the new one. Continue?",
+    "revoke": "Stop link",
+    "confirmRevoke": "Stop the link? The brand won't be able to open the report.",
+    "delete": "Delete report",
+    "confirmDelete": "Delete this report for good?",
+    "agencyHint": "One campaign report across several creators. Creators who gave you the \"content\" permission and their linked accounts show here.",
+    "viewerNote": "Reports are for editors and managers on the team.",
+    "errors": {
+      "brand": "Add the brand or campaign name.",
+      "rows": "Add at least one post link and pick its account.",
+      "invalid": "Check the details and try again.",
+      "pro": "Ad reports are on Pro.",
+      "rate": "Too many requests. Wait a moment and try again.",
+      "limit": "You've reached the report limit (100). Delete an old one.",
+      "no_posts": "None of the posts could be read:",
+      "not_found": "Post not found.",
+      "unlinked": "The account isn't linked.",
+      "revoked": "The link was lost; link the account again.",
+      "failed": "The platform didn't answer. Try again shortly."
+    },
+    "postErrors": {
+      "invalid": "unsupported link",
+      "platform": "the link is from another platform than the account",
+      "account": "account not available",
+      "unlinked": "account not linked",
+      "not_found": "not found in your account (check it was posted by the same account)",
+      "revoked": "link lost, link the account again",
+      "failed": "the platform didn't answer, we'll retry",
+      "pro": "needs Pro",
+      "duplicate": "already in the report"
+    },
+    "seeDemo": "See a demo report →"
+  },
+  "AdReport": {
+    "kicker": "Ad performance report",
+    "title": "{brand}",
+    "byCreator": "Creator:",
+    "byAgency": "Agency:",
+    "since": "Since {date}",
+    "fromPlatforms": "Numbers straight from the platforms through linked accounts",
+    "updated": "updated {date}",
+    "totals": "Campaign totals",
+    "engagement": "Engagement rate",
+    "viewsOverTime": "Views over time",
+    "posts": "{n, plural, one {The post} other {The posts}}",
+    "untitled": "Post",
+    "postedOn": "Posted {date}",
+    "openPost": "Open post",
+    "openOn": "Open on {platform}",
+    "seconds": "{n}s",
+    "m": {
+      "views": "Views",
+      "reach": "Reach",
+      "likes": "Likes",
+      "comments": "Comments",
+      "shares": "Shares",
+      "saves": "Saves",
+      "watchMinutes": "Watch minutes",
+      "avgViewSeconds": "Avg. view"
+    },
+    "note": "Wsool reads these numbers from the platforms through the accounts the creator linked; they update daily for 30 days after posting, then weekly until 90 days. Engagement rate = (likes + comments + shares + saves) ÷ views. Each platform counts its numbers its own way.",
+    "madeWith": "Report by",
+    "makeYours": "Build your media kit for free",
+    "print": "Print / PDF",
+    "goneTitle": "Report unavailable",
+    "goneText": "The link was stopped or is wrong. Ask the report's owner for a new link.",
+    "demoBar": "A demo report with sample numbers.",
+    "demoCta": "Make your reports with Wsool"
   }
 }

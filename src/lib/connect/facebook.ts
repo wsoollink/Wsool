@@ -1,6 +1,7 @@
 import "server-only";
 import { RevokedError } from "./errors";
-import type { Provider, ProviderProfile } from "./types";
+import type { PostStats, Provider, ProviderProfile } from "./types";
+import { clean, findPost, insightValues, type Insight } from "./post-insights";
 
 /**
  * Facebook Pages (owner, Oct 2026) through Facebook Login for Business (same Meta app as Instagram/Threads): the creator
@@ -153,6 +154,30 @@ export const facebook: Provider = {
   },
 
   // Removing the app happens in the creator's Facebook settings; the Page token stops working then.
+  // Ad reports: a post of the linked Page (the token is the Page's own), found among its newest posts by the id in the link.
+  async postStats(pageToken, post, account): Promise<PostStats | null> {
+    type Post = { id: string; permalink_url?: string; message?: string; created_time?: string; full_picture?: string; shares?: { count?: number }; reactions?: { summary?: { total_count?: number } }; comments?: { summary?: { total_count?: number } } };
+    const fields = "id,permalink_url,message,created_time,full_picture,shares,reactions.summary(total_count).limit(0),comments.summary(total_count).limit(0)";
+    const p = post.externalId
+      ? await graph<Post>(`/${post.externalId}`, { fields }, pageToken)
+      : await findPost<Post>(
+        (after) => graph(`/${account.externalId}/posts`, { fields, limit: "50", ...(after && { after }) }, pageToken),
+        (x) => x.id.endsWith(`_${post.key}`) || x.id === post.key || !!x.permalink_url?.includes(post.key),
+      );
+    if (!p?.id || !p.id.startsWith(`${account.externalId}_`)) return null;
+    // Views / reach: Meta keeps renaming Page post metrics; tried one by one (refusals logged).
+    const insights = await quiet(graph<{ data?: Insight[] }>(`/${p.id}/insights`, { metric: "post_media_view,post_impressions_unique" }, pageToken))
+      ?? await quiet(graph<{ data?: Insight[] }>(`/${p.id}/insights`, { metric: "post_impressions_unique" }, pageToken));
+    const i = insightValues(insights?.data);
+    return {
+      externalId: p.id,
+      title: p.message?.split("\n")[0]?.slice(0, 200) || null,
+      thumbUrl: p.full_picture ?? null,
+      postedAt: p.created_time ? new Date(p.created_time) : null,
+      metrics: clean({ views: i.post_media_view, reach: i.post_impressions_unique, likes: p.reactions?.summary?.total_count, comments: p.comments?.summary?.total_count, shares: p.shares?.count }),
+    };
+  },
+
   async revoke() {},
 };
 

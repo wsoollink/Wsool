@@ -195,6 +195,28 @@ export async function setAccountViews(tx: Prisma.TransactionClient, pageId: stri
   await tx.monthlyView.create({ data: { pageId, month: newer, views: total, byAccount } });
 }
 
+/**
+ * A fresh access token for one account's active link (ad reports read single posts with it). A rotated refresh token is
+ * saved first; a refused one marks the link lost (like the daily update) and returns "revoked".
+ */
+export async function linkAccess(accountId: string): Promise<{ provider: Provider; access: string; externalId: string } | { error: "unlinked" | "revoked" | "failed" }> {
+  const c = await db.platformConnection.findUnique({ where: { accountId }, select: { id: true, platform: true, externalId: true, refreshToken: true, status: true } });
+  const provider = c && providerFor(c.platform);
+  const refresh = c && openToken(c.refreshToken);
+  if (!c || c.status !== "active" || !provider?.postStats || !refresh) return { error: "unlinked" };
+  try {
+    const { accessToken, refreshToken: rotated } = await provider.refresh(refresh);
+    if (rotated && rotated !== refresh) await db.platformConnection.update({ where: { id: c.id }, data: { refreshToken: sealToken(rotated) } });
+    return { provider, access: accessToken, externalId: c.externalId };
+  } catch (err) {
+    if (err instanceof RevokedError) {
+      await db.platformConnection.update({ where: { id: c.id }, data: { status: "error", lastError: "revoked" } });
+      return { error: "revoked" };
+    }
+    return { error: "failed" };
+  }
+}
+
 /** Daily update of every link not refreshed in the last 20 hours (a batch per hourly run). */
 export async function syncConnections(limit = 40) {
   const due = await db.platformConnection.findMany({

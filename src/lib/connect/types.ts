@@ -25,6 +25,14 @@ export type Audience = {
   cities?: { label: string; percent: number }[];
 };
 
+/** One post's numbers (ad reports): only what the platform gives; missing = not shown. */
+export const POST_METRICS = ["views", "reach", "likes", "comments", "shares", "saves", "watchMinutes", "avgViewSeconds"] as const;
+export type PostMetric = (typeof POST_METRICS)[number];
+export type PostMetrics = Partial<Record<PostMetric, number>>;
+
+/** A post read from the linked account (ad reports). `externalId` = the platform's own id, kept for the daily updates. */
+export type PostStats = { externalId: string; title: string | null; thumbUrl: string | null; postedAt: Date | null; metrics: PostMetrics };
+
 /** One platform's sign-in (OAuth) and readers. Add a platform = one file like ./youtube.ts + an entry in PROVIDERS. */
 export type Provider = {
   platform: Platform;
@@ -51,4 +59,9 @@ export type Provider = {
   /** Views of the last complete month (`month` = its first day, UTC), for the monthly views box. */
   monthlyViews?: (accessToken: string) => Promise<{ month: Date; views: number } | null>;
   revoke: (refreshToken: string) => Promise<void>;
+  /**
+   * Ad reports: one post of the linked account (`key` from parseReportPost, `externalId` once found). null = not found or
+   * not this account's post (the report refuses it).
+   */
+  postStats?: (accessToken: string, post: { key: string; externalId: string | null }, account: { externalId: string }) => Promise<PostStats | null>;
 };

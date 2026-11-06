@@ -1,6 +1,7 @@
 import "server-only";
 import { RevokedError } from "./errors";
-import type { Audience, Provider, ProviderProfile } from "./types";
+import type { Audience, PostStats, Provider, ProviderProfile } from "./types";
+import { clean, findPost, insightValues, type Insight } from "./post-insights";
 
 /**
  * Instagram (owner, Oct 2026) through "Instagram API with Instagram Login": the creator signs in with their Instagram
@@ -190,6 +191,33 @@ export const instagram: Provider = {
   },
 
   // Instagram Login has no token revoke endpoint: removing the app happens in the creator's Instagram settings.
+  // Ad reports: a post of the linked account, found by its shortcode among the newest posts, then read by id.
+  async postStats(token, post): Promise<PostStats | null> {
+    type Media = { id: string; shortcode?: string; permalink?: string; caption?: string; media_type?: string; thumbnail_url?: string; media_url?: string; timestamp?: string; like_count?: number; comments_count?: number };
+    const fields = "id,shortcode,permalink,caption,media_type,thumbnail_url,media_url,timestamp,like_count,comments_count";
+    const m = post.externalId
+      ? await graph<Media>(`/${post.externalId}`, { fields }, token)
+      : await findPost<Media>(
+        (after) => graph(`/me/media`, { fields, limit: "50", ...(after && { after }) }, token),
+        (x) => x.shortcode === post.key || !!x.permalink?.includes(`/${post.key}/`),
+      );
+    if (!m?.id) return null;
+    // Meta keeps changing which metrics a post accepts: try the full set, then smaller ones (refusals are logged).
+    const insights = await firstOk([
+      () => graph<{ data?: Insight[] }>(`/${m.id}/insights`, { metric: "views,reach,likes,comments,shares,saved" }, token),
+      () => graph<{ data?: Insight[] }>(`/${m.id}/insights`, { metric: "reach,likes,comments,shares,saved" }, token),
+      () => graph<{ data?: Insight[] }>(`/${m.id}/insights`, { metric: "reach" }, token),
+    ]);
+    const i = insightValues(insights?.data);
+    return {
+      externalId: m.id,
+      title: m.caption?.split("\n")[0]?.slice(0, 200) || null,
+      thumbUrl: m.thumbnail_url ?? (m.media_type === "VIDEO" ? null : m.media_url ?? null),
+      postedAt: m.timestamp ? new Date(m.timestamp) : null,
+      metrics: clean({ views: i.views, reach: i.reach, likes: i.likes ?? m.like_count, comments: i.comments ?? m.comments_count, shares: i.shares, saves: i.saved }),
+    };
+  },
+
   async revoke() {},
 };
 

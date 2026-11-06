@@ -1,6 +1,7 @@
 import "server-only";
 import { RevokedError } from "./errors";
-import type { Audience, Provider, ProviderProfile } from "./types";
+import type { Audience, PostStats, Provider, ProviderProfile } from "./types";
+import { clean } from "./post-insights";
 
 /**
  * YouTube through Google sign-in (owner, Oct 2026): the creator picks their channel on Google's screen, then
@@ -161,6 +162,30 @@ export const youtube: Provider = {
     const report = await getJson<{ rows?: (string | number)[][] }>(`${URLS.analytics}/reports?ids=channel%3D%3DMINE&startDate=${day(start)}&endDate=${day(end)}&metrics=views`, token);
     const views = Number(report.rows?.[0]?.[0]);
     return Number.isFinite(views) && views >= 0 ? { month: start, views: Math.round(views) } : null;
+  },
+
+  // Ad reports: a video of the linked channel (Data API counts + Analytics extras when that box was ticked).
+  async postStats(token, post, account): Promise<PostStats | null> {
+    type Videos = { items?: { id: string; snippet?: { channelId?: string; title?: string; publishedAt?: string; thumbnails?: Record<string, { url?: string }> }; statistics?: { viewCount?: string; likeCount?: string; commentCount?: string } }[] };
+    const id = post.externalId ?? post.key;
+    if (!/^[A-Za-z0-9_-]{11}$/.test(id)) return null;
+    const data = await getJson<Videos>(`${URLS.data}/videos?part=snippet,statistics&id=${id}`, token);
+    const v = data.items?.[0];
+    if (!v || v.snippet?.channelId !== account.externalId) return null;
+    const n = (x?: string) => (x === undefined ? undefined : Number(x));
+    const metrics: PostStats["metrics"] = { views: n(v.statistics?.viewCount), likes: n(v.statistics?.likeCount), comments: n(v.statistics?.commentCount) };
+    const postedAt = v.snippet?.publishedAt ? new Date(v.snippet.publishedAt) : null;
+    if (postedAt) {
+      // Shares and watch time come from YouTube Analytics (a day or two behind); skipped quietly without that permission.
+      const day = (d: Date) => d.toISOString().slice(0, 10);
+      const report = await getJson<{ rows?: (string | number)[][] }>(
+        `${URLS.analytics}/reports?ids=channel%3D%3DMINE&filters=video%3D%3D${id}&startDate=${day(postedAt)}&endDate=${day(new Date())}&metrics=shares,estimatedMinutesWatched,averageViewDuration`, token,
+      ).catch(() => null);
+      const row = report?.rows?.[0];
+      if (row) Object.assign(metrics, { shares: Number(row[0]), watchMinutes: Math.round(Number(row[1])), avgViewSeconds: Math.round(Number(row[2])) });
+    }
+    const th = v.snippet?.thumbnails;
+    return { externalId: v.id, title: v.snippet?.title ?? null, thumbUrl: th?.maxres?.url ?? th?.high?.url ?? th?.medium?.url ?? null, postedAt, metrics: clean(metrics) };
   },
 
   async revoke(refreshToken) {

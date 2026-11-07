@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { notFound, redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Card } from "@/components/ui/Card";
+import { AuthLogo } from "@/components/AuthLogo";
 import { isLocale, toIntlLocale } from "@/i18n/config";
 import { getCurrentUser } from "@/lib/auth";
 import { GoogleSignIn, OAuthError } from "./GoogleSignIn";
@@ -33,6 +34,7 @@ export default async function LoginPage({ params, searchParams }: PageProps<"/[l
       <Suspense fallback={null}>
         <RedirectIfSignedIn />
       </Suspense>
+      <AuthLogo lang={locale} />
       <Card className="flex flex-col gap-5 p-6">
         <div>
           <h1 className="text-2xl font-bold">{t("title")}</h1>

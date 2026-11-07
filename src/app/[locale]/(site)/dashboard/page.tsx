@@ -116,6 +116,38 @@ async function Home({ lang }: { lang: Locale }) {
   const doneCount = checks.filter((x) => x.done).length;
   const rows = [...checks.filter((x) => !x.done), ...checks.filter((x) => x.done)].slice(0, 4);
 
+  // Owner (Nov 2026): until the page is complete the checklist comes first, right under the link card, instead of
+  // empty stats; once complete it sits next to the visits chart.
+  const setup = todos.length > 0;
+  const completion = (className: string) => (
+      <Panel title={t("completion")} aside={t("stepsDone", { done: doneCount, total: checks.length })} className={className}>
+        <div className="mb-3 flex items-center gap-4">
+          <div
+            role="progressbar" aria-valuenow={percent} aria-valuemin={0} aria-valuemax={100} aria-label={t("completion")}
+            className="grid size-[76px] shrink-0 place-items-center rounded-full"
+            style={{ background: `conic-gradient(var(--color-blue) ${percent}%, var(--color-line-soft) 0)` }}
+          >
+            <span className="col-start-1 row-start-1 size-[62px] rounded-full bg-card" />
+            <span dir="ltr" className="col-start-1 row-start-1 font-numbers text-[17px]">{formatPercent(percent, lang)}</span>
+          </div>
+          <p className="text-[13px] text-muted">{todos.length ? t("completionHint", { left: checks.length - doneCount }) : t("complete")}</p>
+        </div>
+        <ul className="flex flex-col divide-y divide-line-soft">
+          {rows.map((td) => (
+            <li key={td.text}>
+              <Link href={td.href} className={`flex min-h-11 items-center gap-3 text-[13.5px] ${td.done ? "text-muted line-through decoration-faint" : ""}`}>
+                {td.done
+                  ? <span className="inline-flex size-[18px] shrink-0 items-center justify-center rounded-full bg-good text-white"><Check aria-hidden="true" size={12} strokeWidth={3} /></span>
+                  : <span aria-hidden="true" className="size-[18px] shrink-0 rounded-full border-[1.5px] border-dashed border-faint" />}
+                <span className="flex-1">{td.text}</span>
+                <Chevron aria-hidden="true" size={16} className="text-faint" />
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </Panel>
+  );
+
   const totalViews = report?.views ?? 0;
   const countryRows = report?.countries.slice(0, 4).map((c) => ({ name: regions.of(c.key) ?? c.key, share: totalViews ? Math.round((c.count / totalViews) * 100) : 0 })) ?? [];
   const otherShare = Math.max(0, 100 - countryRows.reduce((a, c) => a + c.share, 0));
@@ -142,6 +174,7 @@ async function Home({ lang }: { lang: Locale }) {
 
       {urgentPlan && plan}
       {nudge}
+      {setup && completion("")}
 
       {report && prev ? (
         <KpiStrip
@@ -162,9 +195,10 @@ async function Home({ lang }: { lang: Locale }) {
         </Card>
       )}
 
-      <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1.75fr)_minmax(0,1fr)]">
+      {(report || !setup) && <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1.75fr)_minmax(0,1fr)]">
         {report && (
           <Panel
+            className={setup ? "lg:col-span-2" : ""}
             title={t("visits")}
             aside={
               <span className="flex items-center gap-4 text-xs">
@@ -181,33 +215,8 @@ async function Home({ lang }: { lang: Locale }) {
           </Panel>
         )}
 
-        <Panel title={t("completion")} aside={t("stepsDone", { done: doneCount, total: checks.length })} className={report ? "" : "lg:col-span-2"}>
-          <div className="mb-3 flex items-center gap-4">
-            <div
-              role="progressbar" aria-valuenow={percent} aria-valuemin={0} aria-valuemax={100} aria-label={t("completion")}
-              className="grid size-[76px] shrink-0 place-items-center rounded-full"
-              style={{ background: `conic-gradient(var(--color-blue) ${percent}%, var(--color-line-soft) 0)` }}
-            >
-              <span className="col-start-1 row-start-1 size-[62px] rounded-full bg-card" />
-              <span dir="ltr" className="col-start-1 row-start-1 font-numbers text-[17px]">{formatPercent(percent, lang)}</span>
-            </div>
-            <p className="text-[13px] text-muted">{todos.length ? t("completionHint", { left: checks.length - doneCount }) : t("complete")}</p>
-          </div>
-          <ul className="flex flex-col divide-y divide-line-soft">
-            {rows.map((td) => (
-              <li key={td.text}>
-                <Link href={td.href} className={`flex min-h-11 items-center gap-3 text-[13.5px] ${td.done ? "text-muted line-through decoration-faint" : ""}`}>
-                  {td.done
-                    ? <span className="inline-flex size-[18px] shrink-0 items-center justify-center rounded-full bg-good text-white"><Check aria-hidden="true" size={12} strokeWidth={3} /></span>
-                    : <span aria-hidden="true" className="size-[18px] shrink-0 rounded-full border-[1.5px] border-dashed border-faint" />}
-                  <span className="flex-1">{td.text}</span>
-                  <Chevron aria-hidden="true" size={16} className="text-faint" />
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </Panel>
-      </div>
+        {!setup && completion(report ? "" : "lg:col-span-2")}
+      </div>}
 
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
         {accounts.length > 0 && (

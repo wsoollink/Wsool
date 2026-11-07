@@ -376,6 +376,8 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   many Arabic speakers keep their phone in English). `claimPage(user, name, lang?)`; without a choice (app) it uses `requestLang()`
   (`src/lib/account.ts`: site cookie, else Accept-Language). The welcome email goes out in that request language (`notify(..., {lang})`),
   since the account has no page yet. A page with no accounts hides the "total followers" number (page, OG image, PDF cover).
+  Dashboard home: until the page is complete the «اكتمال صفحتك» checklist sits right under the link card (`setup`), then moves next to the
+  visits chart. Login and onboarding show the logo above the card, linking home (`AuthLogo`).
 - Changing the name later: `nextUsernameChange()` enforces 30 days between changes. The first
   claim does not start the cooldown, so a creator can fix a typo once right away. The change
   form is `UsernameCard` at the top of Edit page (`changeUsername`, live check via `checkUsername`). The old name goes

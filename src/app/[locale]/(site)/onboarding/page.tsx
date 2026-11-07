@@ -4,6 +4,7 @@ import { notFound, redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { CLAIM_COOKIE } from "@/components/marketing/content";
 import { Card } from "@/components/ui/Card";
+import { AuthLogo } from "@/components/AuthLogo";
 import { normalizeUsername, usernameFormatError } from "@/config/usernames";
 import { isLocale, toIntlLocale } from "@/i18n/config";
 import { requireUser } from "@/lib/auth";
@@ -59,6 +60,7 @@ export default async function OnboardingPage({ params }: PageProps<"/[locale]/on
 
   return (
     <main className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-4 py-10">
+      <AuthLogo lang={locale} />
       <Card className="flex flex-col gap-6 p-6">
         <div>
           <h1 className="text-2xl font-bold">{t("title")}</h1>

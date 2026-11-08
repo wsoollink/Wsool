@@ -53,6 +53,7 @@ export const NOTIFICATIONS = {
   agency_refund_issued: { href: "/agency?tab=billing", reminder: false, billing: true },
   agency_plan_expired: { href: "/agency?tab=billing", reminder: false, billing: true },
   agency_links_ended: { href: "/agency?tab=billing", reminder: false },
+  agency_free_activated: { href: "/agency?tab=billing", reminder: false, billing: true },
   // Pages prepared by an agency for new creators (src/lib/agency-drafts.ts).
   agency_draft_claimed: { href: "/agency", reminder: false },
   agency_draft_declined: { href: "/agency", reminder: false },

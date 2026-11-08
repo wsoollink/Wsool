@@ -127,6 +127,7 @@ export const AGENCY_LEGAL_TEXT: Record<"ar" | "en", Record<LegalKind, LegalDoc>>
         { ul: [
           "عند أول اشتراك مدفوع للحساب، يحق طلب استرجاع المبلغ كاملاً خلال 7 أيام من تاريخ الدفع.",
           "لا تشمل المهلة التجديدات، ولا يُسترجع الجزء غير المستخدم من الفترة بعدها، إلا إذا ألزمتنا الأنظمة بذلك.",
+          "إذا دفعت بكود خصم، نسترجع المبلغ الذي دفعته فعلاً، ولا يُعاد الكود للاستخدام. الباقة المفعّلة بكود مجاني لا يُسترجع عنها شيء.",
         ] },
         { h: "4. أخطاء الخصم" },
         { p: "إذا خُصم مبلغ بالخطأ (خصم مكرر، أو بعد إلغاء التجديد، أو مبلغ يختلف عن السعر المتفق عليه)، نسترجعه كاملاً في أي وقت." },
@@ -255,6 +256,7 @@ export const AGENCY_LEGAL_TEXT: Record<"ar" | "en", Record<LegalKind, LegalDoc>>
         { ul: [
           "For the account's first paid subscription, a full refund can be requested within 7 days of payment.",
           "This doesn't cover renewals, and the unused part of a period isn't refunded afterwards, unless the law requires it.",
+          "If you paid with a discount code, we refund the amount you actually paid and the code can't be used again. A plan activated with a free code has nothing to refund.",
         ] },
         { h: "4. Billing errors" },
         { p: "If an amount is charged by mistake (a double charge, a charge after cancelling, or an amount different from the agreed price), we refund it in full at any time." },

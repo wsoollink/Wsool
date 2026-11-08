@@ -1769,7 +1769,19 @@
         "csvName": "Name",
         "csvCode": "Code",
         "csvEmail": "Email"
-      }
+      },
+      "audience": "Who is the code for?",
+      "audienceCreators": "Creators",
+      "audienceAgencies": "Agencies",
+      "audienceHint": "Creator codes work in a creator's subscription, agency codes in an agency's Subscription tab. A code doesn't work in the other place.",
+      "freePlan": "Free plan",
+      "agencyPlans": {
+        "starter": "Small",
+        "growth": "Medium"
+      },
+      "agencyTag": "Agencies",
+      "freeAgencyLabel": "Free · {plan} · {cycle}",
+      "freeHintAgency": "The agency gets the plan you pick for this period with no payment, and it doesn't renew by itself."
     },
     "insights": {
       "none": "Not set",
@@ -2129,7 +2141,8 @@
       "invalid": "That code isn't valid.",
       "expired": "That code has expired.",
       "used": "That code was already used.",
-      "not_yours": "This code belongs to another account."
+      "not_yours": "This code belongs to another account.",
+      "other_kind": "This code is for agencies."
     },
     "freeApplied": "🎁 Free Pro subscription for {cycle}",
     "freeCycle": {
@@ -2423,6 +2436,12 @@
       "title": "Claim period ended",
       "body": "{creator}'s page wasn't claimed within {days} days, so it was deleted. You can prepare a new one.",
       "cta": "Open agency dashboard"
+    },
+    "agency_free_activated": {
+      "subject": "Your agency plan is active for free 🎁",
+      "title": "Agency plan activated",
+      "body": "Your agency plan is active with a free code until {endDate}.\nIt doesn't renew automatically; you can subscribe before it ends from the Subscription tab.",
+      "cta": "View subscription"
     }
   },
   "Notifications": {
@@ -3575,7 +3594,34 @@
     "view": "View",
     "invoiceLine": "Wsool agency plan {plan} ({cycle})",
     "backToBilling": "← Subscription",
-    "nextPlan": "From the next renewal: {plan} ({cycle})"
+    "nextPlan": "From the next renewal: {plan} ({cycle})",
+    "haveCode": "Have a discount code?",
+    "code": "Discount code",
+    "apply": "Apply",
+    "applying": "Checking…",
+    "applied": "{percent}% off the first payment. Pick a plan and subscribe.",
+    "firstOnly": "The discount is on the first payment; renewals are at the normal price.",
+    "removeCode": "Remove code",
+    "freeReady": "Free code: the {plan} plan for one {cycle}, no payment.",
+    "activate": "Activate plan",
+    "activating": "Activating…",
+    "activated": "Your plan is active for free.",
+    "freeCycle": {
+      "monthly": "month",
+      "yearly": "year"
+    },
+    "codeErrors": {
+      "invalid": "This code isn't valid.",
+      "expired": "This code has expired.",
+      "used": "This code was already used.",
+      "not_yours": "This code is for a different email.",
+      "other_kind": "This code is for creators, not agencies.",
+      "not_free": "This is a discount code, not a free one.",
+      "already_active": "You have a paid plan that renews automatically; no need for the free code.",
+      "not_agency": "Brand accounts don't use discount codes.",
+      "failed": "Something went wrong. Please try again."
+    },
+    "payOff": "Online payment isn't available yet; message us on WhatsApp with the code."
   },
   "AgencyDrafts": {
     "newTitle": "Prepare a page for a new creator",

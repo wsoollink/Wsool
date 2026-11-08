@@ -893,6 +893,13 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   active for the period after any trial/paid time left, `cancelAtPeriodEnd` = true (no card, never renews; the hourly job
   drops it to Free at the end), notifies `free_activated`; `free_ending` reminder 7 days before. No invoice, no revenue.
   Refused when a paid plan is active with auto-renew. Checkout never accepts a 100% code.
+  **Agency codes** (owner, Nov 2026): `discount_codes.audience` = `creators` (default) | `agencies`; a code works only for its own kind
+  (`checkDiscountCode(input, user, audience)`, error `other_kind`). Admin form "Who is the code for?"; agency 100% codes also pick
+  `free_plan` (starter | growth). Agency Subscription tab "Have a discount code?" (`applyAgencyDiscount`, owners + managers, kind `agency`):
+  a % code goes into `agencyCheckout(…, code)` → `startAgencyCheckout` (first payment only, one open checkout per code, invoice
+  `discount_code_id` / `discount_amount`, marked used in `settleAgencyInvoice`); a free code → "Activate plan" → `redeemAgencyFreeCode()`
+  (plan + cycle after any trial/paid time left, `plan_auto_renew` off, refused while a paid plan auto-renews or a custom deal runs,
+  notifies `agency_free_activated`). Agency refund policy mentions codes.
 - **Creator categories & insights** (owner, Oct 2026): table `categories` (name ar/en, sort; seeded with 14, owner
   edits the list at `admin/categories`, owner only, `saveCategoryList` replaces the whole list, audited
   `category.update`) and `page_categories` (creator picks up to `MAX_PAGE_CATEGORIES` = 2 in Edit page,

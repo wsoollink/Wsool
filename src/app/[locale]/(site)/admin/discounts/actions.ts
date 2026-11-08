@@ -9,13 +9,17 @@ const createSchema = z.object({
   // 5-90 off the first payment, or 100 = a free Pro period of `freeCycle`.
   percent: z.coerce.number().int().refine((n) => (n >= DISCOUNT_MIN && n <= DISCOUNT_MAX) || n === DISCOUNT_FREE),
   freeCycle: z.enum(["monthly", "yearly"]).optional(),
+  // Creators (Pro) or agencies (their plan); an agency 100% code gives `freePlan` for `freeCycle`.
+  audience: z.enum(["creators", "agencies"]).default("creators"),
+  freePlan: z.enum(["starter", "growth"]).optional(),
   rows: z
     .array(z.object({
       note: z.string().trim().max(120).default(""),
       email: z.string().trim().toLowerCase().max(254).pipe(z.union([z.literal(""), z.email()])).default(""),
     }))
     .min(1).max(DISCOUNT_BATCH_MAX),
-}).refine((v) => (v.percent === DISCOUNT_FREE) === !!v.freeCycle);
+}).refine((v) => (v.percent === DISCOUNT_FREE) === !!v.freeCycle)
+  .refine((v) => (v.percent === DISCOUNT_FREE && v.audience === "agencies") === !!v.freePlan);
 
 export type CreateResult = { codes?: { code: string; note: string; email: string }[]; error?: "invalid" | "failed" };
 
@@ -26,6 +30,8 @@ export async function createCodes(input: z.input<typeof createSchema>): Promise<
   if (!parsed.success) return { error: "invalid" };
   const { percent, rows } = parsed.data;
   const freeCycle = percent === DISCOUNT_FREE ? parsed.data.freeCycle! : null;
+  const { audience } = parsed.data;
+  const freePlan = percent === DISCOUNT_FREE && audience === "agencies" ? parsed.data.freePlan! : null;
   const expiresAt = new Date(Date.now() + DISCOUNT_DAYS * 86_400_000);
 
   // Fresh codes that don't exist yet (collisions are rare; checked anyway).
@@ -35,11 +41,11 @@ export async function createCodes(input: z.input<typeof createSchema>): Promise<
   for (const c of taken) { codes.delete(c); let next; do next = generateCode(); while (codes.has(next)); codes.add(next); }
 
   const list = [...codes];
-  const data = rows.map((r, i) => ({ code: list[i], percent, freeCycle, note: r.note, email: r.email || null, createdBy: admin.userId, expiresAt }));
+  const data = rows.map((r, i) => ({ code: list[i], percent, freeCycle, audience, freePlan, note: r.note, email: r.email || null, createdBy: admin.userId, expiresAt }));
   try {
     await db.$transaction(async (tx) => {
       await tx.discountCode.createMany({ data });
-      await audit(admin, "discount.create", undefined, { count: data.length, percent, free: freeCycle ?? "" }, tx);
+      await audit(admin, "discount.create", undefined, { count: data.length, percent, free: freeCycle ?? "", audience }, tx);
     });
   } catch {
     return { error: "failed" };

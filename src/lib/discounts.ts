@@ -32,20 +32,26 @@ export function codeStatus(c: { usedAt: Date | null; revokedAt: Date | null; exp
   return c.expiresAt <= now ? "expired" : "unused";
 }
 
-export type CodeError = "invalid" | "expired" | "used" | "not_yours";
+export type CodeError = "invalid" | "expired" | "used" | "not_yours" | "other_kind";
+export type CodeAudience = "creators" | "agencies";
 
 /**
  * Checks a code for this account before checkout. Same answer ("invalid")
- * for unknown and revoked codes, so codes can't be probed.
+ * for unknown and revoked codes, so codes can't be probed. A creator code doesn't work for an agency and the other way
+ * round ("other_kind"). For agencies the email lock is the email of the member entering it (owner or manager).
  */
-export async function checkDiscountCode(input: string, user: { email: string }): Promise<{ id: string; code: string; percent: number; freeCycle: "monthly" | "yearly" | null } | { error: CodeError }> {
+export async function checkDiscountCode(input: string, user: { email: string }, audience: CodeAudience = "creators"): Promise<
+  { id: string; code: string; percent: number; freeCycle: "monthly" | "yearly" | null; freePlan: "starter" | "growth" | null } | { error: CodeError }
+> {
   const code = normalizeCode(input);
   if (!/^WSL-[A-Z0-9]{6}$/.test(code)) return { error: "invalid" };
   const row = await db.discountCode.findUnique({ where: { code } });
   if (!row || row.revokedAt) return { error: "invalid" };
+  if (row.audience !== audience) return { error: "other_kind" };
   if (row.email && row.email !== user.email.toLowerCase()) return { error: "not_yours" };
   const status = codeStatus(row);
   if (status === "used") return { error: "used" };
   if (status === "expired") return { error: "expired" };
-  return { id: row.id, code: row.code, percent: row.percent, freeCycle: row.freeCycle };
+  const freePlan = row.freePlan === "starter" || row.freePlan === "growth" ? row.freePlan : null;
+  return { id: row.id, code: row.code, percent: row.percent, freeCycle: row.freeCycle, freePlan };
 }

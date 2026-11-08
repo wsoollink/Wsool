@@ -57,7 +57,11 @@ async function Codes({ lang, searchParams }: { lang: Locale; searchParams: SP })
       ) : (
         <CodesTable rows={shown.map((r) => ({
           id: r.id, code: r.code, note: r.note, email: r.email,
-          discount: r.freeCycle ? t("freeLabel", { cycle: t(`cycle.${r.freeCycle}`) }) : `${r.percent}%`,
+          discount: (r.audience === "agencies" ? `${t("agencyTag")} · ` : "") + (r.freeCycle
+            ? r.freePlan && r.freePlan !== "trial" && r.freePlan !== "custom"
+              ? t("freeAgencyLabel", { plan: t(`agencyPlans.${r.freePlan}`), cycle: t(`cycle.${r.freeCycle}`) })
+              : t("freeLabel", { cycle: t(`cycle.${r.freeCycle}`) })
+            : `${r.percent}%`),
           created: date.format(r.createdAt), expires: date.format(r.expiresAt), status: r.status,
           usedLine: r.status === "used" && r.usedAt ? `${usedBy.get(r.usedBy ?? "") ?? "—"} · ${date.format(r.usedAt)}` : null,
         }))} />

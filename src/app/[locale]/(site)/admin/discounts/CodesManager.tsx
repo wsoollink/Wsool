@@ -21,6 +21,8 @@ export function CreateCodes({ limits }: { limits: { min: number; max: number; ba
   const [percent, setPercent] = useState("20");
   const [freeCycle, setFreeCycle] = useState<"monthly" | "yearly">("yearly");
   const free = percent === "100";
+  const [audience, setAudience] = useState<"creators" | "agencies">("creators");
+  const [freePlan, setFreePlan] = useState<"starter" | "growth">("starter");
   const [mode, setMode] = useState<"count" | "people">("count");
   const [count, setCount] = useState("10");
   const [countNote, setCountNote] = useState("");
@@ -72,7 +74,7 @@ export function CreateCodes({ limits }: { limits: { min: number; max: number; ba
     setError("");
     startTransition(async () => {
       const list = mode === "count" ? Array.from({ length: n }, () => ({ note: countNote, email: "" })) : rows.map(({ note, email }) => ({ note, email }));
-      const res = await createCodes({ percent: Number(percent), ...(free && { freeCycle }), rows: list });
+      const res = await createCodes({ percent: Number(percent), audience, ...(free && { freeCycle }), ...(free && audience === "agencies" && { freePlan }), rows: list });
       if (res.codes) {
         setResult(res.codes);
         setRows([{ key: newKey(), note: "", email: "" }]);
@@ -89,6 +91,17 @@ export function CreateCodes({ limits }: { limits: { min: number; max: number; ba
         <p className="text-xs text-muted">{t("createHint", { days: limits.days })}</p>
       </div>
       <form onSubmit={submit} className="flex flex-col gap-4">
+        <fieldset className="flex flex-col gap-2">
+          <legend className="mb-1.5 text-[13px] font-medium">{t("audience")}</legend>
+          <div className="flex flex-wrap gap-2">
+            {(["creators", "agencies"] as const).map((a) => (
+              <button key={a} type="button" aria-pressed={audience === a} onClick={() => setAudience(a)} className={`inline-flex min-h-11 items-center rounded-full px-4 text-sm font-bold ${audience === a ? "bg-blue/10 text-blue ring-1 ring-blue/30" : "bg-card text-muted shadow-card ring-1 ring-line hover:text-navy"}`}>
+                {t(a === "creators" ? "audienceCreators" : "audienceAgencies")}
+              </button>
+            ))}
+          </div>
+          <p className="text-xs text-muted">{t("audienceHint")}</p>
+        </fieldset>
         <fieldset className="flex flex-col gap-2">
           <legend className="mb-1.5 text-[13px] font-medium">{t("percent")}</legend>
           <div className="flex flex-wrap items-center gap-2">
@@ -113,6 +126,18 @@ export function CreateCodes({ limits }: { limits: { min: number; max: number; ba
         {free && (
           <fieldset className="flex flex-col gap-2 rounded-2xl bg-good/8 p-3">
             <legend className="sr-only">{t("freeCycle")}</legend>
+            {audience === "agencies" && (
+              <>
+                <p className="text-[13px] font-bold">{t("freePlan")}</p>
+                <div className="flex flex-wrap gap-2">
+                  {(["starter", "growth"] as const).map((p) => (
+                    <button key={p} type="button" aria-pressed={freePlan === p} onClick={() => setFreePlan(p)} className={`inline-flex min-h-11 items-center rounded-full px-4 text-sm font-bold ${freePlan === p ? "bg-blue/10 text-blue ring-1 ring-blue/30" : "bg-card text-muted shadow-card ring-1 ring-line hover:text-navy"}`}>
+                      {t(`agencyPlans.${p}`)}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
             <p className="text-[13px] font-bold">{t("freeCycle")}</p>
             <div className="flex flex-wrap gap-2">
               {(["monthly", "yearly"] as const).map((c) => (
@@ -121,7 +146,7 @@ export function CreateCodes({ limits }: { limits: { min: number; max: number; ba
                 </button>
               ))}
             </div>
-            <p className="text-xs text-muted">{t("freeHint")}</p>
+            <p className="text-xs text-muted">{t(audience === "agencies" ? "freeHintAgency" : "freeHint")}</p>
           </fieldset>
         )}
 

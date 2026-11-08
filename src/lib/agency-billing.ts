@@ -7,6 +7,7 @@ import { agencyManagers, endLink } from "@/lib/agency";
 import { refreshAgencyPage } from "@/lib/agency-page";
 import { invoiceLabel } from "@/lib/billing";
 import { db } from "@/lib/db";
+import { checkDiscountCode, discountedPrice, type CodeError } from "@/lib/discounts";
 import { notify, type NotificationType } from "@/lib/notify";
 import { paymentProvider, type Payment } from "@/lib/payments";
 import { siteOrigin } from "@/lib/site-url";
@@ -24,10 +25,10 @@ const tell = async (agencyId: string, type: NotificationType, data: Record<strin
 /** Where a new paid period starts: after any trial or paid time that's left. */
 const periodStart = (until: Date | null, now: Date) => (until && until > now ? until : now);
 
-export type AgencyCheckoutError = "disabled" | "already_active" | "downgrade" | "not_agency" | "failed";
+export type AgencyCheckoutError = "disabled" | "already_active" | "downgrade" | "not_agency" | "failed" | CodeError;
 
 /** Starts a plan checkout for an agency (owner/manager): a pending invoice + the payment page URL. Prices from config only. */
-export async function startAgencyCheckout(payer: { id: string; email: string }, agencyId: string, plan: AgencyPaidPlan, cycle: BillingCycle, currency: Currency): Promise<{ url: string } | { error: AgencyCheckoutError }> {
+export async function startAgencyCheckout(payer: { id: string; email: string }, agencyId: string, plan: AgencyPaidPlan, cycle: BillingCycle, currency: Currency, discountCode?: string): Promise<{ url: string } | { error: AgencyCheckoutError }> {
   const provider = paymentProvider();
   if (!provider) return { error: "disabled" };
   const agency = await db.agency.findUnique({ where: { id: agencyId } });
@@ -39,11 +40,27 @@ export async function startAgencyCheckout(payer: { id: string; email: string }, 
   if (paidAndRunning && agency.planAutoRenew && agency.plan === plan) return { error: "already_active" };
   // Moving down while the bigger plan is still paid: change it for the next renewal instead.
   if (paidAndRunning && agency.plan === "growth" && plan === "starter") return { error: "downgrade" };
-  const amount = AGENCY_PRICES[currency][plan][cycle];
+  // An agency discount code (owner, Nov 2026): first payment only, checked again here whatever the browser showed.
+  const discount = discountCode ? await checkDiscountCode(discountCode, payer, "agencies") : null;
+  if (discount && "error" in discount) return { error: discount.error };
+  // A free (100%) code is redeemed without checkout (redeemAgencyFreeCode).
+  if (discount && discount.percent >= 100) return { error: "failed" };
+  if (discount) {
+    // One open checkout per code: while another agency's invoice with it is being paid (last hour), it's taken.
+    const busy = await db.invoice.count({
+      where: { discountCodeId: discount.id, status: "pending", agencyId: { not: agencyId }, createdAt: { gte: new Date(Date.now() - 3_600_000) } },
+    });
+    if (busy) return { error: "used" };
+  }
+  const full = AGENCY_PRICES[currency][plan][cycle];
+  const amount = discount ? discountedPrice(full, discount.percent) : full;
   // One open checkout at a time: an older unpaid one (another tab, a double click) can't be paid on top of this one.
   await db.invoice.updateMany({ where: { agencyId, kind: "checkout", status: "pending" }, data: { status: "failed", failureReason: "Replaced by a newer checkout" } });
   const invoice = await db.invoice.create({
-    data: { userId: payer.id, agencyId, agencyPlan: plan, kind: "checkout", cycle, currency, amount, vatAmount: vatPart(amount), provider: provider.name },
+    data: {
+      userId: payer.id, agencyId, agencyPlan: plan, kind: "checkout", cycle, currency, amount, vatAmount: vatPart(amount), provider: provider.name,
+      ...(discount && { discountCodeId: discount.id, discountAmount: Math.round((full - amount) * 100) / 100 }),
+    },
   });
   try {
     const { url } = await provider.startCheckout({
@@ -75,6 +92,10 @@ export async function settleAgencyInvoice(invoice: Invoice, payment: Payment): P
       data: { status: "paid", number: Number(nextval), providerPaymentId: payment.id, paidAt: now, periodStart: start, periodEnd: end, failureReason: null },
     });
     if (count !== 1) return null;
+    // The code is spent once its payment goes through (a code used meanwhile stays with its first invoice).
+    if (invoice.discountCodeId) {
+      await tx.discountCode.updateMany({ where: { id: invoice.discountCodeId, usedAt: null }, data: { usedAt: now, usedBy: invoice.userId, invoiceId: invoice.id } });
+    }
     await tx.agency.update({
       where: { id: agency.id },
       data: {
@@ -90,6 +111,40 @@ export async function settleAgencyInvoice(invoice: Invoice, payment: Payment): P
     await tell(agencyId, "agency_payment_receipt", { invoice: invoiceLabel(done.number), amount: Number(invoice.amount), currency: invoice.currency, periodEndDate: done.end.toISOString() });
   }
   return "paid";
+}
+
+export type AgencyRedeemError = CodeError | "not_free" | "already_active" | "not_agency" | "failed";
+
+/**
+ * Redeems an agency 100% code (owner, Nov 2026): the code's plan for its period, no payment. It starts after any trial or
+ * paid time left and never renews (no card): when it ends, the usual plan-end steps follow. Refused while a paid plan
+ * renews automatically or a custom deal runs, so a free code never overlaps something paid.
+ */
+export async function redeemAgencyFreeCode(member: { id: string; email: string }, agencyId: string, input: string): Promise<{ until: Date } | { error: AgencyRedeemError }> {
+  const code = await checkDiscountCode(input, member, "agencies");
+  if ("error" in code) return code;
+  if (code.percent < 100 || !code.freeCycle || !code.freePlan) return { error: "not_free" };
+  const now = new Date();
+  type Done = { end: Date; slug: string | null } | { error: "not_agency" | "already_active" | "used" };
+  const result = await db.$transaction(async (tx): Promise<Done> => {
+    await tx.$queryRaw`SELECT id FROM agencies WHERE id = ${agencyId}::uuid FOR UPDATE`;
+    const agency = await tx.agency.findUnique({ where: { id: agencyId } });
+    if (!agency || agency.status !== "active" || agency.kind !== "agency") return { error: "not_agency" };
+    const running = !!agency.planUntil && agency.planUntil > now;
+    if (running && (agency.plan === "custom" || (isAgencyPaidPlan(agency.plan) && agency.planAutoRenew))) return { error: "already_active" };
+    const { count } = await tx.discountCode.updateMany({ where: { id: code.id, usedAt: null, revokedAt: null }, data: { usedAt: now, usedBy: member.id } });
+    if (count !== 1) return { error: "used" };
+    const end = addCycle(periodStart(agency.planUntil, now), code.freeCycle!);
+    await tx.agency.update({
+      where: { id: agency.id },
+      data: { plan: code.freePlan!, planCycle: code.freeCycle, planUntil: end, planAutoRenew: false, planFailedAttempts: 0, planRetryAt: null, nextPlan: null, nextCycle: null },
+    });
+    return { end, slug: agency.slug };
+  });
+  if ("error" in result) return { error: result.error };
+  refreshAgencyPage(result.slug);
+  await tell(agencyId, "agency_free_activated", { endDate: result.end.toISOString() });
+  return { until: result.end };
 }
 
 /** Auto-renew on (needs a saved card) or off (the plan runs to its end date). */

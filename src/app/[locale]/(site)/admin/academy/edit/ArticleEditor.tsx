@@ -8,9 +8,9 @@ import { buttonClasses } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { UPLOAD_KINDS } from "@/config/uploads";
 import { ACADEMY_CATEGORIES, SLUG_PATTERN, type ArticleInput } from "@/lib/academy-shared";
-import { markupToWebHtml } from "@/lib/email/markup";
+import { bodyToWebHtml } from "@/lib/rich-text";
 import { shrinkImage, uploadFile } from "@/lib/upload-client";
-import { MarkupToolbar, type ImageUpload } from "../../newsletter/edit/MarkupToolbar";
+import { RichEditor, type ImageUpload } from "@/components/admin/RichEditor";
 import { academyImageUrl, deleteArticle, requestAcademyUpload, saveArticle } from "../actions";
 
 const input = "h-11 w-full rounded-[10px] border border-navy/15 bg-card px-3 text-[15px] outline-none shadow-card transition-[border-color,box-shadow] focus:border-blue focus:ring-3 focus:ring-blue/15";
@@ -36,9 +36,8 @@ export function ArticleEditor({ id, initial, draftSlug, publishedAt }: { id: str
   const [pending, start] = useTransition();
   const [coverBusy, setCoverBusy] = useState(false);
   const [schedule, setSchedule] = useState(() => (publishedAt && new Date(publishedAt) > new Date() ? localInput(new Date(publishedAt)) : ""));
-  const body = useRef<HTMLTextAreaElement>(null);
   const file = useRef<HTMLInputElement>(null);
-  const preview = useMemo(() => markupToWebHtml(f.body), [f.body]);
+  const preview = useMemo(() => bodyToWebHtml(f.body), [f.body]);
   const now = new Date();
   const state = !publishedAt ? "draft" : new Date(publishedAt) > now ? "scheduled" : "published";
   const set = (patch: Partial<ArticleInput>) => { setF((cur) => ({ ...cur, ...patch })); setMsg(null); };
@@ -125,10 +124,10 @@ export function ArticleEditor({ id, initial, draftSlug, publishedAt }: { id: str
           <span className="text-xs font-normal text-muted">{t("coverHint")}</span>
         </div>
         <div className={field}>
-          <span>{t("body")}</span>
-          <MarkupToolbar target={body} value={f.body} onChange={(v) => set({ body: v })} upload={UPLOAD} />
-          <textarea ref={body} value={f.body} rows={22} dir={dir} lang={f.lang} onChange={(e) => set({ body: e.target.value })}
-            className={`${input} h-auto min-h-96 py-3 font-normal leading-7`} />
+          <span id="article-body-label">{t("body")}</span>
+          <div className="font-normal">
+            <RichEditor key={f.lang} id="article-body" labelledBy="article-body-label" value={f.body} onChange={(v) => set({ body: v })} lang={f.lang} upload={UPLOAD} />
+          </div>
           <span className="text-xs font-normal text-muted">{t("bodyHint")}</span>
         </div>
 

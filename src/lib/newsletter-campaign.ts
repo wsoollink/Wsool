@@ -5,7 +5,7 @@ import type { NewsletterAudience, NewsletterCampaign, Prisma } from "@/generated
 import { toIntlLocale, type Locale } from "@/i18n/config";
 import { db } from "@/lib/db";
 import { renderEmail } from "@/lib/email/layout";
-import { markupToText } from "@/lib/email/markup";
+import { bodyToText, cleanBody } from "@/lib/rich-text";
 import { BATCH_SIZE, sendBatch, type Email } from "@/lib/email/send";
 import { oneClickHeaders, syncLists, unsubscribeUrl } from "@/lib/newsletter";
 import ar from "../../messages/ar.json";
@@ -15,9 +15,10 @@ import en from "../../messages/en.json";
 export const campaignSchema = z
   .object({
     subjectAr: z.string().trim().max(150),
-    bodyAr: z.string().trim().max(20000),
+    // Rich JSON from the editor (cleaned here) or the old text format.
+    bodyAr: z.string().trim().max(200000).transform(cleanBody),
     subjectEn: z.string().trim().max(150),
-    bodyEn: z.string().trim().max(20000),
+    bodyEn: z.string().trim().max(200000).transform(cleanBody),
     ctaLabelAr: z.string().trim().max(40),
     ctaLabelEn: z.string().trim().max(40),
     ctaUrl: z.union([z.literal(""), z.url({ protocol: /^https$/ }).max(500)]),
@@ -50,7 +51,7 @@ export function renderCampaign(c: Content, lang: Locale, subscriberId: string | 
   const unsubscribe = subscriberId ? unsubscribeUrl(subscriberId, c.audience ?? "creators") : t("unsubscribeSample");
   const content = renderEmail({
     lang,
-    preheader: markupToText(body).replace(/\s+/g, " ").trim().slice(0, 110),
+    preheader: bodyToText(body).replace(/\s+/g, " ").trim().slice(0, 110),
     title: subject,
     paragraphs: [],
     markup: body,

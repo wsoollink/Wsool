@@ -682,7 +682,8 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
 - **Sending the newsletter** (`admin/newsletter/`, editor at `/admin/newsletter/edit?id=`; no server-action
   redirects (they showed a blank page on Netlify): actions return data and the client navigates;
   permission `newsletter.send`): tables
-  `newsletter_campaigns` (subject/body/button per language, status draft → sending → sent, counts) and
+  `newsletter_campaigns` (subject/body/button per language, status draft → sending → sent, counts; body = rich editor JSON, see
+  "Rich editor") and
   `newsletter_deliveries` (one row per campaign × subscriber, written **before** sending, so a resumed
   or double-clicked send never emails anyone twice). Each subscriber gets their language's version, or
   the other one if theirs is empty (`versionFor`). Body = a small text format (owner, Oct 2026: editor with a toolbar,
@@ -765,6 +766,19 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
 - **Unused uploads**: never runs against a local `DATABASE_URL` (it would delete real files). `cleanOrphanUploads()` (`src/lib/storage-cleanup.ts`, hourly job, once a day, 40 owner folders per day in rotation)
   deletes `media` files older than 7 days that no row uses (the `unused()` SQL lists every column holding a file URL + newsletter bodies:
   **a new column that stores an uploaded file URL must be added there**). The private `verification` bucket is not touched.
+
+### Rich editor (owner, Nov 2026)
+- Newsletter issues and Academy articles are written in a Word-like editor (`RichEditor`, `src/components/admin/RichEditor.tsx`, TipTap v3;
+  custom nodes in `rich-extensions.ts`: box with 4 tones, spacer, button, image with size/align/caption/link, ✓ bullet list): large/small
+  headings, bold/italic/underline/strike, 8 text colours (`RICH_COLORS`), 5 highlights, small/large size, alignment, lists, quote, divider,
+  links, emoji, undo/redo. Toolbar buttons keep the editor focus (`keepFocus`), else the next letter typed is lost.
+- Storage: the editor's JSON in the same `body` / `body_ar` / `body_en` columns. `src/lib/rich-text.ts` (pure): `sanitizeDoc()` keeps only
+  known nodes, marks, palette colours and https/mailto links (schemas run `cleanBody`), `toDoc()` reads JSON or converts an old text-format
+  body on the fly (`markupToDoc` in `src/lib/email/markup.ts`; old bodies need no migration), and renders email HTML (inline styles,
+  tables), web HTML (`.ac-*` classes in `globals.css`, dark mode, h2 ids for the table of contents), headings and plain text
+  (`bodyToEmailHtml` / `bodyToWebHtml` / `bodyHeadings` / `bodyToText`).
+- Newsletter font option "Wsool font" now covers the whole email (title, text, buttons): `@font-face` of the variable
+  `public/brand/fonts/noto-kufi-arabic.woff2`; Apple Mail shows it, Gmail/Outlook fall back to system fonts.
 
 ### Wsool Academy (owner, Nov 2026)
 - Articles at `wsool.link/academy` (list: categories `ACADEMY_CATEGORIES`, search `?q=`, `?c=`, pages `?p=`, newest one big) and

@@ -204,3 +204,65 @@ export function markupToText(body: string): string {
     .filter(Boolean)
     .join("\n\n");
 }
+
+// ---------------------------------------------------------------- old format → rich document (src/lib/rich-text.ts)
+
+type DocMark = { type: string; attrs?: Record<string, unknown> };
+type DocNode = { type: string; attrs?: Record<string, unknown>; content?: DocNode[]; text?: string; marks?: DocMark[] };
+
+/** Text nodes for one line: links, bold, italic and bare web addresses, inside optional [colour] spans. */
+function lineNodes(line: string): DocNode[] {
+  const out: DocNode[] = [];
+  const marked = (part: string, base: DocMark[]) => {
+    let last = 0;
+    const text = (s: string, ms: DocMark[]) => { if (s) out.push({ type: "text", text: s, ...(ms.length && { marks: ms }) }); };
+    for (const m of part.matchAll(INLINE)) {
+      text(part.slice(last, m.index), base);
+      const [all, label, url, bold, italic] = m;
+      if (bold !== undefined) text(bold, [...base, { type: "bold" }]);
+      else if (italic !== undefined) text(italic, [...base, { type: "italic" }]);
+      else if (label !== undefined) text(label, [...base, { type: "link", attrs: { href: url } }]);
+      else text(all, [...base, { type: "link", attrs: { href: all } }]);
+      last = m.index! + all.length;
+    }
+    text(part.slice(last), base);
+  };
+  let last = 0;
+  for (const m of line.matchAll(COLOR)) {
+    marked(line.slice(last, m.index), []);
+    marked(m[2], [{ type: "textStyle", attrs: { color: TEXT_COLORS[m[1] as keyof typeof TEXT_COLORS], fontSize: null } }]);
+    last = m.index! + m[0].length;
+  }
+  marked(line.slice(last), []);
+  return out;
+}
+
+function linesNodes(lines: string[]): DocNode[] {
+  return lines.flatMap((l, i) => [...(i ? [{ type: "hardBreak" }] : []), ...lineNodes(l)]);
+}
+
+/** A body in the old text format as a rich document, so old issues and articles open in the new editor unchanged. */
+export function markupToDoc(body: string): { type: "doc"; content: DocNode[] } {
+  const content: DocNode[] = [];
+  for (const { text, center, box } of sections(body)) {
+    const textAlign = center ? "center" : null;
+    const nodes: DocNode[] = blocks(text).map((b) => {
+      const img = b.match(IMAGE);
+      if (img) return { type: "image", attrs: { src: img[2], alt: img[1], caption: "", size: "full", align: "center", href: "" } };
+      if (b === "---") return { type: "horizontalRule" };
+      if (b.startsWith("## ")) return { type: "heading", attrs: { level: 2, textAlign }, content: lineNodes(b.slice(3).replace(/\n/g, " ")) };
+      const lines = b.split("\n");
+      const list = lines.every((l) => l.startsWith("- ")) ? "bulletList" : lines.every((l) => NUMBERED.test(l)) ? "orderedList" : null;
+      if (list) {
+        return {
+          type: list, attrs: list === "bulletList" ? { check: false } : {},
+          content: lines.map((l) => ({ type: "listItem", content: [{ type: "paragraph", attrs: { textAlign: null }, content: lineNodes(l.replace(list === "bulletList" ? /^- / : NUMBERED, "")) }] })),
+        };
+      }
+      return { type: "paragraph", attrs: { textAlign }, content: linesNodes(lines) };
+    });
+    if (box && nodes.length) content.push({ type: "box", attrs: { tone: "blue" }, content: nodes });
+    else content.push(...nodes);
+  }
+  return { type: "doc", content };
+}

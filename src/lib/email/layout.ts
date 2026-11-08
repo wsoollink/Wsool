@@ -1,6 +1,6 @@
 import "server-only";
 import { siteOrigin } from "@/lib/site-url";
-import { markupToHtml, markupToText } from "./markup";
+import { bodyToEmailHtml, bodyToText } from "@/lib/rich-text";
 
 const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 
@@ -22,14 +22,15 @@ export type EmailContent = {
   cta?: { label: string; url: string };
   /** Small print at the bottom (why they got it, how to change it). */
   footer: string;
-  /** "wsool" = title and headings in Wsool's font (Noto Kufi Arabic) where the mail app loads web fonts; else system fonts. */
+  /** "wsool" = the whole email (title, text, lists, buttons) in Wsool's font (Noto Kufi Arabic) where the mail app loads web
+   *  fonts (Apple Mail, iOS); Gmail and Outlook show the system font. "system" = system fonts everywhere. */
   headingFont?: "wsool" | "system";
 };
 
-/** Served from public/brand/fonts; mail apps without web fonts (Gmail, Outlook) fall back to the system font. */
+/** Served from public/brand/fonts (variable font, every weight); mail apps without web fonts (Gmail, Outlook) fall back to the system font. */
 const WSOOL_FONT = "'Wsool Kufi'";
 const fontFace = () =>
-  `<style>@font-face{font-family:${WSOOL_FONT};src:url('${siteOrigin()}/brand/fonts/noto-kufi-arabic-bold.woff2') format('woff2');font-weight:700;font-style:normal;}</style>`;
+  `<style>@font-face{font-family:${WSOOL_FONT};src:url('${siteOrigin()}/brand/fonts/noto-kufi-arabic.woff2') format('woff2');font-weight:100 900;font-style:normal;}</style>`;
 
 /**
  * One branded, mobile-friendly email layout (tables + inline styles, which
@@ -48,13 +49,13 @@ export function renderEmail(c: EmailContent): { html: string; text: string } {
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F4F6FA;"><tr><td align="center" style="padding:24px 12px;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;">
 <tr><td dir="${dir}" style="padding:0 8px 16px;text-align:${align};font-family:${headFont};font-size:22px;font-weight:700;color:#0A6CFF;">${c.lang === "ar" ? "وصول" : "Wsool"}</td></tr>
-<tr><td dir="${dir}" style="background:#ffffff;border:1px solid rgba(2,25,65,0.09);border-radius:20px;padding:28px 24px;text-align:${align};font-family:${font};color:#021941;">
+<tr><td dir="${dir}" style="background:#ffffff;border:1px solid rgba(2,25,65,0.09);border-radius:20px;padding:28px 24px;text-align:${align};font-family:${headFont};color:#021941;">
 <h1 style="margin:0 0 16px;font-family:${headFont};font-size:20px;font-weight:700;line-height:1.5;">${esc(c.title)}</h1>
-${c.markup !== undefined ? markupToHtml(c.markup, wsool ? headFont : undefined) : c.paragraphs.map((p) => `<p style="margin:0 0 14px;font-size:15px;line-height:1.8;color:#021941;">${rich(p)}</p>`).join("\n")}
-${c.cta ? `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:22px 0 4px;"><tr><td style="border-radius:999px;background:#021941;"><a href="${esc(c.cta.url)}" style="display:inline-block;padding:13px 26px;font-family:${font};font-size:15px;font-weight:700;color:#ffffff;text-decoration:none;border-radius:999px;">${esc(c.cta.label)}</a></td></tr></table>` : ""}
+${c.markup !== undefined ? bodyToEmailHtml(c.markup, dir) : c.paragraphs.map((p) => `<p style="margin:0 0 14px;font-size:15px;line-height:1.8;color:#021941;">${rich(p)}</p>`).join("\n")}
+${c.cta ? `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:22px 0 4px;"><tr><td style="border-radius:999px;background:#021941;"><a href="${esc(c.cta.url)}" style="display:inline-block;padding:13px 26px;font-family:${headFont};font-size:15px;font-weight:700;color:#ffffff;text-decoration:none;border-radius:999px;">${esc(c.cta.label)}</a></td></tr></table>` : ""}
 </td></tr>
 <tr><td dir="${dir}" style="padding:16px 8px;text-align:${align};font-family:${font};font-size:12px;line-height:1.7;color:#56607A;">${rich(c.footer)}</td></tr>
 </table></td></tr></table></body></html>`;
-  const text = [c.title, "", ...(c.markup !== undefined ? [markupToText(c.markup)] : c.paragraphs), ...(c.cta ? ["", `${c.cta.label}: ${c.cta.url}`] : []), "", "—", c.footer].join("\n");
+  const text = [c.title, "", ...(c.markup !== undefined ? [bodyToText(c.markup)] : c.paragraphs), ...(c.cta ? ["", `${c.cta.label}: ${c.cta.url}`] : []), "", "—", c.footer].join("\n");
   return { html, text };
 }

@@ -11,7 +11,7 @@ import { SiteFooter } from "@/components/site/SiteFooter";
 import { buttonClasses } from "@/components/ui/Button";
 import { isLocale, locales, toIntlLocale, type Locale } from "@/i18n/config";
 import { publishedArticle, publishedArticles, related } from "@/lib/academy";
-import { markupHeadings, markupToWebHtml } from "@/lib/email/markup";
+import { bodyHeadings, bodyToWebHtml } from "@/lib/rich-text";
 import { siteOrigin } from "@/lib/site-url";
 import { shareMeta } from "@/lib/seo";
 
@@ -49,7 +49,7 @@ async function Article({ lang, params }: { lang: Locale; params: Promise<{ slug:
   const more = related(all, a);
   const date = new Intl.DateTimeFormat(toIntlLocale(own), { dateStyle: "long" });
   const short = new Intl.DateTimeFormat(toIntlLocale(own), { dateStyle: "medium" });
-  const headings = markupHeadings(a.body);
+  const headings = bodyHeadings(a.body);
   const url = `${siteOrigin()}/academy/${a.slug}`;
   // Structured data for search engines (an Article by Wsool Team, published by Wsool).
   const jsonLd = {
@@ -89,7 +89,7 @@ async function Article({ lang, params }: { lang: Locale; params: Promise<{ slug:
             </ul>
           </nav>
         )}
-        <div className="ac-body" dangerouslySetInnerHTML={{ __html: markupToWebHtml(a.body) }} />
+        <div className="ac-body" dangerouslySetInnerHTML={{ __html: bodyToWebHtml(a.body) }} />
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-line pt-5">
           <Share url={url} title={a.title} labels={{ share: t("share"), copy: t("copy"), copied: t("copied") }} />
           <Link href="/academy" className="inline-flex min-h-11 items-center text-sm font-bold text-blue">{t("allArticles")}</Link>

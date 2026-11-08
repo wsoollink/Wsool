@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { cleanBody } from "@/lib/rich-text";
 
 /** Academy rules shared by the browser (editor) and the server (src/lib/academy.ts). */
 export const ACADEMY_CATEGORIES = ["pricing", "brands", "growth", "content", "platforms", "tools"] as const;
@@ -14,7 +15,7 @@ export const articleSchema = z.object({
   slug: z.string().trim().toLowerCase().min(3).max(80).regex(SLUG_PATTERN),
   title: z.string().trim().min(3).max(120),
   summary: z.string().trim().max(300),
-  body: z.string().trim().max(50000),
+  body: z.string().trim().max(300000).transform(cleanBody),
   category: z.enum(ACADEMY_CATEGORIES),
   coverUrl: z.string().trim().max(500).nullable(),
 });

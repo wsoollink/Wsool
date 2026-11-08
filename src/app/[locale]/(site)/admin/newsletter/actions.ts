@@ -8,15 +8,16 @@ import { sendEmail } from "@/lib/email/send";
 import { rateLimit } from "@/lib/rate-limit";
 import { createUploadTicket, isOwnUploadedFile, publicFileUrl } from "@/lib/storage";
 import { syncLists } from "@/lib/newsletter";
+import { cleanBody } from "@/lib/rich-text";
 import { campaignSchema, remainingFor, renderCampaign, sendNextBatches, versionFor, type CampaignInput } from "@/lib/newsletter-campaign";
 
 const id = z.uuid();
 /** Drafts may be incomplete: only lengths are checked until sending. */
 const draftSchema = z.object({
   subjectAr: z.string().trim().max(150),
-  bodyAr: z.string().trim().max(20000),
+  bodyAr: z.string().trim().max(200000).transform(cleanBody),
   subjectEn: z.string().trim().max(150),
-  bodyEn: z.string().trim().max(20000),
+  bodyEn: z.string().trim().max(200000).transform(cleanBody),
   ctaLabelAr: z.string().trim().max(40),
   ctaLabelEn: z.string().trim().max(40),
   ctaUrl: z.string().trim().max(500),

@@ -11,9 +11,10 @@ import { Card } from "@/components/ui/Card";
 import type { CampaignStatus } from "@/generated/prisma/enums";
 import type { AudienceCounts, CampaignInput } from "@/lib/newsletter-campaign";
 import { insertText } from "@/lib/text-insert";
+import { newsletterImageUrl, requestNewsletterUpload } from "../actions";
 import { deleteDraft, previewCampaign, retryFailed, saveCampaign, sendBatches, sendTest, startSending } from "../actions";
 import { statusTone } from "../status";
-import { MarkupToolbar } from "./MarkupToolbar";
+import { RichEditor, type ImageUpload } from "@/components/admin/RichEditor";
 
 type Fields = Required<CampaignInput>;
 type Lang = "ar" | "en";
@@ -27,6 +28,7 @@ type Props = {
   adminEmail: string;
 };
 
+const UPLOAD: ImageUpload = { kind: "newsletterImage", request: requestNewsletterUpload, url: newsletterImageUrl };
 const input = "h-11 w-full rounded-[10px] border border-navy/15 bg-card px-3 text-[15px] disabled:bg-navy/[0.03] outline-none shadow-card transition-[border-color,box-shadow] focus:border-blue focus:ring-3 focus:ring-blue/15";
 
 /**
@@ -104,7 +106,6 @@ export function CampaignEditor({ id, status, initial, audience, progress, sentOn
       await sendLoop(progress.sent, progress.sent + progress.failed);
     });
 
-  const bodyRef = useRef<HTMLTextAreaElement>(null);
   const subjectRef = useRef<HTMLInputElement>(null);
   /** Puts the picked emoji where the cursor is in the subject. */
   const subjectEmoji = (key: keyof Fields) => (emoji: string) => {
@@ -123,10 +124,9 @@ export function CampaignEditor({ id, status, initial, audience, progress, sentOn
     };
     return (
       <div className="flex flex-col gap-1.5">
-        <label htmlFor={fid} className="text-[13px] font-medium">{label}</label>
-        {opts.area && <MarkupToolbar target={bodyRef} value={f[key]} onChange={(v) => set({ [key]: v } as Partial<Fields>)} disabled={!editable} />}
+        <label htmlFor={fid} id={`${fid}-label`} className="text-[13px] font-medium">{label}</label>
         {opts.area ? (
-          <textarea key={fid} ref={bodyRef} {...common} rows={12} className={`${input} h-auto min-h-56 py-3 leading-7`} />
+          <RichEditor key={fid} id={fid} labelledBy={`${fid}-label`} value={String(f[key])} onChange={(v) => set({ [key]: v } as Partial<Fields>)} lang={opts.lang ?? "ar"} upload={UPLOAD} disabled={!editable} />
         ) : opts.emoji ? (
           <div className="flex items-center gap-1">
             <input key={fid} ref={subjectRef} {...common} className={`${input} min-w-0 flex-1`} />

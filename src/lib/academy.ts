@@ -9,11 +9,12 @@ import { db } from "@/lib/db";
  * articles; the author shown is always "Wsool Team". Drafts have no publishedAt; a future publishedAt = scheduled.
  */
 export { ACADEMY_CATEGORIES, ACADEMY_TAG, ARTICLES_PER_PAGE, SLUG_PATTERN, articleSchema, type AcademyCategory, type ArticleInput } from "@/lib/academy-shared";
+import { bodyToText } from "@/lib/rich-text";
 import { ACADEMY_TAG, SLUG_PATTERN, type AcademyCategory } from "@/lib/academy-shared";
 
 /** Minutes to read (about 200 words a minute, at least 1). */
 export function readingMinutes(body: string) {
-  const words = body.replace(/!\[[^\]]*\]\([^)]*\)|\[(\/?)(center|box|blue|green|red|gray)\]|[#*>-]/g, " ").split(/\s+/).filter(Boolean).length;
+  const words = bodyToText(body).split(/\s+/).filter(Boolean).length;
   return Math.max(1, Math.round(words / 200));
 }
 

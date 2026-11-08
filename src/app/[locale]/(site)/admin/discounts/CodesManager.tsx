@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Check, Copy, Plus, Trash2 } from "lucide-react";
+import { Check, ClipboardPaste, Copy, Download, FileUp, Plus, Trash2 } from "lucide-react";
 import { buttonClasses } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { codesCsv, parsePeopleList } from "@/lib/people-list";
 import { createCodes, deleteRevoked, revokeCode, type CreateResult } from "./actions";
 
 type Row = { key: string; note: string; email: string };
@@ -29,6 +30,33 @@ export function CreateCodes({ limits }: { limits: { min: number; max: number; ba
   const [error, setError] = useState("");
   const [copied, setCopied] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
+  const fileInput = useRef<HTMLInputElement>(null);
+  const [paste, setPaste] = useState<string | null>(null);
+  const [imported, setImported] = useState<string>("");
+
+  /** Adds people from a pasted list or a .txt/.csv file (one per line: name, email, or "name, email"). */
+  const importList = (text: string) => {
+    const blank = rows.length === 1 && !rows[0].note && !rows[0].email;
+    const keep = blank ? [] : rows;
+    const { rows: found, duplicates, overLimit } = parsePeopleList(text, limits.batch - keep.length);
+    const next = [...keep, ...found.map((r) => ({ key: newKey(), ...r }))];
+    setRows(next.length ? next : [{ key: newKey(), note: "", email: "" }]);
+    setImported([t("import.added", { n: found.length }), duplicates ? t("import.duplicates", { n: duplicates }) : "", overLimit ? t("import.overLimit", { n: overLimit, max: limits.batch }) : ""].filter(Boolean).join(" · "));
+    setPaste(null);
+  };
+  const readFile = async (f: File | undefined) => {
+    if (!f) return;
+    if (f.size > 1_000_000) return setImported(t("import.tooBig"));
+    importList(await f.text());
+  };
+  const downloadCsv = (codes: NonNullable<CreateResult["codes"]>) => {
+    const blob = new Blob([codesCsv(codes, [t("import.csvName"), t("import.csvCode"), t("import.csvEmail")])], { type: "text/csv;charset=utf-8" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `wsool-codes-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  };
   const set = (key: string, patch: Partial<Row>) => setRows((all) => all.map((r) => (r.key === key ? { ...r, ...patch } : r)));
 
   const copy = async (text: string, id: string) => {
@@ -48,6 +76,7 @@ export function CreateCodes({ limits }: { limits: { min: number; max: number; ba
       if (res.codes) {
         setResult(res.codes);
         setRows([{ key: newKey(), note: "", email: "" }]);
+        setImported("");
         router.refresh();
       } else setError(t(`errors.${res.error ?? "failed"}`));
     });
@@ -126,6 +155,26 @@ export function CreateCodes({ limits }: { limits: { min: number; max: number; ba
         ) : (
         <div className="flex flex-col gap-2">
           <p className="text-[13px] font-medium">{t("people")}</p>
+          <div className="flex flex-col gap-2 rounded-xl bg-navy/[0.03] p-3">
+            <div className="flex flex-wrap gap-2">
+              <button type="button" onClick={() => fileInput.current?.click()} className="inline-flex min-h-11 items-center gap-2 rounded-full border border-line bg-card px-4 text-[13.5px] font-bold shadow-card hover:bg-hover">
+                <FileUp aria-hidden="true" size={17} /> {t("import.file")}
+              </button>
+              <button type="button" aria-expanded={paste !== null} onClick={() => setPaste(paste === null ? "" : null)} className="inline-flex min-h-11 items-center gap-2 rounded-full border border-line bg-card px-4 text-[13.5px] font-bold shadow-card hover:bg-hover">
+                <ClipboardPaste aria-hidden="true" size={17} /> {t("import.paste")}
+              </button>
+              <input ref={fileInput} type="file" accept=".txt,.csv,text/plain,text/csv" className="sr-only" tabIndex={-1} aria-hidden="true" onChange={(e) => { readFile(e.target.files?.[0]); e.target.value = ""; }} />
+            </div>
+            <p className="text-xs text-muted">{t("import.hint", { max: limits.batch })}</p>
+            {paste !== null && (
+              <div className="flex flex-col gap-2">
+                <label htmlFor="people-paste" className="sr-only">{t("import.paste")}</label>
+                <textarea id="people-paste" autoFocus value={paste} onChange={(e) => setPaste(e.target.value)} rows={6} placeholder={t("import.placeholder")} className={`${control} h-auto py-2.5 leading-7`} />
+                <button type="button" disabled={!paste.trim()} onClick={() => importList(paste)} className={buttonClasses("secondary", "self-start")}>{t("import.add")}</button>
+              </div>
+            )}
+            {imported && <p role="status" className="text-[13px] font-bold text-good">{imported}</p>}
+          </div>
           <ul className="flex flex-col gap-2">
             {rows.map((r, i) => (
               <li key={r.key} className="grid grid-cols-1 gap-2 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]">
@@ -161,9 +210,14 @@ export function CreateCodes({ limits }: { limits: { min: number; max: number; ba
         <div className="flex flex-col gap-2 rounded-2xl bg-good/8 p-4" role="status">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <p className="text-sm font-bold text-good">{t("created", { n: result.length })}</p>
-            <button type="button" onClick={() => copy(result.map((c) => [c.code, c.note, c.email].filter(Boolean).join(" — ")).join("\n"), "all")} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-card px-4 text-[13px] font-bold">
-              {copied === "all" ? <Check aria-hidden="true" size={16} /> : <Copy aria-hidden="true" size={16} />} {t("copyAll")}
-            </button>
+            <span className="flex flex-wrap gap-2">
+              <button type="button" onClick={() => downloadCsv(result)} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-card px-4 text-[13px] font-bold">
+                <Download aria-hidden="true" size={16} /> {t("import.download")}
+              </button>
+              <button type="button" onClick={() => copy(result.map((c) => [c.code, c.note, c.email].filter(Boolean).join(" — ")).join("\n"), "all")} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-card px-4 text-[13px] font-bold">
+                {copied === "all" ? <Check aria-hidden="true" size={16} /> : <Copy aria-hidden="true" size={16} />} {t("copyAll")}
+              </button>
+            </span>
           </div>
           <ul className="flex flex-col divide-y divide-good/15">
             {result.map((c) => (

@@ -1754,7 +1754,22 @@
       "clearSelection": "إلغاء التحديد",
       "confirmDeleteSelected": "تحذف {n, plural, one {كود واحد} two {كودين} few {# أكواد} other {# كود}} نهائياً؟ ما تقدر ترجعها.",
       "deletedSome": "انحذف {count}، وتُرك {skipped} لأنها مستخدمة أو في عملية دفع.",
-      "usedLocked": "الأكواد المستخدمة ما تنحذف"
+      "usedLocked": "الأكواد المستخدمة ما تنحذف",
+      "import": {
+        "file": "رفع ملف txt أو csv",
+        "paste": "الصق قائمة",
+        "hint": "كل سطر شخص واحد: الاسم، أو الإيميل، أو «الاسم, الإيميل» عشان ينقفل الكود على إيميله. الحد {max} في المرة.",
+        "placeholder": "سارة العتيبي\nفهد, fahad@mail.com\nnoura@mail.com",
+        "add": "أضف للقائمة",
+        "added": "انضاف {n} شخص",
+        "duplicates": "تجاهلنا {n} مكرر",
+        "overLimit": "{n} زيادة عن الحد ({max}) ما انضافوا",
+        "tooBig": "الملف كبير، الحد 1 ميجا.",
+        "download": "تنزيل CSV",
+        "csvName": "الاسم",
+        "csvCode": "الكود",
+        "csvEmail": "الإيميل"
+      }
     },
     "insights": {
       "none": "غير محدد",

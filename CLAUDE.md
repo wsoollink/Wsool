@@ -881,7 +881,9 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   free time = "extend trial"), valid `DISCOUNT_DAYS` = 30, statuses unused / used (by whom, when) /
   expired / revoked; create and revoke are audited. Bulk (owner, Nov 2026): "Number of codes" mode makes up to `DISCOUNT_BATCH_MAX` = 200 codes with one
   note ("For specific people" = one row each); the table (`CodesTable`, client) has a checkbox per code + select all and "Delete
-  selected" (`deleteCodes`: skips used codes and codes in an open checkout, audited `discount.delete`). Table `discount_codes` (server only). Creators enter a
+  selected" (`deleteCodes`: skips used codes and codes in an open checkout, audited `discount.delete`). "For specific people" also imports a list (owner, Nov 2026):
+  a .txt/.csv file or pasted text, one person per line (name, email, or "name, email"; header row, duplicates and blank lines skipped,
+  `parsePeopleList` in `src/lib/people-list.ts`), and the new codes download as a CSV (name, code, email; `codesCsv`, BOM for Excel). Table `discount_codes` (server only). Creators enter a
   code on the Subscription page ("Have a discount code?", `applyDiscount` checks it for their email);
   `startCheckout` re-checks it and charges `discountedPrice()` on the **first payment only** (renewals use
   `PRICES`); the invoice stores `discount_code_id` / `discount_amount`, and `settleCheckout` marks the code

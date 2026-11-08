@@ -1754,7 +1754,22 @@
       "clearSelection": "Clear selection",
       "confirmDeleteSelected": "Delete {n, plural, one {1 code} other {# codes}} for good? This can't be undone.",
       "deletedSome": "Deleted {count}; {skipped} kept because they're used or in a checkout.",
-      "usedLocked": "Used codes can't be deleted"
+      "usedLocked": "Used codes can't be deleted",
+      "import": {
+        "file": "Upload a txt or csv file",
+        "paste": "Paste a list",
+        "hint": "One person per line: a name, an email, or \"name, email\" to lock the code to that email. Up to {max} at a time.",
+        "placeholder": "Sara Alotaibi\nFahad, fahad@mail.com\nnoura@mail.com",
+        "add": "Add to the list",
+        "added": "{n} people added",
+        "duplicates": "{n} duplicates skipped",
+        "overLimit": "{n} over the limit ({max}) not added",
+        "tooBig": "The file is too big (1 MB max).",
+        "download": "Download CSV",
+        "csvName": "Name",
+        "csvCode": "Code",
+        "csvEmail": "Email"
+      }
     },
     "insights": {
       "none": "Not set",

@@ -686,8 +686,7 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   "Rich editor") and
   `newsletter_deliveries` (one row per campaign × subscriber, written **before** sending, so a resumed
   or double-clicked send never emails anyone twice). Each subscriber gets their language's version, or
-  the other one if theirs is empty (`versionFor`). Body = a small text format (owner, Oct 2026: editor with a toolbar,
-  `MarkupToolbar`): `## heading`, `**bold**`, `*italic*`, `[blue|green|red|gray]…[/…]` colour (`TEXT_COLORS`), `- list`,
+  the other one if theirs is empty (`versionFor`). Old bodies (before the rich editor) used a small text format (`markupToDoc` converts them): `## heading`, `**bold**`, `*italic*`, `[blue|green|red|gray]…[/…]` colour (`TEXT_COLORS`), `- list`,
   `1. numbered`, `[text](https://…)`, `![](https://…)` image line, `---` divider, `[center]`/`[box]` … `[/center]`/`[/box]` on
   their own lines (centred / highlighted box), blank line = new paragraph, bare links clickable. Toolbar edits go in through
   `insertText()` (`src/lib/text-insert.ts`, execCommand) so undo/redo (toolbar buttons + Ctrl+Z) works. Emoji picker
@@ -788,12 +787,12 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   only). Logic `src/lib/academy.ts` (`"use cache"`, tag `ACADEMY_TAG`, `cacheLife("hours")`: scheduled ones appear within the hour) +
   `src/lib/academy-shared.ts` (schema, categories, slug pattern; also used by the browser). Addresses carry no language: an article opens
   by slug in the visitor's language if it has one, else the other (crawlers get both); it then shows in its own `lang`/`dir`.
-- Body = the newsletter format rendered by `markupToWebHtml()` (`src/lib/email/markup.ts`, classes `.ac-*` in `globals.css`, headings get
-  ids, `markupHeadings()`); a list may now follow a text line without a blank line (both email and web). Outside links open in a new tab
+- Body = rich editor JSON rendered by `bodyToWebHtml()` (`src/lib/rich-text.ts`, classes `.ac-*` in `globals.css`, big headings get
+  ids, `bodyHeadings()`). Outside links open in a new tab
   with `rel="noopener nofollow"`.
 - Admin `admin/academy` (permission `academy.edit`, group "Academy"): new Arabic / English article, "Add starter articles" (drafts from
   `src/content/academy-starters.ts`, 5 ar + 5 en), editor `/admin/academy/edit?id=` (`ArticleEditor`: language, title, address, summary,
-  category, cover (upload kind `academyImage`), body with the newsletter's `MarkupToolbar` (now takes an `upload` prop) + live preview;
+  category, cover (upload kind `academyImage`), body in `RichEditor` + live preview;
   publish now / save draft / unpublish / schedule / delete), audited `academy.*`. Article images are in the unused-uploads check.
 - SEO: metadata + canonical + Open Graph (cover) + Article JSON-LD per article; `src/app/sitemap.ts` (dynamic: marketing pages, articles,
   public creator pages that aren't whole-page private or unclaimed drafts) and `src/app/robots.ts` (dashboards, admin, APIs, billing

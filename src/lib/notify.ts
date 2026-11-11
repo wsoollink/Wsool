@@ -22,6 +22,9 @@ export const NOTIFICATIONS = {
   welcome: { href: "/dashboard", reminder: false },
   trial_reminder: { href: "/dashboard/subscription", reminder: true },
   trial_ended: { href: "/dashboard/subscription", reminder: false },
+  // End-of-trial offer (src/lib/trial-offer.ts): the reminders and the trial-ended email with the creator's yearly code.
+  trial_offer: { href: "/dashboard/subscription", reminder: true },
+  trial_offer_ended: { href: "/dashboard/subscription", reminder: false },
   payment_receipt: { href: "/dashboard/subscription", reminder: false, billing: true },
   renewal_receipt: { href: "/dashboard/subscription", reminder: false, billing: true },
   renewal_upcoming: { href: "/dashboard/subscription", reminder: false, billing: true },
@@ -78,9 +81,14 @@ function present(data: Data, lang: Locale): Record<string, string | number> {
     else if (k === "reason" && typeof v === "string") out[k] = reasons.has(v as never) ? reasons(v as never) : v;
     // "@handle" kept left-to-right inside Arabic text (Unicode isolate).
     else if (k === "handle") out[k] = `\u2066@${v}\u2069`;
+    // Discount codes too ("WSL-7KQ2M9").
+    else if (k === "code") out[k] = `\u2066${v}\u2069`;
     else out[k] = v;
   }
-  if (typeof data.amount === "number" && (data.currency === "SAR" || data.currency === "USD")) out.amount = formatPrice(data.amount, data.currency, lang);
+  if (data.currency === "SAR" || data.currency === "USD") {
+    if (typeof data.amount === "number") out.amount = formatPrice(data.amount, data.currency, lang);
+    if (typeof data.oldAmount === "number") out.oldAmount = formatPrice(data.oldAmount, data.currency, lang);
+  }
   return out;
 }
 
@@ -90,7 +98,8 @@ export function notificationText(type: string, data: unknown, lang: Locale) {
   if (!(type in NOTIFICATIONS)) return null;
   const values = present((data ?? {}) as Data, lang);
   const key = type as NotificationType;
-  return { title: t(`${key}.title`, values), body: t(`${key}.body`, values), href: NOTIFICATIONS[key].href, cta: t.has(`${key}.cta`) ? t(`${key}.cta`) : null };
+  // **bold** marks are for emails only (the bell and phone pushes show plain text).
+  return { title: t(`${key}.title`, values), body: t(`${key}.body`, values).replace(/\*\*(.+?)\*\*/g, "$1"), href: NOTIFICATIONS[key].href, cta: t.has(`${key}.cta`) ? t(`${key}.cta`) : null };
 }
 
 function emailFor(type: NotificationType, data: Data, lang: Locale, footer: string) {

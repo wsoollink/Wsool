@@ -14,6 +14,7 @@ const sample = {
   platform: "TikTok", handle: "sara.design", untilDate: "2027-01-06T00:00:00Z", reason: "followers_mismatch",
   purgeDate: "2026-11-07T00:00:00Z", agency: "Nojoom", availableDate: "2026-11-21T00:00:00Z", count: 3, creator: "Sara",
   license: "Mawthooq", name: "OPPO campaign", unlinkDate: "2026-12-07T00:00:00Z",
+  code: "WSL-7KQ2M9", percent: 20, offerDate: "2026-10-25T00:00:00Z", oldAmount: 490,
 };
 for (const lang of ["ar", "en"] as const) {
   for (const type of Object.keys(NOTIFICATIONS) as NotificationType[]) {

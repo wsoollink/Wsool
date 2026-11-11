@@ -17,7 +17,13 @@ import { Gift, Tag, X } from "lucide-react";
  * Plan comparison from the design (Free vs Paid, monthly/yearly switch) with
  * the pay button. Prices come from config (VAT included); rows from FREE_LIMITS.
  */
-export function PlanPicker({ defaultCurrency, canPay, renew, showTrial }: { defaultCurrency: "SAR" | "USD"; canPay: boolean; renew: boolean; showTrial: boolean }) {
+type Discount = { code: string; percent: number; freeCycle: "monthly" | "yearly" | null; onlyCycle: "monthly" | "yearly" | null };
+
+export function PlanPicker({ defaultCurrency, canPay, renew, showTrial, offer }: {
+  defaultCurrency: "SAR" | "USD"; canPay: boolean; renew: boolean; showTrial: boolean;
+  /** The creator's end-of-trial offer (yearly only), applied by itself; `until` = its last moment (ISO). */
+  offer?: { code: string; percent: number; until: string } | null;
+}) {
   const t = useTranslations("Billing");
   const lang = fromIntlLocale(useLocale());
   const [cycle, setCycle] = useState<"monthly" | "yearly">("yearly");
@@ -27,7 +33,9 @@ export function PlanPicker({ defaultCurrency, canPay, renew, showTrial }: { defa
   const [codeOpen, setCodeOpen] = useState(false);
   const [codeInput, setCodeInput] = useState("");
   const [codeError, setCodeError] = useState("");
-  const [discount, setDiscount] = useState<{ code: string; percent: number; freeCycle: "monthly" | "yearly" | null } | null>(null);
+  const [discount, setDiscount] = useState<Discount | null>(offer ? { code: offer.code, percent: offer.percent, freeCycle: null, onlyCycle: "yearly" } : null);
+  // A code for one cycle only (the yearly offer) doesn't apply to the other one: full price, no code sent.
+  const applies = !!discount && (!discount.onlyCycle || discount.onlyCycle === cycle);
   const free = discount?.freeCycle ? discount : null;
   const router = useRouter();
   const [redeeming, startRedeem] = useTransition();
@@ -41,7 +49,7 @@ export function PlanPicker({ defaultCurrency, canPay, renew, showTrial }: { defa
   const [applying, startApply] = useTransition();
   const prices = PRICES[currency];
   // First payment only; the server recomputes it at checkout.
-  const pay1 = (v: number) => (discount && !free ? Math.round(v * (100 - discount.percent)) / 100 : v);
+  const pay1 = (v: number) => (applies && !free ? Math.round(v * (100 - discount!.percent)) / 100 : v);
   const monthsFree = Math.round(12 - prices.yearly / prices.monthly);
   const yes = "✓", no = "—";
 
@@ -66,7 +74,7 @@ export function PlanPicker({ defaultCurrency, canPay, renew, showTrial }: { defa
   const pay = () =>
     startTransition(async () => {
       setError("");
-      const res = await checkout(cycle, currency, discount?.code);
+      const res = await checkout(cycle, currency, applies ? discount?.code : undefined);
       if ("url" in res) window.location.href = res.url;
       else setError(t(`errors.${res.error}`));
     });
@@ -74,6 +82,17 @@ export function PlanPicker({ defaultCurrency, canPay, renew, showTrial }: { defa
   return (
     <Card className="flex flex-col gap-4">
       <h2 className="font-bold">{renew ? t("renewTitle") : t("compare")}</h2>
+      {offer && discount?.code === offer.code && (
+        <div className="flex items-start gap-3 rounded-2xl bg-blue/8 p-4 ring-1 ring-blue/20">
+          <Gift aria-hidden="true" size={22} className="mt-0.5 shrink-0 text-blue" />
+          <p className="flex-1 text-[14px] font-bold">
+            {t("offerTitle", { percent: offer.percent })}
+            <span className="mt-0.5 block text-xs font-normal text-muted">
+              {t("offerBody", { until: new Intl.DateTimeFormat(lang === "ar" ? "ar-u-nu-latn" : "en", { dateStyle: "long" }).format(new Date(offer.until)) })}
+            </span>
+          </p>
+        </div>
+      )}
       <div role="group" aria-label={t("cycle")} className="grid grid-cols-2 gap-1 rounded-[14px] bg-navy/5 p-1">
         {(["monthly", "yearly"] as const).map((c) => (
           <button key={c} type="button" aria-pressed={cycle === c} onClick={() => setCycle(c)} className={`inline-flex h-11 items-center justify-center gap-2 rounded-[10px] text-sm font-bold ${cycle === c ? "bg-card text-navy shadow-card" : "text-muted"}`}>
@@ -93,7 +112,7 @@ export function PlanPicker({ defaultCurrency, canPay, renew, showTrial }: { defa
             <th scope="col" className="w-[84px] rounded-t-[10px] bg-navy/5 pt-2 pb-2 text-center text-[12.5px] font-bold text-blue">
               {t("paidPlan")}
               <span dir="ltr" className="block text-xs font-medium text-muted">
-                {discount && !free && <s className="me-1 opacity-70">{formatPrice(prices[cycle], currency, lang)}</s>}
+                {applies && !free && <s className="me-1 opacity-70">{formatPrice(prices[cycle], currency, lang)}</s>}
                 {formatPrice(pay1(prices[cycle]), currency, lang)}
               </span>
             </th>
@@ -151,7 +170,9 @@ export function PlanPicker({ defaultCurrency, canPay, renew, showTrial }: { defa
           <Tag aria-hidden="true" size={18} className="shrink-0 text-good" />
           <p className="flex-1 text-[13px]">
             <b dir="ltr" className="font-bold">{discount.code}</b> · {t("discountApplied", { percent: discount.percent })}
-            <span className="block text-xs text-muted">{t("discountFirstOnly")}</span>
+            <span className={`block text-xs ${applies ? "text-muted" : "font-bold text-warn"}`}>
+              {applies ? t("discountFirstOnly") : t("codeOnlyFor", { cycle: t(discount.onlyCycle ?? "yearly") })}
+            </span>
           </p>
           <button type="button" onClick={() => { setDiscount(null); setCodeInput(""); }} aria-label={t("removeCode")} className="inline-flex size-11 shrink-0 items-center justify-center rounded-full text-muted hover:bg-navy/5">
             <X aria-hidden="true" size={16} />

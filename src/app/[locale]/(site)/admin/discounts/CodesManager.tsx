@@ -6,8 +6,9 @@ import { useTranslations } from "next-intl";
 import { Check, ClipboardPaste, Copy, Download, FileUp, Plus, Trash2 } from "lucide-react";
 import { buttonClasses } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { Switch } from "@/components/ui/Switch";
 import { codesCsv, parsePeopleList } from "@/lib/people-list";
-import { createCodes, deleteRevoked, revokeCode, type CreateResult } from "./actions";
+import { createCodes, deleteRevoked, revokeCode, setTrialOffer, type CreateResult } from "./actions";
 
 type Row = { key: string; note: string; email: string };
 const newKey = () => Math.random().toString(36).slice(2);
@@ -23,6 +24,7 @@ export function CreateCodes({ limits }: { limits: { min: number; max: number; ba
   const free = percent === "100";
   const [audience, setAudience] = useState<"creators" | "agencies">("creators");
   const [freePlan, setFreePlan] = useState<"starter" | "growth">("starter");
+  const [onlyCycle, setOnlyCycle] = useState<"any" | "monthly" | "yearly">("any");
   const [mode, setMode] = useState<"count" | "people">("count");
   const [count, setCount] = useState("10");
   const [countNote, setCountNote] = useState("");
@@ -74,7 +76,7 @@ export function CreateCodes({ limits }: { limits: { min: number; max: number; ba
     setError("");
     startTransition(async () => {
       const list = mode === "count" ? Array.from({ length: n }, () => ({ note: countNote, email: "" })) : rows.map(({ note, email }) => ({ note, email }));
-      const res = await createCodes({ percent: Number(percent), audience, ...(free && { freeCycle }), ...(free && audience === "agencies" && { freePlan }), rows: list });
+      const res = await createCodes({ percent: Number(percent), audience, ...(free && { freeCycle }), ...(free && audience === "agencies" && { freePlan }), ...(!free && onlyCycle !== "any" && { onlyCycle }), rows: list });
       if (res.codes) {
         setResult(res.codes);
         setRows([{ key: newKey(), note: "", email: "" }]);
@@ -122,6 +124,19 @@ export function CreateCodes({ limits }: { limits: { min: number; max: number; ba
           </div>
           <p className="text-xs text-muted">{t("percentHint", { min: limits.min, max: limits.max })}</p>
         </fieldset>
+
+        {!free && (
+          <fieldset className="flex flex-col gap-2">
+            <legend className="mb-1.5 text-[13px] font-medium">{t("onlyCycle")}</legend>
+            <div className="flex flex-wrap gap-2">
+              {(["any", "yearly", "monthly"] as const).map((c) => (
+                <button key={c} type="button" aria-pressed={onlyCycle === c} onClick={() => setOnlyCycle(c)} className={`inline-flex min-h-11 items-center rounded-full px-4 text-sm font-bold ${onlyCycle === c ? "bg-blue/10 text-blue ring-1 ring-blue/30" : "bg-card text-muted shadow-card ring-1 ring-line hover:text-navy"}`}>
+                  {t(`onlyCycleOpt.${c}`)}
+                </button>
+              ))}
+            </div>
+          </fieldset>
+        )}
 
         {free && (
           <fieldset className="flex flex-col gap-2 rounded-2xl bg-good/8 p-3">
@@ -298,5 +313,29 @@ export function DeleteRevokedButton({ id, code, count }: { id: string | null; co
     >
       <Trash2 aria-hidden="true" size={16} /> {all ? t("deleteAllRevoked", { n: count ?? 0 }) : t("delete")}
     </button>
+  );
+}
+
+/** The end-of-trial offer switch (owner): on = every trial gets its own yearly code with the day-10 reminder. */
+export function TrialOfferSwitch({ on, percent, days, made, used }: { on: boolean; percent: number; days: number; made: number; used: number }) {
+  const t = useTranslations("Admin.discounts.trialOffer");
+  const router = useRouter();
+  const [value, setValue] = useState(on);
+  const [pending, start] = useTransition();
+  const toggle = (next: boolean) => start(async () => {
+    const res = await setTrialOffer(next);
+    if (res.ok) { setValue(next); router.refresh(); }
+  });
+  return (
+    <Card className="flex flex-col gap-3">
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex flex-col gap-0.5">
+          <h2 className="font-bold">{t("title")}</h2>
+          <p className="text-xs text-muted">{t("hint", { percent, days })}</p>
+        </div>
+        <Switch checked={value} onChange={toggle} label={t("title")} labelHidden disabled={pending} />
+      </div>
+      <p className="text-[13px]">{t("stats", { made, used })}</p>
+    </Card>
   );
 }

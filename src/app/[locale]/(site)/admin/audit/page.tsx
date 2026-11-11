@@ -16,7 +16,7 @@ type SP = Promise<Record<string, string | string[] | undefined>>;
 const GROUPS = {
   verification: ["verification.", "license."],
   users: ["user.", "page.", "creators.", "demo.", "agency."],
-  money: ["invoice.", "vat.", "expense.", "investor_link.", "discount.", "referral."],
+  money: ["invoice.", "vat.", "expense.", "investor_link.", "discount.", "trial_offer.", "referral."],
   newsletter: ["newsletter."],
   academy: ["academy."],
   categories: ["category."],

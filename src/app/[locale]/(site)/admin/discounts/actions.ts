@@ -4,6 +4,7 @@ import { z } from "zod";
 import { audit, requireAdmin } from "@/lib/admin";
 import { db } from "@/lib/db";
 import { DISCOUNT_BATCH_MAX, DISCOUNT_DAYS, DISCOUNT_FREE, DISCOUNT_MAX, DISCOUNT_MIN, generateCode } from "@/lib/discounts";
+import { setTrialOfferEnabled } from "@/lib/trial-offer";
 
 const createSchema = z.object({
   // 5-90 off the first payment, or 100 = a free Pro period of `freeCycle`.
@@ -12,6 +13,8 @@ const createSchema = z.object({
   // Creators (Pro) or agencies (their plan); an agency 100% code gives `freePlan` for `freeCycle`.
   audience: z.enum(["creators", "agencies"]).default("creators"),
   freePlan: z.enum(["starter", "growth"]).optional(),
+  // A percent code for one cycle only (e.g. yearly); 100% codes have their own `freeCycle`.
+  onlyCycle: z.enum(["monthly", "yearly"]).optional(),
   rows: z
     .array(z.object({
       note: z.string().trim().max(120).default(""),
@@ -19,7 +22,8 @@ const createSchema = z.object({
     }))
     .min(1).max(DISCOUNT_BATCH_MAX),
 }).refine((v) => (v.percent === DISCOUNT_FREE) === !!v.freeCycle)
-  .refine((v) => (v.percent === DISCOUNT_FREE && v.audience === "agencies") === !!v.freePlan);
+  .refine((v) => (v.percent === DISCOUNT_FREE && v.audience === "agencies") === !!v.freePlan)
+  .refine((v) => !(v.percent === DISCOUNT_FREE && v.onlyCycle));
 
 export type CreateResult = { codes?: { code: string; note: string; email: string }[]; error?: "invalid" | "failed" };
 
@@ -32,6 +36,7 @@ export async function createCodes(input: z.input<typeof createSchema>): Promise<
   const freeCycle = percent === DISCOUNT_FREE ? parsed.data.freeCycle! : null;
   const { audience } = parsed.data;
   const freePlan = percent === DISCOUNT_FREE && audience === "agencies" ? parsed.data.freePlan! : null;
+  const onlyCycle = parsed.data.onlyCycle ?? null;
   const expiresAt = new Date(Date.now() + DISCOUNT_DAYS * 86_400_000);
 
   // Fresh codes that don't exist yet (collisions are rare; checked anyway).
@@ -41,11 +46,11 @@ export async function createCodes(input: z.input<typeof createSchema>): Promise<
   for (const c of taken) { codes.delete(c); let next; do next = generateCode(); while (codes.has(next)); codes.add(next); }
 
   const list = [...codes];
-  const data = rows.map((r, i) => ({ code: list[i], percent, freeCycle, audience, freePlan, note: r.note, email: r.email || null, createdBy: admin.userId, expiresAt }));
+  const data = rows.map((r, i) => ({ code: list[i], percent, freeCycle, audience, freePlan, onlyCycle, note: r.note, email: r.email || null, createdBy: admin.userId, expiresAt }));
   try {
     await db.$transaction(async (tx) => {
       await tx.discountCode.createMany({ data });
-      await audit(admin, "discount.create", undefined, { count: data.length, percent, free: freeCycle ?? "", audience }, tx);
+      await audit(admin, "discount.create", undefined, { count: data.length, percent, free: freeCycle ?? "", audience, only: onlyCycle ?? "" }, tx);
     });
   } catch {
     return { error: "failed" };
@@ -105,4 +110,13 @@ export async function deleteCodes(ids: string[]): Promise<{ count?: number; skip
     return rows.length;
   });
   return { count, skipped: wanted.length - count };
+}
+
+/** Owner only: switches the end-of-trial offer (src/lib/trial-offer.ts) on or off. Audited. */
+export async function setTrialOffer(on: boolean): Promise<{ ok?: boolean; error?: string }> {
+  const admin = await requireAdmin("owner");
+  if (typeof on !== "boolean") return { error: "invalid" };
+  await setTrialOfferEnabled(on);
+  await audit(admin, on ? "trial_offer.on" : "trial_offer.off");
+  return { ok: true };
 }

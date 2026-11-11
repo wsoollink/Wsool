@@ -41,7 +41,7 @@ export type CodeAudience = "creators" | "agencies";
  * round ("other_kind"). For agencies the email lock is the email of the member entering it (owner or manager).
  */
 export async function checkDiscountCode(input: string, user: { email: string }, audience: CodeAudience = "creators"): Promise<
-  { id: string; code: string; percent: number; freeCycle: "monthly" | "yearly" | null; freePlan: "starter" | "growth" | null } | { error: CodeError }
+  { id: string; code: string; percent: number; freeCycle: "monthly" | "yearly" | null; freePlan: "starter" | "growth" | null; onlyCycle: "monthly" | "yearly" | null } | { error: CodeError }
 > {
   const code = normalizeCode(input);
   if (!/^WSL-[A-Z0-9]{6}$/.test(code)) return { error: "invalid" };
@@ -53,5 +53,5 @@ export async function checkDiscountCode(input: string, user: { email: string }, 
   if (status === "used") return { error: "used" };
   if (status === "expired") return { error: "expired" };
   const freePlan = row.freePlan === "starter" || row.freePlan === "growth" ? row.freePlan : null;
-  return { id: row.id, code: row.code, percent: row.percent, freeCycle: row.freeCycle, freePlan };
+  return { id: row.id, code: row.code, percent: row.percent, freeCycle: row.freeCycle, freePlan, onlyCycle: row.onlyCycle };
 }

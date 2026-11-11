@@ -57,7 +57,7 @@ export function BillingPlans({ plans, current, agency, features, pay }: { plans:
     start(async () => {
       const res = await agencyCheckout(key, cycle, locale.startsWith("en") ? "en" : "ar", code && code.percent < 100 ? code.code : undefined);
       if ("url" in res) { window.location.href = res.url; return; }
-      const known = ["disabled", "already_active", "downgrade", "not_agency", "failed"].includes(res.error);
+      const known = ["disabled", "already_active", "downgrade", "not_agency", "failed", "wrong_cycle"].includes(res.error);
       setMsg({ ok: false, text: known ? t(`errors.${res.error}`) : t(`codeErrors.${res.error}`) }); setBusy("");
     });
   };

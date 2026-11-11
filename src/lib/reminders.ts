@@ -5,6 +5,7 @@ import { EXPIRY_WARNING_DAYS } from "@/config/verification";
 import { db } from "@/lib/db";
 import { notify } from "@/lib/notify";
 import { expirePage } from "@/lib/public-page";
+import { ensureTrialOffer, offerEmailData } from "@/lib/trial-offer";
 
 const DAY = 86_400_000;
 const dateKey = (d: Date) => d.toISOString().slice(0, 10);
@@ -12,7 +13,8 @@ const dateKey = (d: Date) => d.toISOString().slice(0, 10);
 /**
  * Hourly reminders (CLAUDE.md sections 6 and 7). Each one has a dedupe key,
  * so running the job again never sends it twice:
- * - trial: day 10 (4 days left) and day 13 (1 day left); day 14 is the billing job
+ * - trial: day 10 (4 days left) and day 13 (1 day left); day 14 is the billing job. With the end-of-trial offer on,
+ *   both carry the creator's yearly discount code (made at day 10, `ensureTrialOffer`)
  * - yearly renewal: 7 days before
  * - verification: 7 days before it ends, and when it has ended (badge removed)
  */
@@ -21,12 +23,18 @@ export async function runReminders(now = new Date()) {
 
   const trials = await db.subscription.findMany({
     where: { status: "trialing", trialEndsAt: { gt: now, lte: new Date(now.getTime() + 4 * DAY) } },
-    select: { userId: true, trialEndsAt: true },
+    select: { userId: true, trialEndsAt: true, user: { select: { page: { select: { primaryLang: true } } } } },
   });
   for (const t of trials) {
     const days = Math.ceil((t.trialEndsAt!.getTime() - now.getTime()) / DAY);
     const key = days <= 1 ? "trial_day13" : "trial_day10";
-    await notify(t.userId, "trial_reminder", { days: Math.max(1, days), endDate: t.trialEndsAt!.toISOString() }, { dedupeKey: key });
+    // Already sent (same dedupe key): don't make an offer code just for a skipped reminder.
+    if (await db.notification.count({ where: { userId: t.userId, dedupeKey: key } })) continue;
+    const base = { days: Math.max(1, days), endDate: t.trialEndsAt!.toISOString() };
+    const offer = await ensureTrialOffer(t.userId, now).catch((err) => { console.error("[trial-offer]", err); return null; });
+    const lang = t.user.page?.primaryLang === "en" ? "en" : "ar";
+    if (offer) await notify(t.userId, "trial_offer", { ...base, ...offerEmailData(offer, lang) }, { dedupeKey: key });
+    else await notify(t.userId, "trial_reminder", base, { dedupeKey: key });
     sent++;
   }
 

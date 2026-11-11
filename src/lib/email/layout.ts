@@ -4,10 +4,11 @@ import { bodyToEmailHtml, bodyToText } from "@/lib/rich-text";
 
 const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 
-/** Escaped text with web links made clickable and line breaks kept. */
+/** Escaped text with web links made clickable, **bold** parts (e.g. a discount code) and line breaks kept. */
 const rich = (s: string) =>
   esc(s)
     .replace(/https?:\/\/[^\s<]+[^\s<.,،؛:!?)"']/g, (url) => `<a href="${url}" style="color:#0060E6;text-decoration:underline;">${url}</a>`)
+    .replace(/\*\*(.+?)\*\*/g, '<b style="font-weight:700;color:#0060E6;">$1</b>')
     .replace(/\n/g, "<br>");
 
 export type EmailContent = {
@@ -56,6 +57,6 @@ ${c.cta ? `<table role="presentation" cellpadding="0" cellspacing="0" style="mar
 </td></tr>
 <tr><td dir="${dir}" style="padding:16px 8px;text-align:${align};font-family:${font};font-size:12px;line-height:1.7;color:#56607A;">${rich(c.footer)}</td></tr>
 </table></td></tr></table></body></html>`;
-  const text = [c.title, "", ...(c.markup !== undefined ? [bodyToText(c.markup)] : c.paragraphs), ...(c.cta ? ["", `${c.cta.label}: ${c.cta.url}`] : []), "", "—", c.footer].join("\n");
+  const text = [c.title, "", ...(c.markup !== undefined ? [bodyToText(c.markup)] : c.paragraphs.map((p) => p.replace(/\*\*(.+?)\*\*/g, "$1"))), ...(c.cta ? ["", `${c.cta.label}: ${c.cta.url}`] : []), "", "—", c.footer].join("\n");
   return { html, text };
 }

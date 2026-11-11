@@ -10,6 +10,7 @@ import { expirePage } from "@/lib/public-page";
 import { cancelCommissionForRefund, earnCommission, renewalCredit } from "@/lib/referrals";
 import { refundAgencyInvoice, settleAgencyInvoice } from "@/lib/agency-billing";
 import { siteOrigin } from "@/lib/site-url";
+import { activeTrialOffer, offerEmailData } from "@/lib/trial-offer";
 
 /** "WS-001042" */
 export const invoiceLabel = (n: number | null) => (n ? `WS-${String(n).padStart(6, "0")}` : "—");
@@ -27,7 +28,7 @@ function periodStart(sub: { status: string; trialEndsAt: Date | null; currentPer
   return start;
 }
 
-export type CheckoutError = "disabled" | "already_active" | "failed" | CodeError;
+export type CheckoutError = "disabled" | "already_active" | "failed" | "wrong_cycle" | CodeError;
 
 /**
  * Starts a Pro checkout for the signed-in user: creates a pending invoice and
@@ -47,6 +48,8 @@ export async function startCheckout(user: { id: string; email: string }, cycle: 
   if (discount && "error" in discount) return { error: discount.error };
   // A free (100%) code is redeemed without checkout (redeemFreeCode).
   if (discount && discount.percent >= 100) return { error: "failed" };
+  // A code for one cycle only (e.g. the yearly end-of-trial offer).
+  if (discount && discount.onlyCycle && discount.onlyCycle !== cycle) return { error: "wrong_cycle" };
   // One open checkout per code: while someone else's invoice with it is being paid (last hour), it's taken.
   // (Codes are only marked used when a payment settles, so this stops one shared code paying for many.)
   if (discount) {
@@ -199,11 +202,17 @@ export async function runBillingJob(now = new Date()): Promise<JobReport> {
   const provider = paymentProvider();
 
   // Trials that ended without paying: Free (no data deleted).
-  const trials = await db.subscription.findMany({ where: { status: "trialing", trialEndsAt: { lte: now } }, select: { id: true, userId: true } });
+  const trials = await db.subscription.findMany({
+    where: { status: "trialing", trialEndsAt: { lte: now } },
+    select: { id: true, userId: true, user: { select: { page: { select: { primaryLang: true } } } } },
+  });
   for (const t of trials) {
     await db.subscription.update({ where: { id: t.id }, data: { status: "expired", plan: "free" } });
     await refreshPage(t.userId);
-    await notify(t.userId, "trial_ended", {}, { dedupeKey: "trial_ended" });
+    // The end-of-trial offer made at day 10 is still good for a few days: say so (never a new code here).
+    const offer = await activeTrialOffer(t.userId, now).catch(() => null);
+    if (offer) await notify(t.userId, "trial_offer_ended", offerEmailData(offer, t.user.page?.primaryLang === "en" ? "en" : "ar"), { dedupeKey: "trial_ended" });
+    else await notify(t.userId, "trial_ended", {}, { dedupeKey: "trial_ended" });
     report.trialsEnded++;
   }
 

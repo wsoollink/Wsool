@@ -1487,6 +1487,10 @@
         "unpublish": "Unpublished the article “{title}” (back to draft)",
         "delete": "Deleted the article “{title}”",
         "import": "Added {count} starter articles as drafts"
+      },
+      "trial_offer": {
+        "on": "Turned the end-of-trial offer on",
+        "off": "Turned the end-of-trial offer off"
       }
     },
     "newsletter": {
@@ -1781,7 +1785,18 @@
       },
       "agencyTag": "Agencies",
       "freeAgencyLabel": "Free · {plan} · {cycle}",
-      "freeHintAgency": "The agency gets the plan you pick for this period with no payment, and it doesn't renew by itself."
+      "freeHintAgency": "The agency gets the plan you pick for this period with no payment, and it doesn't renew by itself.",
+      "onlyCycle": "Which plan does it work on?",
+      "onlyCycleOpt": {
+        "any": "Monthly or yearly",
+        "yearly": "Yearly only",
+        "monthly": "Monthly only"
+      },
+      "trialOffer": {
+        "title": "End-of-trial offer",
+        "hint": "With the day-10 trial reminder every creator gets their own code: {percent}% off the yearly plan, valid {days} days. The day-13 reminder and the trial-ended email repeat the same code.",
+        "stats": "{made, plural, =0 {No codes yet} one {1 code made} other {# codes made}} · {used} used"
+      }
     },
     "insights": {
       "none": "Not set",
@@ -2029,7 +2044,8 @@
       "expired": "That code has expired.",
       "used": "That code was already used.",
       "not_yours": "This code belongs to another account.",
-      "not_free": "This code is a payment discount, not a free subscription."
+      "not_free": "This code is a payment discount, not a free subscription.",
+      "wrong_cycle": "This code is for the yearly plan only. Pick “Yearly” to get the discount."
     },
     "delete": {
       "title": "Delete account",
@@ -2152,7 +2168,10 @@
     "freeNote": "No card needed, and it doesn't renew automatically.",
     "activate": "Activate subscription",
     "activating": "Activating…",
-    "refundNote": "Full refund within 7 days of your first subscription. <link>Cancellation and refund policy</link>"
+    "refundNote": "Full refund within 7 days of your first subscription. <link>Cancellation and refund policy</link>",
+    "offerTitle": "A gift for you: {percent}% off the yearly plan",
+    "offerBody": "We applied your code for you. Yearly plan only, ends {until}.",
+    "codeOnlyFor": "This code is for the {cycle} plan only. Pick it to get the discount."
   },
   "Analytics": {
     "range": "Period",
@@ -2442,6 +2461,18 @@
       "title": "Agency plan activated",
       "body": "Your agency plan is active with a free code until {endDate}.\nIt doesn't renew automatically; you can subscribe before it ends from the Subscription tab.",
       "cta": "View subscription"
+    },
+    "trial_offer": {
+      "subject": "{percent}% off the yearly Pro plan, just for you 🎁",
+      "title": "Your trial ends soon, and here’s a gift",
+      "body": "Your Pro trial ends in {days, plural, one {1 day} other {# days}} ({endDate}).\nHere’s {percent}% off the yearly plan: **{amount}** instead of {oldAmount} for the whole year.\nYour code: **{code}** (applied for you on the Subscription page, valid until {offerDate}).\nIf you don’t subscribe, your page goes back to the Basic plan and none of your data is deleted.",
+      "cta": "Get yearly with the discount"
+    },
+    "trial_offer_ended": {
+      "subject": "Your trial ended, your {percent}% off is still here",
+      "title": "Your page is on the Basic plan now",
+      "body": "Your Pro trial has ended and your page is on the Basic plan. All your data is saved.\nYour {percent}% off the yearly plan is still yours until {offerDate}: **{amount}** instead of {oldAmount}.\nYour code: **{code}** (applied for you on the Subscription page).",
+      "cta": "Get yearly with the discount"
     }
   },
   "Notifications": {
@@ -3564,7 +3595,8 @@
       "already_active": "This plan is active and renews automatically.",
       "downgrade": "The bigger plan is paid right now. You can move to the smaller one at renewal.",
       "not_agency": "Company accounts subscribe by contacting us.",
-      "failed": "We couldn't open the payment page. Try again."
+      "failed": "We couldn't open the payment page. Try again.",
+      "wrong_cycle": "This code is for the yearly plan only. Pick “Yearly” to get the discount."
     },
     "nextSaved": "✓ Saved. The change starts at the next renewal.",
     "renewsAuto": "Your current plan, renews automatically",

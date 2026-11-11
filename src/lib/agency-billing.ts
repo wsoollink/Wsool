@@ -25,7 +25,7 @@ const tell = async (agencyId: string, type: NotificationType, data: Record<strin
 /** Where a new paid period starts: after any trial or paid time that's left. */
 const periodStart = (until: Date | null, now: Date) => (until && until > now ? until : now);
 
-export type AgencyCheckoutError = "disabled" | "already_active" | "downgrade" | "not_agency" | "failed" | CodeError;
+export type AgencyCheckoutError = "disabled" | "already_active" | "downgrade" | "not_agency" | "failed" | "wrong_cycle" | CodeError;
 
 /** Starts a plan checkout for an agency (owner/manager): a pending invoice + the payment page URL. Prices from config only. */
 export async function startAgencyCheckout(payer: { id: string; email: string }, agencyId: string, plan: AgencyPaidPlan, cycle: BillingCycle, currency: Currency, discountCode?: string): Promise<{ url: string } | { error: AgencyCheckoutError }> {
@@ -45,6 +45,8 @@ export async function startAgencyCheckout(payer: { id: string; email: string }, 
   if (discount && "error" in discount) return { error: discount.error };
   // A free (100%) code is redeemed without checkout (redeemAgencyFreeCode).
   if (discount && discount.percent >= 100) return { error: "failed" };
+  // A code for one cycle only (monthly or yearly).
+  if (discount && discount.onlyCycle && discount.onlyCycle !== cycle) return { error: "wrong_cycle" };
   if (discount) {
     // One open checkout per code: while another agency's invoice with it is being paid (last hour), it's taken.
     const busy = await db.invoice.count({

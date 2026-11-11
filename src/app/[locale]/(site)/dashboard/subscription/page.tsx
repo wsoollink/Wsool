@@ -19,6 +19,7 @@ import { ManageCard } from "./ManageCard";
 import { PlanPicker } from "./PlanPicker";
 import { PageHeader } from "@/components/dashboard/PageHeader";
 import { SectionSkeleton } from "@/components/dashboard/SectionSkeleton";
+import { activeTrialOffer } from "@/lib/trial-offer";
 
 type SP = Promise<Record<string, string | string[] | undefined>>;
 
@@ -26,10 +27,11 @@ async function Subscription({ lang, searchParams }: { lang: Locale; searchParams
   const { user, page } = await requireCreator();
   const t = await getTranslations("Billing");
   const result = String((await searchParams).payment ?? "");
-  const [sub, invoices, staff] = await Promise.all([
+  const [sub, invoices, staff, offer] = await Promise.all([
     db.subscription.findUnique({ where: { userId: user.id } }),
     db.invoice.findMany({ where: { userId: user.id, agencyId: null, status: { in: ["paid", "refunded", "failed"] } }, orderBy: { createdAt: "desc" }, take: 24 }),
     getAdmin(),
+    activeTrialOffer(user.id),
   ]);
   const provider = paymentProvider();
   const canPay = !!provider && (!provider.testOnly || !!staff) && !page.deletedAt;
@@ -90,6 +92,7 @@ async function Subscription({ lang, searchParams }: { lang: Locale; searchParams
         <PlanPicker
           defaultCurrency={sub?.currency ?? (lang === "en" ? "USD" : "SAR")} canPay={canPay}
           renew={active && !!sub?.cycle} showTrial={!sub || sub.status === "trialing"}
+          offer={offer && canPay ? { code: offer.code, percent: offer.percent, until: offer.expiresAt.toISOString() } : null}
         />
       )}
 

@@ -901,6 +901,15 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   `discount_code_id` / `discount_amount`, marked used in `settleAgencyInvoice`); a free code → "Activate plan" → `redeemAgencyFreeCode()`
   (plan + cycle after any trial/paid time left, `plan_auto_renew` off, refused while a paid plan auto-renews or a custom deal runs,
   notifies `agency_free_activated`). Agency refund policy mentions codes.
+  **Cycle-only codes** (owner, Nov 2026): `discount_codes.only_cycle` (monthly | yearly, null = either; admin form "Which plan does it work
+  on?"); checkout refuses the other cycle (`wrong_cycle`, creators + agencies) and `PlanPicker` charges full price without the code there.
+  **End-of-trial offer** (owner, Nov 2026, `src/lib/trial-offer.ts`): `TRIAL_OFFER` = 20% off the **yearly** first payment, valid 7 days.
+  The day-10 trial reminder makes the creator's own code (`ensureTrialOffer`: email-locked, `only_cycle` yearly, `offer_user_id` unique =
+  one per account ever, never for suspended/placeholder accounts) and sends `trial_offer` instead of `trial_reminder`; day 13 repeats the
+  same code; the trial-ended job sends `trial_offer_ended` while it's still valid (never a new code). Emails show prices in the page
+  language's currency (`offerEmailData`) and the code in **bold** (`rich()` in `src/lib/email/layout.ts`; the bell/push strip `**`). The
+  Subscription page applies it by itself with a banner (`activeTrialOffer`). Owner switch on admin/discounts (`TrialOfferSwitch`,
+  `setTrialOffer`, audited `trial_offer.on|off`) stored in `app_settings` (key → JSON, server only), with made/used counts.
 - **Creator categories & insights** (owner, Oct 2026): table `categories` (name ar/en, sort; seeded with 14, owner
   edits the list at `admin/categories`, owner only, `saveCategoryList` replaces the whole list, audited
   `category.update`) and `page_categories` (creator picks up to `MAX_PAGE_CATEGORIES` = 2 in Edit page,

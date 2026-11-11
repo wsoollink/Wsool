@@ -30,10 +30,10 @@ export async function checkout(cycleInput: string, currencyInput: string, discou
 }
 
 /** "Have a discount code?": checks it for this account and returns its percent (the price is recomputed at checkout). */
-export async function applyDiscount(input: string): Promise<{ code: string; percent: number; freeCycle: "monthly" | "yearly" | null } | { error: CodeError }> {
+export async function applyDiscount(input: string): Promise<{ code: string; percent: number; freeCycle: "monthly" | "yearly" | null; onlyCycle: "monthly" | "yearly" | null } | { error: CodeError }> {
   const { user } = await requireCreator();
   const res = await checkDiscountCode(String(input ?? "").slice(0, 30), user);
-  return "error" in res ? res : { code: res.code, percent: res.percent, freeCycle: res.freeCycle };
+  return "error" in res ? res : { code: res.code, percent: res.percent, freeCycle: res.freeCycle, onlyCycle: res.onlyCycle };
 }
 
 /** Redeems a 100% code: free Pro for its period, no payment (works while payments are off). */

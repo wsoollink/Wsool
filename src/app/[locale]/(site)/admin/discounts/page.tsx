@@ -9,7 +9,8 @@ import { requireAdmin } from "@/lib/admin";
 import { db } from "@/lib/db";
 import { codeStatus, DISCOUNT_BATCH_MAX, DISCOUNT_DAYS, DISCOUNT_MAX, DISCOUNT_MIN } from "@/lib/discounts";
 import { formatNumber } from "@/lib/format";
-import { CreateCodes, DeleteRevokedButton } from "./CodesManager";
+import { CreateCodes, DeleteRevokedButton, TrialOfferSwitch } from "./CodesManager";
+import { TRIAL_OFFER, trialOfferEnabled } from "@/lib/trial-offer";
 import { CodesTable } from "./CodesTable";
 
 type SP = Promise<Record<string, string | string[] | undefined>>;
@@ -18,11 +19,16 @@ type Filter = (typeof FILTERS)[number];
 
 /** Discount codes: make them for named people, see each one's status, cancel unused ones. */
 async function Codes({ lang, searchParams }: { lang: Locale; searchParams: SP }) {
-  await requireAdmin("discounts.manage");
+  const admin = await requireAdmin("discounts.manage");
   const t = await getTranslations("Admin.discounts");
   const sp = await searchParams;
   const filter: Filter = FILTERS.includes(sp.s as Filter) ? (sp.s as Filter) : "all";
-  const rows = await db.discountCode.findMany({ orderBy: { createdAt: "desc" }, take: 300 });
+  const [rows, offerOn, offersMade, offersUsed] = await Promise.all([
+    db.discountCode.findMany({ orderBy: { createdAt: "desc" }, take: 300 }),
+    trialOfferEnabled(),
+    db.discountCode.count({ where: { offerUserId: { not: null } } }),
+    db.discountCode.count({ where: { offerUserId: { not: null }, usedAt: { not: null } } }),
+  ]);
   const now = new Date();
   const withStatus = rows.map((r) => ({ ...r, status: codeStatus(r, now) }));
   const users = await db.user.findMany({
@@ -36,6 +42,7 @@ async function Codes({ lang, searchParams }: { lang: Locale; searchParams: SP })
 
   return (
     <div className="flex flex-col gap-4">
+      {admin.isOwner && <TrialOfferSwitch on={offerOn} percent={TRIAL_OFFER.percent} days={TRIAL_OFFER.days} made={offersMade} used={offersUsed} />}
       <CreateCodes limits={{ min: DISCOUNT_MIN, max: DISCOUNT_MAX, batch: DISCOUNT_BATCH_MAX, days: DISCOUNT_DAYS }} />
 
       <nav aria-label={t("filters")} className="flex flex-wrap gap-2">
@@ -61,7 +68,7 @@ async function Codes({ lang, searchParams }: { lang: Locale; searchParams: SP })
             ? r.freePlan && r.freePlan !== "trial" && r.freePlan !== "custom"
               ? t("freeAgencyLabel", { plan: t(`agencyPlans.${r.freePlan}`), cycle: t(`cycle.${r.freeCycle}`) })
               : t("freeLabel", { cycle: t(`cycle.${r.freeCycle}`) })
-            : `${r.percent}%`),
+            : `${r.percent}%` + (r.onlyCycle ? ` · ${t(`onlyCycleOpt.${r.onlyCycle}`)}` : "")),
           created: date.format(r.createdAt), expires: date.format(r.expiresAt), status: r.status,
           usedLine: r.status === "used" && r.usedAt ? `${usedBy.get(r.usedBy ?? "") ?? "—"} · ${date.format(r.usedAt)}` : null,
         }))} />

@@ -2,6 +2,7 @@ import "server-only";
 import { cache } from "react";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { connection } from "next/server";
 import { bearerUserFromHeader } from "@/lib/mobile/bearer";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { NEXT_PARAM, PATH_HEADER, safeNextPath } from "@/lib/next-path";
@@ -19,6 +20,9 @@ export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
   // this header cross-site without CORS approval, so it adds no CSRF risk.
   const auth = (await headers()).get("authorization");
   if (auth?.startsWith("Bearer ")) return bearerUserFromHeader(auth);
+  // Supabase reads the clock (Date.now) while loading the session; Next.js stops a render that reads it before
+  // request-time rendering starts ("unstable value Date.now()" in the Netlify logs), so wait for that first.
+  await connection();
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase.auth.getClaims();
   const claims = data?.claims;

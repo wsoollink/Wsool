@@ -337,7 +337,7 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   `signInWithOtp` / `verifyOtp`; first sign-in creates the `users` row + 14-day trial
   (`src/lib/account.ts`, `TRIAL_DAYS` in `src/config/plans.ts`).
 - `src/lib/auth.ts`: `getCurrentUser()` / `requireUser()` read the verified JWT claims
-  (`getClaims`). They are the only source of a user id for queries.
+  (`getClaims`), after `await connection()` (Supabase reads `Date.now()`, which Next.js refuses before request-time rendering). They are the only source of a user id for queries.
 - `src/proxy.ts` refreshes the Supabase session cookie only when an `sb-` cookie exists.
 - Supabase email templates "Magic Link" (returning users) and "Confirm signup" (new users)
   hold one bilingual body (Arabic, code, English) with `{{ .Token }}`. Free projects can only
@@ -554,7 +554,7 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   **Test providers are staff-only** (checkout refuses non-staff), so leaving `mock` on never gives Pro for free. Unset = payments off.
 - **Moyasar** (`src/lib/payments/moyasar.ts`, owner Nov 2026; setup steps in `docs/moyasar.md`): `MOYASAR_PUBLISHABLE_KEY`,
   `MOYASAR_SECRET_KEY` (test keys = staff only), `MOYASAR_WEBHOOK_SECRET` (webhook `secret_token`, checked timing-safe).
-  Checkout page `/billing/pay/<invoice>` (texts `Checkout`) runs Moyasar's own form (npm `moyasar-payment-form`, bundled, no CDN;
+  Checkout page `/billing/pay?invoice=<id>` (texts `Checkout`; a query parameter: the `[invoiceId]` segment version was a blank page on Netlify, Nov 2026) runs Moyasar's own form (npm `moyasar-payment-form`, bundled, no CDN;
   card, mada, Apple Pay) with `save_card: true` and `metadata.invoice_id`; `on_completed` stores the payment id on the invoice
   (`rememberPayment`); the paid payment's `source.token` becomes `subscriptions.payment_token`. Renewals: `chargeToken` = POST
   /v1/payments with `source: {type: "token", "3ds": false}` and `given_id` = the renewal invoice id (a retried call can't charge

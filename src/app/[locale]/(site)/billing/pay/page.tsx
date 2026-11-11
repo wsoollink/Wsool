@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { FlaskConical, Lock } from "lucide-react";
 import { Card } from "@/components/ui/Card";
-import { isLocale, locales, toIntlLocale, type Locale } from "@/i18n/config";
+import { isLocale, toIntlLocale, type Locale } from "@/i18n/config";
 import { getAdmin } from "@/lib/admin";
 import { requireUser } from "@/lib/auth";
 import { db } from "@/lib/db";
@@ -13,13 +13,13 @@ import { paymentProvider } from "@/lib/payments";
 import { moyasarPublishableKey } from "@/lib/payments/moyasar";
 import { MoyasarForm } from "./MoyasarForm";
 
-export function generateStaticParams() {
-  return locales.map((locale) => ({ locale, invoiceId: "_" }));
-}
-
-/** Pay a pending invoice with Moyasar's form. Only the invoice's owner; test keys = staff only. */
-async function Checkout({ params, lang }: { params: Promise<{ invoiceId: string }>; lang: Locale }) {
-  const { invoiceId } = await params;
+/**
+ * Pay a pending invoice with Moyasar's form: /billing/pay?invoice=<id>. Only the invoice's owner; test keys = staff only.
+ * The invoice id is a query parameter, not a path segment: the dynamic-segment version rendered a blank page on Netlify (Nov 2026).
+ */
+async function Checkout({ searchParams, lang }: { searchParams: Promise<Record<string, string | string[] | undefined>>; lang: Locale }) {
+  const raw = (await searchParams).invoice;
+  const invoiceId = typeof raw === "string" ? raw : "";
   const user = await requireUser();
   const t = await getTranslations("Checkout");
   const provider = paymentProvider();
@@ -61,7 +61,7 @@ async function Checkout({ params, lang }: { params: Promise<{ invoiceId: string 
   );
 }
 
-export default async function PayPage({ params }: PageProps<"/[locale]/billing/pay/[invoiceId]">) {
+export default async function PayPage({ params, searchParams }: PageProps<"/[locale]/billing/pay">) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   setRequestLocale(toIntlLocale(locale));
@@ -71,7 +71,7 @@ export default async function PayPage({ params }: PageProps<"/[locale]/billing/p
       <Card className="flex flex-col gap-5 p-6">
         <h1 className="text-2xl font-bold">{t("title")}</h1>
         <Suspense fallback={null}>
-          <Checkout params={params as Promise<{ invoiceId: string }>} lang={locale} />
+          <Checkout searchParams={searchParams} lang={locale} />
         </Suspense>
       </Card>
     </main>

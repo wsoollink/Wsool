@@ -5,7 +5,7 @@ import { siteOrigin } from "@/lib/site-url";
 import type { Payment, PaymentProvider } from "./types";
 
 /**
- * Moyasar (owner, Nov 2026). The browser pays on our page /billing/pay/<invoice> with Moyasar's
+ * Moyasar (owner, Nov 2026). The browser pays on our page /billing/pay?invoice=<id> with Moyasar's
  * own form (npm "moyasar-payment-form": card, mada, Apple Pay) and `save_card: true`, so the paid
  * payment carries a card token (`source.token`). Renewals charge that token from the server
  * (POST /v1/payments, source type "token", no 3-D Secure: the customer agreed at the first payment).
@@ -80,7 +80,7 @@ export const moyasarProvider: PaymentProvider = {
   },
   async startCheckout({ invoiceId }) {
     // The form runs on our own page (it needs the browser for card entry, 3-D Secure and Apple Pay).
-    return { url: `/billing/pay/${invoiceId}` };
+    return { url: `/billing/pay?invoice=${invoiceId}` };
   },
   async getPayment(id) {
     if (!/^[A-Za-z0-9_-]{1,64}$/.test(id)) return null;

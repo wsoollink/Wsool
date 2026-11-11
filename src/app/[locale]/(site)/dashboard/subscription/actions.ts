@@ -1,6 +1,5 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import { z } from "zod";
 import { CANCEL_REASONS } from "@/config/plans";
 import { getAdmin } from "@/lib/admin";
@@ -16,16 +15,18 @@ import { pageChanged } from "@/lib/public-page";
 const cycle = z.enum(["monthly", "yearly"]);
 const currency = z.enum(["SAR", "USD"]);
 
-/** Starts checkout for the signed-in creator and sends the browser to the payment page. */
-export async function checkout(cycleInput: string, currencyInput: string, discountCode?: string): Promise<{ error: CheckoutError } | void> {
+/**
+ * Starts checkout for the signed-in creator and returns the payment page; the browser loads it in full
+ * (a server-action redirect showed a blank page on Netlify).
+ */
+export async function checkout(cycleInput: string, currencyInput: string, discountCode?: string): Promise<{ error: CheckoutError } | { url: string }> {
   const { user, page } = await requireCreator();
   const c = cycle.safeParse(cycleInput), cur = currency.safeParse(currencyInput);
   if (!c.success || !cur.success || page.deletedAt) return { error: "failed" };
   // The test provider is for the team only, so nobody gets Pro for free.
   if (paymentProvider()?.testOnly && !(await getAdmin())) return { error: "disabled" };
   const res = await startCheckout(user, c.data, cur.data, discountCode ? String(discountCode).slice(0, 30) : undefined);
-  if ("error" in res) return res;
-  redirect(res.url);
+  return res;
 }
 
 /** "Have a discount code?": checks it for this account and returns its percent (the price is recomputed at checkout). */

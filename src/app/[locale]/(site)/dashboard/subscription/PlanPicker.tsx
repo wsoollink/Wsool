@@ -67,7 +67,8 @@ export function PlanPicker({ defaultCurrency, canPay, renew, showTrial }: { defa
     startTransition(async () => {
       setError("");
       const res = await checkout(cycle, currency, discount?.code);
-      if (res?.error) setError(t(`errors.${res.error}`));
+      if ("url" in res) window.location.href = res.url;
+      else setError(t(`errors.${res.error}`));
     });
 
   return (

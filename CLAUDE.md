@@ -563,6 +563,7 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   (the proxy skips `.well-known/`). Local tests: `MOYASAR_API_BASE` → a fake server (the browser form only talks to api.moyasar.com).
 - Adding the real provider: implement `PaymentProvider` next to `mock.ts`, register it in
   `paymentProvider()`, set `PAYMENT_PROVIDER` + its keys. Nothing else changes.
+- Checkout actions (creator `checkout`, agency `agencyCheckout`) return `{url}` and the browser loads it with `window.location` (a server-action `redirect` showed a blank payment page on Netlify, Nov 2026).
 - Flow (`src/lib/billing.ts`): `startCheckout` creates a pending invoice with the price from
   `PRICES` (`src/config/plans.ts`, VAT included, `vatPart()`), the browser pays, then
   `/billing/return` (route handler, full-page redirect target) and `/api/payments/webhook` both

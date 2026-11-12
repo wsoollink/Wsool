@@ -12,7 +12,7 @@
 
 ## 1. الأمان (الأهم)
 - [x] تفعيل التحقق بخطوتين (2FA) في كل الحسابات: GitHub، Netlify، Supabase، Cloudflare، Google Workspace، Resend، Anthropic. **(11 نوفمبر: تم)**
-- [ ] التأكد إن كل المفاتيح السرية في Netlify معلّم عليها «Contains secret values» (ما عدا اللي تبدأ بـ `NEXT_PUBLIC_`).
+- [x] التأكد إن كل المفاتيح السرية في Netlify معلّم عليها «Contains secret values» (ما عدا اللي تبدأ بـ `NEXT_PUBLIC_`). **(12 نوفمبر: تم)**
 - [x] **Cloudflare Turnstile**: Cloudflare → Turnstile → Add widget (الاسم «Wsool»، الدومين `wsool.link`، النوع Managed) → حط `NEXT_PUBLIC_TURNSTILE_SITE_KEY` (عادي) و `TURNSTILE_SECRET_KEY` (سري) في Netlify.
 - [x] **SIGNING_SECRET** في Netlify (سري): نص عشوائي طويل (مثلاً من `openssl rand -base64 48`). بعده اللي فتحوا صفحات خاصة بكلمة مرور يدخلونها مرة ثانية.
 

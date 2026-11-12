@@ -71,6 +71,10 @@ Surfaces:
 ## 3. Language & formatting rules
 
 - Arabic is the primary language, RTL. English is LTR.
+- **Arabic copy = simple Modern Standard Arabic (فصحى بسيطة)** everywhere users read it: site, dashboards, admin, emails,
+  notifications, app, legal pages, Academy starters, demo data (owner, Nov 2026: Saudi colloquial wasn't formal and other Arab
+  countries found it hard). Short, everyday words, «أنت»; «البريد الإلكتروني» not «إيميل», «العلامات التجارية / الشركات» not
+  «البراندات». Fixed terms stay: وصول، الباقة الاحترافية، الأساسية، ملفك الإعلامي، مؤثر. Chat replies to the owner stay Saudi.
 - **All numbers everywhere use Western digits 0–9**, also in Arabic (no ٠١٢٣).
 - Platform names always in English (TikTok, Instagram, X, YouTube, Snapchat, Threads, Telegram, Facebook, LinkedIn,
   Pinterest, Twitch, Jaco, Discord, Spotify).

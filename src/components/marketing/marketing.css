@@ -61,6 +61,11 @@
   .mk-home-67>div:nth-child(2){display:contents!important}
   .mk-home-67>div:nth-child(2)>*{position:relative}
   .mk-home-67>div:nth-child(2)>h2,.mk-home-67>div:nth-child(2)>p{margin-top:-10px!important}
+  /* Mail icon and title on one row (owner, Nov 2026): the icon keeps its place, the title moves up beside it. */
+  .mk-home-67>div:nth-child(2)>span[aria-hidden]{margin-bottom:-64px}
+  .mk-home-67>div:nth-child(2)>h2{margin-top:0!important;min-height:44px;display:flex;align-items:center;padding-inline-start:56px}
+  /* The error message and the privacy line under the email field: centred (owner, Nov 2026). */
+  .mk-home-69>span{text-align:center}
   .mk-home-67>.mk-home-69{order:1}
   .mk-home-67>div:nth-child(2)>div{order:2}
   .mk-home-67>div:nth-child(2)>div:first-of-type{padding-top:20px;border-top:1px solid rgba(var(--mk-ink),0.08)}
@@ -227,3 +232,6 @@ div:has(> header > :is(.mk-home-1, .mk-pricing-1, .mk-notfound-1, .mk-hidden-1, 
 @media (min-width: 768px) and (max-width: 999px) {
   header :is(.mk-home-3, .mk-pricing-3, .mk-notfound-3, .mk-hidden-3, .mk-servererror-3) { display: none !important; }
 }
+
+/* Home hero title (owner, Nov 2026): the damma on «تُقنع» touched the line above at line-height 1.12. */
+.mk-home-8 { line-height: 1.32 !important; }

@@ -63,7 +63,7 @@ export default async function AgenciesPage({ params }: PageProps<"/[locale]/agen
   const faq = raw<Faq[]>("faq");
 
   return (
-    <div className="ag-grid flex flex-1 flex-col bg-bg-marketing">
+    <div className="ag-grid flex flex-1 flex-col overflow-x-clip bg-bg-marketing">
       <AgenciesHeader lang={lang} />
 
       <main className="flex-1 overflow-x-clip">
@@ -71,24 +71,24 @@ export default async function AgenciesPage({ params }: PageProps<"/[locale]/agen
         <section className="relative">
           <div aria-hidden="true" className="pointer-events-none absolute -top-40 start-1/2 size-[640px] rounded-full ag-glow [--glow:#22B8F036]" />
           <div className="relative mx-auto grid max-w-[1180px] grid-cols-1 items-center gap-12 px-4 pt-12 pb-16 md:pt-20 lg:grid-cols-[1fr_1.05fr] lg:gap-10">
-            <div className="flex flex-col items-start gap-6">
+            <div className="flex flex-col items-center gap-6 text-center lg:items-start lg:text-start">
               <span className="inline-flex items-center gap-2 rounded-full border border-line bg-card py-1 ps-1 pe-3 text-[13px] font-semibold shadow-card">
                 <span className="rounded-full bg-blue px-2.5 py-0.5 text-xs font-bold text-on-blue">{t("chipNew")}</span>
                 {t("chip")}
               </span>
-              <h1 className="text-[42px] leading-[1.15] font-black md:text-[68px] md:leading-[1.08]">
+              <h1 className="text-[42px] leading-[1.3] font-black md:text-[60px] md:leading-[1.28]">
                 {t("heroA")}
                 <br />
-                <span className="bg-gradient-to-l from-[#0060E6] to-[#22B8F0] bg-clip-text text-transparent">{t("heroB")}</span>
+                <span className="bg-gradient-to-l from-[#0060E6] to-[#22B8F0] bg-clip-text text-transparent sm:whitespace-nowrap">{t("heroB")}</span>
               </h1>
               <p className="max-w-xl text-lg leading-9 text-muted">{t("heroBody")}</p>
-              <div className="flex flex-wrap items-center gap-4">
+              <div className="flex flex-wrap items-center justify-center gap-4 lg:justify-start">
                 <Link href={TRIAL} className={primaryCta}>{t("ctaTrial")}</Link>
                 <Link href="/agencies/demo" className="inline-flex min-h-11 items-center gap-1.5 text-[15px] font-bold text-blue">
                   {t("ctaAgencyDemo")} <Arrow aria-hidden="true" size={17} />
                 </Link>
               </div>
-              <ul className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted">
+              <ul className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm text-muted lg:justify-start">
                 {raw<string[]>("heroChecks").map((c) => <li key={c} className="flex items-center gap-1.5"><Check aria-hidden="true" size={16} className="text-good" />{c}</li>)}
               </ul>
             </div>

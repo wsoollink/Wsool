@@ -5,11 +5,11 @@ import { SELLER } from "@/config/site";
 const TEXT = {
   ar: {
     links: [["/", "الرئيسية"], ["/pricing", "الأسعار"], ["/demo", "صفحة تجريبية"], ["/agencies", "للوكالات"], ["/academy", "الأكاديمية"], ["/contact", "تواصل معنا"], ["/terms", "شروط الاستخدام"], ["/privacy", "سياسة الخصوصية"], ["/refund", "سياسة الاسترجاع"]],
-    nav: "روابط الموقع", made: "صُنع في السعودية",
+    nav: "روابط الموقع", made: "صُنع في السعودية", about: "ملف إعلامي احترافي لصناع المحتوى العرب، برابط واحد.",
   },
   en: {
     links: [["/", "Home"], ["/pricing", "Pricing"], ["/demo", "Demo page"], ["/agencies", "For agencies"], ["/academy", "Academy"], ["/contact", "Contact us"], ["/terms", "Terms of use"], ["/privacy", "Privacy policy"], ["/refund", "Refund policy"]],
-    nav: "Site links", made: "Made in Saudi Arabia",
+    nav: "Site links", made: "Made in Saudi Arabia", about: "The professional media kit for content creators, in one link.",
   },
 } as const;
 
@@ -25,7 +25,10 @@ export function SiteFooter({ lang }: { lang: "ar" | "en" }) {
   return (
     <footer className="border-t border-line bg-bg-marketing">
       <div className="mx-auto flex max-w-5xl flex-col gap-6 px-4 py-8 md:flex-row md:items-start md:justify-between">
-        <Link href="/" className="inline-flex min-h-11 items-center self-start"><BrandLogo lang={lang} alt={lang === "en" ? "Wsool" : "وصول"} /></Link>
+        <div className="flex max-w-sm flex-col gap-2">
+          <Link href="/" className="inline-flex min-h-11 items-center self-start"><BrandLogo lang={lang} alt={lang === "en" ? "Wsool" : "وصول"} /></Link>
+          <p className="text-sm leading-7 text-muted">{t.about}</p>
+        </div>
         <nav aria-label={t.nav} className="grid grid-cols-2 gap-x-8 gap-y-1 text-sm text-muted sm:grid-cols-4">
           {t.links.map(([href, label]) => (
             <Link key={href} href={href} className="inline-flex min-h-11 items-center hover:text-blue md:min-h-8">{label}</Link>

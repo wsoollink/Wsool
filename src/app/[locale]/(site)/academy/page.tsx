@@ -103,8 +103,8 @@ export default async function AcademyPage({ params, searchParams }: PageProps<"/
         <section className="ac-hero relative overflow-hidden rounded-[22px] px-6 py-10 text-white md:px-12 md:py-14">
           <div className="relative flex flex-col gap-3">
             <span className="inline-flex w-fit items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-bold"><GraduationCap aria-hidden="true" size={15} /> {t("name")}</span>
-            <h1 className="max-w-2xl text-3xl font-black leading-tight md:text-5xl">{t("title")}</h1>
-            <p className="max-w-2xl text-base leading-8 text-white/80 md:text-lg">{t("lead")}</p>
+            <h1 className="text-3xl font-black leading-snug md:text-5xl md:leading-tight">{t("title")}</h1>
+            <p className="max-w-2xl text-base leading-8 text-white/80 md:max-w-none md:text-lg">{t("lead")}</p>
             {/* A route handler (XML), not a page: plain link. */}
             {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
             <a href="/academy/feed" className="mt-1 inline-flex min-h-11 w-fit items-center gap-1.5 text-sm font-bold text-white/80 hover:text-white"><Rss aria-hidden="true" size={15} /> RSS</a>

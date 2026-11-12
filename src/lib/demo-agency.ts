@@ -48,7 +48,7 @@ export function buildDemoAgency(lang: Locale): PublicAgency {
     id: "demo",
     slug: "agencies/demo",
     name: en ? "Nojoom Agency" : "وكالة نجوم",
-    tagline: en ? "We connect brands with the creators their audience trusts" : "نوصل علامتك التجارية بالمؤثرين اللي يثق فيهم جمهورك",
+    tagline: en ? "We connect brands with the creators their audience trusts" : "نربط علامتك التجارية بالمؤثرين الذين يثق بهم جمهورك",
     bio: en
       ? "Nojoom is a Riyadh-based influencer marketing agency managing creators across travel, beauty, tech, food and fitness.\nWe plan the campaign, pick the right creators, and report verified results."
       : "وكالة نجوم وكالة تسويق مؤثرين في الرياض، تدير مؤثرين في السفر والجمال والتقنية والمطاعم واللياقة.\nنخطط الحملة، ونختار المؤثرين المناسبين، ونقدّم نتائج موثّقة.",

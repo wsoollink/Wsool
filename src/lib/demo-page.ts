@@ -137,7 +137,7 @@ export async function buildDemoPage(db: PrismaClient, opts: DemoOptions = {}) {
         photoShape: "full",
         iconStyle: "color",
         noteTitle: "حكمتي",
-        noteBody: "المحتوى الصادق يبني ثقة تدوم أكثر من أي إعلان. أختار الشراكات اللي أستخدمها فعلاً، وأقدّمها لمتابعيني مثل ما أقدّمها لأهلي.",
+        noteBody: "المحتوى الصادق يبني ثقة تدوم أكثر من أي إعلان. أختار الشراكات التي أستخدمها فعلًا، وأقدّمها لمتابعيّ كما أقدّمها لأهلي.",
         noteTitleEn: "My motto",
         noteBodyEn: "Honest content builds trust that outlasts any ad. I only partner with brands I actually use, and I present them to my followers the way I would to my family.",
         isPublished: true,
@@ -148,7 +148,7 @@ export async function buildDemoPage(db: PrismaClient, opts: DemoOptions = {}) {
         contactEmail: "abdullah@example.com",
         translations: {
           create: [
-            { lang: "ar", fullName: "عبدالله بن سلطان", specialty: "صانع محتوى لايف ستايل وتقنية", bio: "أشارك يومياتي في الرياض، تجارب المنتجات والتقنية والسفر، وأتعاون مع البراندات بمحتوى صادق يوصل للناس. هذي صفحة تجريبية من وصول تعرض كل اللي تقدر تضيفه في صفحتك.", city: "الرياض", country: "السعودية" },
+            { lang: "ar", fullName: "عبدالله بن سلطان", specialty: "صانع محتوى لايف ستايل وتقنية", bio: "أشارك يومياتي في الرياض، وتجاربي مع المنتجات والتقنية والسفر، وأتعاون مع العلامات التجارية بمحتوى صادق يصل إلى الناس. هذه صفحة تجريبية من وصول تعرض كل ما يمكنك إضافته إلى صفحتك.", city: "الرياض", country: "السعودية" },
             { lang: "en", fullName: "Abdullah bin Sultan", specialty: "Lifestyle & tech creator", bio: "I share my days in Riyadh, product and tech reviews and travel, and partner with brands on honest content people trust. This is a Wsool demo page showing everything you can add to yours.", city: "Riyadh", country: "Saudi Arabia" },
           ],
         },
@@ -182,7 +182,7 @@ export async function buildDemoPage(db: PrismaClient, opts: DemoOptions = {}) {
         links: {
           create: [
             { title: "متجري", titleEn: "My store", url: "https://store.example.com", sort: 0 },
-            { title: "دورة التصوير بالجوال", titleEn: "Phone photography course", url: "https://course.example.com", sort: 1 },
+            { title: "دورة التصوير بالهاتف", titleEn: "Phone photography course", url: "https://course.example.com", sort: 1 },
             { title: "البودكاست", titleEn: "Podcast", url: "https://podcast.example.com", sort: 2 },
           ],
         },

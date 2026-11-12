@@ -24,8 +24,8 @@ export default function GlobalNotFound() {
         <main className="mx-auto flex w-full max-w-lg flex-1 flex-col items-center justify-center gap-5 px-4 py-16 text-center">
           <BrandLogo lang="ar" alt="وصول" className="h-9 w-auto" />
           <p className="font-numbers bg-gradient-to-l from-[#0060E6] to-[#22B8F0] bg-clip-text text-7xl font-black text-transparent">404</p>
-          <h1 className="text-2xl font-black">الصفحة اللي تدورها غير موجودة</h1>
-          <p className="text-muted">يمكن الرابط فيه خطأ، أو الصفحة انتقلت.</p>
+          <h1 className="text-2xl font-black">الصفحة التي تبحث عنها غير موجودة</h1>
+          <p className="text-muted">ربما يحتوي الرابط على خطأ، أو نُقلت الصفحة.</p>
           <p className="text-sm text-muted" dir="ltr" lang="en">This page doesn&apos;t exist. The link may be wrong or the page has moved.</p>
           <div className="flex flex-wrap justify-center gap-2">
             {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- full load back into the site layout */}

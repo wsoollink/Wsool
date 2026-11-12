@@ -34,7 +34,7 @@ export async function sendSupportMessage(input: SupportMessage, lang: "ar" | "en
 
   const details = [
     `الاسم: ${m.name}`,
-    `الإيميل: ${m.email}`,
+    `البريد الإلكتروني: ${m.email}`,
     `النوع: ${TOPIC_NAMES[m.topic]}`,
     m.username ? `الصفحة: https://wsool.link/${m.username}` : "",
     `لغة الموقع: ${lang === "en" ? "English" : "العربية"}`,

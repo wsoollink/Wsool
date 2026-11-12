@@ -34,7 +34,7 @@ export async function applyAgency(input: AgencyRequestInput, lang: "ar" | "en", 
     preheader: `${r.agencyName} · ${r.name}`,
     title: `طلب انضمام وكالة: ${r.agencyName}`,
     paragraphs: [
-      [`الاسم: ${r.name}`, `الوكالة: ${r.agencyName}`, `الإيميل: ${r.email}`, `الجوال: +${r.phone}`, `لغة الموقع: ${lang === "en" ? "English" : "العربية"}`].join("\n"),
+      [`الاسم: ${r.name}`, `الوكالة: ${r.agencyName}`, `البريد الإلكتروني: ${r.email}`, `الجوال: +${r.phone}`, `لغة الموقع: ${lang === "en" ? "English" : "العربية"}`].join("\n"),
       r.note,
     ].filter(Boolean),
     footer: "افتح الحساب من لوحة الإدارة ← الوكالات ← طلبات الانضمام.",

@@ -554,6 +554,9 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   **Test providers are staff-only** (checkout refuses non-staff), so leaving `mock` on never gives Pro for free. Unset = payments off.
 - **Moyasar** (`src/lib/payments/moyasar.ts`, owner Nov 2026; setup steps in `docs/moyasar.md`): `MOYASAR_PUBLISHABLE_KEY`,
   `MOYASAR_SECRET_KEY` (test keys = staff only), `MOYASAR_WEBHOOK_SECRET` (webhook `secret_token`, checked timing-safe).
+  Live secret keys only work from Moyasar "Allowed IPs" and Netlify has no fixed outbound IP, so with `MOYASAR_PROXY_URL` (secret,
+  QuotaGuard Static, Frankfurt) every server call to Moyasar goes through that static-IP proxy (undici `ProxyAgent` + its `fetch`);
+  unset = direct. The browser form uses the publishable key directly.
   Checkout page `/billing/pay?invoice=<id>` (texts `Checkout`; a query parameter: the `[invoiceId]` segment version was a blank page on Netlify, Nov 2026) runs Moyasar's own form (npm `moyasar-payment-form`, bundled, no CDN;
   card, mada, Apple Pay) with `save_card: true` and `metadata.invoice_id`; `on_completed` stores the payment id on the invoice
   (`rememberPayment`); the paid payment's `source.token` becomes `subscriptions.payment_token`. Renewals: `chargeToken` = POST

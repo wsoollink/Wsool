@@ -41,7 +41,17 @@
 لوحة ميسر ← Settings ← **Apple Pay** ← أضف النطاق `wsool.link`. بيعطونك ملف اسمه
 `apple-developer-merchantid-domain-association`: **أرسله لي** (مو سري) وأنا أحطه في الموقع، بعدها اضغط Verify عندهم.
 
-### 5. عند تفعيل الحساب الحقيقي (Live)
+### 5. عنوان IP ثابت (المفتاح الحقيقي يحتاجه)
+ميسر ما يعرض المفتاح السري الحقيقي إلا بعد إضافة عناوين IP في Allowed IPs، وسيرفرات Netlify ما لها عنوان ثابت.
+فطلبات الموقع لميسر (تأكيد الدفع، التجديد، الاسترجاع) تمر عبر **QuotaGuard Static** (منطقة Frankfurt، 19$ شهرياً):
+1. من لوحة QuotaGuard انسخ **رابط الـ Proxy** (`http://user:pass@...`) وحطه في Netlify باسم `MOYASAR_PROXY_URL` (**Secret**).
+2. انشر الموقع (Trigger deploy).
+3. أضف **العنوانين الثابتين** من QuotaGuard في ميسر ← Live ← Settings ← API Keys ← Allowed IPs (يطلب رمز تأكيد).
+4. بعدها يظهر المفتاح السري: اضغط Regenerate وانسخه **مرة وحدة** إلى `MOYASAR_SECRET_KEY`، ثم انشر.
+بعد حفظ العناوين ما يرجع المفتاح يشتغل من «أي عنوان»، فلازم اشتراك QuotaGuard يبقى فعّال.
+نموذج الدفع في المتصفح يكلم ميسر مباشرة بالمفتاح العام، وما يتأثر.
+
+### 6. عند تفعيل الحساب الحقيقي (Live)
 بدّل في Netlify `MOYASAR_PUBLISHABLE_KEY` و `MOYASAR_SECRET_KEY` بمفاتيح `pk_live_` / `sk_live_`، وأضف Webhook بنفس الرابط في Live
 Mode (له Secret token خاص)، ثم Trigger deploy. من هنا الدفع يصير متاح لكل الصناع.
 

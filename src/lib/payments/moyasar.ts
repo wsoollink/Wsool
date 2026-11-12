@@ -1,5 +1,6 @@
 import "server-only";
 import { timingSafeEqual } from "node:crypto";
+import { ProxyAgent, fetch as proxiedFetch } from "undici";
 import type { Currency } from "@/generated/prisma/enums";
 import { siteOrigin } from "@/lib/site-url";
 import type { Payment, PaymentProvider } from "./types";
@@ -12,6 +13,9 @@ import type { Payment, PaymentProvider } from "./types";
  *
  * Env: MOYASAR_PUBLISHABLE_KEY (pk_test_… / pk_live_…, used by the form), MOYASAR_SECRET_KEY (server only),
  * MOYASAR_WEBHOOK_SECRET (the "secret token" set on the webhook in Moyasar's dashboard).
+ * MOYASAR_PROXY_URL (optional, secret): Moyasar refuses the live secret key except from "Allowed IPs", and Netlify functions
+ * have no fixed outbound IP, so the server's calls (verify, renewals, refunds) go through a static-IP proxy (QuotaGuard Static,
+ * http://user:pass@host:port). The browser's payment form talks to Moyasar directly and is not affected.
  * Test keys make the provider staff-only, like the mock one. Amounts go to Moyasar in the smallest
  * unit (halalas / cents). Tokenization must be enabled on the account by Moyasar.
  */
@@ -29,8 +33,18 @@ type MoyasarPayment = {
   source?: { type?: string; company?: string; number?: string; token?: string | null; message?: string | null; transaction_url?: string | null } | null;
 };
 
+// One proxy connection pool per server instance (null = call Moyasar directly).
+let agent: ProxyAgent | null | undefined;
+function proxy() {
+  if (agent === undefined) {
+    const url = process.env.MOYASAR_PROXY_URL?.trim();
+    agent = url ? new ProxyAgent(url) : null;
+  }
+  return agent;
+}
+
 async function call<T>(path: string, init: { method?: string; body?: unknown } = {}): Promise<{ ok: boolean; status: number; data: T | null }> {
-  const res = await fetch(`${API}/v1${path}`, {
+  const request = {
     method: init.method ?? "GET",
     headers: {
       Authorization: `Basic ${Buffer.from(`${secretKey()}:`).toString("base64")}`,
@@ -38,8 +52,11 @@ async function call<T>(path: string, init: { method?: string; body?: unknown } =
     },
     body: init.body === undefined ? undefined : JSON.stringify(init.body),
     signal: AbortSignal.timeout(20_000),
-    cache: "no-store",
-  });
+  };
+  const via = proxy();
+  const res = via
+    ? await proxiedFetch(`${API}/v1${path}`, { ...request, dispatcher: via })
+    : await fetch(`${API}/v1${path}`, { ...request, cache: "no-store" });
   const data = (await res.json().catch(() => null)) as T | null;
   if (!res.ok) console.error("[moyasar]", init.method ?? "GET", path.replace(/\/[0-9a-f-]{36}/g, "/:id"), res.status, JSON.stringify(data).slice(0, 300));
   return { ok: res.ok, status: res.status, data };

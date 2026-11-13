@@ -201,7 +201,7 @@ export default async function AgenciesPage({ params }: PageProps<"/[locale]/agen
             {how.map((h, i) => (
               <li key={h.t} className={`${card} relative overflow-hidden`}>
                 <span aria-hidden="true" className="font-numbers pointer-events-none absolute -top-4 end-3 text-[110px] leading-none font-black text-blue/[0.07]" dir="ltr">0{i + 1}</span>
-                <p className="font-numbers relative mb-3 text-sm font-black text-blue" dir="ltr">0{i + 1}</p>
+                <p className="font-numbers relative mb-3 inline-flex size-12 items-center justify-center rounded-full bg-blue/10 text-xl font-black text-blue" dir="ltr">0{i + 1}</p>
                 <h3 className="relative mb-2 text-xl font-black">{h.t}</h3>
                 <p className="relative leading-7 text-muted">{h.b}</p>
               </li>

@@ -13,6 +13,7 @@ import { PRICING_TEXT } from "./generated/pricing.text";
 import { SERVERERROR_TEXT } from "./generated/servererror.text";
 import "./generated/shared.css";
 import "./marketing.css";
+import { useFooterAccordion } from "./useFooterAccordion";
 import { useMarketing } from "./useMarketing";
 
 type Texts = { ar: readonly string[]; en: readonly string[] };
@@ -20,10 +21,12 @@ const translator = (texts: Texts, lang: Locale) => (i: number) => texts[lang][i]
 
 /** Marketing pages: generated design views + the hook that runs them. */
 export function HomePage({ lang }: { lang: Locale }) {
+  useFooterAccordion();
   return <HomeView v={useMarketing(lang, { source: "home" })} t={translator(HOME_TEXT, lang)} />;
 }
 
 export function PricingPage({ lang }: { lang: Locale }) {
+  useFooterAccordion();
   return <PricingView v={useMarketing(lang, { source: "pricing" })} t={translator(PRICING_TEXT, lang)} />;
 }
 

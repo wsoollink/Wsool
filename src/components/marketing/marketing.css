@@ -78,8 +78,18 @@
   /* Footer: the tagline on one line, the three link columns side by side at equal widths. */
   div:has(>:is(.mk-home-70,.mk-pricing-23))>div:first-child{max-width:none!important}
   div:has(>:is(.mk-home-70,.mk-pricing-23))>div:first-child>p{white-space:nowrap;font-size:clamp(10.5px,3vw,14px)!important}
-  footer :is(.mk-home-70,.mk-pricing-23){display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px!important;width:100%}
-  footer :is(.mk-home-70,.mk-pricing-23)>div>*{white-space:nowrap;font-size:clamp(12px,3.5vw,14px)!important}
+  /* Bottom row (owner, Nov 2026): rights, company, made in Saudi Arabia on three centred lines. */
+  footer:has(:is(.mk-home-70,.mk-pricing-23))>div:last-child{flex-direction:column;align-items:center;text-align:center;gap:6px!important}
+  /* Link columns (owner, Nov 2026): stacked lists, start-aligned; each title opens its links (useFooterAccordion). */
+  footer :is(.mk-home-70,.mk-pricing-23){display:flex!important;flex-direction:column;gap:0!important;width:100%}
+  footer .wfoot{gap:0!important;border-bottom:1px solid rgba(var(--mk-ink),0.08)}
+  footer .wfoot>a{min-height:40px;display:flex;align-items:center}
+  footer .wfoot>span:first-child{display:flex;align-items:center;justify-content:space-between;min-height:48px;font-size:15px!important;cursor:pointer;-webkit-tap-highlight-color:transparent}
+  footer .wfoot>span:first-child::after{content:"";width:9px;height:9px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:translateY(-3px) rotate(45deg);transition:transform .2s ease}
+  footer .wfoot.open>span:first-child::after{transform:translateY(2px) rotate(-135deg)}
+  footer .wfoot>span:first-child:focus-visible{outline:2px solid #0060E6;outline-offset:2px;border-radius:6px}
+  footer .wfoot:not(.open)>a{display:none}
+  footer .wfoot.open{padding-bottom:8px}
 }
 .wsoc-instagram span{-webkit-mask-image:url(/marketing/c29d2b71c7556f8ca7caaad85838d28a.png);mask-image:url(/marketing/c29d2b71c7556f8ca7caaad85838d28a.png)}
 .wsoc-tiktok span{-webkit-mask-image:url(/marketing/f2eac10a4a90fc41314bdb5ae069b51f.png);mask-image:url(/marketing/f2eac10a4a90fc41314bdb5ae069b51f.png)}

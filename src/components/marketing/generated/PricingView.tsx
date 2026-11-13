@@ -592,6 +592,9 @@ export function PricingView({ v, t }: { v: any; t: (i: number) => string }) {
           <span>
             {t(124)}
           </span>
+          <span>
+            {t(125)}
+          </span>
         </div>
       </footer>
     </div>

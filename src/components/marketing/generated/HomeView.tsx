@@ -1179,6 +1179,9 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
           <span>
             {t(203)}
           </span>
+          <span>
+            {t(204)}
+          </span>
         </div>
       </footer>
     </div>

@@ -64,7 +64,7 @@ export const LEGAL_TEXT: Record<"ar" | "en", Record<LegalKind, LegalDoc>> = {
         { h: "7. برنامج العمولة" },
         { ul: [
           "المشتركون في الباقة الاحترافية يحصلون على رابط إحالة. من يسجّل عبره خلال 30 يوماً من آخر ضغطة يُحسب لصاحب الرابط.",
-          "العمولة 20% من قيمة كل دفعة (قبل ضريبة القيمة المضافة) يدفعها العميل المُحال خلال أول 12 شهراً من أول دفعة له، وعلى الاشتراكات المدفوعة فقط.",
+          "العمولة 10% من قيمة كل دفعة (قبل ضريبة القيمة المضافة) يدفعها العميل المُحال خلال أول 12 شهراً من أول دفعة له، وعلى الاشتراكات المدفوعة فقط.",
           "تُستحق العمولة بعد 14 يوماً من الدفع، وتُلغى إذا استُرجع المبلغ قبل ذلك. ولا عمولة عن الدفعات التي تتم وصاحب الرابط ليس على الباقة الاحترافية.",
           "تُصرف العمولة رصيداً يُخصم من تجديد اشتراكك، أو تحويلاً بنكياً عند بلوغ الرصيد 100 ريال، حسب اختيارك. وأنت مسؤول عن صحة بياناتك البنكية وعن أي التزامات نظامية أو ضريبية على دخلك.",
           "يُمنع التسجيل عبر رابطك بحسابات وهمية أو تابعة لك، أو الترويج بالرسائل المزعجة أو الادعاءات المضللة. ويحق لنا إلغاء العمولات المخالفة أو إيقاف المشاركة في البرنامج أو تعديل شروطه للعمولات المستقبلية.",
@@ -271,7 +271,7 @@ export const LEGAL_TEXT: Record<"ar" | "en", Record<LegalKind, LegalDoc>> = {
         { h: "7. Affiliate program" },
         { ul: [
           "Pro subscribers get a referral link. Anyone who signs up through it within 30 days of their last click counts for the link's owner.",
-          "The commission is 20% of each payment (before VAT) the referred customer makes in the first 12 months after their first payment, on paid subscriptions only.",
+          "The commission is 10% of each payment (before VAT) the referred customer makes in the first 12 months after their first payment, on paid subscriptions only.",
           "A commission becomes payable 14 days after the payment and is cancelled if the payment is refunded before then. Payments made while the link's owner is not on Pro earn nothing.",
           "Commission is paid as credit taken off your own renewal, or by bank transfer once your balance reaches SAR 100, as you choose. You are responsible for your bank details and for any legal or tax obligations on this income.",
           "Signing up through your own link with fake or related accounts, spam, or misleading claims is not allowed. We may cancel such commissions, end your participation, or change the program terms for future commissions.",

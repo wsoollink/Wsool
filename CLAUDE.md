@@ -1006,7 +1006,7 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   credits); skip skill steps that don't fit a solo owner (feature flags, staged rollouts, heavy test suites) unless asked.
 
 ### Affiliate program (owner, Oct 2026)
-- Rules in `REFERRAL` (`src/config/referrals.ts`): 20% of each paid invoice **before VAT** (in SAR, USD × 3.75), for payments
+- Rules in `REFERRAL` (`src/config/referrals.ts`): 10% (owner, Nov 2026; was 20%, earned commissions keep their `percent`) of each paid invoice **before VAT** (in SAR, USD × 3.75), for payments
   before the customer's first payment + 12 months; referrer must be Pro (and not suspended) when the payment settles; 30-day
   cookie (last click wins); payable after 14 days (a refund before then cancels it, `cancelCommissionForRefund`); bank
   transfers from SAR 100. Logic: `src/lib/referrals.ts`.
@@ -1017,7 +1017,9 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
 - `ensureAccount()` (first sign-in only) calls `attachReferral()`: sets `users.referred_by` / `referred_at`; never self, never
   the same inbox (`sameInbox`: gmail dots / +tags); DB check `users_not_self_referred`.
 - `earnCommission(invoiceId)` runs after `settleCheckout` and renewals (idempotent: unique `invoice_id`), notifies
-  `commission_earned`. Balance = payable commissions − `referral_payouts` (`referralBalance`).
+  `commission_earned` (bell only: `bellOnly` types in `NOTIFICATIONS` never email or push). Weekly report (owner, Nov 2026):
+  `sendReferralDigests()` in the hourly job, Sundays from 9:00 Saudi time, one `referral_weekly` (bell + email: link visits,
+  sign-ups, new commissions and balance over the last 7 days) per creator who had any of those, dedupe key per week. Balance = payable commissions − `referral_payouts` (`referralBalance`).
 - Payout method (`referral_accounts`, server only, IBAN mod-97 checked by `validIban` in `src/lib/iban.ts`): `credit` (default)
   = `renewalCredit()` in `runBillingJob` takes it off the creator's own renewal (`invoices.credit_amount`, card charged the
   rest, 0 = no provider call, never leaves a charge under 1; a payout row `method=credit`; refund gives the provider only the

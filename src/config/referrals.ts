@@ -3,8 +3,8 @@
  * they earn a share of what each customer they bring pays in their first year.
  */
 export const REFERRAL = {
-  /** Commission on each paid invoice, before VAT. */
-  percent: 20,
+  /** Commission on each paid invoice, before VAT (owner, Nov 2026: was 20). Commissions already earned keep their own percent. */
+  percent: 10,
   /** Payments within this many months of the customer's first payment earn a commission. */
   months: 12,
   /** How long a click on the link counts for the creator. */

@@ -9,6 +9,7 @@ import { ensureTelegramWebhook } from "@/lib/connect/telegram";
 import { siteOrigin } from "@/lib/site-url";
 import { purgeRateLimits } from "@/lib/rate-limit";
 import { purgeAgencyRequests } from "@/lib/agency";
+import { sendReferralDigests } from "@/lib/referrals";
 import { runReminders } from "@/lib/reminders";
 import { cleanOrphanUploads } from "@/lib/storage-cleanup";
 
@@ -31,6 +32,8 @@ export async function POST(req: Request) {
   await purgeRateLimits();
   await purgeAgencyRequests();
   const reminders = await runReminders();
+  // Weekly affiliate report (Sundays, once).
+  const referralDigests = await sendReferralDigests().catch((err) => { console.error("[referrals] weekly", err); return 0; });
   // Linked platform accounts (YouTube…): followers + audience, once a day each.
   const connections = await syncConnections().catch((err) => ({ error: String(err) }));
   // Ad reports: posts' numbers (daily for 30 days, weekly until 90).
@@ -39,5 +42,5 @@ export async function POST(req: Request) {
   await ensureTelegramWebhook(siteOrigin()).catch((err) => console.error("[telegram] webhook", err));
   // Uploaded files no row uses (once a day, a slice of the folders).
   const cleaned = await cleanOrphanUploads().catch((err) => { console.error("[storage-cleanup]", err); return 0; });
-  return Response.json({ ...report, agencies, draftsExpired, purged, reminders, connections, adReports, cleaned });
+  return Response.json({ ...report, agencies, draftsExpired, purged, reminders, referralDigests, connections, adReports, cleaned });
 }

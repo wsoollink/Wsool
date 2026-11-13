@@ -15,7 +15,7 @@ import en from "../../messages/en.json";
 /**
  * Every notification Wsool sends (in the bell and by email). Texts live in
  * messages/*.json under "Notify.<type>" (subject, title, body, cta).
- * Reminders respect the creator's email settings; the rest is always sent.
+ * Reminders respect the creator's email settings; bellOnly types never email or push; the rest is always sent.
  * Replies to billing emails go to billing@, the rest to support@.
  */
 export const NOTIFICATIONS = {
@@ -40,7 +40,10 @@ export const NOTIFICATIONS = {
   license_verified: { href: "/dashboard/verification", reminder: false },
   license_rejected: { href: "/dashboard/verification", reminder: false },
   deletion_scheduled: { href: "/dashboard/subscription", reminder: false },
-  commission_earned: { href: "/dashboard/referrals", reminder: false },
+  // Bell only (owner, Nov 2026): the weekly referral_weekly email reports new commissions instead.
+  commission_earned: { href: "/dashboard/referrals", reminder: false, bellOnly: true },
+  // Weekly affiliate report (Sundays, src/lib/referrals.ts sendReferralDigests), only when something happened that week.
+  referral_weekly: { href: "/dashboard/referrals", reminder: true },
   commission_paid: { href: "/dashboard/referrals", reminder: false, billing: true },
   commission_credit: { href: "/dashboard/subscription", reminder: false, billing: true },
   connection_lost: { href: "/dashboard/accounts", reminder: false },
@@ -88,6 +91,7 @@ function present(data: Data, lang: Locale): Record<string, string | number> {
   if (data.currency === "SAR" || data.currency === "USD") {
     if (typeof data.amount === "number") out.amount = formatPrice(data.amount, data.currency, lang);
     if (typeof data.oldAmount === "number") out.oldAmount = formatPrice(data.oldAmount, data.currency, lang);
+    if (typeof data.balance === "number") out.balance = formatPrice(data.balance, data.currency, lang);
   }
   return out;
 }
@@ -136,6 +140,7 @@ export async function notify(userId: string, type: NotificationType, data: Data 
       if ((err as { code?: string }).code === "P2002") return;
       throw err;
     }
+    if ("bellOnly" in NOTIFICATIONS[type]) return;
     if (NOTIFICATIONS[type].reminder && user.notificationSettings?.emailReminders === false) return;
     // Placeholder accounts (pages prepared by an agency) have no real inbox.
     if (user.email.endsWith("@wsool.invalid")) return;

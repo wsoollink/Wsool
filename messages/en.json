@@ -2340,6 +2340,12 @@
       "body": "A customer who came through your link paid for their subscription, and you earned {amount}.\nIt will be ready to pay out on {availableDate}.",
       "cta": "See your commission"
     },
+    "referral_weekly": {
+      "subject": "Your weekly Wsool link report",
+      "title": "Your link this week",
+      "body": "Here is what happened with your link in the last 7 days:\nLink visits: **{clicks}**\nNew customers who signed up through your link: **{signups}**\nNew commissions: **{amount}** ({count, plural, =0 {no payments} one {1 payment} other {# payments}})\nYour balance now: **{balance}**",
+      "cta": "View your commission"
+    },
     "commission_paid": {
       "subject": "Your commission was transferred: {amount}",
       "title": "Commission paid",

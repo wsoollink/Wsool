@@ -52,7 +52,7 @@ export const LEGAL = {
   serverLocation: "فرانكفورت، ألمانيا (الاتحاد الأوروبي)",
   serverLocationEn: "Frankfurt, Germany (EU)",
   /** Effective date of the legal pages (set Nov 2, 2026 for the Moyasar review); bump it when the text changes. */
-  effectiveDate: "2026-11-02",
+  effectiveDate: "2026-11-13",
 };
 
 /**

@@ -202,3 +202,55 @@ export async function referrerRows(): Promise<ReferrerRow[]> {
     })
     .sort((a, b) => b.available - a.available || b.earned - a.earned || b.signups - a.signups);
 }
+
+const SAUDI_OFFSET_MS = 3 * 3_600_000;
+/** The weekly report goes out on Sundays from this hour, Saudi time (the hourly job sends it once). */
+const DIGEST_HOUR = 9;
+
+/**
+ * Weekly affiliate report (owner, Nov 2026; replaces one email per commission): on Sundays each creator whose link
+ * had visits, sign-ups or new commissions in the last 7 days gets one `referral_weekly` notification (bell + email)
+ * with those numbers and their balance. Weeks with nothing new send nothing. The dedupe key makes it once a week.
+ */
+export async function sendReferralDigests(now = new Date()) {
+  const saudi = new Date(now.getTime() + SAUDI_OFFSET_MS);
+  if (saudi.getUTCDay() !== 0 || saudi.getUTCHours() < DIGEST_HOUR) return 0;
+  const week = saudi.toISOString().slice(0, 10);
+  const since = new Date(now.getTime() - 7 * 86_400_000);
+  const sinceDay = new Date(since.toISOString().slice(0, 10));
+
+  const [clicks, signups, commissions] = await Promise.all([
+    db.referralClick.groupBy({ by: ["referrerId"], where: { day: { gte: sinceDay } }, _count: { _all: true } }),
+    db.user.groupBy({ by: ["referredById"], where: { referredById: { not: null }, referredAt: { gte: since } }, _count: { _all: true } }),
+    db.referralCommission.groupBy({ by: ["referrerId"], where: { cancelledAt: null, createdAt: { gte: since } }, _sum: { amount: true }, _count: { _all: true } }),
+  ]);
+  const ids = new Set<string>([
+    ...clicks.map((c) => c.referrerId),
+    ...signups.flatMap((s) => (s.referredById ? [s.referredById] : [])),
+    ...commissions.map((c) => c.referrerId),
+  ]);
+  if (ids.size === 0) return 0;
+  const already = new Set((await db.notification.findMany({
+    where: { userId: { in: [...ids] }, dedupeKey: `referral_weekly:${week}` }, select: { userId: true },
+  })).map((n) => n.userId));
+  const active = new Set((await db.user.findMany({
+    where: { id: { in: [...ids] }, suspendedAt: null, placeholder: false }, select: { id: true },
+  })).map((u) => u.id));
+
+  let sent = 0;
+  for (const id of ids) {
+    if (already.has(id) || !active.has(id)) continue;
+    const c = commissions.find((x) => x.referrerId === id);
+    const balance = await referralBalance(id);
+    await notify(id, "referral_weekly", {
+      clicks: clicks.find((x) => x.referrerId === id)?._count._all ?? 0,
+      signups: signups.find((x) => x.referredById === id)?._count._all ?? 0,
+      count: c?._count._all ?? 0,
+      amount: round2(Number(c?._sum.amount ?? 0)),
+      balance: round2(balance.available + balance.pending),
+      currency: "SAR",
+    }, { dedupeKey: `referral_weekly:${week}` });
+    sent++;
+  }
+  return sent;
+}

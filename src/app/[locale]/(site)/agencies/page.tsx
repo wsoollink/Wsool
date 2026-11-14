@@ -258,8 +258,8 @@ export default async function AgenciesPage({ params }: PageProps<"/[locale]/agen
 
         {/* FAQ */}
         <section id="faq" className="mx-auto grid max-w-[1180px] scroll-mt-24 grid-cols-1 gap-10 px-4 pb-20 md:pb-28 lg:grid-cols-[1fr_1.6fr]">
-          <div className="lg:pt-2">
-            <p className="mb-3 flex items-center gap-2 text-sm font-bold text-blue"><span className="h-0.5 w-4 rounded bg-blue" />{t("faqEyebrow")}</p>
+          <div className="text-center lg:pt-2 lg:text-start">
+            <p className="mb-3 flex items-center justify-center gap-2 text-sm font-bold text-blue lg:justify-start"><span className="h-0.5 w-4 rounded bg-blue" />{t("faqEyebrow")}</p>
             <h2 className="text-3xl leading-tight font-black md:text-5xl">{t("faqTitle")}</h2>
           </div>
           <div className="flex flex-col gap-3">

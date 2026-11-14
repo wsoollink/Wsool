@@ -245,3 +245,9 @@ div:has(> header > :is(.mk-home-1, .mk-pricing-1, .mk-notfound-1, .mk-hidden-1, 
 
 /* Home hero title (owner, Nov 2026): the damma on «تُقنع» touched the line above at line-height 1.12. */
 .mk-home-8 { line-height: 1.32 !important; }
+
+/* "Ready in three steps" (owner, Nov 2026): the small step number becomes a bigger number in a light blue circle, like /agencies. */
+#how > div:nth-child(2) > div > span:nth-child(2) {
+  display: inline-flex; align-items: center; justify-content: center; align-self: flex-start;
+  width: 48px; height: 48px; border-radius: 999px; background: rgba(10, 108, 255, 0.1); font-size: 20px !important;
+}

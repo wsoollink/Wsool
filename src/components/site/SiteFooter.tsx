@@ -19,9 +19,10 @@ const TEXT = {
  */
 export function SiteFooter({ lang }: { lang: "ar" | "en" }) {
   const t = TEXT[lang];
+  const rights = lang === "en" ? "© 2026 All rights reserved" : "© 2026 جميع الحقوق محفوظة";
   const company = lang === "en"
-    ? `© 2026 ${SELLER.nameEn} · CR ${SELLER.crNumber} · VAT ${SELLER.vatNumber}`
-    : `© 2026 ${SELLER.name} · س.ت ${SELLER.crNumber} · الرقم الضريبي ${SELLER.vatNumber}`;
+    ? `${SELLER.nameEn} · CR ${SELLER.crNumber} · VAT ${SELLER.vatNumber}`
+    : `${SELLER.name} · س.ت ${SELLER.crNumber} · الرقم الضريبي ${SELLER.vatNumber}`;
   return (
     <footer className="border-t border-line bg-bg-marketing">
       <div className="mx-auto flex max-w-5xl flex-col gap-6 px-4 py-8 md:flex-row md:items-start md:justify-between">
@@ -35,7 +36,9 @@ export function SiteFooter({ lang }: { lang: "ar" | "en" }) {
           ))}
         </nav>
       </div>
-      <div className="mx-auto flex max-w-5xl flex-wrap justify-between gap-3 border-t border-line px-4 py-5 text-[13px] text-muted">
+      {/* Rights, company, made in Saudi Arabia: three centred lines on phones (owner, Nov 2026), one row on wider screens. */}
+      <div className="mx-auto flex max-w-5xl flex-col items-center gap-1.5 border-t border-line px-4 py-5 text-center text-[13px] text-muted md:flex-row md:flex-wrap md:justify-between md:gap-3 md:text-start">
+        <span>{rights}</span>
         <span>{company}</span>
         <span>{t.made}</span>
       </div>

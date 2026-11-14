@@ -270,3 +270,8 @@ span:has(> span:first-child:empty[style*="height:2px"]) > span:first-child:empty
 /* Monthly / yearly switch (owner, Nov 2026): "وفّر شهرين" never breaks onto two lines, also on small phones. */
 div[role="group"] > button[aria-pressed], div[role="group"] > button[aria-pressed] > span { white-space: nowrap; }
 @media (max-width: 380px) { div[role="group"] > button[aria-pressed] { padding: 0 14px !important; } }
+
+/* Phones (owner, Nov 2026): the feature cards show only their title and picture, not the description under the title. */
+@media (max-width: 767px) {
+  #features :is(.mk-home-30, .mk-home-33, .mk-home-35, .mk-home-37, .mk-home-39) + p { display: none; }
+}

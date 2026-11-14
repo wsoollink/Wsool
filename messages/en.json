@@ -2625,6 +2625,8 @@
     }
   },
   "Site": {
+    "getApp": "Get the app",
+    "newsletter": {"title": "Be the first to know", "body": "New templates, features and tips to help you land more brand deals. About one email a month. Unsubscribe anytime.", "label": "Your email", "cta": "Subscribe", "done": "We sent you a confirmation email: open it and press “Confirm my subscription”.", "error": "Enter a valid email address."},
     "followUs": "Follow us",
     "followOn": "Follow Wsool on {platform} (opens in a new tab)"
   },

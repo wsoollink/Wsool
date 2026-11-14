@@ -656,6 +656,11 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   drifts on "yearly", `section:has(... aria-pressed="true")`); on phones the FAQ label gets a line on both sides and «ما لقيت جوابك؟ +
   تواصل معنا» stays centred when it wraps. The home platform strip already scrolls (`.ws-marq`; stops only with Reduce Motion).
   Footer bottom row (Nov 2026, for Moyasar / Ministry of Commerce): © company name · CR · VAT number, and "سياسة الاسترجاع" in the legal column.
+  Owner review notes (Nov 2026, review page with screenshots + comments): the footer bottom row is rights / company · CR · VAT / made in
+  Saudi Arabia (three centred lines on phones, also in `SiteFooter` and `AgenciesFooter`); on phones the footer link columns are collapsible
+  lists (`useFooterAccordion`, `.wfoot` in `marketing.css`); step numbers sit in a light blue circle; the hero text is one short line.
+  `NewsletterCard` (`src/components/site/`, list + texts + children) = the agencies newsletter card (+ "Follow us") and the Academy card
+  (creators list + "Follow us" + `AppBadges`).
   Text changes are made in the `design/marketing/*.dc.html` files, then the script is re-run.
   Adding an element to a design shifts the generated `mk-home-N` numbers after it: update the numbers used in
   `marketing.css` (check each against `generated/home.css` before and after).

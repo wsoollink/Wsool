@@ -6,7 +6,10 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { GraduationCap, Rss, Search } from "lucide-react";
 import { AcademyHeader } from "@/components/academy/AcademyHeader";
 import { ArticleCard } from "@/components/academy/ArticleCard";
+import { AppBadges } from "@/components/site/AppBadges";
+import { NewsletterCard } from "@/components/site/NewsletterCard";
 import { SiteFooter } from "@/components/site/SiteFooter";
+import { SocialLinks } from "@/components/site/SocialLinks";
 import { buttonClasses } from "@/components/ui/Button";
 import { isLocale, toIntlLocale, type Locale } from "@/i18n/config";
 import { ACADEMY_CATEGORIES, ARTICLES_PER_PAGE, publishedArticles, type AcademyCategory } from "@/lib/academy";
@@ -119,6 +122,11 @@ export default async function AcademyPage({ params, searchParams }: PageProps<"/
           <Link href="/login" className={buttonClasses("primary")}>{t("ctaButton")}</Link>
         </section>
       </main>
+      {/* Newsletter + "Follow us" + "Get the app", like the home page card (owner, Nov 2026). */}
+      <NewsletterCard lang={locale} list="creators" source="academy" ns="Site.newsletter" placeholder="name@email.com">
+        <SocialLinks className="[&_ul]:justify-center [&_ul]:flex-nowrap [&_ul]:gap-1.5 [&_li]:min-w-0 [&_li]:flex-[0_1_44px] [&_a]:size-auto [&_a]:aspect-square [&_a]:w-full" />
+        <AppBadges />
+      </NewsletterCard>
       <SiteFooter lang={locale} />
     </div>
   );

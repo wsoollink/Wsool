@@ -654,7 +654,7 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   pricing FAQ ends with «ما لقيت جوابك؟» + a «تواصل معنا» button on the same line; demo brand logos are icons only (`public/demo/logo-*.png`).
   Customer feedback (Nov 2026, `marketing.css`): the Pro card follows the monthly/yearly switch (a blue wash fades in and the glow
   drifts on "yearly", `section:has(... aria-pressed="true")`); on phones the FAQ label gets a line on both sides and «ما لقيت جوابك؟ +
-  تواصل معنا» stays centred when it wraps. The home platform strip already scrolls (`.ws-marq`; stops only with Reduce Motion).
+  تواصل معنا» stays centred when it wraps. The home platform strip under the hero is hidden (owner, Nov 2026; `section:has(> .mk-home-23)` in `marketing.css`).
   Footer bottom row (Nov 2026, for Moyasar / Ministry of Commerce): © company name · CR · VAT number, and "سياسة الاسترجاع" in the legal column.
   Owner review notes (Nov 2026, review page with screenshots + comments): the footer bottom row is rights / company · CR · VAT / made in
   Saudi Arabia (three centred lines on phones, also in `SiteFooter` and `AgenciesFooter`); on phones the footer link columns are collapsible
@@ -667,7 +667,7 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   `marketing.css` (check each against `generated/home.css` before and after).
 - **For agencies page** `/agencies` (owner, Nov 2026, draft): landing page for marketing agencies (hand-built, texts `Agencies`;
   hero with a dashboard mock, why, how it works, features + coming soon, "the page belongs to the creator", draft plan prices,
-  FAQ; plans with a monthly / yearly switch (`Plans.tsx`, yearly = 10 months: SAR 2,990 / 6,990, owner Nov 2026; Arabic copy says مؤثر / مؤثرين); the platform strip scrolls endlessly, `.ag-marq` in `globals.css`). Header `AgenciesHeader` (`agencies/Header.tsx`): section links, theme, language
+  FAQ; plans with a monthly / yearly switch (`Plans.tsx`, yearly = 10 months: SAR 2,990 / 6,990, owner Nov 2026; Arabic copy says مؤثر / مؤثرين); the platform strip was removed by the owner, Nov 2026). Header `AgenciesHeader` (`agencies/Header.tsx`): section links, theme, language
   (`LangPill compact`), log in, apply. CTAs go to **`/agencies/apply`** (owner, Nov 2026): form name / agency / email to open the account with /
   phone / note (`agencyRequestSchema`, honeypot, 5/h per IP + 3/day per email) → table `agency_requests` + email to support@ (not accepted ones are deleted after 12 months by the hourly job, `purgeAgencyRequests`); the owner opens
   it from `admin/agencies` "Join requests" (as agency or brand = `createAgency` + invitation email; decline audited `agency.decline_request`).

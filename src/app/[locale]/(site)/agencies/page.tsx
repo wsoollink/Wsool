@@ -3,8 +3,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ArrowLeft, ArrowRight, Check, ChevronDown, Megaphone, ShieldCheck, Sparkles, X } from "lucide-react";
-import { PlatformIcon } from "@/components/creator/PlatformIcon";
-import type { Platform } from "@/generated/prisma/enums";
 import { isLocale, toIntlLocale } from "@/i18n/config";
 import {
   ActivityLog, DashboardMock, FloatInvite, FloatPdf, FloatWeek, LinkedRows, PdfStack, PermissionsMock, TeamRoles, VisitsBars,
@@ -26,8 +24,6 @@ export async function generateMetadata({ params }: PageProps<"/[locale]/agencies
 }
 
 const TRIAL = APPLY;
-const STRIP: Platform[] = ["instagram", "tiktok", "youtube", "snapchat", "x", "threads", "facebook", "telegram"];
-const STRIP_NAMES: Record<string, string> = { instagram: "Instagram", tiktok: "TikTok", youtube: "YouTube", snapchat: "Snapchat", x: "X", threads: "Threads", facebook: "Facebook", telegram: "Telegram", twitch: "Twitch" };
 
 /** Small blue label above a section title, like the home page ("— المزايا"). */
 function Eyebrow({ children }: { children: React.ReactNode }) {
@@ -99,26 +95,6 @@ export default async function AgenciesPage({ params }: PageProps<"/[locale]/agen
               <div className="ag-float absolute -top-14 start-8 hidden sm:block"><FloatInvite text={t("float.invite")} /></div>
               <div className="ag-float-2 absolute -bottom-14 end-6 hidden sm:block"><FloatWeek text={t("float.week")} /></div>
               <div className="ag-float absolute top-[38%] -end-16 hidden xl:block"><FloatPdf text={t("float.pdf")} /></div>
-            </div>
-          </div>
-        </section>
-
-        {/* Platforms strip: a slow endless scroll (two copies of the list), like the home page */}
-        <section className="border-y border-line bg-card/60">
-          <div className="mx-auto flex max-w-[1180px] items-center gap-6 px-4 py-6">
-            <p className="hidden shrink-0 text-sm font-semibold text-muted sm:block">{t("stripTitle")}</p>
-            <div className="relative min-w-0 flex-1 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
-              <div className="ag-marq flex w-max">
-                {[0, 1].map((copy) => (
-                  <div key={copy} aria-hidden={copy === 1 || undefined} className="flex shrink-0 items-center gap-10 pe-10">
-                    {STRIP.map((p) => (
-                      <span key={p} className="flex items-center gap-2 text-[15px] font-bold whitespace-nowrap text-muted" dir="ltr">
-                        <PlatformIcon platform={p} size={18} /> {STRIP_NAMES[p]}
-                      </span>
-                    ))}
-                  </div>
-                ))}
-              </div>
             </div>
           </div>
         </section>

@@ -285,3 +285,6 @@ div[role="group"] > button[aria-pressed], div[role="group"] > button[aria-presse
 
 /* "PDF in one tap" card (owner, Nov 2026): the paper sheets sat on the card's bottom edge; lift them a little. */
 div:has(> div > h3.mk-home-39) > div:last-child { padding-bottom: 22px; }
+
+/* Owner (Nov 2026): the platforms strip under the home hero is removed (all screen sizes). */
+section:has(> .mk-home-23) { display: none; }

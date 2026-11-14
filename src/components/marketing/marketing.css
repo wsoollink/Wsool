@@ -288,3 +288,6 @@ div:has(> div > h3.mk-home-39) > div:last-child { padding-bottom: 22px; }
 
 /* Owner (Nov 2026): the platforms strip under the home hero is removed (all screen sizes). */
 section:has(> .mk-home-23) { display: none; }
+
+/* "8 قوالب بألوان هويتك" (owner, Nov 2026): always one line; the font shrinks on narrow phones. */
+@media (max-width: 767px) { .mk-home-42 { white-space: nowrap; font-size: clamp(24px, 7.6vw, 30px) !important; } }

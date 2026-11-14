@@ -19,7 +19,7 @@ const GROUPS = {
   money: ["invoice.", "vat.", "expense.", "investor_link.", "discount.", "trial_offer.", "referral."],
   newsletter: ["newsletter."],
   academy: ["academy."],
-  categories: ["category."],
+  categories: ["category.", "testimonial."],
   team: ["team."],
 } as const;
 type Group = keyof typeof GROUPS;

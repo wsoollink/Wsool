@@ -991,6 +991,9 @@ export function HomeView({ v, t }: { v: any; t: (i: number) => string }) {
           ))}
         </div>
       </section>
+      <div>
+        {v.testimonials}
+      </div>
       <section style={{"maxWidth": "1200px", "margin": "0 auto", "padding": "120px 32px 0"}} className="mk-home-59">
         <div style={{"position": "relative", "overflow": "hidden", "borderRadius": "36px", "background": "linear-gradient(160deg, #0B2F6E, #021941)", "color": "#FFFFFF", "padding": "80px 64px", "display": "flex", "flexDirection": "column", "alignItems": "center", "gap": "22px", "textAlign": "center", "boxShadow": "0 30px 70px rgba(var(--mk-shadow),0.30)"}} className="ws-reveal mk-home-60">
           <div aria-hidden="true" style={{"position": "absolute", "top": "-160px", "left": "-120px", "width": "460px", "height": "460px", "borderRadius": "50%", "background": "radial-gradient(closest-side, rgba(34,184,240,0.45), transparent)"}}></div>

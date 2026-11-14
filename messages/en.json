@@ -959,7 +959,8 @@
       "groupOwner": "Owner",
       "referrals": "Commissions",
       "agencies": "Agencies",
-      "academy": "Academy"
+      "academy": "Academy",
+      "testimonials": "Testimonials"
     },
     "overview": {
       "demoTitle": "Demo page wsool.link/demo",
@@ -1406,7 +1407,8 @@
       "categories": "The list creators pick their content category from",
       "referrals": "What creators earned on the customers they brought, and bank transfers",
       "agencies": "Marketing agencies in the free beta",
-      "academy": "Wsool Academy articles (wsool.link/academy)"
+      "academy": "Wsool Academy articles (wsool.link/academy)",
+      "testimonials": "What creators and agencies say about Wsool (a strip under the FAQ)"
     },
     "sentence": {
       "demo": {
@@ -1491,6 +1493,9 @@
       "trial_offer": {
         "on": "Turned the end-of-trial offer on",
         "off": "Turned the end-of-trial offer off"
+      },
+      "testimonial": {
+        "update": "edited the {audience, select, agencies {agency} other {creator}} testimonials ({count}, added {added}, removed {removed})"
       }
     },
     "newsletter": {
@@ -1978,6 +1983,44 @@
         "past": "Pick a time in the future.",
         "not_found": "This article no longer exists.",
         "upload": "Couldn't upload the image. Try another (JPG or PNG, under 5 MB)."
+      }
+    },
+    "testimonials": {
+      "title": {
+        "creators": "Creator testimonials (home page)",
+        "agencies": "Agency testimonials (agencies page)"
+      },
+      "hint": {
+        "creators": "Shown in a moving strip under the FAQ on the home page. Add real quotes only, with the person's consent. The English site shows only testimonials with English text.",
+        "agencies": "Shown in a moving strip under the FAQ on the agencies page. Add real quotes only, with the person's consent. The English site shows only testimonials with English text."
+      },
+      "empty": "No testimonials yet. The section stays hidden on the site until you add one.",
+      "photo": "Photo of testimonial {n}",
+      "uploading": "Uploading…",
+      "removePhoto": "Remove photo",
+      "name": "Name (Arabic)",
+      "nameEn": "Name in English (optional)",
+      "role": "Line under the name (optional)",
+      "roleEn": "Line in English (optional)",
+      "rolePh": {
+        "creators": "e.g. Tech creator",
+        "agencies": "e.g. Marketing manager, Nojoom agency"
+      },
+      "quote": "Quote (Arabic)",
+      "quoteEn": "Quote in English (optional)",
+      "visible": "Shown on the site",
+      "moveUp": "Move testimonial {n} up",
+      "moveDown": "Move testimonial {n} down",
+      "delete": "Delete testimonial {n}",
+      "add": "Add testimonial",
+      "save": "Save",
+      "saving": "Saving…",
+      "status": {
+        "saved": "Saved.",
+        "invalid": "Each testimonial needs a name and a quote.",
+        "photo": "One of the photos couldn't be used. Upload it again.",
+        "failed": "Couldn't save. Try again.",
+        "upload": "Couldn't upload the photo. Use a JPG or PNG under 4 MB."
       }
     }
   },
@@ -2626,7 +2669,14 @@
   },
   "Site": {
     "getApp": "Get the app",
-    "newsletter": {"title": "Be the first to know", "body": "New templates, features and tips to help you land more brand deals. About one email a month. Unsubscribe anytime.", "label": "Your email", "cta": "Subscribe", "done": "We sent you a confirmation email: open it and press “Confirm my subscription”.", "error": "Enter a valid email address."},
+    "newsletter": {
+      "title": "Be the first to know",
+      "body": "New templates, features and tips to help you land more brand deals. About one email a month. Unsubscribe anytime.",
+      "label": "Your email",
+      "cta": "Subscribe",
+      "done": "We sent you a confirmation email: open it and press “Confirm my subscription”.",
+      "error": "Enter a valid email address."
+    },
     "followUs": "Follow us",
     "followOn": "Follow Wsool on {platform} (opens in a new tab)"
   },
@@ -3854,5 +3904,10 @@
     "goneText": "The link was stopped or is wrong. Ask the report's owner for a new link.",
     "demoBar": "A demo report with sample numbers.",
     "demoCta": "Make your reports with Wsool"
+  },
+  "Testimonials": {
+    "eyebrow": "Testimonials",
+    "creators": "What creators say about Wsool",
+    "agencies": "What agencies say about Wsool"
   }
 }

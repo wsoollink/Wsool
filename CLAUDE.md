@@ -662,6 +662,12 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   `NewsletterCard` (`src/components/site/`, list + texts + children) = the agencies newsletter card (+ "Follow us") and the Academy card
   (creators list + "Follow us" + `AppBadges`). Feature and step cards fade/rise in on scroll (`useReveal`, `.wsr` in `marketing.css`, off with Reduce Motion);
   on phones the feature cards hide their description (title + picture only).
+  **Testimonials** (owner, Nov 2026): table `testimonials` (audience creators | agencies, name/role/quote ar + optional en, photo = upload
+  kind `testimonialPhoto` (in the unused-files check), visible, sort; RLS on, server only). Owner-only admin section `admin/testimonials`
+  (`TestimonialsEditor`, `saveTestimonials` replaces one audience's list, audited `testimonial.update`). Public: `Testimonials` server
+  component (`src/components/site/`, `getTestimonials()` in `src/lib/testimonials.ts`, `"use cache"` tag `TESTIMONIALS_TAG`, read after
+  `connection()` so builds never query it) = a `Marquee` strip under the FAQ: home via the design's `{{testimonials}}` hole (`HomePage`
+  prop), `/agencies` after its FAQ. Hidden while empty; the English site shows only rows with an English quote. Real quotes only.
   Text changes are made in the `design/marketing/*.dc.html` files, then the script is re-run.
   Adding an element to a design shifts the generated `mk-home-N` numbers after it: update the numbers used in
   `marketing.css` (check each against `generated/home.css` before and after).

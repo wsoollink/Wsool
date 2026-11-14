@@ -50,6 +50,7 @@ export const ADMIN_SECTIONS = [
   { key: "newsletter", href: "/admin/newsletter", permission: "newsletter.send" },
   { key: "academy", href: "/admin/academy", permission: "academy.edit" },
   { key: "categories", href: "/admin/categories", permission: "owner" },
+  { key: "testimonials", href: "/admin/testimonials", permission: "owner" },
   { key: "agencies", href: "/admin/agencies", permission: "owner" },
   { key: "team", href: "/admin/team", permission: "owner" },
   { key: "audit", href: "/admin/audit", permission: "owner" },

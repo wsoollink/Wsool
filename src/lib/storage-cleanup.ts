@@ -26,6 +26,7 @@ async function unused(urls: string[]): Promise<Set<string>> {
       AND NOT EXISTS (SELECT 1 FROM coupons WHERE logo_url = u)
       AND NOT EXISTS (SELECT 1 FROM agencies WHERE logo_url = u)
       AND NOT EXISTS (SELECT 1 FROM agency_brands WHERE logo_url = u)
+      AND NOT EXISTS (SELECT 1 FROM testimonials WHERE photo_url = u)
       AND NOT EXISTS (SELECT 1 FROM newsletter_campaigns WHERE cta_url = u OR strpos(body_ar, u) > 0 OR strpos(body_en, u) > 0)
       AND NOT EXISTS (SELECT 1 FROM articles WHERE cover_url = u OR strpos(body, u) > 0)
       AND NOT EXISTS (SELECT 1 FROM ad_report_posts WHERE thumb_url = u)`;

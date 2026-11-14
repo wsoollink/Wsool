@@ -1515,3 +1515,26 @@ model AdReportSnapshot {
   @@id([postId, day])
   @@map("ad_report_snapshots")
 }
+
+/// What people say about Wsool (owner, Nov 2026): a moving strip under the FAQ on the home page (creators) and
+/// /agencies (agencies). Managed by the owner in admin/testimonials; real quotes only, with the person's consent.
+model Testimonial {
+  id        String           @id @default(uuid()) @db.Uuid
+  audience  DiscountAudience
+  name      String           @db.VarChar(80)
+  nameEn    String?          @map("name_en") @db.VarChar(80)
+  /// Small line under the name ("Tech creator", "Marketing manager, X agency").
+  role      String?          @db.VarChar(80)
+  roleEn    String?          @map("role_en") @db.VarChar(80)
+  quote     String           @db.VarChar(400)
+  /// The English site shows only testimonials with an English quote.
+  quoteEn   String?          @map("quote_en") @db.VarChar(400)
+  photoUrl  String?          @map("photo_url")
+  visible   Boolean          @default(true)
+  sort      Int              @default(0)
+  createdAt DateTime         @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime         @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([audience, sort])
+  @@map("testimonials")
+}

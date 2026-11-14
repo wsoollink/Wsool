@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -9,6 +10,7 @@ import {
 } from "./Visuals";
 import { AgenciesFooter, AgenciesHeader, APPLY } from "./Header";
 import { AgencyPlans, type AgencyPlan } from "./Plans";
+import { Testimonials } from "@/components/site/Testimonials";
 import { AgenciesNewsletter } from "./Newsletter";
 import { shareMeta } from "@/lib/seo";
 
@@ -250,6 +252,7 @@ export default async function AgenciesPage({ params }: PageProps<"/[locale]/agen
             ))}
           </div>
         </section>
+        <Suspense fallback={null}><Testimonials audience="agencies" lang={lang} className="pb-20 md:pb-28" /></Suspense>
 
         {/* Final call */}
         <section className="mx-auto max-w-[1180px] px-4 pb-20">

@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import type { Locale } from "@/i18n/config";
 import { HiddenView } from "./generated/HiddenView";
 import { HomeView } from "./generated/HomeView";
@@ -21,11 +22,12 @@ type Texts = { ar: readonly string[]; en: readonly string[] };
 const translator = (texts: Texts, lang: Locale) => (i: number) => texts[lang][i] ?? texts.ar[i];
 
 /** Marketing pages: generated design views + the hook that runs them. */
-export function HomePage({ lang }: { lang: Locale }) {
+export function HomePage({ lang, testimonials }: { lang: Locale; testimonials?: ReactNode }) {
   useFooterAccordion();
   // Feature cards and the three step cards enter softly as they scroll into view.
   useReveal(".mk-home-28 > div, #how > div:nth-child(2) > div");
-  return <HomeView v={useMarketing(lang, { source: "home" })} t={translator(HOME_TEXT, lang)} />;
+  // `testimonials` (server-rendered strip) fills the design's {{testimonials}} hole under the FAQ.
+  return <HomeView v={{ ...useMarketing(lang, { source: "home" }), testimonials }} t={translator(HOME_TEXT, lang)} />;
 }
 
 export function PricingPage({ lang }: { lang: Locale }) {

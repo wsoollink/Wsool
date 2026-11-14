@@ -280,3 +280,6 @@ div[role="group"] > button[aria-pressed], div[role="group"] > button[aria-presse
 .wsr { opacity: 0; transform: translateY(28px) scale(0.98); transition: opacity .7s cubic-bezier(.2,.7,.2,1), transform .7s cubic-bezier(.2,.7,.2,1); }
 .wsr.wsr-in { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce) { .wsr { opacity: 1; transform: none; transition: none; } }
+
+/* "PDF in one tap" card (owner, Nov 2026): the paper sheets sat on the card's bottom edge; lift them a little. */
+div:has(> div > h3.mk-home-39) > div:last-child { padding-bottom: 22px; }

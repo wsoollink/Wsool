@@ -266,3 +266,7 @@ div:has(> header > :is(.mk-home-1, .mk-pricing-1, .mk-notfound-1, .mk-hidden-1, 
 
 /* Section labels («المزايا», «القوالب», «الأسئلة»…; owner, Nov 2026): no short dash before the word, so it sits centred. */
 span:has(> span:first-child:empty[style*="height:2px"]) > span:first-child:empty { display: none; }
+
+/* Monthly / yearly switch (owner, Nov 2026): "وفّر شهرين" never breaks onto two lines, also on small phones. */
+div[role="group"] > button[aria-pressed], div[role="group"] > button[aria-pressed] > span { white-space: nowrap; }
+@media (max-width: 380px) { div[role="group"] > button[aria-pressed] { padding: 0 14px !important; } }

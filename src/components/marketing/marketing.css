@@ -275,3 +275,8 @@ div[role="group"] > button[aria-pressed], div[role="group"] > button[aria-presse
 @media (max-width: 767px) {
   #features :is(.mk-home-30, .mk-home-33, .mk-home-35, .mk-home-37, .mk-home-39) + p { display: none; }
 }
+
+/* Soft entrance on scroll (useReveal). */
+.wsr { opacity: 0; transform: translateY(28px) scale(0.98); transition: opacity .7s cubic-bezier(.2,.7,.2,1), transform .7s cubic-bezier(.2,.7,.2,1); }
+.wsr.wsr-in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .wsr { opacity: 1; transform: none; transition: none; } }

@@ -15,6 +15,7 @@ import "./generated/shared.css";
 import "./marketing.css";
 import { useFooterAccordion } from "./useFooterAccordion";
 import { useMarketing } from "./useMarketing";
+import { useReveal } from "./useReveal";
 
 type Texts = { ar: readonly string[]; en: readonly string[] };
 const translator = (texts: Texts, lang: Locale) => (i: number) => texts[lang][i] ?? texts.ar[i];
@@ -22,6 +23,8 @@ const translator = (texts: Texts, lang: Locale) => (i: number) => texts[lang][i]
 /** Marketing pages: generated design views + the hook that runs them. */
 export function HomePage({ lang }: { lang: Locale }) {
   useFooterAccordion();
+  // Feature cards and the three step cards enter softly as they scroll into view.
+  useReveal(".mk-home-28 > div, #how > div:nth-child(2) > div");
   return <HomeView v={useMarketing(lang, { source: "home" })} t={translator(HOME_TEXT, lang)} />;
 }
 

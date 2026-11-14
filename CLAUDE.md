@@ -660,7 +660,8 @@ Resend, payment gateway, seller + legal details, DMARC, final checks). Remind th
   Saudi Arabia (three centred lines on phones, also in `SiteFooter` and `AgenciesFooter`); on phones the footer link columns are collapsible
   lists (`useFooterAccordion`, `.wfoot` in `marketing.css`); step numbers sit in a light blue circle; the hero text is one short line.
   `NewsletterCard` (`src/components/site/`, list + texts + children) = the agencies newsletter card (+ "Follow us") and the Academy card
-  (creators list + "Follow us" + `AppBadges`).
+  (creators list + "Follow us" + `AppBadges`). Feature and step cards fade/rise in on scroll (`useReveal`, `.wsr` in `marketing.css`, off with Reduce Motion);
+  on phones the feature cards hide their description (title + picture only).
   Text changes are made in the `design/marketing/*.dc.html` files, then the script is re-run.
   Adding an element to a design shifts the generated `mk-home-N` numbers after it: update the numbers used in
   `marketing.css` (check each against `generated/home.css` before and after).

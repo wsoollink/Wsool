@@ -89,6 +89,8 @@
   footer .wfoot.open>span:first-child::after{transform:translateY(2px) rotate(-135deg)}
   footer .wfoot>span:first-child:focus-visible{outline:2px solid #0060E6;outline-offset:2px;border-radius:6px}
   footer .wfoot:not(.open)>a{display:none}
+  /* No press-in on these full-width rows: scaling made the title jump sideways when tapped (owner). */
+  footer .wfoot>span:first-child:active,footer .wfoot>a:active{transform:none}
   footer .wfoot.open{padding-bottom:8px}
 }
 .wsoc-instagram span{-webkit-mask-image:url(/marketing/c29d2b71c7556f8ca7caaad85838d28a.png);mask-image:url(/marketing/c29d2b71c7556f8ca7caaad85838d28a.png)}

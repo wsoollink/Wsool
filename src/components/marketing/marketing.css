@@ -170,7 +170,21 @@ div:has(> button + span[aria-live="polite"] + button) { position: relative; z-in
 .mk-home-18 { aspect-ratio: 393 / 852; height: auto !important; display: flex; }
 .mk-home-18 > div { flex: 1; display: flex; flex-direction: column; position: relative; }
 .mk-home-18 > div > div:first-child { flex: 1 1 auto; aspect-ratio: auto !important; min-height: 257px; }
-.mk-home-18 > div::before { content: ""; position: absolute; top: 10px; left: 50%; width: 84px; height: 24px; margin-left: -42px; border-radius: 999px; background: #020d22; z-index: 5; }
+/* Realistic phone (owner, Nov 2026): thin black bezel inside a titanium edge, side buttons and a Dynamic Island with a camera lens. */
+.mk-home-18 {
+  padding: 6px !important; border-radius: 54px !important; background: #0a0a0b !important;
+  box-shadow: 0 0 0 1.5px #2b2d31, 0 0 0 3.5px #9a9da3, 0 0 0 4.5px #55585e, 0 50px 100px rgba(var(--mk-shadow), 0.35) !important;
+}
+.mk-home-18 > div { border-radius: 48px !important; }
+/* Power button (end side) and action + volume buttons (start side): small titanium bars outside the edge. */
+.mk-home-18::before, .mk-home-18::after { content: ""; position: absolute; width: 4px; border-radius: 2px; background: linear-gradient(90deg, #6e7177, #b5b8bd, #6e7177); }
+.mk-home-18::before { right: -7.5px; top: 26%; height: 13%; }
+.mk-home-18::after { left: -7.5px; top: 17%; height: 5%; box-shadow: 0 calc(5% + 52px) 0 0 #9a9da3, 0 calc(5% + 116px) 0 0 #9a9da3; }
+@media (max-width: 767px) { .mk-home-18::after { box-shadow: 0 46px 0 0 #9a9da3, 0 98px 0 0 #9a9da3; } }
+.mk-home-18 > div::before {
+  content: ""; position: absolute; top: 11px; left: 50%; width: 92px; height: 26px; margin-left: -46px; border-radius: 999px; z-index: 5;
+  background: radial-gradient(circle at 74% 50%, #1d2a44 0 3px, #0b1220 3.5px 5px, transparent 5.5px), #000;
+}
 /* Monthly / yearly switch (owner feedback, Nov 2026): a pill that slides between the two choices instead of jumping. Both
    choices get equal widths; the buttons' own background is replaced by the sliding pill (navy, like the design). */
 div[role="group"]:has(> button[aria-pressed] + button[aria-pressed]) { position: relative; display: grid !important; grid-template-columns: 1fr 1fr; isolation: isolate; }
@@ -208,16 +222,8 @@ section:has(div[role="group"] > button[aria-pressed] + button[aria-pressed="true
   div.ws-reveal[style*="#0B2F6E"] > div[aria-hidden="true"]:first-child { transition: none; }
 }
 
-/* FAQ heading on phones (customers, Nov 2026): the "— FAQ" label gets a matching line on its other side so the word sits in
-   the true centre, and "Didn't find your answer? [Contact us]" stays centred even when the button wraps to its own line. */
+/* FAQ on phones (customers, Nov 2026): "Didn't find your answer? [Contact us]" stays centred even when the button wraps to its own line. */
 @media (max-width: 767px) {
-  #faq span:has(> span:first-child:empty)::after {
-    content: "";
-    width: 18px;
-    height: 2px;
-    border-radius: 2px;
-    background: #0a6cff;
-  }
   #faq p:has(> a[href="/contact"]) {
     justify-content: center;
     text-align: center;
@@ -251,3 +257,12 @@ div:has(> header > :is(.mk-home-1, .mk-pricing-1, .mk-notfound-1, .mk-hidden-1, 
   display: inline-flex; align-items: center; justify-content: center; align-self: flex-start;
   width: 48px; height: 48px; border-radius: 999px; background: rgba(10, 108, 255, 0.1); font-size: 20px !important;
 }
+
+/* Phones (owner, Nov 2026): the three hero checks (free, 14-day trial, no card) on one line. */
+@media (max-width: 767px) {
+  .mk-home-14 { flex-wrap: nowrap !important; gap: 10px !important; white-space: nowrap; font-size: clamp(10.5px, 3.1vw, 13.5px) !important; }
+  .mk-home-14 > * { gap: 4px !important; }
+}
+
+/* Section labels («المزايا», «القوالب», «الأسئلة»…; owner, Nov 2026): no short dash before the word, so it sits centred. */
+span:has(> span:first-child:empty[style*="height:2px"]) > span:first-child:empty { display: none; }

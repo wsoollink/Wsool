@@ -31,7 +31,7 @@ const STRIP_NAMES: Record<string, string> = { instagram: "Instagram", tiktok: "T
 
 /** Small blue label above a section title, like the home page ("— المزايا"). */
 function Eyebrow({ children }: { children: React.ReactNode }) {
-  return <p className="mb-3 flex items-center justify-center gap-2 text-sm font-bold text-blue"><span className="h-0.5 w-4 rounded bg-blue" />{children}</p>;
+  return <p className="mb-3 flex items-center justify-center gap-2 text-sm font-bold text-blue">{children}</p>;
 }
 
 /** Two-tone section title: navy, then blue gradient. */
@@ -215,9 +215,9 @@ export default async function AgenciesPage({ params }: PageProps<"/[locale]/agen
             <div aria-hidden="true" className="absolute -top-32 -start-24 size-96 rounded-full ag-glow [--glow:#22B8F047]" />
             <div className="relative grid grid-cols-1 items-center gap-10 lg:grid-cols-[1.15fr_1fr]">
               <div>
-                <p className="mb-3 flex items-center gap-2 text-sm font-bold text-[#7DD3FC]"><ShieldCheck aria-hidden="true" size={18} />{t("ownEyebrow")}</p>
-                <h2 className="mb-4 text-3xl leading-tight font-black md:text-5xl">{t("ownTitle")}</h2>
-                <p className="mb-7 text-lg leading-9 opacity-85">{t("ownBody")}</p>
+                <p className="mb-3 flex items-center justify-center gap-2 text-sm font-bold text-[#7DD3FC] lg:justify-start"><ShieldCheck aria-hidden="true" size={18} />{t("ownEyebrow")}</p>
+                <h2 className="mb-4 text-center text-3xl leading-tight font-black md:text-5xl lg:text-start">{t("ownTitle")}</h2>
+                <p className="mb-7 text-center text-lg leading-9 opacity-85 lg:text-start">{t("ownBody")}</p>
                 <ul className="flex flex-col gap-3">
                   {raw<string[]>("ownPoints").map((p) => (
                     <li key={p} className="flex items-center gap-3 font-semibold"><span className="flex size-7 items-center justify-center rounded-full bg-white/10"><Check aria-hidden="true" size={15} className="text-[#7DD3FC]" /></span>{p}</li>
@@ -259,7 +259,7 @@ export default async function AgenciesPage({ params }: PageProps<"/[locale]/agen
         {/* FAQ */}
         <section id="faq" className="mx-auto grid max-w-[1180px] scroll-mt-24 grid-cols-1 gap-10 px-4 pb-20 md:pb-28 lg:grid-cols-[1fr_1.6fr]">
           <div className="text-center lg:pt-2 lg:text-start">
-            <p className="mb-3 flex items-center justify-center gap-2 text-sm font-bold text-blue lg:justify-start"><span className="h-0.5 w-4 rounded bg-blue" />{t("faqEyebrow")}</p>
+            <p className="mb-3 flex items-center justify-center gap-2 text-sm font-bold text-blue lg:justify-start">{t("faqEyebrow")}</p>
             <h2 className="text-3xl leading-tight font-black md:text-5xl">{t("faqTitle")}</h2>
           </div>
           <div className="flex flex-col gap-3">

@@ -47,15 +47,15 @@ export function DashboardMock({ t, lang }: { t: DashText; lang: Lang }) {
       </div>
       <div className="p-4 md:p-5">
         <div className="mb-4 grid grid-cols-3 gap-2">
-          <div className="rounded-2xl bg-gradient-to-br from-[#021941] to-[#0A3A8C] p-3 text-white">
-            <p className="text-[11px] opacity-75">{t.total}</p>
+          <div className="flex flex-col items-center justify-between gap-1 rounded-2xl bg-gradient-to-br from-[#021941] to-[#0A3A8C] p-3 text-center text-white">
+            <p className="text-[11px] leading-snug opacity-75">{t.total}</p>
             <p className="font-numbers text-xl font-black" dir="ltr">4.8M</p>
           </div>
-          <div className="rounded-2xl bg-bg p-3">
+          <div className="flex flex-col items-center justify-between gap-1 rounded-2xl bg-bg p-3 text-center">
             <p className="text-[11px] text-muted">{t.creators}</p>
             <p className="font-numbers text-xl font-black">24</p>
           </div>
-          <div className="rounded-2xl bg-bg p-3">
+          <div className="flex flex-col items-center justify-between gap-1 rounded-2xl bg-bg p-3 text-center">
             <p className="text-[11px] text-muted">{t.verified}</p>
             <p className="font-numbers text-xl font-black text-good" dir="ltr">92%</p>
           </div>
